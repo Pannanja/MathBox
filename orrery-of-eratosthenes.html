@@ -3,223 +3,165 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Orrery · Continuum</title>
+<meta name="description" content="Follow one beat from the rhythms of primes to the Riemann hypothesis. An interactive mathematical instrument.">
+<title>Clock of Primes</title>
 <style>
-:root{
-  --plate:#0C1512; --edge:#22332C; --edge2:#31473D;
-  --patina:#6FAE9B; --brass:#C9A55C; --ivory:#E9E2D0; --dim:#87998F;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
-  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
-  color-scheme:dark;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--plate);color:var(--ivory);
-  font:400 15px/1.5 var(--serif);-webkit-font-smoothing:antialiased;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:100vh;padding:16px;gap:10px}
-.frame{position:relative;width:min(92vw,calc(100vh - 120px),640px);aspect-ratio:1}
-.frame canvas{width:100%;height:100%;display:block;background:var(--plate);
-  border:1px solid var(--edge);border-radius:2px}
-/* the inscribed circle is protected: corner blocks stay inside the corner squares */
-.corner{position:absolute;display:flex;flex-direction:column;gap:4px;
-  max-width:19%;max-height:13.5%}
-.tl{top:8px;left:8px}
-.tr{top:8px;right:8px;align-items:flex-end}
-.bl{bottom:8px;left:8px}
-.br{bottom:8px;right:8px;align-items:flex-end;text-align:right;max-height:16%}
-.corner button{
-  background:rgba(12,21,18,.66);color:var(--ivory);border:1px solid var(--edge2);
-  border-radius:2px;padding:3px 7px;font:400 11.5px/1.15 var(--serif);cursor:pointer;
-  white-space:nowrap;backdrop-filter:blur(3px)}
-.corner button:hover{border-color:var(--patina);color:var(--patina)}
-.corner button.on{border-color:var(--patina);color:var(--patina);background:rgba(111,174,155,.16)}
-button:focus-visible,input:focus-visible{outline:2px solid var(--patina);outline-offset:2px}
-#now{font:400 25px/1 var(--serif);font-variant-numeric:tabular-nums;
-  text-shadow:0 0 14px rgba(12,21,18,.95)}
-#fac{color:var(--dim);font-size:12px;text-shadow:0 0 10px rgba(12,21,18,.95)}
-#fac.prime{color:var(--brass)}
-.rack{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
-  gap:18px;width:min(92vw,640px)}
-.ctl{display:grid;grid-template-columns:auto 54px;align-items:center;gap:1px 8px}
-.ctl label{color:var(--dim);font-size:12px;cursor:help;white-space:nowrap}
-.ctl input[type=number]{width:54px;background:transparent;border:1px solid var(--edge);
-  border-radius:2px;color:var(--ivory);font:400 11px var(--mono);padding:1px 4px;
-  text-align:right;font-variant-numeric:tabular-nums}
-.ctl input[type=range]{grid-column:1/-1;width:132px;accent-color:var(--patina);
-  margin:2px 0 0;height:12px}
-#status{color:var(--dim);font:400 11px var(--mono)}
-.proof{width:min(92vw,calc(100vh - 130px),620px);text-align:center;line-height:1.3;margin-bottom:2px}
-.iden{font-size:clamp(16px,2.8vw,22px)}
-.iden .op{display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle;margin:0 .12em}
-.iden .op .lim{font-size:.40em;color:var(--dim);line-height:1.2}
-.iden .op .sym{font-size:1.35em;line-height:1}
-.iden sup{font-size:.55em}
-.work{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.45em;
-  font:400 clamp(10px,1.75vw,13px)/1.5 var(--mono);color:var(--ivory);
-  font-variant-numeric:tabular-nums;margin-top:3px}
-.work sup{font-size:.6em}
-#tape{position:relative;height:1.75em;overflow:hidden;display:block;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 14%);
-  mask-image:linear-gradient(90deg,transparent,#000 14%)}
-#strip{position:absolute;top:0;left:0;height:100%}
-.tt{position:absolute;top:.14em;width:62px;text-align:center;white-space:nowrap}
-.tt .dead{text-decoration:line-through;text-decoration-thickness:1.4px}
-.eq{font-size:1.25em}
-.rhs{overflow:hidden;white-space:nowrap;text-align:left}
-.rhs .fx{margin-right:1px}
-.rhs .dots{color:var(--dim);margin:0 2px}
-.rhs .glow-mid{color:var(--brass);text-shadow:0 0 9px var(--brass)}
-.rhs .zs{margin-left:3px}
+:root{--plate:#0c1512;--edge:#293c33;--edge2:#3a5347;--patina:#9bc7b1;--brass:#e0bd76;--ivory:#ede8d9;--dim:#a0afa5;--serif:Georgia,'Times New Roman',serif;--mono:ui-monospace,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--plate);color:var(--ivory);font:16px/1.6 var(--serif);-webkit-font-smoothing:antialiased}button,input,summary,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;color:inherit}button:disabled{opacity:.4;cursor:default}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--brass);outline-offset:5px}button{background:none;border:1px solid var(--edge2);border-radius:6px;padding:9px 14px}button:hover:not(:disabled){border-color:var(--patina);background:#9bc7b10b}a{color:var(--patina)}[hidden]{display:none!important}
+.shell{max-width:1180px;margin:auto;padding:30px 36px 20px}.mast{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;border-bottom:1px solid var(--edge);gap:16px}.brand{font-size:17px;letter-spacing:.025em}.eyebrow,.mast small{font:10px/1.5 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}.mast small{color:var(--brass)}
+.route{display:flex;gap:8px;align-items:center;padding:24px 0 12px}.route button{border:0;display:flex;align-items:center;gap:8px;color:var(--dim);padding:6px 10px;font-size:13px}.route button:first-child{padding-left:0}.seed{font:10px var(--mono);width:23px;height:23px;border:1px solid var(--edge2);border-radius:50%;display:inline-flex;align-items:center;justify-content:center}.route button[aria-current=step]{color:var(--ivory)}.route button[aria-current=step] .seed{background:var(--brass);border-color:var(--brass);color:var(--plate)}.route .more-route{margin-left:auto;border:1px solid var(--edge2);padding:6px 12px}.route .beyond{display:none}body.beyond .route .beyond{display:flex}
+.experience{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);gap:44px;align-items:center;padding:12px 0 28px}.instrument{min-width:0}.frame{position:relative;aspect-ratio:1}.frame canvas{display:block;width:100%;height:100%}.canvas-tag{position:absolute;top:2%;left:0;color:var(--dim);font:10px var(--mono);letter-spacing:.08em}.beatRead{display:flex;align-items:baseline;justify-content:center;gap:12px;min-height:46px}.beatRead .label{font:10px var(--mono);letter-spacing:.1em;color:var(--dim)}#now{font-size:32px;font-variant-numeric:tabular-nums}#fac{color:var(--dim);font-size:14px}#fac.prime{color:var(--brass)}
+.transport{display:flex;align-items:center;gap:8px;justify-content:center;margin:10px 0 16px}.primary{background:var(--brass);border-color:var(--brass);color:#172019;font-weight:600}.primary:hover:not(:disabled){background:#ebcc92;border-color:#ebcc92;color:#172019}#play{min-width:92px}.quiet{border-color:transparent;color:var(--dim)}.scrubber{display:flex;align-items:center;gap:12px;color:var(--dim);font:11px var(--mono);max-width:420px;margin:auto}input[type=range]{accent-color:var(--patina);cursor:pointer;min-width:0}.scrubber input{flex:1;width:100%}.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 17px;color:var(--dim);font-size:12px;margin-top:16px}.dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;background:var(--ivory)}.dot.red{background:#e0453c}.dot.gold{background:var(--brass)}.dot.mint{background:var(--patina)}.dot.coral{background:#ef947c}
+.story{padding:18px 0}.story h1{font-weight:400;font-size:clamp(30px,3.2vw,43px);line-height:1.14;letter-spacing:-.03em;margin:15px 0 18px;max-width:390px}.story p{color:var(--dim);margin:0 0 18px;font-size:16px;line-height:1.65}.story p strong{color:var(--ivory);font-weight:400}.interaction{border-top:1px solid var(--edge);padding:20px 0 12px;margin-top:22px}.interaction p{font-size:14px;margin-bottom:12px}.interaction .prompt{color:var(--ivory);font-size:18px}.choice-row{display:flex;gap:8px;flex-wrap:wrap}.feedback{min-height:54px;font-size:14px!important;margin:14px 0 0!important;color:var(--patina)!important}.story-nav{display:flex;gap:12px;align-items:center;margin-top:22px}.story-nav .primary{flex:1;text-align:left;display:flex;justify-content:space-between}.story-nav .quiet{padding:8px}.guide{margin:15px 0}.guide label{display:flex;justify-content:space-between;font-size:14px}.guide output{font:12px var(--mono);color:var(--patina)}.guide input{width:100%;margin:15px 0 4px}.limits{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--dim)}
+.recipe-row{display:flex;gap:10px;margin:12px 0}.recipe{flex:1;border:1px solid var(--edge2);border-radius:6px;padding:10px 8px;text-align:center}.recipe span{font-size:22px}.recipe button{display:block;width:100%;font-size:12px;margin-top:8px;padding:6px}.recipe-result{color:var(--brass);font-size:25px;margin:15px 0 8px}.equation{font-size:18px;line-height:1.8;padding:14px 0;color:var(--ivory)}.math-note{font-size:12px!important}.mini-bars{display:flex;align-items:flex-end;height:54px;gap:5px;margin:12px 0}.mini-bars span{flex:1;min-height:2px;background:var(--patina);border-radius:2px 2px 0 0}.milestone{color:var(--brass);font:11px var(--mono);padding:10px 0}
+.instrument-drawer,.notes{border-top:1px solid var(--edge);padding:15px 0;color:var(--dim);font-size:13px}.instrument-drawer>summary,.notes>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between}.instrument-drawer>summary:after,.notes>summary:after{content:'+';color:var(--patina)}details[open]>summary:after{content:'−'}.drawer-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px;padding:20px 0}.drawer-grid h2{font:11px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--patina);margin:15px 0}.lenses,.rack,.tuning,.transportRow{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.lenses button,.transportRow button{font-size:12px;padding:7px 10px}button.on{color:var(--patina);border-color:var(--patina);background:#9bc7b111}.ctl{display:grid;grid-template-columns:1fr 60px;gap:4px 10px;width:180px}.ctl label{font-size:12px}.ctl input[type=range]{grid-column:1/-1;width:100%}input[type=number]{background:none;border:1px solid var(--edge2);border-radius:4px;color:var(--ivory);width:65px;font:12px var(--mono);padding:4px}.tuning label{display:flex;align-items:center;gap:8px;font-size:12px}.tuning input{width:100px}.tuning output{font:11px var(--mono);width:44px}.transportRow label{font-size:12px}.notes p{max-width:800px}.notes details{margin:18px 0}.notes details summary{cursor:pointer;color:var(--ivory)}#reading{font:11px/1.6 var(--mono);color:var(--dim);margin:18px 0 0;overflow-wrap:anywhere}#status{font:10px var(--mono)}.proof .iden{font-size:16px}.proof .op{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1}.proof .lim{font-size:9px}.proof .sym{font-size:25px}.work{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;font:11px var(--mono);margin-top:15px}#tape{position:relative;height:25px;overflow:hidden}#strip{position:absolute}.tt{position:absolute;white-space:nowrap}.dead{text-decoration:line-through}.rhs{overflow:hidden;white-space:nowrap}.trivial svg{display:block;width:100%;max-width:500px;height:auto}.trivial{max-width:620px}.trivial output{color:var(--brass)}footer{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--dim);padding-top:16px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(min-width:1350px){.shell{padding-top:45px}.experience{gap:60px;padding-top:26px}}
+@media(max-width:850px){.shell{padding:20px}.experience{gap:22px;grid-template-columns:minmax(0,1.2fr) minmax(275px,1fr)}.route{gap:2px}.route button{padding:6px;font-size:12px}.route .seed{width:20px;height:20px}.story h1{font-size:32px}.story p{font-size:14px}body.beyond .route{flex-wrap:wrap}.mast small{font-size:9px}}
+@media(max-width:650px){.shell{padding:18px 18px 22px}.mast{padding-bottom:16px}.mast small{display:none}.brand{font-size:16px}.route{padding:16px 0 8px;gap:6px}.route button{font-size:12px;padding:5px 3px;gap:5px}.route .more-route{font-size:11px;padding:6px 8px}.experience{display:flex;flex-direction:column;gap:12px;padding-top:5px}.instrument{width:100%;max-width:450px}.frame{max-width:360px;margin:auto}.story{width:100%;padding:5px 0}.story h1{max-width:none;font-size:31px;margin:9px 0 12px}.story p{font-size:15px}.canvas-tag{font-size:9px}.beatRead{min-height:36px}#now{font-size:26px}.transport{margin:5px 0 12px}.transport button{padding:8px 12px;font-size:14px}.legend{margin-top:10px;font-size:11px}.interaction{margin-top:15px;padding-top:15px}.drawer-grid{grid-template-columns:1fr}.story-nav{margin-top:15px}.feedback{min-height:0}.route .beyond{font-size:11px}.eyebrow{font-size:9px}footer{flex-direction:column;gap:4px}}
+@media(max-width:650px){.story{display:contents}.story>.eyebrow{order:0;align-self:flex-start;margin-top:12px}.story>h1{order:1;align-self:flex-start;margin:0}.story>#storyText{order:2;margin:0;font-size:14px}.instrument{order:3}.story>.interaction{order:4;width:100%;margin-top:0}.story>.story-nav{order:5;width:100%}.story>#reading{order:6;width:100%}.transport{gap:4px}.transport button{white-space:nowrap;padding:8px;font-size:12px}.transport #play{min-width:70px}.frame{max-width:330px}.route button{line-height:1.35}.route .more-route{max-width:94px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 
-body{justify-content:flex-start;padding:20px 12px;gap:12px}
-.frame{width:min(92vw,calc(100svh - 265px),760px);min-width:min(92vw,330px)}
-.proof{width:min(92vw,720px)}
-.rack{width:min(92vw,760px);gap:12px 22px}
-.mast{width:min(92vw,760px);display:flex;justify-content:space-between;align-items:baseline;color:var(--dim);font-size:11px;letter-spacing:.13em;text-transform:uppercase}.mast strong{color:var(--ivory);font-weight:400;letter-spacing:.18em}
-.lenses{display:flex;flex-wrap:wrap;gap:7px;align-items:center;justify-content:center;width:min(92vw,760px)}
-.lenses button{font:12px var(--serif);border:1px solid var(--edge2);color:var(--ivory);background:transparent;border-radius:3px;padding:5px 12px;cursor:pointer}.lenses button.on{border-color:var(--patina);color:var(--patina);background:#6fae9b18}
-.lenses .rule{width:1px;height:16px;background:var(--edge2);margin:0 3px}
-.tuning{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;width:min(92vw,760px)}.tuning label{font-size:11px;color:var(--dim);display:flex;gap:8px;align-items:center}.tuning input{width:125px;accent-color:var(--patina)}.tuning output{font:11px var(--mono);width:48px;color:var(--ivory)}
-#reading{font:11px/1.5 var(--mono);color:var(--dim);text-align:center;min-height:17px;width:min(92vw,760px)}
-.notes{width:min(92vw,680px);color:var(--dim);font-size:12px;margin:0 0 14px}.notes summary{text-align:center;cursor:pointer;list-style:none}.notes summary:hover{color:var(--patina)}.notes p{margin:12px 0}.notes a{color:var(--patina)}
-@media(max-width:520px){.mast span{display:none}.tuning{gap:5px 15px}.tuning input{width:100px}.rack{gap:9px}.ctl input[type=range]{width:113px}.frame{width:92vw}.proof .iden{font-size:16px}}
+/* The equation and clock share a center line and a single continuous time. */
+.proof{position:relative;width:100%;margin:10px 0 0}.proof .work{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:0;height:40px;align-items:center;font:14px var(--mono);margin:0}.proof #tape{height:40px;overflow:hidden;width:calc(100% + 15px);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 90%,transparent)}.proof #strip{top:8px}.proof .tt{text-align:center;white-space:nowrap;line-height:24px}.proof .eq{position:relative;text-align:center;z-index:1;font:25px var(--serif);background:var(--plate)}.proof .rhs{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden}.proof #factorWindow{overflow:hidden;min-width:0;flex:1;mask-image:linear-gradient(90deg,transparent,#000 8%)}.proof #pf{display:flex;white-space:nowrap;width:max-content;will-change:transform}.proof .fx{display:inline-block;overflow:hidden;white-space:nowrap;flex-shrink:0}.proof .factor-hit{text-shadow:0 0 8px currentColor}.proof .zeta-symbol{font:18px var(--serif);flex-shrink:0}.proof #tapeDomain{font:10px/1.5 var(--mono);color:var(--dim);text-align:center;min-height:30px;margin-top:3px}.equation-thread{width:1px;height:15px;background:#e0453c66;margin:0 auto}.canvas-tag{top:1%}.frame{margin-top:0}.product-equality{font-size:20px;color:var(--brass);line-height:1.7;margin:14px 0}.transport button:disabled{opacity:.45}#motionRead{color:var(--patina);font:11px/1.5 var(--mono);min-height:20px;text-align:center;margin:6px 0}.guide-hint{font-size:12px!important}.drawer-grid{grid-template-columns:1fr}.experimental-controls{display:none}.story-nav{margin-top:16px}.feedback{min-height:36px}.scrubber{margin-top:8px}
+@media(max-width:650px){.proof .work{font-size:11px;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr)}.proof #tape{width:calc(100% + 12px)}.proof #tapeDomain{font-size:9px;min-height:28px}.proof .zeta-symbol{font-size:15px}.instrument{scroll-margin-top:8px}.equation-thread{height:8px}.frame{max-width:330px}.proof{margin-top:8px}.experience{gap:10px}}
 
-/* A single instrument, with a path of coordinated settings. */
-body{padding:20px 12px 14px;gap:10px}
-.mast{width:min(94vw,760px);padding-bottom:8px}
-.frame{width:min(94vw,calc(100svh - 250px),720px);min-width:min(94vw,310px)}
-.frame canvas{border-color:#22332c;border-radius:5px}
-.route{width:min(94vw,720px);display:grid;grid-template-columns:repeat(7,1fr);gap:0;margin:0 auto 3px;position:relative}
-.route:before{content:'';position:absolute;top:12px;left:7%;right:7%;height:1px;background:var(--edge2)}
-.route button{position:relative;border:0;background:none;padding:0 2px 4px;color:var(--dim);font:11px var(--serif);cursor:pointer}
-.route .seed{display:flex;align-items:center;justify-content:center;width:25px;height:25px;border:1px solid var(--edge2);border-radius:50%;background:var(--plate);margin:0 auto 5px;font:10px var(--mono);transition:background .4s,border-color .4s,color .4s}
-.route button[aria-current=step]{color:var(--ivory)}.route button[aria-current=step] .seed{background:#304a3d;color:var(--ivory);border-color:var(--patina);box-shadow:0 0 15px #6fae9b20}
-.route button:hover .seed{border-color:var(--patina)}
-.viewline{width:min(94vw,720px);min-height:22px;text-align:center;font:17px/1.3 var(--serif);color:var(--ivory)}
-.journey{width:min(94vw,620px);display:grid;grid-template-columns:32px 1fr 32px;align-items:center;gap:14px}
-.journey>button{border:1px solid var(--edge2);border-radius:50%;width:30px;height:30px;background:none;color:var(--patina);font-size:16px;cursor:pointer}.journey>button:disabled{opacity:.2;cursor:default}
-.explore{min-height:62px}.explore label{font:12px var(--serif);color:var(--ivory);display:flex;align-items:baseline;justify-content:space-between}.explore output{font:11px var(--mono);color:var(--patina)}
-.explore input{display:block;width:100%;margin:10px 0 0;accent-color:var(--patina);cursor:ew-resize}
-.underDial{display:flex;justify-content:space-between;align-items:center;font:10px var(--serif);color:var(--dim);min-height:22px}
-#land{padding:0;background:none;border:0;border-bottom:1px solid var(--edge2);color:var(--brass);font:11px var(--serif);cursor:pointer}
-.hint{text-align:center;max-width:94vw;min-height:18px;color:var(--dim);font:12px var(--serif);margin:0}
-#reading{min-height:16px;font-size:10px;color:var(--dim);max-width:94vw}
-.options{width:min(94vw,720px);border-top:1px solid var(--edge);padding-top:8px;color:var(--dim);font-size:12px}
-.options>summary{cursor:pointer;list-style:none;text-align:center;font-size:11px;letter-spacing:.02em}.options>summary:after{content:' +';color:var(--patina)}.options[open]>summary:after{content:' −'}
-.options .rack,.options .lenses,.options .tuning{width:100%;margin:14px auto}.options .lenses{gap:8px}.options .tuning{gap:12px;justify-content:center}.options .tuning label{flex-wrap:wrap}
-.options .sectionName{margin:18px 0 8px;text-align:center;color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
-.options .hint{margin:10px auto}.options button:not(.sectionName){font:12px var(--serif);padding:4px 10px;border:1px solid var(--edge2);background:none;color:var(--ivory);border-radius:3px;cursor:pointer}.options button.on{color:var(--patina);border-color:var(--patina)}
-.options .proof{width:100%;margin:15px auto}.notes{font-size:12px;margin:2px 0 12px}.notes summary{font-size:11px}
-.corner.br{max-width:35%;max-height:14%}.corner.tr,.corner.bl{display:none}.corner.tl{max-height:16%}
-#status{font-size:10px;opacity:.75}#freeLabel{color:var(--brass)}
-[hidden]{display:none!important}
-@media(max-width:520px){body{padding-top:12px;gap:8px}.frame{width:min(94vw,calc(100svh - 240px));min-width:min(94vw,290px)}.route button{font-size:10px}.viewline{font-size:15px}.journey{gap:10px}.mast{font-size:10px}.options .tuning input{width:100px}.hint{font-size:11px}.notes{max-width:92vw}}
-@media(prefers-reduced-motion:reduce){.route .seed{transition:none}}
 
-/* Keep the live formula and the whole working surface together. */
-.frame{width:min(94vw,calc(100svh - 350px),720px);min-width:min(94vw,330px)}
-.corner.tr,.corner.bl{display:flex}.corner{max-width:21%;max-height:none;gap:4px}.corner.br{max-width:21%;max-height:none}
-.corner button,.corner summary{font:11px/1.15 var(--serif);padding:4px 7px}
-.corner details{position:relative}.corner summary{cursor:pointer;list-style:none;border:1px solid var(--edge2);border-radius:2px;background:#0c1512c9;color:var(--ivory)}
-.corner .popover{position:absolute;right:0;top:calc(100% + 6px);z-index:5;background:#101d17f5;border:1px solid var(--edge2);padding:10px;box-shadow:0 8px 25px #0008;display:flex;flex-direction:column;gap:7px;width:150px;border-radius:3px}.popover button{white-space:normal}.popover .ctl{display:block}.popover .ctl input[type=range]{width:100%}.popover .ctl input[type=number]{float:right}
-.proof{width:min(94vw,640px)}.proof .iden{font-size:clamp(15px,2.6vw,21px)}
-.transport{width:min(94vw,640px);display:flex;flex-direction:column;gap:6px;font:11px var(--serif);color:var(--dim)}
-.transportRow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.transport label{display:flex;gap:5px;align-items:center}.transport input[type=number]{width:68px;padding:3px 4px;background:transparent;border:1px solid var(--edge2);color:var(--ivory);font:11px var(--mono);border-radius:2px}.transport input[type=range]{width:100%;margin:1px 0;accent-color:var(--patina)}
-.transport button{background:transparent;border:1px solid var(--edge2);color:var(--ivory);border-radius:2px;font:11px var(--serif);padding:3px 7px;cursor:pointer}.transport button.on{color:var(--patina);border-color:var(--patina)}
-.transport #fac{font-size:11px}.transport #now{font-size:15px;min-width:18px}.transport #loopMessage{font:10px var(--serif);color:var(--dim);min-height:13px;text-align:center}
-#parameterDock{width:min(94vw,640px)}#parameterDock .tuning{width:100%;gap:9px 18px}#parameterDock .tuning label{gap:6px;font-size:11px}#parameterDock .tuning input{width:100px}#parameterDock .tuning output{width:38px;font-size:10px}
-.journey{display:none}#manual{display:none}.hint{font-size:11px}.viewline{font-size:15px}.route{margin-bottom:0}.route button{font-size:10px}
-@media(max-width:520px){.frame{width:94vw;min-width:0}.corner button,.corner summary{font-size:10px;padding:3px 5px}.corner .popover{width:135px}.transportRow{gap:5px}.transport input[type=number]{width:60px}.tuning{gap:7px!important}.viewline{font-size:14px}}
-.popover .rack{width:100%;margin:0;display:flex;flex-direction:column;gap:8px}.popover .ctl{width:100%}.popover .ctl input[type=number]{width:45px}.corner .popover{max-height:min(65vh,480px);overflow:auto}
+.mast{padding-bottom:18px}.route{padding-top:18px}.route button[aria-current=step]{color:var(--brass);border-bottom:1px solid var(--brass)}.level-tray{display:flex;gap:8px;margin-bottom:18px}.level-tray button{width:39px;height:39px;padding:0;border-radius:50%;font:13px var(--mono)}.level-tray .selected{background:var(--brass);color:var(--plate);border-color:var(--brass)}.puzzle-choices{display:grid;gap:10px}.puzzle-choices button{text-align:left;min-height:48px}.puzzle-choices button[aria-pressed=true]{border-color:var(--brass);background:#e0bd7612;color:var(--brass)}.puzzle-instruction{font-size:13px!important;margin:16px 0!important}#puzzleFeedback{color:var(--patina);font-size:15px;min-height:54px;line-height:1.65}.story h1{font-size:clamp(32px,3.4vw,46px)}.story-nav{margin-top:16px}.transport{flex-wrap:wrap;gap:6px}.transport #play{min-width:0}#stepBeat{min-width:120px}.view-controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}.view-controls button{font-size:11px;padding:6px 9px}#orientationRead{width:100%;text-align:center;color:var(--dim);font:10px/1.5 var(--mono)}#paneRead{color:var(--patina);font:11px/1.6 var(--mono);text-align:center;min-height:20px;margin-top:8px}.twin-strip{display:flex;gap:10px;margin:10px 0}.twin-strip button{flex:1;font:24px var(--serif);padding:12px 4px}.twin-strip small{display:block;color:var(--dim);font:12px var(--mono);margin-top:8px}.twin-strip .current{border-color:var(--brass);background:#e0bd7612}.twin-strip .current small{color:var(--brass)}#twinRead{color:var(--patina);font-size:14px}.story .interaction{padding-bottom:0}.frame{max-width:520px;margin-left:auto;margin-right:auto}.proof{max-width:520px;margin-left:auto;margin-right:auto}
+@media(max-width:650px){.level-tray{order:-1;align-self:flex-start;margin:8px 0 0}.level-tray button{width:34px;height:34px}.route{gap:4px;flex-wrap:wrap}.route button{font-size:12px;padding:6px}.story h1{font-size:31px}.frame{max-width:300px}.transport button{font-size:12px;padding:8px}.transport #stepBeat{min-width:105px}.proof{width:100%}#orientationRead{font-size:9px}.view-controls{gap:4px}.view-controls button{font-size:10px}.story>.interaction{width:100%}.puzzle-instruction{margin:12px 0!important}}
+
+.instrument{position:relative}.proof{position:relative;z-index:3;pointer-events:none}.proof .work{height:80px;z-index:3;will-change:transform}.proof #tape{height:80px}.proof #strip{top:28px}.proof .rhs{overflow:visible;height:80px}.proof #factorWindow{height:80px;position:relative;overflow:visible;mask-image:none}.proof #pf{position:absolute;top:50%;left:0;width:100%;height:0;display:block;transform:none!important}.proof .fx{position:absolute;height:24px;max-width:none!important;overflow:visible;transform:translateY(-50%);font:12px/24px var(--mono);transition:none}.factor-ink,.term-ink{display:inline-block;white-space:nowrap;transform:rotate(var(--counter-turn,0deg)) scale(var(--ink-scale,1));transform-origin:center}.tt.dead .term-ink{text-decoration:line-through}.proof .eq,.proof .zeta-symbol{transform:rotate(var(--counter-turn,0deg))}.proof .eq{background:transparent}.proof .zeta-symbol{font-size:16px}.proof #tapeDomain{position:relative;z-index:4;background:var(--plate);padding:3px 0;margin-top:0}.product-dots{position:absolute;top:-12px;font:20px/24px var(--serif);color:var(--dim);transform:rotate(var(--counter-turn,0deg));transition:opacity .15s}.equation-thread{visibility:hidden}.tape-bridge{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}.proof .factor-hit{font-weight:600}.scale-note{color:var(--dim);font:11px/1.6 var(--mono);margin-top:14px}
+@media(max-width:650px){.proof .fx{font-size:11px}.proof .zeta-symbol{font-size:14px}.proof #tapeDomain{font-size:9px}.proof .work{height:80px}.proof #tape{height:80px}}
+.proof{pointer-events:auto}.proof .tt{top:0;height:24px;display:flex;align-items:center;justify-content:center}
+
+.frame{aspect-ratio:auto}.frame canvas{height:auto;display:block;width:100%}.canvas-tag{top:10px}
+.geometry{max-width:420px;margin:14px auto 0;border-top:1px solid var(--edge);padding-top:10px;font-size:12px;color:var(--dim)}
+.geometry summary{cursor:pointer;color:var(--ivory);display:flex;justify-content:space-between}.geometry summary span{color:var(--dim);font-size:11px}.geometry label{display:flex;justify-content:space-between;gap:12px;margin-top:16px;color:var(--ivory)}.geometry output{color:var(--patina);font:10px var(--mono)}.geometry input{width:100%;margin:10px 0 0}.geometry p{font-size:12px;line-height:1.6;margin:5px 0 14px}.scale-note{max-width:420px;margin:10px auto;text-align:center}
+html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{position:fixed;inset:0;margin:0}
+#clockApp{position:fixed;inset:0;overflow:hidden;background:var(--plate)}
+.clock-title{position:absolute;top:14px;left:0;width:100%;text-align:center;font:22px var(--serif);z-index:5;pointer-events:none}
+#clockStage{position:absolute;inset:0;pointer-events:none}
+#clockStage>#cv{position:absolute;width:90.196vmin;height:90.196vmin;max-width:none;left:calc(50% - var(--clock-shift,0px));top:50%;transform:translate(-50%,-50%);background:none}
+.corner{position:absolute;z-index:10}.corner button{background:#0c1512e8;font:13px var(--serif);padding:8px 12px}
+.north-west{top:16px;left:18px}.north-east{top:16px;right:18px}.south-west{bottom:60px;left:18px;max-width:300px}.south-east{bottom:62px;right:18px}
+.compact-count{display:flex;align-items:baseline;gap:10px;min-height:32px;pointer-events:none}.compact-count #now{font-size:25px}.compact-count #fac{font:11px var(--mono);max-width:240px}
+#transportCorner .transport{margin:2px 0 9px;justify-content:flex-start;gap:5px;flex-wrap:nowrap}#transportCorner .transport button{min-width:0!important;padding:7px 12px;font-size:13px}#transportCorner .transport .primary{background:var(--brass);color:var(--plate)}
+#transportCorner .scrubber{margin:0;gap:8px;width:245px;font-size:10px;background:#0c1512c9;border-radius:6px;padding:2px 0}
+#destinations{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:10;white-space:nowrap;background:#0c1512d9;border-radius:8px;padding:3px}
+#destinations button{font:13px var(--serif);padding:7px 12px;border-color:transparent}#destinations button[aria-current]{color:var(--brass);border-bottom-color:var(--brass)}
+.bubble{position:fixed;margin:0;width:min(350px,calc(100vw - 28px));max-height:calc(100dvh - 80px);border:1px solid var(--edge2);border-radius:15px;background:#101c17f5;color:var(--ivory);padding:14px 16px;box-shadow:0 12px 48px #0008;overflow:hidden;font:14px/1.5 var(--serif)}
+.bubble::backdrop{background:transparent}.observe-bubble{inset:58px auto auto 16px}.view-bubble{inset:58px 16px auto auto}.tune-bubble{inset:auto 16px 108px auto}
+.bubble-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.bubble-head button{border:0;padding:0 5px;font:22px var(--serif)}
+.bubble p{margin:10px 0 0}.bubble .muted{color:var(--dim);font-size:12px;line-height:1.5}.button-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.button-row button{padding:6px 10px;font-size:12px}.bubble label{display:flex;justify-content:space-between;gap:12px;font-size:12px;margin-top:10px}.bubble output{font:11px var(--mono);color:var(--patina)}.bubble input[type=range]{width:100%;margin:5px 0 0;height:17px}.number-row{display:flex;gap:8px;align-items:center;margin-top:10px}.number-row label{font-size:11px;margin:0}.number-row input{width:62px}
+#clockStage .proof{position:fixed;width:min(560px,80vmin);max-width:none;margin:0;z-index:4;transform:translate(-50%,-40px);pointer-events:none}
+#clockStage .proof .work{width:100%;transform-origin:50% 50%;margin:0}
+#clockStage #tapeDomain,#clockStage .equation-thread{display:none}
+#clockStage .proof .eq{background:#0c1512c9;border-radius:10px}
+#clockStage .proof #factorWindow{flex:none;transition:width .15s linear}
+#clockStage .proof .rhs{overflow:visible}
+@media(max-width:650px){.clock-title{font-size:20px;top:14px}.north-west,.north-east{top:48px}.north-west{left:12px}.north-east{right:12px}.south-west{left:12px;bottom:66px;max-width:260px}.south-east{right:12px;bottom:66px}.corner button{font-size:12px;padding:6px 9px}#transportCorner .transport button{padding:6px 10px;font-size:12px}#transportCorner .scrubber{width:210px}.compact-count #fac{max-width:210px;font-size:10px}#destinations{bottom:10px;gap:0}#destinations button{font-size:12px;padding:7px 10px}.observe-bubble,.view-bubble{top:90px}.tune-bubble{bottom:110px}.bubble{font-size:13px;padding:12px}.compact-count #now{font-size:23px}}
+@media(max-height:500px){.clock-title{top:8px;font-size:18px}.north-west,.north-east{top:10px}.bubble{width:min(420px,calc(100vw - 28px));font-size:12px;padding:10px 14px;max-height:calc(100dvh - 58px)}.view-bubble,.observe-bubble{top:45px}.tune-bubble{top:45px;bottom:auto}.bubble p{margin-top:5px}.bubble label{margin-top:5px}.bubble-head{margin-bottom:4px}.button-row{margin:4px 0}.bubble .muted{font-size:11px}.south-west{bottom:49px}.south-east{bottom:50px}#destinations{bottom:4px}.compact-count{min-height:25px}}
+@media(max-height:500px){.tune-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}.tune-bubble .bubble-head,.tune-bubble .number-row,.tune-bubble #zeroShortcut,.tune-bubble #sumReadout{grid-column:1/-1}.tune-bubble input[type=range]{height:14px}.tune-bubble .number-row{margin-top:5px}.tune-bubble .button-row button{padding:3px 8px}}
+
+.north-west{display:flex;gap:7px}.j-bubble{inset:58px auto auto 16px;width:min(350px,calc(100vw - 28px))}
+#jReceipts{display:flex;gap:6px;align-items:flex-end;height:82px;margin:12px 0 8px}
+.j-receipt{flex:1;max-width:39px;text-align:center;font:11px var(--mono);border-radius:5px;padding:3px 1px;background:#ffffff03}
+.j-credit{display:block;height:17px}.j-bar-slot{display:flex;align-items:flex-end;height:34px;margin:3px 5px 6px;border:1px solid #a0afa540;border-top-style:dashed}.j-bar-slot i{display:block;width:100%;background:currentColor;opacity:.6}.j-current{outline:1px solid currentColor;box-shadow:0 0 calc(10px * var(--pulse)) currentColor}.j-current .j-bar-slot i{opacity:1}
+.j-total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--edge2);padding-top:6px;font:12px var(--mono)}.j-total output{font:27px var(--serif);color:var(--brass)}#jEvent{min-height:40px;font-size:13px}
+@media(max-width:650px){.j-bubble{top:90px}}
+@media(max-height:500px){.j-bubble{top:45px;width:min(520px,calc(100vw - 28px));padding:8px 12px}#jReceipts{height:56px;margin:3px 0}.j-bar-slot{height:18px;margin:1px 5px 2px}.j-total{padding-top:2px;line-height:1.1}.j-total output{font-size:21px}#jEvent{min-height:0;font-size:12px}.j-bubble .button-row{margin-bottom:0}.j-bubble .button-row button{padding:2px 8px}.j-bubble #jEarlier{margin-top:3px}}
+@media(max-height:500px){.j-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:1px 10px}.j-bubble .bubble-head{grid-column:1/-1}.j-bubble>p:first-of-type{grid-column:1;grid-row:2;margin:0}.j-bubble #jReceipts{grid-column:2;grid-row:2 / span 2;align-self:center}.j-bubble .j-total{grid-column:1;grid-row:3}.j-bubble #jEvent,.j-bubble #jEarlier,.j-bubble>.button-row{grid-column:1/-1}.j-bubble #jEvent{margin-top:3px}}
+@media(max-height:500px){.j-bubble{padding-top:6px;padding-bottom:6px}.j-bubble #jEarlier{display:none}.j-bubble .bubble-head{margin-bottom:0}}
+
+.bridge-bubble{inset:58px auto auto 16px;width:min(370px,calc(100vw - 28px))}.bridge-primes{align-items:center}.bridge-primes>span{font-size:12px;margin-right:auto}.bridge-primes button[aria-pressed=true]{border-color:var(--brass);color:var(--brass)}
+#bridgeTerms{display:flex;gap:3px;height:56px;align-items:flex-end;margin:8px 0}.bridge-term{flex:1;text-align:center;font:10px var(--mono)}.bridge-term>span,.bridge-term>small{display:block;height:13px;font-size:9px}.bridge-term>i{display:block;background:currentColor;margin:2px auto;width:65%;height:22px}.bridge-term>small{color:var(--dim)}
+#bridgeExpansionNote{min-height:48px}.bridge-areas svg{display:block;width:100%;height:94px}.bridge-meaning{font-size:12px!important}.bridge-actions{flex-wrap:nowrap!important;gap:4px!important}.bridge-actions button{font-size:11px;padding:5px 7px;white-space:nowrap}
+@media(max-width:650px){.bridge-bubble{top:90px}.bridge-bubble .bridge-actions{flex-wrap:wrap!important}}
+@media(max-height:500px){.bridge-bubble{top:45px;width:min(540px,calc(100vw - 28px));padding:6px 10px}.bridge-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.bridge-bubble .bubble-head,.bridge-primes,.bridge-meaning,.bridge-actions{grid-column:1/-1}.bridge-primes{margin:0!important}.bridge-coefficients,.bridge-areas{min-width:0}.bridge-bubble label{margin-top:2px}#bridgeTerms{height:45px;margin:3px 0}#bridgeExpansionNote{min-height:0;font-size:10px;line-height:1.2}.bridge-areas svg{height:82px}.bridge-meaning{margin:0!important;font-size:10px!important;line-height:1.2!important}.bridge-actions{margin:2px 0 0!important}.bridge-actions button{padding:2px 6px}.bridge-primes button{padding:2px 8px}.bridge-bubble .bubble-head{margin-bottom:0}}
+@media(max-width:650px),(max-height:500px){.bridge-bubble:popover-open{display:block}.bridge-areas{display:none}.bridge-bubble.area-face .bridge-areas{display:block}.bridge-bubble.area-face .bridge-coefficients{display:none}.bridge-bubble .bridge-actions{flex-wrap:nowrap!important}.bridge-actions button{font-size:10px;padding:4px}.bridge-meaning{font-size:10px!important;line-height:1.3!important}#bridgeExpansionNote{min-height:0;font-size:11px}.bridge-areas svg{height:80px}.bridge-bubble .bridge-primes{margin:3px 0}.bridge-bubble .bridge-primes>span{font-size:11px}}
+@media(max-height:500px){.bridge-bubble .bubble-head{position:absolute;left:12px;right:12px;top:6px}.bridge-bubble .bridge-primes{justify-content:flex-end;padding-right:28px;height:22px;margin:0 0 3px!important}.bridge-primes>span{display:none}.bridge-primes button{padding:1px 6px}.bridge-bubble .bridge-meaning{margin:2px 0!important}.bridge-bubble .bridge-areas{position:relative;padding-right:240px;min-height:70px}.bridge-areas svg{height:70px}.bridge-areas label{position:absolute;right:0;top:12px;width:225px}.bridge-areas input{position:absolute;right:0;top:30px;width:225px!important}.bridge-actions button{padding:2px 6px}.bridge-bubble #bridgeTerms{height:35px}.bridge-bubble .bridge-term>i{max-height:15px}.bridge-bubble .bridge-term>span,.bridge-bubble .bridge-term>small{height:10px}.bridge-bubble #bridgeExpansionNote{font-size:10px;line-height:1.1}}
+.bridge-term>i{height:calc(22px * var(--coefficient,1))}
+@media(max-height:500px){.bridge-bubble .bridge-term>i{max-height:none;height:calc(15px * var(--coefficient,1))}}
+
+.tune-bubble:popover-open{display:grid;grid-template-columns:155px 1fr;gap:4px 14px;width:min(370px,calc(100vw - 28px))}
+.tune-bubble .bubble-head,.tune-bubble .number-row,.tune-bubble #sumReadout{grid-column:1/-1}
+.complex-input{position:relative;height:166px;grid-column:1;grid-row:2/5;padding:0 0 0 28px}
+.complex-input #tauDial{position:absolute;left:0;top:20px;writing-mode:vertical-lr;direction:rtl;width:18px;height:112px;margin:0}
+.complex-input #sigmaDial{position:absolute;left:28px;bottom:7px;width:125px;height:18px;margin:0}
+.complex-input #sigmaSlot,.complex-input #tauSlot{display:contents}
+.complex-input label{margin:0;font:11px var(--mono);white-space:nowrap}
+.complex-input label[for=tauDial]{position:absolute;left:0;top:0}
+.complex-input label[for=sigmaDial]{position:absolute;bottom:28px;left:28px}
+#complexPad{position:absolute;left:29px;top:22px;width:123px;height:102px;touch-action:none;border:1px solid #61796b;cursor:crosshair;background:linear-gradient(transparent 49.5%,#71897b66 50%,transparent 50.5%)}
+#complexPad::after{content:'σ →';position:absolute;bottom:2px;right:3px;font:10px var(--mono);color:var(--dim)}
+#complexDot{position:absolute;width:7px;height:7px;background:var(--brass);border-radius:50%;transform:translate(-50%,50%);pointer-events:none}
+.tune-bubble .tune-control,.tune-bubble #zeroShortcut{grid-column:2!important}
+.tune-bubble #zeroShortcut{align-self:start;margin:0}
+.tune-bubble .number-row{flex-wrap:wrap}
+.product-bubble{inset:58px 16px auto auto;width:min(440px,calc(100vw - 28px))}
+#productGraph{display:block;width:100%;height:auto;aspect-ratio:600/300;touch-action:none}
+#productDetails,#productStatus{font:11px/1.4 var(--mono);min-height:30px}
+.product-tools{display:flex;gap:7px;align-items:center;font-size:11px}.product-tools button{padding:3px 8px}.product-tools input{max-width:120px}
+#psiExplanation{font-size:11px;line-height:1.4;color:var(--dim)}
+@media(max-height:500px){.view-bubble:popover-open{padding-top:7px;padding-bottom:7px}.product-bubble #productGraph{width:224px;height:112px;margin:auto}}
+@media(max-height:500px){.view-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.view-bubble .bubble-head,.view-bubble>p{grid-column:1/-1}.view-bubble #layerButtons{grid-column:1/-1}.view-bubble #orientationButtons{grid-column:1/-1}.view-bubble label[for=radialDial]{grid-column:1;grid-row:4}.view-bubble #rulerSlot{grid-column:1;grid-row:5}.view-bubble label[for=separateDial]{grid-column:2;grid-row:4}.view-bubble #splitSlot{grid-column:2;grid-row:5}.view-bubble .button-row button{padding:3px 8px}}
+@media(max-width:650px) and (min-height:501px){.product-bubble{top:90px}}
+@media(max-height:500px){.tune-bubble:popover-open{width:min(440px,calc(100vw - 28px));gap:0 14px}.complex-input{height:140px}.complex-input #tauDial{height:88px}#complexPad{height:78px}.product-bubble{top:44px;width:min(520px,calc(100vw - 28px));padding:8px 12px}#productGraph{height:112px;aspect-ratio:auto}.product-bubble .bubble-head{margin:0}.product-bubble p{margin:3px 0 0}#productDetails,#productStatus{min-height:0;font-size:10px}.view-bubble{width:min(460px,calc(100vw - 28px))}#psiExplanation{font-size:10px}}
+
 </style>
 </head>
 <body>
-<header class="mast"><strong>Orrery · Continuum</strong><span>one beat, many rhythms</span></header>
+<div class="shell">
+ <header class="mast"><div class="brand">Clock of Primes</div></header>
+ <nav class="route" id="route" aria-label="Chapters"></nav>
+ <main class="experience">
+  <section class="instrument" aria-label="The continuous prime clock">
+   <div class="proof" id="originalProof" aria-label="Live Euler sieve: terms enter the equals sign on each beat">
+    <div class="work"><span id="tape"><span id="strip"></span></span><span class="eq" id="equals">=</span><span class="rhs"><span id="factorWindow"><span id="pf"></span></span><span class="zeta-symbol">ζ(s)</span></span></div>
+    <div id="tapeDomain"></div><div class="equation-thread" aria-hidden="true"></div>
+   </div>
+   <div class="frame"><span class="canvas-tag" id="canvasTag">THE COUNTING CLOCK</span><canvas id="cv" width="920" height="920" role="img" aria-label="A second hand circles the rim once per beat. Prime panels turn more slowly and meet the red line at their multiples.">Your browser needs canvas to show the prime clock. The live beat description below describes its arithmetic.</canvas></div>
+   <div class="beatRead"><span class="label">BEAT</span><span id="now">1</span><span id="fac"></span></div>
+   <div class="transport"><button id="previousBeat" aria-label="Back one beat">← One beat</button><button id="stepBeat" class="primary" aria-label="Forward one beat">One beat →</button><button id="play" class="quiet">Play</button><button id="reset" class="quiet" aria-label="Restart instantly at beat one">↺ Start</button></div>
+   <div id="motionRead" aria-live="off"></div>
+   <div class="scrubber"><span>1</span><input id="scrub" type="range" min="1" max="40" step=".01" value="1" aria-label="Target counting time; the clock moves continuously to this value"><span id="scrubEnd">40</span></div>
+   <div class="legend" id="legend"><span><i class="dot"></i>one lap = one beat</span><span><i class="dot red"></i>the meeting line</span></div>
+   <div id="paneRead"></div><div class="view-controls"><button id="reflect" aria-pressed="false">Reflect to complex plane</button><button id="sound" class="quiet" aria-pressed="false">Sound off</button><span id="orientationRead"></span></div><p id="clockDescription" class="sr-only" aria-live="off"></p>
+  </section>
+  <section class="story" aria-labelledby="viewline">
+   <div class="eyebrow" id="chapterLabel"></div><h1 id="viewline"></h1><p id="storyText"></p>
+   <div class="interaction" id="interaction"></div>
+   <div class="story-nav"><button id="backView" class="quiet" aria-label="Previous chapter">←</button><button id="nextView" class="primary"></button></div>
+   <p id="reading" aria-live="off"></p>
+  </section>
+ </main>
+ <details class="instrument-drawer" id="manual"><summary>Pace, sound &amp; counting destination</summary>
+  <div class="drawer-grid"><div><h2>Motion &amp; sound</h2><div class="rack" id="controls"></div><h2>Travel through the count</h2><p>The clock passes through every intervening beat. Retarget it at any time, or pause to hold the current position.</p>
+   <div class="transportRow"><label for="frontier">Counting time <input id="frontier" type="number" min="1" max="5000" step=".01" value="1"></label><label for="reach">Slider ends at <input id="reach" type="number" min="2" max="5000" value="40"></label></div>
+   <div class="transportRow" hidden><button id="markA">Set A</button><label for="loopA">A <input id="loopA" type="number" min="1" max="4999.99" step=".01" value="12"></label><button id="markB">Set B</button><label for="loopB">B <input id="loopB" type="number" min="1.01" max="5000" step=".01" value="20"></label><button id="loop" aria-pressed="false">Loop A–B</button><button id="replay">Replay A</button></div><p id="loopMessage" hidden>Replay starts at A. Loop repeats the interval A–B.</p><div id="status">Sound is off. Space plays or pauses.</div>
+  </div><div class="experimental-controls" hidden><h2>Combine visual layers</h2><p>Chapters restore a focused view. Here you can combine the original instrument’s layers.</p><div class="lenses">
+   <button id="logr" title="Spread small rings logarithmically; this changes the displayed lengths and speeds.">Spread small rings</button><button id="spec">Prime-power glass</button><button id="cols">Pitch colours</button><button id="riem">Cardioids</button><button id="spin">Spin weights</button><button id="bear">Bearings</button><button id="prod" title="Finite sieve density over a complete residue cycle, not the instantaneous uncovered sky.">Sieve-density spiral</button><button id="stair">Prime-power ledger</button><button id="weights">Weights</button><button id="sumLens">Sum</button><button id="continueLens">Continue</button><button id="zeroVisit">First zero</button>
+   </div><div class="tuning"><label for="sigmaDial">Shrink σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value="2"><output id="sigmaRead">2.00</output></label><label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label><label for="zeroDial">Zero pairs <input id="zeroDial" type="range" min="1" max="30" step="1" value="1"><output id="zeroRead">1</output></label></div>
 
-<nav class="route" id="route" aria-label="Follow the construction"></nav>
-<div class="viewline" id="viewline" aria-live="polite"></div>
-
-<div class="proof" id="originalProof">
-  <div class="iden">&zeta;(s) = <span class="op"><span class="lim">&infin;</span><span class="sym">&Sigma;</span><span class="lim">n=1</span></span><span> 1/n<sup>s</sup> </span> = <span class="op"><span class="lim">&nbsp;</span><span class="sym">&Pi;</span><span class="lim">p&nbsp;prime</span></span><span> 1/(1 &minus; p<sup>&minus;s</sup>)</span></div>
-  <div class="work"><span id="tape"><span id="strip"></span></span><span class="eq">=</span><span class="rhs"><span id="pf"></span><span class="zs">&zeta;(s)</span></span></div>
+  </div></div>
+ </details>
+ <details class="notes"><summary>Under the glass · what the pictures mean</summary>
+  <p>The second hand makes one lap per integer. A prime p gets a panel spanning 1/p of its circle, printed continuously between beats p and p + 1. It turns once every p beats. Its leading edge returns to the red meeting line at multiples of p. True spacing uses radius p relative to the growing frontier: all completed panels have equal arc length at a given time. The view zooms out as the count grows. Each q = p^k has a full panel of width 2π/q in the same glass as p. At beat n, one pane is crossed for each prime-power divisor; the number of p-panes is the exponent of p. The scalar weight is the product of p^−σ across those panes. Displayed RGB colours encode the factor mixture, not calibrated physical luminance.</p>
+  <p>The product chapter follows Euler’s sieve: each factor (1 − p⁻ˢ) removes the surviving multiples of p from the series. The tape’s right side is the product of those factors times ζ(s). The panel for p still occupies its original 1/p slot; no repeated-factor construction is asserted by this chapter. The ordinary sum and Euler product converge absolutely for Re(s) &gt; 1. In the critical strip the tape shows finite terms only, not a convergent infinite equality.</p>
+  <p>In clock orientation, up is real and right is imaginary. Reflection swaps these axes: right becomes real and up becomes imaginary; the second hand then moves counterclockwise. Labels remain upright. Reflection changes only the view, not the count or arithmetic. The arrows have lengths n<sup>−σ</sup> and angles −τ log n; this second clock belongs to the weights. It does not change the beat or the mechanical panels. Mint is the finite sum, coral adds x<sup>1−s</sup>/(s−1), and gold is a numerical estimate of ζ(s). At integer frontiers the coral-corrected endpoint tends to ζ(s) for σ &gt; 0, except s = 1. The ordinary sum does not converge in the critical strip. The gold point uses Euler–Maclaurin with six correction terms. Geometry lets the sum move continuously onto its own labelled ruler. The clock radius is a position assigned to an integer; the sum link is the complex value n⁻ˢ. Shared beat and factor colours connect them, not an equality of radii. The optional outward ruler is log(t/q) / log(t/2), easing in over beats 2–3 where that range first opens. It changes displayed arc lengths, not the panel periods. For nonzero σ the same ratio comes from log weights, with σ cancelling; σ = 0 uses that limiting ruler. This picture motivates analytic continuation; it is not a proof of it.</p>
+  <p>The final chapter counts prime powers with weight log p, giving Chebyshev’s ψ(x). Its displayed zero vectors approximate the explicit formula, with midpoint values at jumps and ringing from truncation. Thirty known zero heights are supplied, not discovered by the clock. This is a bridge toward harmonic prime counting; ψ is not the unweighted count π or Riemann’s prime-power count J.</p>
+  <details class="trivial"><summary>A small detour: why −2, −4, −6 are zeros</summary>
+   <p>The continuation obeys a reflection formula. On the negative real axis, one factor is a turning hand’s vertical projection: sin(πs/2). At each negative even integer that projection is zero; the other factors are finite and nonzero.</p>
+   <div class="equation">ζ(s) = 2<sup>s</sup> π<sup>s−1</sup> <span style="color:var(--brass)">sin(πs/2)</span> Γ(1−s) ζ(1−s)</div>
+   <svg id="trivialPlot" viewBox="0 0 500 135" role="img" aria-label="Sine factor on the negative real axis, crossing zero at minus six, minus four, and minus two"><path d="M30 65H470" stroke="#53685b"/><path id="sinePath" fill="none" stroke="#9bc7b1" stroke-width="2"/><g id="sineLabels" fill="#a0afa5" font-size="12" font-family="monospace"></g><line id="sineProjection" stroke="#e0bd76" stroke-width="2"/><circle id="sinePoint" r="5" fill="#e0bd76"/></svg>
+   <label for="negativeS">Real input s <output id="negativeRead">−2.00</output></label><input id="negativeS" type="range" min="-7" max="-1" step=".01" value="-2" style="width:100%"><p id="trivialRead"></p>
+   <p>This symmetry comes from the functional equation; the finite orbit construction does not derive it. <a href="https://dlmf.nist.gov/25.4">Reflection formula · NIST</a></p>
+  </details>
+  <p><a href="https://dlmf.nist.gov/25.2">Sum, product &amp; continuation</a> · <a href="https://dlmf.nist.gov/25.10">Zeros &amp; the Riemann hypothesis</a> · <a href="https://web.math.ucsb.edu/~stopple/explicit.html">The explicit formula</a></p>
+ </details>
+ <footer><span>Six beats to learn the clock. A lifetime to follow the primes.</span><span>← / → step one beat · Space plays or pauses</span></footer>
 </div>
-
-<div class="frame">
-  <canvas id="cv" width="920" height="920"></canvas>
-
-  <div class="corner tl">
-    <button id="play">Start</button>
-    <button id="reset">Reset</button>
-  </div>
-
-  <div class="corner tr">
-    <button id="logr" title="True spacing puts ring p at radius p, so every panel is exactly the same length and every ring moves at the same speed. Readable spacing spreads the small rings out so you can see them, at the cost of that equality.">Even rings</button>
-    <button id="spec" title="Give each prime its own colour of glass, and give each power p&sup2;, p&sup3;, &hellip; of a born prime a faint echo ring in the same colour. At beat n the beam at noon passes one lens for every prime-power divisor of n, so hue mix shows the distinct primes and depth shows repetition: unique factorisation, worn as colour. The number in the corner is painted with it.">Glass</button>
-    <button id="cols" title="Cycle the palette. Pitch: hue is the prime&rsquo;s octave position, so colour matches its note. Spectrum 1/p&sup2; and 1/p: wavelength sits 380nm from violet by the size of the prime&rsquo;s term, so 2 is deep red and the rest crowd toward violet.">Pitch colours</button>
-  </div>
-
-  <div class="corner bl">
-    <button id="riem" title="Draw each prime&rsquo;s wave: a loop touching its own ring at the panel and shrinking to nothing on the far side.">Cardioids</button>
-    <button id="spin" title="Sweep the complex weights at rates log p while the original panels and unit beat keep counting. Stop to hold the current phase.">Spin</button>
-    <button id="bear" title="Every prime is born with a disk: pinned at noon, inner edge on its own ring, outer edge on the frontier, so its diameter is the gap grown so far. The ring slides beneath it and spins it &mdash; furiously while small, slower as it inflates &mdash; until the next prime seals the gap and releases it. Bearings: released disks obey rolling contact, which in true spacing means they stop turning. Planets: each keeps the rate it was released with and turns forever, so its speed records how tight its gap was.">Bearings</button>
-  </div>
-
-  <div class="corner br">
-    <button id="prod" title="The finite sieve product as a hand on a logarithmic spiral. Each prime turns it by ln 1/(1&minus;1/p). Its length is &Pi;(1&minus;1/p), the surviving fraction over a complete residue cycle, not the instantaneous uncovered sky. Each stretch takes its prime&rsquo;s colour.">Product</button>
-    <button id="stair" title="The machine&rsquo;s own ledger &psi;: every ring born adds log p, prime rings and glass echoes alike. Brass is what the orrery has counted; the chain of turning vectors approximates Riemann&rsquo;s explicit formula for the same quantity, one vector per conjugate pair of supplied zeta zeros, and its tip projects onto the noon diameter as its verdict. Zero deviation is the centre. The zeros are imported, but the clock is not: the leading vector turns exactly once while a ring falls from the rim to the dotted circle.">Staircase</button>
-    <span id="now">1</span>
-    <span id="fac"></span>
-  </div>
-</div>
-
-<div class="transport" aria-label="Counting frontier and repeat controls">
- <div class="transportRow"><span id="numberDock"></span><label for="frontier">N <input id="frontier" type="number" min="1" max="5000" step=".01" value="1"></label><span id="factorDock"></span><label for="reach">Scrub to <input id="reach" type="number" min="2" max="5000" step="1" value="120"></label></div>
- <input id="scrub" type="range" min="1" max="120" step=".01" value="1" aria-label="Scrub the counting frontier; pauses playback">
- <div class="transportRow"><button id="markA" title="Set the loop start to the current frontier">Set A</button><label for="loopA">A <input id="loopA" type="number" min="1" max="4999.99" step=".01" value="12"></label><button id="markB" title="Set the loop end to the current frontier">Set B</button><label for="loopB">B <input id="loopB" type="number" min="1.01" max="5000" step=".01" value="20"></label><button id="loop" aria-pressed="false">Loop A–B</button></div>
- <div id="loopMessage">Move N to pause and inspect. Replay starts again at A.</div>
-</div>
-<div id="parameterDock"></div>
-<div class="journey">
- <button id="backView" aria-label="Previous construction" title="Previous construction">←</button>
- <div class="explore" id="guidedControl"><label for="exploreDial"><span id="exploreLabel"></span><output id="exploreValue"></output></label><input id="exploreDial" type="range"><div class="underDial"><span id="dialLeft"></span><button id="land" hidden>Find the center</button><span id="dialRight"></span></div></div>
- <button id="nextView" aria-label="Next construction" title="Next construction">→</button>
-</div>
-<p class="hint" id="gesture"></p>
-<div id="reading" aria-live="off">One lap of the white marker, one integer.</div>
-<details class="options" id="manual">
- <summary id="manualSummary">Explore freely · instrument settings</summary>
- <p class="hint" id="freeLabel">Combine lenses freely. Close this drawer to return to the path.</p>
- <div class="sectionName">Lenses</div><div class="lenses" id="manualMechanics"></div>
- <div class="lenses" aria-label="Superimposed lenses">
- <button id="weights" title="Attach the complex weight q⁻ˢ to each moving prime-power panel. The counting clock keeps its own motion.">Weights</button>
- <button id="sumLens" title="Gather integer weights into one chain. Each beat continuously completes the next arrow.">Sum</button>
- <button id="continueLens" title="Follow the drifting sum with the compensating vector x¹⁻ˢ/(s−1). Move continuously into the critical strip.">Continue</button>
- <span class="rule"></span>
- <button id="zeroVisit" title="Tune smoothly to the first zero, then turn Staircase on to hear that height as a frequency in log x.">First zero</button>
-</div>
-<div class="tuning">
- <label for="sigmaDial">Weight σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value="2"><output id="sigmaRead">2.00</output></label>
- <label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label>
- <label for="zeroDial">Echoes <input id="zeroDial" type="range" min="1" max="30" step="1" value="8"><output id="zeroRead">8</output></label>
-</div>
-<div class="sectionName">Motion &amp; sound</div>
-<div class="rack" id="controls"></div>
-<div class="sectionName">Appearance</div><div class="lenses" id="appearance"></div>
-<div id="proofDock"></div>
-</details>
-<div id="status">press start for sound</div>
-
-<details class="notes"><summary>Under the glass · mathematics and controls</summary>
-<p>The path introduces lenses once, then leaves their buttons in the corners and their parameters beside the instrument. Revisiting a stop does not overwrite your combination. Orbits → All controls reveals everything immediately. The animated Euler tape stays above the panels.</p><p>N accepts fractional frontiers from 1 to 5000. Moving it pauses and rebuilds the sieve, prime powers, ledger and tape at that point; no historical notes are sounded. Set A and B, then Replay to run from A, or Loop A–B to repeat that interval. Looping preserves the overshoot of each frame. Reset returns to 1 and disables the loop without changing your lenses or exponent. Seeking restarts decorative gap-disk angles and sound trails. Loop repeats N; Spin, if enabled, continues sweeping τ.</p>
-<p>Start the beat. Every panel moves continuously at 1/p of its speed; a panel of width 1/p covers noon during the multiples of p. Glass adds the p², p³, … echoes. The mechanical panel footprints stay fixed when you tune the complex weights.</p>
-<p>Weights adds q⁻ˢ = q⁻σ exp(−iτ log q) at the moving panels. Sum places the integer weights end to end, with real values pointing toward noon. During each beat the next arrow grows continuously; at integer x the endpoint is exactly the finite sum through x. The chain and the panel weights use separate, fixed display scales.</p>
-<p>Continue brings in the coral vector x¹⁻ˢ/(s−1). At integer frontiers, the sum plus this vector tends to ζ(s) for σ &gt; 0, s ≠ 1. The gold reference is an Euler–Maclaurin estimate with six correction terms; the tether is the remaining finite-frontier discrepancy. The pole at s = 1 is not a finite arrow. The gold reference and the sum may leave the viewport; they are never clamped to the rim.</p>
-<p>First zero tunes σ and τ smoothly to ½ and 14.1347251417. The corrected endpoint approaches the central gold reference as the counting frontier grows. The ordinary sum does not converge there. Staircase independently adds the zero-frequency chain while the mechanism continues; Echoes admits more zero pairs gradually.</p>
-<p>Every prime-power birth adds log p to ψ(x). Its link to zeta is −ζ′(s)/ζ(s) = Σ (log p)p⁻ᵏˢ for Re(s) &gt; 1. Inverting this transform gives ψ₀(x) = x − Σρ x^ρ/ρ − log(2π) − ½log(1−x⁻²). The zero sum uses symmetric limits and gives the midpoint at jumps. The displayed finite zero sum is approximate and rings near jumps. Its normalized vectors are −2xⁱᵞ/(½+iγ); only their real projection is compared with the ledger. The supplied 30 zero heights are not derived by this finite machine. The Riemann hypothesis remains unproved.</p>
-<p>Turn varies the exponent, not counting time. Spin sweeps Turn while the machine runs; stop it to hold the phase. All lenses and tuning changes ease continuously. The white beat never changes clocks. Space pauses or resumes; reset restarts the count without changing your tuning. Product retains the original finite sieve-density spiral at exponent 1.</p>
-<p><a href="https://dlmf.nist.gov/25.2">Zeta and continuation</a> · <a href="https://dlmf.nist.gov/25.10">Zeros</a> · <a href="https://web.math.ucsb.edu/~stopple/explicit.html">The explicit formula</a></p>
-</details>
 <script>
+
 const F0 = 20, TOP = -Math.PI / 2, MEMLEN = 22, LASER = '224,69,60';
 
 function isPrime(n) {
@@ -343,81 +285,62 @@ const PSI = (function () {
   return { vec, nz: Z.length, g1: Z[0], syncR: Math.exp(-2 * Math.PI / Z[0]) };
 })();
 
-const PR = (function () {
-  // The series as a tape. Terms scroll rightward, one per beat, the current
-  // term arriving over noon and being consumed at the equals sign. Terms whose
-  // smallest prime factor is already born ride in pre-struck, in that panel's
-  // colour, passing noon at the same moment that panel blocks the beam.
-  // A prime term converts: its factor joins the right side and its multiples
-  // up the tape are struck the moment it is born. On every beat, the factors
-  // of the current number glow: the term is assembled from one prime-power
-  // term inside EACH factor of its factorisation, not absorbed by one alone.
-  const strip = document.getElementById('strip');
-  const pf = document.getElementById('pf');
-  const tapeEl = document.getElementById('tape');
-  const SLOT = 62;
-  let born = [], spans = new Map(), glow = new Set();
-
-  const hue = q => 'hsl(' + hueOf(q).toFixed(1) + ', 62%, 62%)';
-  function spfBorn(n) { for (let i = 0; i < born.length; i++) if (n % born[i] === 0) return born[i]; return 0; }
-  const label = n => n === 1 ? '1' : '1/' + n + '<sup>s</sup>';
-
-  function paint(n, el) {
-    const q = spfBorn(n);
-    el.innerHTML = (n > 1 ? '+ ' : '') +
-      (q ? '<span class="dead" style="color:' + hue(q) + '">' + label(n) + '</span>' : label(n));
+// Readable ink follows the multiplicative glass recipe at a fixed display
+// depth. Repeated primes participate; ink brightness is not |n^-s|.
+const factorColourCache=new Map();
+function factorColour(n){
+ if(n===1)return '#ede8d9';if(factorColourCache.has(n))return factorColourCache.get(n);
+ let T=[1,1,1];
+ for(const p of factorize(n)){const c=hueRGB(hueOf(p)),w=c.map(v=>1-v),sum=w.reduce((a,b)=>a+b,0)||1;T=T.map((v,i)=>v*Math.exp(-3*.42*Math.log(p)*w[i]/sum));}
+ const ink='rgb('+T.map(v=>Math.round(90+165*Math.pow(v,1/2.2))).join(',')+')';factorColourCache.set(n,ink);return ink;
+}
+const PR=(()=>{
+ const strip=$('strip'),pf=$('pf'),tape=$('tape'),slot=76;
+ const terms=new Map(),factors=new Map(),primes=Array.from({length:5000},(_,i)=>i+2).filter(isPrime);
+ const dots=document.createElement('span');dots.className='product-dots';dots.textContent='…';pf.appendChild(dots);
+ let lastTime=0,lastN=1;
+ function render(tt){
+  const now=performance.now(),dt=lastTime?Math.min(.05,(now-lastTime)/1000):0;lastTime=now;
+  const ease=1-Math.exp(-dt*16),n=Math.floor(tt),width=parseFloat(getComputedStyle(tape).width),visible=Math.ceil(width/slot)+2;
+  const born=primes.filter(p=>p<=n),active=[...new Set(factorize(n))];
+  // Reserve places for every absorbing prime, then use spare room for recent
+  // factors. The remainder stays accumulated in the ellipsis.
+  const available=Math.max(48,pf.parentElement.parentElement.clientWidth-44);
+  const upright=typeof reflectionMix!=='undefined'&&reflectionMix>.5;
+  const capacity=Math.max(active.length,Math.min(5,Math.floor(available/(upright?32:68))));
+  const shown=active.slice();
+  for(let i=born.length-1;i>=0&&shown.length<capacity;i--)if(!shown.includes(born[i]))shown.push(born[i]);
+  shown.sort((a,b)=>b-a);
+  for(let k=Math.max(1,n-1);k<=n+visible;k++)if(!terms.has(k)){
+   const el=document.createElement('span');el.className='tt';el.dataset.n=k;el.dataset.factorization=factorize(k).join('×');el.style.width=slot+'px';el.style.left=(-k*slot)+'px';el.title=k+' = '+(factorize(k).join(' × ')||'1');el.innerHTML='<span class="term-ink">'+(k===1?'1':'+ 1/'+k+'<sup>s</sup>')+'</span>';strip.appendChild(el);terms.set(k,el);
   }
-  function mkSpan(n) {
-    const el = document.createElement('span');
-    el.className = 'tt';
-    el.style.left = (-n * SLOT) + 'px';
-    el.style.width = SLOT + 'px';
-    spans.set(n, el); strip.appendChild(el); paint(n, el);
+  for(const [k,el] of terms){
+   if(k<n-1||k>n+visible){el.remove();terms.delete(k);continue;}
+   el.classList.toggle('dead',born.some(p=>p<k&&k%p===0));el.style.color=factorColour(k);el.style.opacity=Math.max(0,Math.min(1,1-(tt-k))).toFixed(4);
   }
-  function facS(q, g) {
-    return '<span class="fx" style="color:' + hue(q) +
-      (g ? ';text-shadow:0 0 9px ' + hue(q) + ',0 0 2px ' + hue(q) : '') +
-      '">(1\u22121/' + q + '<sup>s</sup>)</span>';
+  strip.style.transform='translateX('+(tt*slot+width-slot/2).toFixed(4)+'px)';
+  const hidden=born.length-shown.length,space=available-(hidden?20:0);
+  const columns=shown.length>3&&space<225&&!upright?Math.ceil(shown.length/2):Math.max(1,shown.length),cell=Math.min(upright?32:76,space/columns);
+  const total=(shown.length?columns*cell:0)+(hidden?20:0);$('factorWindow').style.width=total+'px';
+  dots.style.left=Math.max(0,total-20)+'px';dots.style.opacity=hidden?'1':'0';dots.dataset.hiddenCount=hidden;dots.title=hidden+' accumulated prime factors are folded here';
+  for(const p of shown)if(!factors.has(p)){
+   const el=document.createElement('span');el.className='fx';el.dataset.p=p;el.innerHTML='<span class="factor-ink">(1−'+p+'<sup>−s</sup>)</span>';el.style.color=factorColour(p);pf.appendChild(el);factors.set(p,{el,x:p>lastN?0:total-20,y:0,alpha:0});
   }
-  function renderF() {
-    const L = born.length; let out = '', hiddenGlow = false;
-    if (L > 5) for (let i = 2; i < L - 2; i++) if (glow.has(born[i])) hiddenGlow = true;
-    const shown = L <= 5 ? born : [born[0], born[1], null, born[L - 2], born[L - 1]];
-    shown.forEach(q => {
-      out += q === null
-        ? '<span class="dots' + (hiddenGlow ? ' glow-mid' : '') + '">\u22ef</span>'
-        : facS(q, glow.has(q));
-    });
-    pf.innerHTML = out;
+  const phase=tt-n,pulse=.3+.7*Math.pow(1-phase,2);
+  for(const [p,f] of factors){
+   const index=shown.indexOf(p),wanted=index>=0,birth=Math.max(0,Math.min(1,tt-p));
+   const x=wanted?(index%columns)*cell:total-20,rows=Math.ceil(shown.length/columns),y=wanted?(Math.floor(index/columns)-(rows-1)/2)*25:0;
+   f.x+=(x-f.x)*ease;f.y+=(y-f.y)*ease;f.alpha+=((wanted?1:0)-f.alpha)*ease;
+   const natural=f.el.firstChild.offsetWidth||65,fontScale=upright?1:Math.min(1,Math.max(.72,(cell-3)/natural));
+   f.el.style.left=f.x+'px';f.el.style.top=f.y+'px';f.el.style.width=cell+'px';f.el.style.opacity=(f.alpha*birth).toFixed(4);f.el.style.setProperty('--ink-scale',fontScale);
+   const absorbs=active.includes(p);f.el.classList.toggle('factor-hit',absorbs);f.el.dataset.absorbing=String(absorbs);f.el.style.textShadow=absorbs?'0 0 '+(6+8*pulse)+'px currentColor, 0 0 2px currentColor':'none';
+   if(!wanted&&f.alpha<.002){f.el.remove();factors.delete(p);}
   }
-  function tick(k, isP) {
-    if (isP) { born.push(k); spans.forEach((el, n) => paint(n, el)); }
-    glow.clear();
-    let m = k;
-    for (let i = 0; i < born.length && m > 1; i++) {
-      const q = born[i];
-      if (m % q === 0) { glow.add(q); while (m % q === 0) m /= q; }
-    }
-    renderF();
-  }
-  function update(t) {
-    const W = tapeEl.clientWidth || 300;
-    const lo = Math.max(1, Math.floor(t)), hi = Math.floor(t + W / SLOT) + 2;
-    for (let n = lo; n <= hi; n++) if (!spans.has(n)) mkSpan(n);
-    spans.forEach((el, n) => {
-      if (n < t - 1) { el.remove(); spans.delete(n); }
-      else el.style.opacity = n <= t ? Math.max(0, 1 - (t - n)).toFixed(3) : '1';
-    });
-    strip.style.transform = 'translateX(' + (t * SLOT + W - SLOT * 0.95).toFixed(2) + 'px)';
-  }
-  function reset() {
-    born = []; glow.clear();
-    spans.forEach(el => el.remove()); spans.clear();
-    renderF();
-  }
-  function recolor() { spans.forEach((el, n) => paint(n, el)); renderF(); }
-  reset();
-  return { reset, tick, update, recolor };
+  $('equals').style.color=factorColour(n);$('equals').style.textShadow='0 0 '+(9*pulse)+'px '+factorColour(n);
+  $('tapeDomain').textContent=SIGMA>1?'Euler’s sieve · infinite sum/product: Re(s) > 1':'Finite terms · the ordinary infinite sum/product does not converge here';lastN=n;
+ }
+ function reset(){for(const el of terms.values())el.remove();terms.clear();for(const f of factors.values())f.el.remove();factors.clear();lastN=1;}
+ return {update:render,reset,tick:()=>{},recolor:()=>{factorColourCache.clear();render(t);}};
 })();
 
 const g2 = $('cv').getContext('2d');
@@ -594,8 +517,69 @@ function drawWaves(tt, nn, ff, rad) {
   });
 }
 
+// Adapted from the prime-power glass in orrery-story.html. Every q=p^k
+// carries one full pane of p, not a fainter copy of q. RGB encodes hue;
+// the scalar weight is computed separately (RGB average is not n^-sigma).
+function paneTransmission(p){
+ const c=hueRGB(hueOf(p)),a=c.map(v=>1-v),total=a.reduce((s,v)=>s+v,0)||1;
+ return a.map(v=>Math.exp(-3*SIGMA*Math.log(p)*v/total));
+}
+function transmissionColour(T){return 'rgb('+T.map(v=>Math.round(255*Math.pow(Math.max(0,Math.min(1,v)),1/2.2))).join(',')+')';}
+function paneColour(p){return transmissionColour(paneTransmission(p));}
+function crossedPanes(n){return rings.filter(r=>n%r.p===0).sort((a,b)=>a.p-b.p);}
+function paneWeight(n){return crossedPanes(n).reduce((w,r)=>w*Math.pow(r.base||r.p,-SIGMA),1);}
+function drawPrimeGlass(rad,n){
+ if(glassMix<.001)return;
+ const alpha=glassMix*(1-focusMix*(1-separateMix)),cross=crossedPanes(n).sort((a,b)=>rad(a.p)-rad(b.p));let trans=[1,1,1],last=0;
+ g2.save();
+ const segment=(a,b)=>{if(b-a<.1)return;g2.globalAlpha=alpha;g2.strokeStyle='#0c1512';g2.lineWidth=15;g2.beginPath();g2.moveTo(C,C-a);g2.lineTo(C,C-b);g2.stroke();g2.strokeStyle=transmissionColour(trans);g2.lineWidth=9;g2.stroke();};
+ for(const r of cross){const radius=rad(r.p);segment(last,radius);last=radius;const pane=paneTransmission(r.base||r.p);trans=trans.map((v,i)=>v*pane[i]);}
+ segment(last,R);
+ for(const r of cross){const y=C-rad(r.p);g2.globalAlpha=alpha;g2.strokeStyle='hsl('+hueOf(r.base||r.p)+' 70% 70%)';g2.lineWidth=3;g2.beginPath();g2.moveTo(C-12,y);g2.lineTo(C+12,y);g2.stroke();g2.fillStyle=g2.strokeStyle;g2.font='22px ui-monospace,monospace';g2.textAlign='right';g2.fillText(String(r.p),C-22,y+7);}
+ g2.restore();
+}
+
+// Adapted from orrery-story.html: a live logarithmic ruler and the integral
+// tail. The beat remains the only counting clock; these are view transforms.
+let radialAim=0,radialMix=0,separateAim=0,separateMix=0,sumClipped=false;
+function clockRadius(q,x=t,mix=radialMix){
+ const original=(1-spacingMix)*R*q/x+spacingMix*R*Math.log(Math.max(2,q))/Math.log(Math.max(x,2.0001));
+ // Below beat 3 the log range is degenerate. Open it continuously over 2..3.
+ const ready=Math.max(0,Math.min(1,x-2));
+ const outward=R*Math.max(0,Math.min(1,Math.log(Math.max(x,2.0001)/q)/Math.log(Math.max(x,2.0001)/2)));
+ return original+(outward-original)*mix*ready;
+}
+function integralTail(sigma,tau,x,span,steps=240){
+ const a=power(x,sigma-1,tau),out=[];
+ for(let i=0;i<=steps;i++)out.push(div(sub(a,power(x*Math.exp(span*i/steps),sigma-1,tau)),[sigma-1,tau]));
+ return out;
+}
+function updateGeometry(dt){
+ const ease=1-Math.exp(-dt*5);
+ radialMix+=(radialAim-radialMix)*ease;
+ separateMix+=((sumMix>.001?separateAim*sumMix:0)-separateMix)*ease;
+ const height=Math.round(W+900*separateMix);
+ if($('cv').height!==height)$('cv').height=height;
+ $('radialRead').textContent=radialMix<.01?'Births at the rim':radialMix>.99?'Births at the axle':'Changing ruler';
+ $('separateRead').textContent=separateAim<.01?'Together':separateAim>.99?'Separate sum':'Separating';
+ $('sumScaleNote').hidden=sumMix<.01;
+ $('sumScaleNote').textContent='Sum ruler: one unit is half the circle’s radius. '+(continueMix>.1?(SIGMA>1.001?'The coral tail coils inward.':SIGMA<.999?'The coral tail unwinds outward.':'The coral tail keeps a fixed radius.'):'A link has length n⁻σ and angle −τ log n.')+(sumClipped?' Portions extend beyond the circle; the ruler stays fixed.':'');
+}
+const geometry=document.createElement('details');geometry.className='geometry';
+geometry.innerHTML=`<summary>Geometry <span>Ruler · separate sum</span></summary>
+ <label for="radialDial">Clock ruler <output id="radialRead">Births at the rim</output></label>
+ <input id="radialDial" type="range" min="0" max="1" step=".01" value="0">
+ <p>Slide from the original clock to a log ruler: new arcs begin at the axle and drift outward. Equal steps along a prime-power ladder become equal radial gaps. The periods stay the same.</p>
+ <label for="separateDial">Separate the sum <output id="separateRead">Together</output></label>
+ <input id="separateDial" type="range" min="0" max="1" step=".01" value="0">
+ <p>In Toward zeta, move the sum onto its own ruler. The same terms arrive on the same beat, wearing the same factor colours. These settings stay yours when you change chapters.</p>`;
+document.querySelector('.view-controls').after(geometry);
+const scaleNote=document.createElement('p');scaleNote.id='sumScaleNote';scaleNote.className='scale-note';scaleNote.hidden=true;geometry.before(scaleNote);
+$('radialDial').oninput=e=>radialAim=+e.target.value;
+$('separateDial').oninput=e=>separateAim=+e.target.value;
+
 function frame(ms) {
-  const dt = lastFrame ? Math.min((ms - lastFrame) / 1000, 0.1) : 0;
+  const dt = lastFrame ? Math.min((ms - lastFrame) / 1000, 0.05) : 0;
   lastFrame = ms;
   const speed = +$('speed').value, hold = 3.2;
 
@@ -618,61 +602,20 @@ function frame(ms) {
   $('sigmaRead').textContent = SIGMA.toFixed(2);
   $('tauRead').textContent = TAUV.toFixed(2);
   $('zeroRead').textContent = $('zeroDial').value;
-  if (window.__run) {
-    t += dt * speed;
-    if (loopOn && t >= loopEnd) seekFrontier(loopStart + (t - loopStart) % (loopEnd - loopStart), false);
-    if (t > limit) { t = limit; window.__run = false; $('play').textContent = 'Play'; }
-    if (Math.floor(t) > unitLap) { unitLap = Math.floor(t); tick(); }
-    rings.forEach(ring => {
-      const lap = Math.floor(t / ring.p);
-      if (lap > ring.lap) {
-        ring.lap = lap; ring.hit = ms;
-        strike(ring.p, hold, 0.26 / Math.pow(ring.p, 0.28));
-      }
-    });
-    const k = Math.floor(t);
-    if (k > lastInt) {
-      lastInt = k;
-      const prime = isPrime(k) && k <= limit;
-      cand = { n: k, born: ms, prime: prime };
-      PR.tick(k, prime);
-      let pbase = prime ? k : 0;
-      if (!prime && k >= 4) {
-        let q = 0;
-        for (let d = 2; d * d <= k; d++) if (k % d === 0) { q = d; break; }
-        if (q) { let m = k; while (m % q === 0) m /= q;
-          if (m === 1) { pbase = q; rings.push({ p: k, base: q, lap: 1, hit: ms, echo: true }); } }
-      }
-      // one ring, one step of log p: this is psi, generated by the machine
-      if (pbase) psiSum += Math.log(pbase);
-      if (prime) {
-        piCount++;
-        bearings.forEach(bg => { if (bg.pinned) { bg.pinned = false; bg.b = k; } });
-        bearings.push({ a: k, b: 0, ang: TOP, sp: 0, pinned: true });
-        rings.push({ p: k, lap: 1, hit: ms, du: -Math.log(1 - 1 / k) });
-        strike(k, hold, 0.26 / Math.pow(k, 0.28));
-        remember(k);
-              primeMs = ms;
-      }
-      const f = factorize(k);
-      $('now').textContent = k;
-      $('now').style.color = (specMode > 0 && k > 1) ? colourOfN(k) : '';
-      $('fac').textContent = isPrime(k) ? 'prime  \u00b7  ring ' + rings.length : f.join(' \u00d7 ');
-      $('fac').className = isPrime(k) ? 'prime' : '';
-    }
-  }
-
+  updateClock(dt, ms);
+  updateGeometry(dt);
   const n = Math.floor(t), fr = t - n;
   const lnt = Math.log(Math.max(t, 2.0001));
-  const rad = p => (1 - spacingMix) * R * p / t + spacingMix * R * Math.log(Math.max(2, p)) / lnt;
+  const rad = p => clockRadius(p);
   PR.update(t);
 
-  g2.clearRect(0, 0, W, W);
+  g2.clearRect(0, 0, W, $("cv").height);
+  beginReflection(dt);
 
   let block = Infinity;
   rings.forEach(ring => {
     if (ring.p === n) return;
-    if (!ring.echo && coversNoon(ring.p, t)) block = Math.min(block, ring.p);
+    if (!ring.echo && coversNoon(ring.p, t)) block = block===Infinity||rad(ring.p)<rad(block)?ring.p:block;
   });
   const escaped = block === Infinity;
   const newRing = escaped && n >= 2 && n <= limit && isPrime(n);
@@ -695,7 +638,7 @@ function frame(ms) {
 
       if (spectrum) {
         const a0 = lead - unit * grow;
-            tx.fillStyle = 'hsl(' + hueOf(ring.base || p).toFixed(1) + ', 100%, ' + (100 - 40 * kSp).toFixed(1) + '%)';
+            tx.fillStyle = paneColour(ring.base || p);
         tx.beginPath();
         tx.arc(SC, SC, Math.max(0.2, r), a0, lead);
         tx.arc(SC, SC, S, lead, a0, true);
@@ -733,8 +676,8 @@ function frame(ms) {
   lx.beginPath(); lx.arc(SC, SC, R * SK, 0, 7); lx.fill();
   if (spectrum) {
     gl.clearRect(0, 0, S, S);gl.globalCompositeOperation = 'source-over';
-    gl.drawImage(lightC, 0, 0);gl.globalCompositeOperation = 'multiply';
-    gl.drawImage(transC, 0, 0);gl.globalCompositeOperation = 'source-over';
+    gl.drawImage(transC, 0, 0);gl.globalCompositeOperation = 'destination-in';
+    gl.drawImage(lightC, 0, 0);gl.globalCompositeOperation = 'source-over';
   }
   lx.globalCompositeOperation = 'destination-out';lx.drawImage(shadC, 0, 0);
   lx.globalCompositeOperation = 'source-over';
@@ -756,21 +699,13 @@ function frame(ms) {
   rings.forEach(ring => {
     const p = ring.p, r = rad(p);
     if (ring.echo) {
-      if (!spectrum && weightMix < .005 && stairMix < .005) return;
-      g2.save();g2.globalAlpha = Math.max(glassMix, weightMix, stairMix);
-      const hb = hueOf(ring.base).toFixed(1);
-      const spE = panelSpan(p, t);
-      g2.strokeStyle = 'hsla(' + hb + ', 55%, 58%, 0.20)';
-      g2.lineWidth = 1;
-      g2.setLineDash([2, 5]);
-      g2.beginPath(); g2.arc(C, C, Math.max(0.4, r), 0, 7); g2.stroke();
-      g2.setLineDash([]);
-      g2.strokeStyle = 'hsla(' + hb + ', 70%, 62%, 0.75)';
-      g2.lineWidth = Math.max(1.6, Math.min(3.4, 0.9 + r / 60));
-      g2.beginPath();
-      g2.arc(C, C, Math.max(0.4, r), spE.c0 - spE.w / 2, spE.c0 + spE.w / 2);
-      g2.stroke();g2.restore();
-      return;
+      if(glassMix<.001&&stairMix<.001)return;
+      g2.save();g2.globalAlpha=Math.max(glassMix,stairMix);
+      const sp=panelSpan(p,t),w=Math.max(2.2,Math.min(5,1.2+r/40));
+      g2.strokeStyle='hsla('+hueOf(ring.base)+' 55% 60% / .25)';g2.lineWidth=1;g2.beginPath();g2.arc(C,C,r,0,7);g2.stroke();
+      g2.fillStyle='hsl('+hueOf(ring.base)+' 68% 62%)';band(r-w,r+w,sp.c0-sp.w/2,sp.c0+sp.w/2);
+      if(r>55&&!(glassMix>.5&&n%p===0)){const bx=C+r*Math.cos(sp.c0+sp.w/2),by=C+r*Math.sin(sp.c0+sp.w/2);g2.fillStyle='hsl('+hueOf(ring.base)+' 65% 76%)';g2.font='24px ui-monospace,monospace';g2.textAlign='center';g2.fillText(String(p),bx+(bx>C?16:-16),by);}
+      g2.restore();return;
     }
     const col = 'hsl(' + hueOf(p) + ' 68% 62%)';
     const w = Math.max(2.2, Math.min(5, 1.2 + r / 40));
@@ -806,10 +741,10 @@ function frame(ms) {
     }
     band(r - w, r + w, start, lead);
 
-    if (r > 70) {
+    if (r > 70 && !(glassMix > .5 && n % p === 0)) {
       const bx = C + r * Math.cos(lead), by = C + r * Math.sin(lead);
       g2.fillStyle = 'rgba(216,212,200,0.85)';
-      g2.font = '12px ui-monospace, monospace';
+      g2.font = '24px ui-monospace, monospace';
       g2.textAlign = 'center'; g2.textBaseline = 'middle';
       g2.fillText(p, bx + (bx > C ? 15 : -15), by);
     }
@@ -937,33 +872,49 @@ function frame(ms) {
   // Let the arithmetic recede gently when its analytic image is foregrounded.
   // The unit beat is painted afterwards and never loses its place or contrast.
   if (focusMix > .001) {
-    g2.save();g2.globalAlpha = focusMix;g2.fillStyle = '#0C1512';
+    g2.save();g2.globalAlpha = focusMix*(1-separateMix);g2.fillStyle = '#0C1512';
     g2.fillRect(0,0,W,W);g2.restore();
   }
   // The explicit formula applies at x > 1; the correction is singular as x
   // approaches 1. Finite zero chains are approximate, including near jumps.
-  if (stairMix > .005 && t > 1.05) {
-    g2.save(); g2.globalAlpha = stairMix;
+  const juice = Math.max(0, 1 - (ms - primeMs) / 700);
+  g2.globalAlpha = (0.10 + 0.22 * juice) * (1 - focusMix) * (1 - glassMix);
+  g2.strokeStyle = 'rgb(' + LASER + ')';
+  g2.lineWidth = 9 + 16 * juice;
+  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
+  g2.globalAlpha = 1;
+  g2.globalAlpha = 1 - focusMix;
+  g2.lineWidth = 2 + 2 * juice;
+  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
+  for (let i = 3; i >= 1; i--) {
+    g2.globalAlpha = (0.13 + 0.20 * juice) / i * (1 - focusMix) * (1 - glassMix);
+    g2.fillStyle = 'rgb(' + LASER + ')';
+    g2.beginPath(); g2.arc(C, C - rayR, Math.max(0.5, i * (5 + 5 * juice)), 0, 7); g2.fill();
+  }
+  g2.globalAlpha = 1;
+  g2.globalAlpha = 1 - focusMix;
+  g2.fillStyle = 'rgb(' + LASER + ')';
+  g2.beginPath(); g2.arc(C, C - rayR, 3.5 + 1.5 * juice, 0, 7); g2.fill();
+
+  g2.globalAlpha = 1;
+  drawPrimeGlass(rad,n);
+  drawContinuum(ms,rad);
+  if (stairMix > .005 && t > 1.000001) {
+    g2.save(); g2.globalAlpha = stairMix * Math.min(1, (t - 1) / .35);
     // Deviation of the machine's own ledger from the smooth trend, normalised
     // by sqrt(t). Zero is the centre; the noon diameter is the signed axis.
     const S = R * 0.92, rt = Math.sqrt(t);
     const dN = (psiSum - t + 1.8378770664 + 0.5 * Math.log(1 - 1 / (t * t))) / rt;
     const yOf = d => C - S * d;
 
-    // one turn of the leading vector = one ring falling from rim to this circle
-    g2.strokeStyle = 'rgba(201,165,92,0.30)'; g2.lineWidth = 1;
-    g2.setLineDash([2, 7]);
-    const syncRadius = (1 - spacingMix) * R * PSI.syncR + spacingMix * R * Math.max(0, 1 - 2 * Math.PI / (PSI.g1 * lnt));
-    g2.beginPath(); g2.arc(C, C, syncRadius, 0, 7); g2.stroke();
-    g2.setLineDash([]);
-
-    g2.strokeStyle = 'rgba(135,153,143,0.28)'; g2.lineWidth = 1;
-    g2.setLineDash([3, 6]);
-    g2.beginPath(); g2.moveTo(C, C - R); g2.lineTo(C, C + R); g2.stroke();
-    g2.setLineDash([]);
-    g2.strokeStyle = 'rgba(135,153,143,0.5)'; g2.lineWidth = 1.4;
-    g2.beginPath(); g2.moveTo(C - 13, C); g2.lineTo(C + 13, C); g2.stroke();
-
+    g2.strokeStyle='#87998f88';g2.fillStyle='#b2c6ba';
+    g2.lineWidth=1;g2.font='13px ui-monospace';g2.textAlign='left';
+    g2.beginPath();g2.moveTo(C,C-S);g2.lineTo(C,C+S);g2.stroke();
+    for(let d=-1;d<=1.001;d+=.25){
+      const y=yOf(d);g2.beginPath();g2.moveTo(C-7,y);g2.lineTo(C+7,y);g2.stroke();
+      g2.fillText(d.toFixed(2),C+10,y-9);
+    }
+    g2.fillText('(ψ − smooth) / √x',C-120,C+S+24);
     let cx = C, cy = C, sum = 0;
     for (let i = 0; i < Math.ceil(zeroCount); i++) {
       const fade = Math.min(1, zeroCount - i);
@@ -1000,32 +951,13 @@ function frame(ms) {
     g2.font = '600 15px ui-monospace, monospace';
     g2.textAlign = 'left'; g2.textBaseline = 'middle';
     g2.fillStyle = 'rgba(201,165,92,0.95)';
-    g2.fillText('\u03c8 = ' + psiSum.toFixed(2), C + 27, yN);
+    g2.fillText('residual = ' + dN.toFixed(3), C + 65, yN);
     g2.restore();
   }
 
-  drawContinuum(ms, rad);
 
-  const juice = Math.max(0, 1 - (ms - primeMs) / 700);
-  g2.globalAlpha = (0.10 + 0.22 * juice) * (1 - focusMix);
-  g2.strokeStyle = 'rgb(' + LASER + ')';
-  g2.lineWidth = 9 + 16 * juice;
-  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
-  g2.globalAlpha = 1;
-  g2.globalAlpha = 1 - focusMix;
-  g2.lineWidth = 2 + 2 * juice;
-  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
-  for (let i = 3; i >= 1; i--) {
-    g2.globalAlpha = (0.13 + 0.20 * juice) / i * (1 - focusMix);
-    g2.fillStyle = 'rgb(' + LASER + ')';
-    g2.beginPath(); g2.arc(C, C - rayR, Math.max(0.5, i * (5 + 5 * juice)), 0, 7); g2.fill();
-  }
-  g2.globalAlpha = 1;
-  g2.globalAlpha = 1 - focusMix;
-  g2.fillStyle = 'rgb(' + LASER + ')';
-  g2.beginPath(); g2.arc(C, C - rayR, 3.5 + 1.5 * juice, 0, 7); g2.fill();
 
-  g2.globalAlpha = 1;
+
   if (riemann) drawWaves(t, n, fr, rad);
 
   const ua = TOP + 2 * Math.PI * fr;
@@ -1033,10 +965,12 @@ function frame(ms) {
   g2.globalAlpha = 0.20; g2.fillStyle = '#e8e4d9';
   g2.beginPath(); g2.arc(ux, uy, 15, 0, 7); g2.fill();
   g2.globalAlpha = 1; g2.fillStyle = '#e8e4d9';
-  g2.beginPath(); g2.arc(ux, uy, 6.5, 0, 7); g2.fill();
+  g2.beginPath(); g2.arc(ux, uy, 9, 0, 7); g2.fill();
   g2.fillStyle = '#0d1014'; g2.font = '600 11px ui-monospace, monospace';
   g2.textAlign = 'center'; g2.textBaseline = 'middle';
   g2.fillText('1', ux, uy + 1);
+  drawBeatLabels();
+  endReflection();
 
   const cov = coveredIntervals(t, n, fr);
   let covLen = 0;
@@ -1047,22 +981,19 @@ function frame(ms) {
       (escaped ? 'ray escapes' : 'blocked at ' + block);
   }
   updateGuide();
+  updateStory();
   requestAnimationFrame(frame);
 }
 
 window.__run = false;
 $('play').addEventListener('click', () => {
-  unlock();
-  window.__run = !window.__run;
-  $('play').textContent = window.__run ? 'Pause' : 'Play';
+ cancelPrediction();
+ const moving=window.__run||clockTween!==null;
+ clockTween=null;stopAt=null;window.__run=!moving&&t<limit;
+ if(soundOn&&window.__run)unlock();
+ $('play').textContent=window.__run?'Pause':'Play';
 });
-$('reset').addEventListener('click', () => {
-  loopOn = false; $('loop').className = ''; $('loop').setAttribute('aria-pressed','false');
-  reset(); primeMs = -9999;
-  $('now').textContent = '1'; $('fac').textContent = ''; $('fac').className = '';
-  bearings = []; bearPrevT = 1; piCount = 0; psiSum = 0;
-  PR.reset();
-});
+$('reset').addEventListener('click',()=>instantStart());
 $('logr').addEventListener('click', e => {
   logRad = !logRad;
   e.target.className = logRad ? 'on' : '';
@@ -1102,10 +1033,10 @@ $('spin').addEventListener('click', e => {
   if (spinning) { weightAim = 1; syncLenses(); }
 });
 
-function setVol(v){ if (master) master.gain.setTargetAtTime(v / 100 * 0.9, ctx.currentTime, 0.05); }
+function setVol(v){ if (master) master.gain.setTargetAtTime(soundOn ? v / 100 * 0.9 : 0, ctx.currentTime, 0.05); }
 
 const CTL = [
-  { id:'speed', label:'Speed', unit:' (per sec)', min:0.3, max:8, step:0.1, val:1.4, dec:1,
+  { id:'speed', label:'Speed', unit:' (per sec)', min:0.3, max:8, step:0.1, val:0.8, dec:1,
     tip:'Numbers counted per second.' },
   { id:'octaves', label:'Pitch range', unit:' (octaves)', min:2, max:8, step:0.1, val:8, dec:1,
     tip:'How many octaves separate prime 2 from prime 512. At 8 the pitch is exactly proportional to the prime, so the intervals are true whole-number ratios. Lower is kinder on the ear but the ratios stop being exact.' },
@@ -1135,13 +1066,14 @@ function setCtl(id, v){
     rng.type='range'; rng.id=c.id; rng.min=c.min; rng.max=c.max; rng.step=c.step;
     rng.value=c.val; rng.title=c.tip;
     const push = v => {
-      v = Math.min(c.max, Math.max(c.min, +v));
+      v = Number(v);if(!Number.isFinite(v))return;v = Math.min(c.max, Math.max(c.min, v));
       rng.value=v; num.value=v.toFixed(c.dec);
       if (c.on) c.on(v);
     };
     rng.addEventListener('input', () => push(rng.value));
     num.addEventListener('change', () => push(num.value));
     wrap.appendChild(lab); wrap.appendChild(num); wrap.appendChild(rng);
+    if(c.id==='spread'||c.id==='octaves')wrap.hidden=true;
     host.appendChild(wrap);
   });
 })();
@@ -1178,20 +1110,28 @@ function drawContinuum(ms,rad) {
   if(sumMix<.005){
     if(stairMix>.01)$('reading').textContent='ψ(x) from ring births · '+$('zeroDial').value+' zero pairs · first frequency 14.134725 in log x';
     else if(weightMix>.01)$('reading').textContent='s = '+SIGMA.toFixed(3)+' + '+TAUV.toFixed(3)+'i · lengths q⁻σ · turns −τ log q';
-    else $('reading').textContent='One lap of the white marker, one integer.';
+    else $('reading').textContent='One lap of the second hand, one integer.';
     return;
   }
   const raw=continuumSum(t,SIGMA,TAUV),pole=Math.hypot(SIGMA-1,TAUV)<.002;
-  const unit=R*.37,X=z=>C+unit*z[1],Y=z=>C-unit*z[0];
-  g2.save();g2.beginPath();g2.arc(C,C,R-3,0,2*Math.PI);g2.clip();
+  const sumR=R*(1-.68*separateMix),unit=sumR,sx=C+R*.58*separateMix,sy=C+R*.58*separateMix,X=z=>sx+unit*z[1],Y=z=>sy-unit*z[0];
+  g2.save();g2.setTransform(1,0,0,1,0,0);
+  const rc=Math.cos(Math.PI*reflectionMix),ra=(1+rc)/2,rb=-(1-rc)/2;
+  g2.transform(ra,rb,rb,ra,sx*(1-ra)-rb*sy,sy*(1-ra)-rb*sx);
+  g2.globalAlpha=sumMix*separateMix;g2.fillStyle='#0c1512';g2.beginPath();g2.arc(sx,sy,sumR+8,0,7);g2.fill();
+  g2.strokeStyle='#87998f';g2.lineWidth=1;g2.beginPath();g2.arc(sx,sy,sumR,0,7);g2.stroke();
+  g2.beginPath();g2.arc(sx,sy,sumR+8,0,2*Math.PI);g2.clip();
+  sumClipped=raw.points.some(z=>abs(z)*unit>sumR+8);
   // The drawing window clips large vectors; the numerical coordinates remain
   // unchanged. No adaptive scaling can disguise a diverging partial sum.
   g2.globalAlpha=sumMix*.16;g2.strokeStyle='#e9e2d0';g2.lineWidth=1;
-  g2.beginPath();g2.moveTo(C-R,C);g2.lineTo(C+R,C);g2.moveTo(C,C-R);g2.lineTo(C,C+R);g2.stroke();
+  g2.beginPath();g2.moveTo(sx-sumR,sy);g2.lineTo(sx+sumR,sy);g2.moveTo(sx,sy-sumR);g2.lineTo(sx,sy+sumR);g2.stroke();
   g2.globalAlpha=sumMix*.7;
   for(let k=1;k<raw.points.length;k++){
-    const a=raw.points[k-1],b=raw.points[k],col=k===1?'#e9e2d0':'hsl('+hueOf(factorize(k)[0]||2)+' 55% 64%)';
-    lensArrow(X(a),Y(a),X(b),Y(b),col,k<8?1.7:1);
+    const a=raw.points[k-1],b=raw.points[k],col=factorColour(k);
+    const fresh=k===Math.floor(t)?Math.pow(1-(t%1),2):0;
+    lensArrow(X(a),Y(a),X(b),Y(b),"#0c1512",(k<8?7:4)+3*fresh);
+    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);
   }
   g2.globalAlpha=sumMix;g2.fillStyle='#91c9b5';g2.beginPath();g2.arc(X(raw.z),Y(raw.z),4,0,7);g2.fill();
   const key=SIGMA.toFixed(9)+','+TAUV.toFixed(9);
@@ -1199,7 +1139,11 @@ function drawContinuum(ms,rad) {
   if(continueMix>.005&&!pole){
     const corrected=add(raw.z,tail(SIGMA,TAUV,t));
     g2.globalAlpha=sumMix*continueMix;
-    lensArrow(X(raw.z),Y(raw.z),X(corrected),Y(corrected),'#ef947c',2.1);
+    const span=Math.min(3.2,2*Math.PI*2.2/Math.max(Math.abs(TAUV),.45));
+    const path=integralTail(SIGMA,TAUV,t,span);
+    sumClipped=sumClipped||path.some(z=>abs(add(raw.z,z))*unit>sumR+8);
+    g2.strokeStyle='#ef947c';g2.lineWidth=2.1;g2.beginPath();
+    path.forEach((v,i)=>{const z=add(raw.z,v);i?g2.lineTo(X(z),Y(z)):g2.moveTo(X(z),Y(z));});g2.stroke();
     g2.fillStyle='#ef947c';g2.beginPath();g2.arc(X(corrected),Y(corrected),4,0,7);g2.fill();
     g2.setLineDash([2,5]);g2.strokeStyle='#c9a55c';g2.lineWidth=1;g2.beginPath();g2.moveTo(X(corrected),Y(corrected));g2.lineTo(X(reference),Y(reference));g2.stroke();g2.setLineDash([]);
     if(ms-trailClock>35&&window.__run){trailClock=ms;trailRaw.push(raw.z);trailCorrected.push(corrected);if(trailRaw.length>110){trailRaw.shift();trailCorrected.shift();}}
@@ -1210,6 +1154,12 @@ function drawContinuum(ms,rad) {
     g2.globalAlpha=sumMix;g2.strokeStyle='#c9a55c';g2.lineWidth=1.2;g2.beginPath();g2.arc(X(reference),Y(reference),8,0,7);g2.stroke();g2.fillStyle='#c9a55c';g2.beginPath();g2.arc(X(reference),Y(reference),2.6,0,7);g2.fill();
   }else $('reading').textContent='Near the pole at s = 1 · the reference is outside a finite scale';
   g2.restore();
+  g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=sumMix*separateMix;
+  g2.fillStyle='#a0afa5';g2.font='21px ui-monospace,monospace';g2.textAlign='center';
+  g2.fillText('SUM · 1 = radius',sx,sy-sumR-12);
+  const bx=sx-unit/2,by=sy+sumR-18;
+  g2.strokeStyle='#e9e2d0';g2.lineWidth=1.5;g2.beginPath();g2.moveTo(bx,by);g2.lineTo(bx+unit,by);g2.moveTo(bx,by-6);g2.lineTo(bx,by+6);g2.moveTo(bx+unit,by-6);g2.lineTo(bx+unit,by+6);g2.stroke();
+  g2.fillText('1',sx,by-10);g2.restore();
 }
 function syncLenses(){
   $('weights').className=weightAim?'on':'';$('sumLens').className=sumAim?'on':'';$('continueLens').className=continueAim?'on':'';
@@ -1226,105 +1176,274 @@ $('tauDial').oninput=e=>{tauAim=+e.target.value;spinning=false;$('spin').classNa
 document.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','BUTTON','SUMMARY','A'].includes(e.target.tagName)){e.preventDefault();$('play').click();}});
 syncLenses();
 
-// The path coordinates existing lenses. It never owns or replaces the clock.
-const journey = [
- {name:'Sieve',line:'One beat. Every prime keeps its own time.',hint:'Follow the white beat; watch which panel catches noon.',dial:'Counting pace',key:'speed',min:.3,max:4,step:.1,value:1.4,left:'Linger',right:'Flow',sigma:2,tau:0,weight:0,sum:0,cont:0,glass:0,focus:0},
- {name:'Factors',line:'The same light carries a prime recipe.',hint:'At 12, notice two layers of 2 and one of 3.',dial:'Look through the glass',key:'spread',min:0,max:100,step:1,value:80,left:'Clear',right:'Deep color',sigma:2,tau:0,weight:0,sum:0,cont:0,glass:1,focus:0},
- {name:'Sum',line:'The prime recipes gather into one length.',hint:'The mint tip gathers the terms. Gold marks their infinite sum.',dial:'How quickly weights shrink',key:'sigmaDial',min:1.1,max:3,step:.01,value:2,left:'Long tail',right:'Short tail',sigma:2,tau:0,weight:.55,sum:1,cont:0,glass:0,focus:.52},
- {name:'Turn',line:'Give those same weights a direction.',hint:'Turn slowly. The 4-weight rotates twice as fast as the 2-weight.',dial:'Turn the weights',key:'tauDial',min:0,max:25,step:.01,value:0,left:'Aligned',right:'Winding',sigma:2,tau:0,weight:1,sum:1,cont:0,glass:0,focus:.6},
- {name:'Continue',line:'A second arrow follows the drifting sum.',hint:'Cross σ = 1. Watch coral follow the drift back toward gold.',dial:'Cross the convergence boundary',key:'sigmaDial',min:.2,max:2,step:.01,value:.5,left:'Critical strip',right:'Convergent sum',sigma:.5,tau:8,weight:.3,sum:1,cont:1,glass:0,focus:.72},
- {name:'Zeros',line:'Bring the gold point home.',hint:'At a zero, both coordinates vanish. The finite chain still has a tail.',dial:'Tune near the first zero',key:'tauDial',min:12,max:16.5,step:'any',value:14.134725141734695,left:'τ = 12',right:'τ = 16.5',sigma:.5,tau:14.134725141734695,weight:.18,sum:1,cont:1,glass:0,focus:.78},
- {name:'Echoes',line:'That zero becomes a rhythm of the prime powers.',hint:'Add zero pairs. Compare the mint projection with the gold ledger.',dial:'Admit more zero frequencies',key:'zeroDial',min:1,max:30,step:1,value:1,left:'First pair',right:'Thirty pairs',sigma:.5,tau:14.134725141734695,weight:0,sum:0,cont:0,glass:0,focus:.64}
-];
-const cornerTL=document.querySelector('.tl'),cornerTR=document.querySelector('.tr'),cornerBL=document.querySelector('.bl'),cornerBR=document.querySelector('.br');
-const replay=document.createElement('button');replay.id='replay';replay.textContent='Replay A';replay.title='Return to A and play this stretch again';cornerTL.appendChild(replay);
-const orbits=document.createElement('details');orbits.id='orbits';
-const summary=document.createElement('summary');summary.textContent='Orbits ▾';orbits.appendChild(summary);
-const popup=document.createElement('div');popup.className='popover';orbits.appendChild(popup);
-for(const id of ['logr','cols','riem','bear'])popup.appendChild($(id));
-const all=document.createElement('button');all.id='allControls';all.textContent='All controls';all.title='Reveal all Riemann controls without changing the machine';popup.appendChild(all);
-// The sound and motion rack also lives at the corner, not down the page.
-popup.appendChild($('controls'));cornerTR.appendChild($('spec'));cornerTR.appendChild($('spin'));cornerTR.appendChild(orbits);
-for(const id of ['weights','sumLens','continueLens'])cornerBL.appendChild($(id));
-for(const id of ['prod','stair','zeroVisit'])cornerBR.appendChild($(id));
-$('numberDock').appendChild($('now'));$('factorDock').appendChild($('fac'));
-$('parameterDock').appendChild(document.querySelector('.tuning'));
-// originalProof is deliberately left above the canvas, in its original slot.
-
-const stops=[];
-journey.forEach((stop,index)=>{
- const button=document.createElement('button');button.type='button';button.innerHTML='<span class="seed">'+(index+1)+'</span>'+stop.name;
- button.title=stop.line;button.addEventListener('click',()=>chooseView(index));$('route').appendChild(button);stops.push(button);
-});
-let guideValues=journey.map(stop=>stop.value);
-function setGuideValue(stop,value){
- const input=$(stop.key);input.value=String(value);
- if(stop.key==='sigmaDial')sigmaAim=value;
- else if(stop.key==='tauDial')tauAim=value;
- else if(stop.key==='speed'||stop.key==='spread')setCtl(stop.key,value);
- clearTrails();
+// All changes of counting time pass through this clock. A tutorial can request
+// a destination, but cannot replace t or rebuild a scene at that destination.
+let clockTween = null;
+function moveClock(value, after = null) {
+ const to = Math.max(1, Math.min(limit, Number(value)));
+ if (!Number.isFinite(to)) return;
+ stopAt = null; window.__run = false; clearVoices();
+ clockTween = {from:t, to, elapsed:0, duration:Math.max(1, Math.abs(to-t)/2), after};
+ $('play').textContent = 'Pause';
 }
-function revealControls(){
- const has=i=>introduced.has(i);
- $('weights').hidden=!(has(2)||has(3));$('sumLens').hidden=!has(2);
- $('continueLens').hidden=!has(4);$('zeroVisit').hidden=!has(5);
- $('sigmaDial').parentElement.hidden=!(has(2)||has(4)||has(5));
- $('tauDial').parentElement.hidden=!(has(3)||has(4)||has(5));
- $('zeroDial').parentElement.hidden=!has(6);
-}
-function chooseView(index){
- viewIndex=Math.max(0,Math.min(journey.length-1,index));const stop=journey[viewIndex];
- const first=!introduced.has(viewIndex);introduced.add(viewIndex);
- // Introduce the new object. Never clear unrelated lenses or reset time.
- if(first){
-  if(viewIndex===1){specMode=1;$('spec').className='on';}
-  if(viewIndex===2){weightAim=1;sumAim=1;introduced.add(2);sigmaAim=2;$('sigmaDial').value='2';}
-  if(viewIndex===3){weightAim=1;sumAim=1;introduced.add(2);tauAim=8;$('tauDial').value='8';}
-  if(viewIndex===4){sumAim=1;continueAim=1;introduced.add(2);tune(.5,8);}
-  if(viewIndex===5){sumAim=1;continueAim=1;introduced.add(2);introduced.add(4);tune(.5,heights[0]);}
-  if(viewIndex===6){stairOn=true;$('stair').className='on';$('zeroDial').value='1';}
+function advanceClock(next, ms) {
+ const old = t, n = Math.floor(next);
+ if (next >= old) {
+  for (let k = lastInt + 1; k <= n; k++) {
+   const f = factorize(k), p = f[0], isP = f.length === 1;
+   const isPower = f.length > 0 && f.every(q => q === p);
+   if (isPower) {
+    rings.push(isP ? {p:k, lap:1, hit:ms, du:-Math.log(1-1/k)} : {p:k, base:p, lap:1, hit:ms, echo:true});
+    psiSum += Math.log(p);
+   }
+   if (isP) {
+    piCount++; primeMs = ms;
+    bearings.forEach(b => {if(b.pinned){b.pinned=false;b.b=k;}});
+    bearings.push({a:k,b:0,ang:TOP,sp:0,pinned:true});
+   }
+   cand = {n:k,born:ms,prime:isP};
+   if (soundOn) {tick(); if(isP){strike(k,3.2,.26/Math.pow(k,.28));remember(k);}}
+  }
+ } else {
+  // A panel has already shrunk to zero before its birth is crossed in reverse.
+  // Retain every surviving ring object, so its visual identity is uninterrupted.
+  for (const ring of rings) if(ring.p > n) {psiSum-=Math.log(ring.base||ring.p);if(!ring.echo)piCount--;}
+  rings = rings.filter(r => r.p <= n);
+  bearings = bearings.filter(b => b.a <= n);
+  bearings.forEach((b,i)=>{b.pinned=i===bearings.length-1;b.b=b.pinned?0:bearings[i+1].a;});
+  cand=null;primeMs=-9999;
  }
- // Keep the optical mechanism visible even with several analytic layers.
- focusAim=.2;syncLenses();revealControls();
- $('viewline').textContent=stop.line;$('gesture').textContent=stop.hint;
- $('backView').disabled=viewIndex===0;$('nextView').disabled=viewIndex===6;
- stops.forEach((button,i)=>{if(i===viewIndex)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
+ for (const ring of rings) {
+  const lap=Math.floor(next/ring.p);
+  if(next>old && lap>ring.lap){ring.hit=ms;if(soundOn)strike(ring.base||ring.p,3.2,.26/Math.pow(ring.p,.28));}
+  ring.lap=lap;
+ }
+ t=next;lastInt=n;unitLap=n;
+ $('now').textContent=n;
+ $('fac').textContent=n===1?'':isPrime(n)?'prime · a new rhythm':factorize(n).join(' × ');
+ $('fac').className=isPrime(n)?'prime':'';
+}
+function updateClock(dt, ms) {
+ if(clockTween){
+  const trip=clockTween;trip.elapsed=Math.min(trip.duration,trip.elapsed+dt);
+  const u=trip.elapsed/trip.duration, blend=1-(1-u)*(1-u);
+  advanceClock(trip.from+(trip.to-trip.from)*blend,ms);
+  if(u===1){clockTween=null;$('play').textContent='Play';if(trip.after)trip.after();}
+ }else if(window.__run){
+  const destination=stopAt===null?limit:Math.min(limit,stopAt);
+  advanceClock(Math.min(destination,t+Math.min(.2,dt*+$('speed').value)),ms);
+  if(t>=destination){stopAt=null;window.__run=false;$('play').textContent='Play';}
+ }
+}
+
+// Chapters change destinations of lenses, never the current geometry or count.
+let stopAt=null,soundOn=false,prediction=null,answered=false,challengeTarget=2;
+let storyStamp='',negativeValue=-2;
+const journey=[
+ {name:'The beat',title:'One clock. Every part stays in time.',text:'Follow the second hand around the rim. Each lap is one beat.<br><br>A prime panel begins at the red meeting line and grows for one whole beat. The 2-panel turns once every two beats; the 3-panel once every three.<br><br><strong>Above the clock, the next sum term reaches the equals sign on that same beat.</strong>',sigma:2,tau:0,focus:0},
+ {name:'Find primes',title:'Watch the next term arrive.',text:'The 2-panel catches 4, 6, 8… The 3-panel catches 6, 9, 12…<br><br>When a term arrives, an older panel either catches the meeting line or leaves it open. <strong>An open line begins a new prime panel.</strong> Nothing changes clocks between these events.',sigma:2,tau:0,focus:0},
+ {name:'The product',title:'The sieve writes its own product.',text:'Keep your eye on the equals sign. When a prime term arrives, its panel begins growing and its factor enters the right-hand side.<br><br><strong>The same prime strikes its later multiples from the tape.</strong> Each new factor removes another family of terms from the series. Follow that continuous exchange.',sigma:2,tau:0,focus:0},
+ {name:'Turn',title:'Give the arriving terms a direction.',text:'The tape and the panels keep the same beat. Now give each arriving term a complex weight: an arrow with length n⁻ˢ when s is real, and a direction when s has an imaginary part.<br><br>At an integer beat, the mint chain contains the terms through that integer. <strong>Gold marks the limiting value ζ(s).</strong>',sigma:2,tau:0,sum:1,focus:.55},
+ {name:'Continue',title:'Let the tail follow the drifting sum.',text:'Lower the shrink value through 1. The ordinary infinite sum stops converging, but the finite terms still arrive on the beat.<br><br><strong>The coral curve walks the integral tail.</strong> Above σ = 1 it coils toward its eye; below 1 it unwinds. The eye is the leading tail correction, not the exact gold value. Their gap shrinks as more terms arrive (σ > 0).',sigma:.5,tau:8,sum:1,cont:1,focus:.65},
+ {name:'Zeros',title:'Turn the gold point toward zero.',text:'At a zero, both coordinates of the gold point vanish: it reaches the center. The finite corrected sum can still miss the center.<br><br><strong>The Riemann hypothesis says every nontrivial zero has real part ½.</strong> Moving along that line explores known zeros; it cannot establish that none exist elsewhere.',sigma:.5,tau:13.6,sum:1,cont:1,focus:.7},
+ {name:'Prime echoes',title:'Compare a count with its zero frequencies.',text:'The gold ledger is ψ: each prime-power birth contributes log p. Here its deviation from a smooth trend is compared with a chain of zero frequencies.<br><br><strong>The mint projection approximates the gold deviation.</strong> These frequencies are supplied known zeros, not something the panels have derived.',sigma:.5,tau:14.134725141734695,stair:true,focus:.65}
+];
+const stops=[];
+journey.forEach((stop,index)=>{const b=document.createElement('button');b.type='button';b.className=index>2?'beyond':'';b.innerHTML='<span class="seed">'+(index+1)+'</span>'+stop.name;b.onclick=()=>chooseView(index);$('route').appendChild(b);stops.push(b);});
+const more=document.createElement('button');more.className='more-route';more.textContent='Toward Riemann →';more.onclick=()=>chooseView(3);$('route').appendChild(more);
+function chooseView(index){
+ viewIndex=Math.max(0,Math.min(6,index));const stop=journey[viewIndex];
+ if(viewIndex>2){document.body.classList.add('beyond');more.hidden=true;}
+ prediction=null;answered=false;
+ // Keep the continuous state intact. Only targets change, using the same easing
+ // as the instrument. No seek, reset, tape rebuild, or scene substitution.
+ weightAim=0;sumAim=stop.sum||0;continueAim=stop.cont||0;focusAim=stop.focus;stairOn=!!stop.stair;
+ tune(stop.sigma,stop.tau);syncLenses();
+ $('chapterLabel').textContent=(viewIndex<3?'Follow the construction':'Beyond the sieve')+' / '+String(viewIndex+1).padStart(2,'0');
+ $('viewline').textContent=stop.title;$('storyText').innerHTML=stop.text;
+ $('backView').disabled=viewIndex===0;$('nextView').innerHTML=(viewIndex===6?'Return to the beat':journey[viewIndex+1].name)+'<span aria-hidden="true">→</span>';
+ stops.forEach((b,i)=>{if(i===viewIndex)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
+ $('canvasTag').textContent=viewIndex<3?'THE COUNTING CLOCK':viewIndex===6?'CLOCK + PRIME-POWER LEDGER':'CLOCK + COMPLEX WEIGHTS';
+ $('legend').innerHTML=viewIndex<3?'<span><i class="dot"></i>one lap = one beat</span><span><i class="dot red"></i>the meeting line</span>':viewIndex===6?'<span><i class="dot gold"></i>counted deviation</span><span><i class="dot mint"></i>zero approximation</span>':'<span><i class="dot mint"></i>finite sum</span>'+(viewIndex>3?'<span><i class="dot coral"></i>tail spiral &amp; eye</span>':'')+'<span><i class="dot gold"></i>ζ(s)</span>';
+ renderInteraction();storyStamp='';updateStory();
+}
+function guide(label,min,max,step,value,left,right){return '<div class="guide"><label for="storyDial">'+label+'<output id="storyDialRead">'+value.toFixed(2)+'</output></label><input id="storyDial" type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+value+'"><div class="limits"><span>'+left+'</span><span>'+right+'</span></div></div>';}
+function renderInteraction(){
+ const host=$('interaction');
+ if(viewIndex===0){
+  host.innerHTML='<p class="prompt">A term, a panel, a beat.</p><p>Watch a panel print while its factor grows beside ζ(s). Replaying first rewinds the same clock continuously.</p><button id="watchBirth">Watch the first panel grow</button><p class="feedback" id="beatCaption"></p>';
+  $('watchBirth').onclick=()=>{prediction=null;moveClock(1,()=>{if(viewIndex===0)runUntil(3.35);});bringIntoView(document.querySelector('.instrument'));};
+ }else if(viewIndex===1){
+  host.innerHTML='<p class="prompt" id="challengePrompt"></p><div class="choice-row"><button id="guessCaught">Caught by a panel</button><button id="guessPrime">New prime</button></div><p class="feedback" id="feedback" role="status">Predict the next arrival. The clock will play through it.</p><button id="another" hidden>Watch another arrival →</button>';
+  $('guessCaught').onclick=()=>predict(false);$('guessPrime').onclick=()=>predict(true);$('another').onclick=()=>{prediction=null;answered=false;renderInteraction();};
+ }else if(viewIndex===2){
+  host.innerHTML='<p class="prompt">Follow six terms through the equals sign.</p><button id="followTerms">Follow the tape</button><div class="product-equality">remaining series<br>= (1 − 2⁻ˢ)(1 − 3⁻ˢ) … ζ(s)</div><p class="guide-hint">After sieving by every prime, only the term 1 remains. Dividing by those factors gives Euler’s product.</p><details><summary>The resulting identity</summary><div class="product-equality">ζ(s) = ∏<sub>p prime</sub> 1 / (1 − p⁻ˢ)</div><p class="guide-hint">Here s moves toward 2. The infinite sum and product converge for Re(s) &gt; 1. The moving tape above remains the same sieve throughout.</p></details>';
+  $('followTerms').onclick=()=>runUntil(t+6);
+ }else if(viewIndex===3){
+  host.innerHTML=guide('Turn τ · real part fixed at 2',0,20,.01,tauAim,'Aligned','Winding')+'<p class="guide-hint">Length n⁻²; angle −τ log n. The axes follow your chosen clock orientation. Changing this dial turns the weights continuously; it does not advance counting time.</p><button id="growChain">Let 12 more terms arrive</button>';
+  $('storyDial').oninput=e=>tune(2,+e.target.value);$('growChain').onclick=()=>runUntil(t+12);
+ }else if(viewIndex===4){
+  host.innerHTML=guide('Shrink σ · imaginary part fixed at 8',.2,2,.01,sigmaAim,'Long arrows','Short arrows')+'<button id="moreTerms">Let 12 more terms arrive</button><p class="guide-hint">The gap to gold is finite-count error. The compensating tail is supported for σ &gt; 0; the imaginary part stays at 8, away from the pole at s = 1.</p>';
+  $('storyDial').oninput=e=>tune(+e.target.value,8);$('moreTerms').onclick=()=>runUntil(t+12);
+ }else if(viewIndex===5){
+  host.innerHTML=guide('Turn τ · real part fixed at ½',12,16.5,.0001,tauAim,'12','16.5')+'<p id="zeroDistance" class="feedback"></p><button id="land">Turn to the first known zero</button><p class="guide-hint" style="margin-top:14px">Known height ≈ 14.134725. The gold value is computed numerically; the hypothesis remains unproved.</p>';
+  $('storyDial').oninput=e=>tune(.5,+e.target.value);$('land').onclick=()=>{tune(.5,heights[0]);$('storyDial').value=heights[0];};
+ }else{
+  host.innerHTML=guide('Known zero pairs',1,30,1,+$('zeroDial').value,'One frequency','Thirty frequencies')+'<p class="guide-hint">New vectors grow in continuously. At prime-power jumps, the infinite reconstruction gives the midpoint; finite sums ring near those jumps.</p><button id="countOn">Count 12 more beats</button>';
+  $('storyDial').oninput=e=>{$('zeroDial').value=e.target.value;};$('countOn').onclick=()=>runUntil(t+12);
+ }
+}
+function bringIntoView(element){if(matchMedia('(max-width:650px)').matches)element.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});}
+function runUntil(target){clockTween=null;stopAt=Math.min(limit,target);window.__run=t<stopAt;$('play').textContent=window.__run?'Pause':'Play';if(soundOn&&window.__run)unlock();bringIntoView(document.querySelector('.instrument'));}
+function predict(guess){
+ challengeTarget=Math.floor(t)+1;prediction=guess;answered=false;
+ $('challengePrompt').textContent='At beat '+challengeTarget+': caught or new prime?';
+ $('guessCaught').disabled=true;$('guessPrime').disabled=true;$('feedback').textContent='Follow the term into the equals sign…';runUntil(challengeTarget+.65);
+}
+function cancelPrediction(){
+ if(viewIndex!==1)return;
+ prediction=null;answered=false;renderInteraction();
 }
 function updateGuide(){
- if(document.activeElement!==$('frontier'))$('frontier').value=t.toFixed(2);
- if(document.activeElement!==$('scrub')){
-  if(t>+$('scrub').max){$('scrub').max=String(Math.min(limit,Math.ceil(t/100)*100));$('reach').value=$('scrub').max;}
-  $('scrub').value=String(t);
- }
+ if(document.activeElement!==$('frontier'))$('frontier').value=(clockTween?clockTween.to:t).toFixed(2);
+ const extent=clockTween?Math.max(t,clockTween.to):t;
+ if(extent>+$('scrub').max){$('scrub').max=String(Math.min(limit,Math.ceil(extent/40)*40));$('reach').value=$('scrub').max;}
+ if(document.activeElement!==$('scrub'))$('scrub').value=String(clockTween?clockTween.to:t);
+ $('scrubEnd').textContent=$('scrub').max;
+ $('motionRead').textContent=clockTween?(clockTween.to<t?'Rewinding':'Moving')+' through '+t.toFixed(2)+' → '+clockTween.to.toFixed(2):'Counting time '+t.toFixed(2);
+ if($('storyDialRead'))$('storyDialRead').textContent=viewIndex===6?zeroCount.toFixed(1):(viewIndex===4?SIGMA:TAUV).toFixed(viewIndex===5?4:2);
+ if($('zeroDistance'))$('zeroDistance').textContent='Gold’s distance from the center: '+abs(reference).toFixed(5)+(abs(reference)<.0001?' · zero to numerical precision.':'');
+ if($('challengePrompt')&&prediction===null){challengeTarget=Math.floor(t)+1;$('challengePrompt').textContent=t>=limit?'End of the count. Rewind to continue.':'At beat '+challengeTarget+': caught or new prime?';$('guessCaught').disabled=t>=limit;$('guessPrime').disabled=t>=limit;}
+ negativeValue+=(+$('negativeS').value-negativeValue)*.08;drawTrivial(negativeValue);
 }
-$('allControls').onclick=()=>{for(let i=0;i<7;i++)introduced.add(i);revealControls();};
+function updateStory(){
+ const n=Math.floor(t),key=viewIndex+':'+n+':'+answered;
+ if(viewIndex===1&&prediction!==null&&!answered&&n>=challengeTarget){
+  answered=true;const p=isPrime(challengeTarget),f=[...new Set(factorize(challengeTarget))];
+  $('feedback').textContent=(prediction===p?'Yes. ':'Watch the meeting line: ')+(p?'No older panel catches '+challengeTarget+'. Its prime panel begins as its term arrives.':challengeTarget+' is caught by '+f.join(' and ')+'. Its term is struck on the tape.');$('another').hidden=false;
+ }
+ if(storyStamp===key)return;storyStamp=key;
+ const message=n<2?'The term 1 begins the sum.':isPrime(n)?'Beat '+n+': a prime term arrives; its panel and factor begin growing.':'Beat '+n+': '+[...new Set(factorize(n))].join(' and ')+' catch the meeting line.';
+ $('clockDescription').textContent=message;if($('beatCaption'))$('beatCaption').textContent=message;
+ $('reading').hidden=viewIndex<3;
+}
+function drawBeatLabels(){g2.save();g2.globalAlpha=1;g2.font='22px ui-monospace, monospace';g2.textAlign='center';g2.fillStyle='#a0afa5';g2.fillText('MEETING RAY',C-40,24);if(viewIndex>=3&&viewIndex<=5){g2.font='21px ui-monospace, monospace';g2.fillStyle='#9bc7b1';g2.fillText('+ real',C-48,C-R+65);g2.fillText('+ imaginary',C+R-100,C+28);g2.fillStyle='#e0bd76';g2.fillText('0',C-15,C+22);}g2.restore();}
+$('stepBeat').onclick=()=>{cancelPrediction();runUntil(t+1);};
+$('sound').onclick=()=>{soundOn=!soundOn;if(soundOn)unlock();else clearVoices();if(master)master.gain.setTargetAtTime(soundOn?+$('vol').value/100*.9:0,ctx.currentTime,.05);$('sound').textContent=soundOn?'Sound on':'Sound off';$('sound').setAttribute('aria-pressed',String(soundOn));};
+$('backView').onclick=()=>chooseView(viewIndex-1);$('nextView').onclick=()=>chooseView(viewIndex===6?0:viewIndex+1);
+function drawTrivial(s){
+ const x=s=>30+(s+7)/6*440,y=s=>65-42*Math.sin(Math.PI*s/2);
+ if(!$('sinePath').getAttribute('d')){let d='';for(let i=0;i<=240;i++){const q=-7+i/40;d+=(i?'L':'M')+x(q).toFixed(2)+' '+y(q).toFixed(2);}$('sinePath').setAttribute('d',d);$('sineLabels').innerHTML=[-6,-4,-2].map(q=>'<text x="'+x(q)+'" y="126" text-anchor="middle">'+q+'</text><circle cx="'+x(q)+'" cy="65" r="4" fill="#e0bd76"/>').join('');}
+ const v=Math.sin(Math.PI*s/2);$('negativeRead').textContent=s.toFixed(2);$('sinePoint').setAttribute('cx',x(s));$('sinePoint').setAttribute('cy',y(s));for(const [k,vv] of Object.entries({x1:x(s),x2:x(s),y1:65,y2:y(s)}))$('sineProjection').setAttribute(k,vv);
+ $('trivialRead').textContent='Sine factor = '+(Math.abs(v)<1e-8?'0 · a trivial zero.':v.toFixed(4)+'. Move to −2, −4 or −6 to make the projection vanish.');
+}
+drawTrivial(negativeValue);
 
-$('exploreDial').addEventListener('input',e=>{const value=+e.target.value;guideValues[viewIndex]=value;setGuideValue(journey[viewIndex],value);});
-$('land').addEventListener('click',()=>{guideValues[5]=heights[0];$('exploreDial').value=String(heights[0]);setGuideValue(journey[5],heights[0]);});
-$('backView').onclick=()=>chooseView(viewIndex-1);$('nextView').onclick=()=>chooseView(viewIndex+1);
-function seekFrontier(value,pause=true){
-  const target=Math.max(1,Math.min(limit,Number(value)));if(!Number.isFinite(target))return;
- clearVoices();
- if(pause){window.__run=false;$('play').textContent='Play';}
- // Rebuild the arithmetic directly; never simulate historical sound or wait
- // through thousands of old frames. The new frontier can be fractional.
- rings=[];bearings=[];psiSum=0;piCount=0;cand=null;primeMs=-9999;
- PR.reset();const n=Math.floor(target);let prior=null;
- for(let k=2;k<=n;k++){
-  const f=factorize(k),p=f[0],isP=f.length===1,isPower=f.every(q=>q===p);
-  if(isP){
-   rings.push({p:k,lap:Math.floor(target/k),hit:-999999,du:-Math.log(1-1/k)});
-   piCount++;psiSum+=Math.log(k);PR.tick(k,true);
-   if(prior){prior.b=k;prior.pinned=false;}
-   prior={a:k,b:0,ang:TOP,sp:0,pinned:true};bearings.push(prior);
-  }else if(isPower){rings.push({p:k,base:p,lap:Math.floor(target/k),hit:-999999,echo:true});psiSum+=Math.log(p);}
- }
- t=target;lastInt=n;unitLap=n;bearPrevT=target;PR.tick(n,false);PR.update(t);clearTrails();
- $('now').textContent=String(n);$('fac').textContent=n===1?'':isPrime(n)?'prime':factorize(n).join(' × ');
- $('fac').className=isPrime(n)?'prime':'';$('now').style.color=specMode>0&&n>1?colourOfN(n):'';
- if(target>+$('scrub').max){$('scrub').max=String(Math.min(limit,Math.ceil(target/100)*100));$('reach').value=$('scrub').max;}
- $('frontier').value=target.toFixed(2);$('scrub').value=String(target);
+let gameMode='puzzles',lesson=1,unlocked=1,reflectionAim=0,reflectionMix=0;
+const solved=new Set(),observed=new Set(),answers=new Map();let puzzleAttempt=null;
+const levels=[
+ {title:'Meet the second hand.',clue:'One trip around the rim. One term into the equals sign.',question:'Your first move: watch one whole cycle.',choices:[],answer:0,reveal:'One lap, one beat. Everything else will keep time with this hand.'},
+ {title:'A slower companion.',clue:'The 2-panel has just started printing. Predict where its leading edge will go in one beat.',question:'How far will 2 turn?',choices:['Half a circle','A whole circle'],answer:0,reveal:'The second hand makes a full lap; 2 makes half a lap. Its half-circle panel takes this whole beat to print.'},
+ {title:'Catch the handoff.',clue:'The 2-panel has finished printing. Something new begins at the meeting line.',question:'Which panel prints during this beat?',choices:['Another 2-panel','A new 3-panel'],answer:1,reveal:'2 finishes as 3 begins. The handoff happens on the same beat, without a second clock.'},
+ {title:'Same prime. Another pane.',clue:'4 is not prime. Watch the new panel: its glass belongs to 2.',question:'What does the second red pane mean?',choices:['A new prime, 4','A second factor of 2'],answer:1,reveal:'The panels at 2 and 4 each carry one pane of 2. Together they read 2 × 2. A power gets a real panel.'},
+ {title:'Test your rule.',clue:'The older panels have had their chance to catch 5 at the meeting line.',question:'Does 5 get its own prime panel?',choices:['Yes — nothing older catches it','No — 2 catches it'],answer:0,reveal:'The meeting line is open at 5. A new prime panel prints while its factor enters the product.'},
+ {title:'Two different primes.',clue:'This time the meeting line crosses two different colours.',question:'Which panes make 6?',choices:['Two panes of 2','One pane of 2 and one of 3'],answer:1,reveal:'2 × 3 = 6. Repeated colours count powers; different colours combine different primes.'}
+];
+const mathView=chooseView;
+const levelTray=document.createElement('div');levelTray.className='level-tray';levelTray.id='levelTray';document.querySelector('.story').prepend(levelTray);
+const route=$('route');route.innerHTML='';
+for(const [id,label,action] of [['puzzleMode','Six beats',()=>openLesson(lesson)],['twinMode','Twin primes',()=>openTwins()],['eulerMode','Euler’s product',()=>openMath(2)],['zetaMode','Toward zeta',()=>openMath(3)]]){const b=document.createElement('button');b.id=id;b.textContent=label;b.onclick=action;route.appendChild(b);}
+function markMode(id){for(const b of route.children){if(b.id===id)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');}}
+function coreTargets(){weightAim=sumAim=continueAim=focusAim=0;stairOn=false;tune(2,0);specMode=lesson>=4||unlocked>=4||gameMode==='twins'?1:0;syncLenses();}
+function openLesson(n,travel=true){
+ gameMode='puzzles';lesson=Math.max(1,Math.min(6,unlocked,n));viewIndex=0;prediction=null;puzzleAttempt=null;coreTargets();markMode('puzzleMode');
+ if(travel&&Math.abs(t-lesson)>1e-9)moveClock(lesson);
+ renderPuzzle();
 }
+function renderPuzzle(){
+ const l=levels[lesson-1];levelTray.hidden=false;levelTray.innerHTML='';
+ for(let n=1;n<=6;n++){const b=document.createElement('button');b.textContent=solved.has(n)?'✓ '+n:String(n);b.setAttribute('aria-label','Beat '+n+(solved.has(n)?', solved':''));b.disabled=n>unlocked;b.className=n===lesson?'selected':'';b.onclick=()=>openLesson(n);levelTray.appendChild(b);}
+ $('chapterLabel').textContent='PUZZLE '+lesson+' / 6';$('viewline').textContent=l.title;$('storyText').textContent=l.clue;
+ $('canvasTag').textContent='CLOCK OF PRIMES';$('reading').hidden=true;
+ $('interaction').innerHTML='<p class="prompt">'+l.question+'</p><div class="puzzle-choices">'+l.choices.map((c,i)=>'<button data-choice="'+i+'" aria-pressed="'+(answers.get(lesson)===i)+'">'+c+'</button>').join('')+'</div><p class="puzzle-instruction">'+(l.choices.length?'Choose, then use <b>One beat →</b>.':'Press <b>One beat →</b> below the clock.')+'</p><p id="puzzleFeedback" role="status"></p><button id="returnToLesson" class="quiet" hidden>Return to beat '+lesson+'</button>';
+ for(const b of document.querySelectorAll('[data-choice]'))b.onclick=()=>{answers.set(lesson,+b.dataset.choice);for(const other of document.querySelectorAll('[data-choice]'))other.setAttribute('aria-pressed',String(other===b));if(observed.has(lesson)&&answers.get(lesson)===l.answer)solveLesson();else $('puzzleFeedback').textContent='Prediction set. Watch the clock decide.';};
+ $('returnToLesson').onclick=()=>moveClock(lesson);
+ $('backView').disabled=lesson===1;$('backView').onclick=()=>openLesson(lesson-1);
+ $('nextView').onclick=()=>lesson<6?openLesson(lesson+1):openTwins();
+ $('nextView').innerHTML=(lesson<6?'Next puzzle':'Try twin primes')+'<span>→</span>';
+ $('nextView').disabled=!solved.has(lesson);
+ if(solved.has(lesson))$('puzzleFeedback').textContent=l.reveal;
+ $('legend').innerHTML='<span><i class="dot"></i>second hand</span><span><i class="dot red"></i>meeting ray</span>';
+}
+function solveLesson(){solved.add(lesson);unlocked=Math.min(6,Math.max(unlocked,lesson+1));$('puzzleFeedback').textContent='✓ '+levels[lesson-1].reveal;$('nextView').disabled=false;for(const [i,b] of [...levelTray.children].entries()){b.disabled=i+1>unlocked;if(solved.has(i+1))b.textContent='✓ '+(i+1);}}
+function stepClock(direction){
+ const from=clockTween&&clockTween.kind==='step'?clockTween.to:t;
+ const target=Math.max(1,Math.min(limit,from+direction));
+ if(gameMode==='puzzles'&&direction===1&&Math.abs(from-lesson)<1e-8){puzzleAttempt={lesson,target};}
+ else if(direction<0)puzzleAttempt=null;
+ prediction=null;moveClock(target);clockTween.kind='step';bringIntoView(document.querySelector('.instrument'));
+}
+function instantStart(){
+ clockTween=null;stopAt=null;window.__run=false;puzzleAttempt=null;prediction=null;reset();advanceClock(1,performance.now());PR.update(1);$('play').textContent='Play';updateGuide();updateStory();
+}
+const pairs=[];for(let p=3;p<=100;p++)if(isPrime(p)&&isPrime(p+2))pairs.push([p,p+2]);let twinIndex=0;
+function openTwins(index=twinIndex,travel=true){
+ gameMode='twins';twinIndex=(index+pairs.length)%pairs.length;viewIndex=0;prediction=null;coreTargets();specMode=1;markMode('twinMode');levelTray.hidden=true;
+ const [p,q]=pairs[twinIndex];
+ $('chapterLabel').textContent='STUDY A PAIR';$('viewline').textContent=p+' and '+q+'. What happens between?';$('storyText').textContent='Two primes, two beats apart. Step through the first prime, the number between, and the second prime. Watch which older panes catch the middle.';
+ $('interaction').innerHTML='<div class="twin-strip">'+[p,p+1,q].map(n=>'<button data-twin="'+n+'">'+n+'<small>'+(isPrime(n)?'prime':factorize(n).join(' × '))+'</small></button>').join('')+'</div><p class="puzzle-instruction">Each number below is a destination. The clock travels there continuously.</p><div class="choice-row"><button id="earlierPair">← Earlier pair</button><button id="laterPair">Later pair →</button></div><p id="twinRead" role="status"></p>';
+ for(const b of document.querySelectorAll('[data-twin]'))b.onclick=()=>moveClock(+b.dataset.twin);
+ $('earlierPair').onclick=()=>openTwins(twinIndex-1);$('laterPair').onclick=()=>openTwins(twinIndex+1);
+ $('backView').disabled=false;$('backView').onclick=()=>openLesson(6);$('nextView').disabled=false;$('nextView').innerHTML='Follow Euler’s product <span>→</span>';$('nextView').onclick=()=>openMath(2);
+ if(travel)moveClock(Math.max(1,p-1));
+ $('legend').innerHTML='<span><i class="dot"></i>second hand</span><span><i class="dot red"></i>one pane per prime-power divisor</span>';
+}
+function openMath(i){gameMode='math';levelTray.hidden=true;mathView(i);specMode=1;markMode(i===2?'eulerMode':'zetaMode');$('nextView').disabled=false;$('backView').disabled=false;$('nextView').onclick=()=>i<6?openMath(i+1):openLesson(1);$('backView').onclick=()=>i>2?openMath(i-1):openTwins(twinIndex,false);}
+chooseView=openMath;
+const baseGuide=updateGuide;
+updateGuide=function(){
+ baseGuide();
+ const target=clockTween?clockTween.to:t;$('previousBeat').disabled=target<=1;$('stepBeat').disabled=target>=limit;
+ $('orientationRead').textContent=reflectionAim?'Reflected: real → · imaginary ↑ · second hand counterclockwise':'Clock: real ↑ · imaginary → · second hand clockwise';
+ if(gameMode==='puzzles'){
+  if(puzzleAttempt&&t>=puzzleAttempt.target-1e-8){const n=puzzleAttempt.lesson;puzzleAttempt=null;observed.add(n);if(n===lesson){if(lesson===1||answers.get(lesson)===levels[lesson-1].answer)solveLesson();else $('puzzleFeedback').textContent='Look at the panes. You can change your prediction, or step back to watch again.';}}
+  if($('returnToLesson'))$('returnToLesson').hidden=(t>=lesson-1e-8&&t<=lesson+1+1e-8)||!!clockTween;
+ }else if(gameMode==='twins'){
+  const n=Math.floor(t),p=pairs[twinIndex][0];for(const b of document.querySelectorAll('[data-twin]'))b.classList.toggle('current',+b.dataset.twin===n);
+  $('twinRead').textContent=n>=p&&n<=p+2?(isPrime(n)?n+': a new prime pane.':n+': '+crossedPanes(n).map(r=>r.base||r.p).join(' × ')+' across the meeting ray.'):'Approach the pair, then use one beat at a time.';
+ }
+ const panes=crossedPanes(Math.floor(t));$('paneRead').hidden=glassMix<.02;
+ $('paneRead').textContent=panes.length?panes.map(r=>r.p+(r.echo?' ['+(r.base)+' again]':'')).join(' → ')+' · panes give '+panes.map(r=>r.base||r.p).join(' × '):'No panes crossed.';
+};
+$('previousBeat').onclick=()=>stepClock(-1);$('stepBeat').onclick=()=>stepClock(1);
+$('reflect').onclick=()=>{reflectionAim=reflectionAim?0:1;$('reflect').setAttribute('aria-pressed',String(!!reflectionAim));$('reflect').textContent=reflectionAim?'Return to clock view':'Reflect to complex plane';};
+document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)||e.altKey||e.ctrlKey||e.metaKey)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();stepClock(e.key==='ArrowLeft'?-1:1);}});
+// The diagonal reflection swaps the real/imaginary axes. Projecting a smooth
+// half-turn around that diagonal lets the view turn over without teleporting.
+const nativeText=g2.fillText.bind(g2);
+g2.fillText=function(text,x,y,...rest){const m=g2.getTransform(),X=m.a*x+m.c*y+m.e,Y=m.b*x+m.d*y+m.f;g2.save();g2.setTransform(1,0,0,1,0,0);const w=g2.measureText(text).width;let xx=X;if(g2.textAlign==='center')xx=Math.max(w/2+4,Math.min(W-w/2-4,X));nativeText(text,xx,Math.max(15,Math.min($("cv").height-10,Y)),...rest);g2.restore();};
+function beginReflection(dt){reflectionMix+=(reflectionAim-reflectionMix)*(1-Math.exp(-dt*5));const c=Math.cos(Math.PI*reflectionMix),a=(1+c)/2,b=-(1-c)/2;g2.save();g2.transform(a,b,b,a,C*(1-a-b),C*(1-a-b));}
+function endReflection(){g2.restore();}
+// Carry the tape's direction and equals sign with the reflected meeting ray.
+// Counter-rotate the ink, preserving the readable mathematical expressions.
+const tapeBridge=document.createElementNS('http://www.w3.org/2000/svg','svg');tapeBridge.classList.add('tape-bridge');tapeBridge.setAttribute('aria-hidden','true');
+const bridgePath=document.createElementNS('http://www.w3.org/2000/svg','path');bridgePath.setAttribute('fill','none');bridgePath.setAttribute('stroke-width','1.5');tapeBridge.appendChild(bridgePath);document.querySelector('.instrument').appendChild(tapeBridge);
+function dockTape(){
+ const host=document.querySelector('.instrument').getBoundingClientRect(),frame=$('cv').getBoundingClientRect(),proof=$('originalProof').getBoundingClientRect(),work=$('originalProof').querySelector('.work');
+ const u=(1-Math.cos(Math.PI*reflectionMix))/2,angle=Math.atan2(u,1-u)*180/Math.PI;
+ const bx=proof.left+proof.width/2,by=proof.top+work.offsetHeight/2,r=R/W*frame.width,cx=frame.left+frame.width/2,cy=frame.top+C/W*frame.width;
+ const gap=innerWidth<=650?10:20,ex=bx+u*(cx+r+gap-bx),ey=by+u*(cy-by);
+ work.style.transformOrigin='50% 50%';work.style.transform='translate('+(ex-bx)+'px,'+(ey-by)+'px) rotate('+(-angle)+'deg)';
+ work.style.setProperty('--counter-turn',angle+'deg');
+ const rx=cx+u*r,ry=cy-(1-u)*r;
+ bridgePath.setAttribute('d','M'+(ex-host.left)+' '+(ey-host.top)+' L'+(rx-host.left)+' '+(ry-host.top));bridgePath.setAttribute('stroke',factorColour(Math.floor(t)));bridgePath.setAttribute('opacity','.45');
+ tapeBridge.setAttribute('viewBox','0 0 '+host.width+' '+host.height);
+}
+const beforeDock=updateGuide;updateGuide=function(){beforeDock();dockTape();};
+journey[2].text='Each crossed pane contributes one copy of its prime. At 12, the panes at 2, 3 and 4 give 2 × 3 × 2.<br><br>Their weights multiply to the weight of 12. <strong>Now follow the tape:</strong> prime terms arrive, panels print, and sieve factors grow beside ζ(s).';
+openLesson(1,false);
+
+function seekFrontier(value){ cancelPrediction();moveClock(value); }
 function readLoop(){
  const a=+$('loopA').value,b=+$('loopB').value,valid=Number.isFinite(a)&&Number.isFinite(b)&&a>=1&&a<b&&b<=limit;
  $('loopMessage').textContent=valid?'Move N to pause and inspect. Replay starts again at A.':'Choose 1 ≤ A < B ≤ 5000.';
@@ -1338,13 +1457,315 @@ for(const id of ['loopA','loopB'])$(id).addEventListener('change',readLoop);
 $('markA').onclick=()=>{$('loopA').value=t.toFixed(2);readLoop();};
 $('markB').onclick=()=>{$('loopB').value=t.toFixed(2);readLoop();};
 $('loop').onclick=()=>{if(!readLoop())return;loopOn=!loopOn;$('loop').className=loopOn?'on':'';$('loop').setAttribute('aria-pressed',String(loopOn));if(loopOn&&(t<loopStart||t>=loopEnd))seekFrontier(loopStart,false);};
-$('replay').onclick=()=>{if(!readLoop())return;seekFrontier(loopStart,false);unlock();window.__run=true;$('play').textContent='Pause';};
-
-chooseView(0);
+$('replay').onclick=()=>{if(!readLoop())return;seekFrontier(loopStart,false);if(soundOn)unlock();window.__run=true;$('play').textContent='Pause';};
 
 reset();
-requestAnimationFrame(frame);
-</script>
+openLesson(1,false);
 
+updateStory();
+requestAnimationFrame(frame);
+
+// A persistent instrument. Destinations change only counting time and the
+// explanation; every visual control remains under the observer's control.
+const oldShell=document.querySelector('.shell');
+const stage=document.createElement('main');stage.id='clockApp';stage.innerHTML=`
+ <header class="clock-title">Clock of Primes</header>
+ <section id="clockStage" aria-label="Continuous clock of primes"></section>
+ <div class="corner north-west"><button popovertarget="observeBubble">Observe</button></div>
+ <div class="corner north-east"><button popovertarget="viewBubble">View</button></div>
+ <div class="corner south-west" id="transportCorner"></div>
+ <div class="corner south-east"><button popovertarget="tuneBubble">Tune s &amp; pace</button></div>
+ <nav id="destinations" aria-label="Clock destinations"></nav>
+ <section id="observeBubble" class="bubble observe-bubble" popover="manual" aria-label="Observation notes">
+  <div class="bubble-head"><b id="observationTitle">Watch before predicting</b><button popovertarget="observeBubble" popovertargetaction="hide" aria-label="Close observation">×</button></div>
+  <div id="observationBeats" class="button-row" aria-label="Visit an opening beat"></div>
+  <p id="observationText">Watch the first six beats. Each number is a place to observe, with no questions to pass.</p>
+  <p id="liveObservation" class="muted" aria-live="off"></p>
+ </section>
+ <section id="viewBubble" class="bubble view-bubble" popover="manual" aria-label="View controls">
+  <div class="bubble-head"><b>Your view</b><button popovertarget="viewBubble" popovertargetaction="hide" aria-label="Close view controls">×</button></div>
+  <div id="layerButtons" class="button-row"></div><div id="orientationButtons" class="button-row"></div>
+  <label for="radialDial">Clock ruler <output id="rulerLabel">Original</output></label><div id="rulerSlot"></div>
+  <label for="separateDial">Separate sum <output id="separationLabel">Together</output></label><div id="splitSlot"></div>
+  <p class="muted">One sum unit = one radius. Separation moves the sum into an inset with its own unit circle. Lessons never change these settings.</p>
+ </section>
+ <section id="tuneBubble" class="bubble tune-bubble" popover="manual" aria-label="Complex weights and clock pace">
+  <div class="bubble-head"><b>Weights &amp; pace</b><button popovertarget="tuneBubble" popovertargetaction="hide" aria-label="Close tuning">×</button></div>
+  <label for="sigmaDial">Length · σ <output id="liveSigma"></output></label><div id="sigmaSlot"></div>
+  <label for="tauDial">Direction · τ <output id="liveTau"></output></label><div id="tauSlot"></div>
+  <div id="zeroShortcut" class="button-row"></div>
+  <label for="zeroDial">Prime-count zero pairs <output id="liveZeroCount"></output></label><div id="zerosSlot"></div>
+  <label for="speed">Beats / second <output id="liveSpeed"></output></label><div id="speedSlot"></div>
+  <div class="number-row"><label for="frontier">Go to beat</label><span id="frontierSlot"></span><label for="reach">Timeline end</label><span id="reachSlot"></span></div>
+  <p class="muted" id="sumReadout">Length n⁻σ · angle −τ log n. These dials do not move the clock.</p>
+ </section>`;
+document.body.appendChild(stage);
+const relocate=(id,host)=>$(host).appendChild($(id));
+relocate('cv','clockStage');relocate('originalProof','clockStage');
+const frameEl=$('cv');
+const readout=document.createElement('div');readout.className='compact-count';relocate('now','transportCorner');
+readout.appendChild($('now'));readout.appendChild($('fac'));$('transportCorner').appendChild(readout);
+const transport=document.querySelector('.transport');$('transportCorner').appendChild(transport);
+for(const id of ['reset','previousBeat','play','stepBeat'])transport.appendChild($(id));
+$('previousBeat').textContent='← 1';$('stepBeat').textContent='1 →';$('reset').textContent='Start';
+$('transportCorner').appendChild(document.querySelector('.scrubber'));
+for(const [id,host] of [['spec','layerButtons'],['sumLens','layerButtons'],['continueLens','layerButtons'],['stair','layerButtons'],['zeroVisit','zeroShortcut'],['zeroDial','zerosSlot'],['reflect','orientationButtons'],['sound','orientationButtons'],['radialDial','rulerSlot'],['separateDial','splitSlot'],['sigmaDial','sigmaSlot'],['tauDial','tauSlot'],['speed','speedSlot'],['frontier','frontierSlot'],['reach','reachSlot']])relocate(id,host);
+$('spec').textContent='Glass';$('sumLens').textContent='Sum';$('continueLens').textContent='Tail';
+for(const id of ['sigmaDial','tauDial','zeroDial','speed']){const label=$('tuneBubble').querySelector('label[for="'+id+'"]'),slot=label.nextElementSibling,group=document.createElement('div');group.className='tune-control';label.before(group);group.append(label,slot);}
+$('stair').textContent='Prime count';$('zeroVisit').textContent='Tune to first zero';
+$('zeroVisit').onclick=()=>{tune(.5,heights[0]);};
+$('reflect').textContent='Reflect axes';
+$('reflect').onclick=()=>{reflectionAim=1-reflectionAim;$('reflect').setAttribute('aria-pressed',String(!!reflectionAim));};
+$('spec').onclick=()=>{specMode=specMode?0:1;$('spec').setAttribute('aria-pressed',String(!!specMode));};
+oldShell.hidden=true;
+// Disable the old chapter machinery; no handler can reinstall quiz gates or
+// silently retune a user's layers when visiting a preset.
+gameMode='observe';viewIndex=0;unlocked=6;puzzleAttempt=null;focusAim=0;
+bringIntoView=()=>{};cancelPrediction=()=>{prediction=null;};
+const observations=[
+ 'Watch one full lap of the second hand. The next term reaches the equals sign on the same beat.',
+ 'At 2, a half-speed arc starts growing. Use one beat forward to watch it print a half-circle.',
+ 'At 3, the arc for 2 finishes printing as 3 begins. Watch the handoff, then replay it backward.',
+ 'At 4, the extra pane belongs to 2: two copies of the same prime. Glass reveals the repeated factor.',
+ 'At 5, watch whether an older arc catches the meeting ray. Compare it with 4 before making a rule.',
+ 'At 6, two different primes meet the ray together. You have now seen a prime, a repeated prime, and a product of different primes.'
+];
+function visitObservation(n){lesson=n;$('observationTitle').textContent='Observe beat '+n;$('observationText').textContent=observations[n-1];moveClock(n);}
+for(let n=1;n<=6;n++){const b=document.createElement('button');b.textContent=n;b.setAttribute('aria-label','Observe beat '+n);b.onclick=()=>visitObservation(n);$('observationBeats').appendChild(b);}
+const destinations=[
+ ['puzzleMode','First beats',1,'Watch before predicting','Observe beats 1–6 with the one-beat controls. Nothing needs an answer before you can continue.'],
+ ['twinMode','Twin primes',10,'11 and 13','Step from 10 through 11, 12 and 13. Compare the two new prime arcs with the panes at 12.'],
+ ['eulerMode','Euler',30,'Follow the equals sign','Watch terms enter the product. Active prime factors glow; nearby factors remain visible when there is room.'],
+ ['zetaMode','Zeta',64,'Give the sum a direction','Turn on Sum in View, then explore σ and τ in Tune. Tail adds the integral spiral. These choices remain yours.']
+];
+for(const [id,label,n,title,copy] of destinations){const b=document.createElement('button');b.id=id;b.textContent=label;b.onclick=()=>{for(const el of $('destinations').children)el.removeAttribute('aria-current');b.setAttribute('aria-current','page');$('observationTitle').textContent=title;$('observationText').textContent=copy;moveClock(n);};$('destinations').appendChild(b);}
+// The legacy route has the same IDs; remove it now that its handlers are retired.
+route.remove();
+openLesson=(n,travel=true)=>{if(travel)visitObservation(Math.max(1,Math.min(6,n)));};
+openMath=()=>moveClock(64);chooseView=openMath;openTwins=()=>moveClock(10);
+updateStory=function(){
+ const n=Math.floor(t);$('liveObservation').textContent=n===1?'Beat 1 · the unit term.':isPrime(n)?'Beat '+n+' · a new prime rhythm.':'Beat '+n+' · '+factorize(n).join(' × ')+'.';
+};
+drawBeatLabels=function(){};
+updateGuide=function(){
+ const target=clockTween?clockTween.to:t;
+ $('previousBeat').disabled=target<=1;$('stepBeat').disabled=target>=limit;
+ if(document.activeElement!==$('frontier'))$('frontier').value=target.toFixed(2);
+ if(target>+$('scrub').max){$('scrub').max=Math.min(limit,Math.ceil(target/40)*40);$('reach').value=$('scrub').max;}
+ if(document.activeElement!==$('scrub'))$('scrub').value=target;
+ $('scrubEnd').textContent=$('scrub').max;
+ $('liveSigma').textContent=SIGMA.toFixed(2);$('liveTau').textContent=TAUV.toFixed(2);$('liveSpeed').textContent=$('speed').value;
+ $('liveZeroCount').textContent=$('zeroDial').value;
+ if(sumMix>.01){const z=continuumSum(t,SIGMA,TAUV).z;$('sumReadout').textContent='Sum '+z[0].toFixed(3)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toFixed(3)+'i'+(abs(z)>1?' · beyond the unit circle.':' · inside the unit circle.');}
+ else $('sumReadout').textContent='Length n⁻σ · angle −τ log n. These dials do not move the clock.';
+ $('rulerLabel').textContent=radialAim<.01?'Original':radialAim>.99?'Outward log':'Blending';
+ $('separationLabel').textContent=separateAim<.01?'Together':separateAim>.99?'Inset':'Separating';
+ $('spec').classList.toggle('on',!!specMode);
+ dockTape();
+};
+// Dock the tape outside the rim. In narrow portrait views the reflected clock
+// slides slightly left to leave enough room for upright equation ink.
+dockTape=function(){
+ const u=(1-Math.cos(Math.PI*reflectionMix))/2;
+ $('clockStage').style.setProperty('--clock-shift',u*Math.max(0,64-(innerWidth-.8*Math.min(innerWidth,innerHeight))/2)+'px');
+ const c=$('cv').getBoundingClientRect();
+ const angle=Math.atan2(u,1-u)*180/Math.PI,r=R/W*c.width,cx=c.left+c.width/2,cy=c.top+c.height/2;
+ const ex=cx+u*(r+32),ey=cy-(1-u)*(r+14),proof=$('originalProof'),work=proof.querySelector('.work');
+ proof.style.left=ex+'px';proof.style.top=ey+'px';
+ work.style.transform='rotate('+(-angle)+'deg)';work.style.setProperty('--counter-turn',angle+'deg');
+};
+// Keep the drawing rectangle square; separation is an inset, never a new page.
+updateGeometry=function(dt){const e=1-Math.exp(-dt*5);radialMix+=(radialAim-radialMix)*e;separateMix+=(separateAim-separateMix)*e;};
+$('cv').height=W;
+// Start is the one intentional snap. Everything else moves through t.
+stepClock=function(direction){const from=clockTween&&clockTween.kind==='step'?clockTween.to:t;moveClock(Math.max(1,Math.min(limit,from+direction)));clockTween.kind='step';clockTween.duration=.48;};
+moveClock=function(value,after=null){const to=Math.max(1,Math.min(limit,Number(value)));if(!Number.isFinite(to))return;stopAt=null;window.__run=false;clearVoices();clockTween={from:t,to,elapsed:0,duration:.5,after};$('play').textContent='Pause';};
+seekFrontier=function(value){moveClock(value);if(clockTween){clockTween.kind='scrub';clockTween.duration=.28;}};
+// No layers, layout or tuning is changed by visiting a destination.
+weightAim=0;sumAim=0;continueAim=0;focusAim=0;stairOn=false;specMode=1;
+syncLenses();updateGuide();updateStory();
+
+// J is right-continuous here: the complete credit is booked at a birth.
+// Arc printing still takes one beat. Riemann's inversion instead assigns
+// midpoint values exactly at jumps; the notes distinguish that convention.
+const jDenominator=27720;
+const jBirths=[];let jUnits=0;
+for(let q=2;q<=limit;q++){
+ const fs=factorize(q);if(fs.every(p=>p===fs[0])){
+  const k=fs.length,units=jDenominator/k;jUnits+=units;
+  jBirths.push({q,p:fs[0],k,units,total:jUnits});
+ }
+}
+function jThrough(x){let lo=0,hi=jBirths.length;while(lo<hi){const mid=(lo+hi)>>1;if(jBirths[mid].q<=x)lo=mid+1;else hi=mid;}return lo;}
+function jValue(x){const end=jThrough(x);return end?jBirths[end-1].total/jDenominator:0;}
+function jFraction(units){
+ const whole=Math.floor(units/jDenominator),rem=Math.round(units-whole*jDenominator);
+ if(!rem)return String(whole);
+ const gcd=(a,b)=>b?gcd(b,a%b):a,d=gcd(rem,jDenominator),a=rem/d,b=jDenominator/d;
+ const small={'1/2':'½','1/3':'⅓','2/3':'⅔','1/4':'¼','3/4':'¾','1/6':'⅙','5/6':'⅚'};
+ return (whole?whole+' ':'')+(small[a+'/'+b]||a+'/'+b);
+}
+const jButton=document.createElement('button');jButton.textContent='J ledger';jButton.setAttribute('popovertarget','jBubble');document.querySelector('.north-west').appendChild(jButton);
+const jBubble=document.createElement('section');jBubble.id='jBubble';jBubble.className='bubble j-bubble';jBubble.setAttribute('popover','manual');jBubble.setAttribute('aria-label','Riemann weighted prime-power ledger');
+jBubble.innerHTML=`<div class="bubble-head"><b>J · a ledger of births</b><button popovertarget="jBubble" popovertargetaction="hide" aria-label="Close J ledger">×</button></div>
+ <p id="jIntro" class="muted">Prime: <b>1</b> credit. Prime square: <b>½</b>. Prime cube: <b>⅓</b>. Only new arcs contribute.</p>
+ <div id="jReceipts" aria-label="Contributions from recent births"></div>
+ <div class="j-total"><span id="jAt">At beat 1</span><output id="jTotal">0</output></div>
+ <p id="jEvent">No prime-power births yet.</p>
+ <p id="jEarlier" class="muted">Bar height shows the contribution; a full bar is 1.</p>
+ <div class="button-row"><button data-j-beat="3">Watch 4 next</button><button data-j-beat="7">Watch 8 next</button><button data-j-beat="9">Total at 10</button></div>`;
+stage.appendChild(jBubble);
+for(const b of jBubble.querySelectorAll('[data-j-beat]'))b.onclick=()=>moveClock(+b.dataset.jBeat);
+const jCards=new Map();let jStamp=-1;
+function updateJLedger(){
+ const n=Math.floor(t),end=jThrough(n),shown=jBirths.slice(Math.max(0,end-7),end),current=shown.find(e=>e.q===n);
+ if(n!==jStamp){
+  jStamp=n;
+  for(const [q,node] of jCards)if(!shown.some(e=>e.q===q)){node.remove();jCards.delete(q);}
+  for(const e of shown){
+   if(!jCards.has(e.q)){const node=document.createElement('div');node.className='j-receipt';node.dataset.q=e.q;node.style.color=factorColour(e.p);node.innerHTML='<span class="j-credit">'+jFraction(e.units)+'</span><span class="j-bar-slot"><i style="height:'+(100/e.k)+'%"></i></span><span>'+e.q+'</span>';node.setAttribute('aria-label','Birth '+e.q+' contributes '+(e.k===1?'1':'1/'+e.k));jCards.set(e.q,node);}
+   $('jReceipts').appendChild(jCards.get(e.q));
+  }
+  $('jAt').textContent='J at beat '+n;$('jTotal').textContent=jFraction(end?jBirths[end-1].total:0);
+  $('jEvent').textContent=n===1?'Start with an empty ledger. Use forward one.':current?(current.k===1?n+' is prime: one whole credit.':n+' is a prime '+(current.k===2?'square':current.k===3?'cube':'power')+': '+jFraction(current.units)+' of a credit.') :n+' has no new prime-power arc. The total stays still.';
+  const earlier=end>7?jBirths[end-8].total:0;
+  $('jIntro').textContent=earlier?'Earlier births: '+jFraction(earlier)+'. New credits: 1 for a prime, ½ for a square, ⅓ for a cube.':'Prime: 1 credit. Prime square: ½. Prime cube: ⅓. Only new arcs contribute.';
+  $('jEarlier').textContent=earlier?'Earlier births: '+jFraction(earlier)+'. A full bar is 1.':'Bar height shows the contribution; a full bar is 1.';
+ }
+ for(const [q,node] of jCards){node.classList.toggle('j-current',q===n);node.style.setProperty('--pulse',String(q===n?1-(t-n):0));}
+ if(!jBubble.matches(':popover-open')||!current)return;
+ // Point out the actual newborn arc, in the clock's current radius law and
+ // orientation. This halo is phase-driven, so stepping back retraces it.
+ const rad=clockRadius(current.q),sp=panelSpan(current.q,t),a=sp.c0-sp.w/2;
+ const u=(1-Math.cos(Math.PI*reflectionMix))/2,x=C+rad*Math.cos(a),y=C+rad*Math.sin(a);
+ const X=C+(1-u)*(x-C)-u*(y-C),Y=C-u*(x-C)+(1-u)*(y-C);
+ g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=.4+.6*(1-(t-n));g2.strokeStyle=factorColour(current.p);g2.lineWidth=4;g2.beginPath();g2.arc(X,Y,17,0,2*Math.PI);g2.stroke();g2.restore();
+}
+const guideBeforeJ=updateGuide;updateGuide=function(){guideBeforeJ();updateJLedger();};
+jBubble.showPopover();updateJLedger();
+
+// Two distinct infinite-series coefficient sequences, connected by a visual
+// interpolation, not the logarithm of a finite partial sum.
+let bridgePrime=2,bridgeAim=0,bridgeMix=0,areaAim=0,areaMix=0,ladderAim=0,ladderMix=0,bridgeStamp=0,ladderPrevious=null;
+function logCoefficient(n){if(n<2)return 0;const f=factorize(n);return f.every(p=>p===f[0])?1/f.length:0;}
+function normalizedArea(k,u){return Math.pow(u,k)/k;}
+const whyJ=document.createElement('button');whyJ.textContent='Why these fractions?';whyJ.id='whyJ';jBubble.querySelector('.button-row').prepend(whyJ);
+const bridge=document.createElement('section');bridge.id='bridgeBubble';bridge.className='bubble bridge-bubble';bridge.setAttribute('popover','manual');bridge.setAttribute('aria-label','From Euler factors to the J ledger');
+bridge.innerHTML=`<div class="bubble-head"><b>From the product to J</b><button popovertarget="bridgeBubble" popovertargetaction="hide" aria-label="Close J explanation">×</button></div>
+ <div class="bridge-primes button-row"><span>A prime’s ladder</span><button data-bridge-prime="2" aria-pressed="true">2</button><button data-bridge-prime="3" aria-pressed="false">3</button><button data-bridge-prime="5" aria-pressed="false">5</button></div>
+ <div class="bridge-coefficients"><label for="bridgeExpansion">Take the logarithm <output id="bridgeExpansionRead">ζ</output></label><input id="bridgeExpansion" type="range" min="0" max="1" step=".01" value="0"><div id="bridgeTerms"></div><p id="bridgeExpansionNote" class="muted"></p></div>
+ <div class="bridge-areas"><svg id="bridgeAreas" viewBox="0 0 300 94" role="img" aria-label="Unit areas giving the coefficients one, one half, and one third"></svg><label for="bridgeSweep">Trace the areas <output id="bridgeSweepRead">u = 0</output></label><input id="bridgeSweep" type="range" min="0" max="1" step=".01" value="0"></div>
+ <p class="muted bridge-meaning">log[1/(1−z)] = ∫₀ᶻ (1+v+v²+…)dv, with z=p⁻ˢ. The unit areas multiply z, z², z³. J counts those areas at birth.</p>
+ <div class="button-row bridge-actions"><button id="bridgeVisit">Visit 10</button><button id="bridgeCompare">Coefficients</button><button id="bridgeTrace">Trace areas</button><button id="bridgeLadder" aria-pressed="false">Log ladder</button><button id="bridgeLedger">See J</button></div>`;
+stage.appendChild(bridge);
+whyJ.onclick=()=>{jBubble.hidePopover();bridge.showPopover();};
+$('bridgeLedger').onclick=()=>{bridge.hidePopover();jBubble.showPopover();};
+$('bridgeVisit').onclick=()=>moveClock(10);
+$('bridgeCompare').onclick=()=>bridge.classList.remove('area-face');
+$('bridgeTrace').onclick=()=>{bridge.classList.add('area-face');areaAim=areaAim>.99?0:1;$('bridgeSweep').value=areaAim;};
+$('bridgeExpansion').oninput=e=>bridgeAim=+e.target.value;
+$('bridgeSweep').oninput=e=>areaAim=+e.target.value;
+$('bridgeLadder').onclick=()=>{ladderAim=1-ladderAim;$('bridgeLadder').setAttribute('aria-pressed',String(!!ladderAim));if(ladderAim){ladderPrevious={logRad,radialAim};logRad=true;radialAim=0;$('radialDial').value=0;}else if(ladderPrevious&&logRad&&radialAim===0){logRad=ladderPrevious.logRad;radialAim=ladderPrevious.radialAim;$('radialDial').value=radialAim;}};
+for(const b of bridge.querySelectorAll('[data-bridge-prime]'))b.onclick=()=>{bridgePrime=+b.dataset.bridgePrime;for(const q of bridge.querySelectorAll('[data-bridge-prime]'))q.setAttribute('aria-pressed',String(q===b));};
+const bridgeTerms=[];
+for(let n=1;n<=12;n++){const node=document.createElement('div');node.className='bridge-term';node.dataset.n=n;node.innerHTML='<span>'+n+'</span><i></i><small></small>';$('bridgeTerms').appendChild(node);bridgeTerms.push(node);}
+function updateBridge(){
+ const now=performance.now(),dt=bridgeStamp?Math.min(.05,(now-bridgeStamp)/1000):0;bridgeStamp=now;const e=1-Math.exp(-dt*7);
+ bridgeMix+=(bridgeAim-bridgeMix)*e;areaMix+=(areaAim-areaMix)*e;ladderMix+=(ladderAim-ladderMix)*e;
+ const shade=factorColour(bridgePrime);
+ if(!bridge.matches(':popover-open')){drawBridgeLadder(shade);return;}
+ $('bridgeExpansionRead').textContent=bridgeMix<.005?'ζ':bridgeMix>.995?'log ζ':'changing';
+ $('bridgeExpansionNote').textContent=bridgeMix<.005?'Each integer has coefficient 1. Shown: arrived terms through 12.':bridgeMix>.995?'Only prime powers remain, with coefficient 1/k. These are infinite-series coefficients, not log of this finite sample.':'Comparing two expansions; the in-between picture is a visual morph.';
+ for(let n=1;n<=12;n++){
+  const node=bridgeTerms[n-1],c=logCoefficient(n),value=1+(c-1)*bridgeMix,arrived=n<=Math.floor(t);
+  node.style.visibility=arrived?'visible':'hidden';node.style.color=factorColour(n);node.style.opacity=c?1:1-.87*bridgeMix;
+  node.querySelector('i').style.setProperty('--coefficient',String(value));
+  node.querySelector('small').textContent=value<.005?'0':Math.abs(value-1)<.005?'1':bridgeMix>.995?jFraction(Math.round(c*jDenominator)):value.toFixed(1);
+ }
+ let svg='';
+ for(let k=1;k<=3;k++){
+  const x=14+(k-1)*100,y=22,w=70,h=43,q=Math.pow(bridgePrime,k);let curve='',fill='M '+x+' '+(y+h);
+  for(let i=0;i<=48;i++){const u=i/48,xx=x+w*u,yy=y+h-h*Math.pow(u,k-1);curve+=(i?' L ':'M ')+xx+' '+yy;}
+  for(let i=0;i<=48;i++){const u=areaMix*i/48;fill+=' L '+(x+w*u)+' '+(y+h-h*Math.pow(u,k-1));}fill+=' L '+(x+w*areaMix)+' '+(y+h)+' Z';
+  const label=k===1?'1':k===2?'u':'u²',credit=areaMix>.995?jFraction(jDenominator/k):normalizedArea(k,areaMix).toFixed(2);
+  svg+='<g fill="none" stroke="'+shade+'"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" opacity=".3"/><path d="'+fill+'" fill="'+shade+'" fill-opacity=".38" stroke="none"/><path d="'+curve+'" stroke-width="1.5"/><path d="M '+(x+w*areaMix)+' '+y+' V '+(y+h)+'" stroke-dasharray="2 2"/></g><g fill="'+shade+'" text-anchor="middle" font-family="monospace" font-size="10"><text x="'+(x+w/2)+'" y="14">'+q+' · '+label+'</text><text x="'+(x+w/2)+'" y="81">area '+credit+'</text></g>';
+ }
+ $('bridgeAreas').innerHTML=svg;$('bridgeSweepRead').textContent='u = '+areaMix.toFixed(2);
+ drawBridgeLadder(shade);
+}
+function drawBridgeLadder(shade){
+ if(ladderMix<.005)return;
+ // An explicit log ruler has origin log(1)=0 at the axle. Fade this measure
+ // out if the user changes to a radius law where those distances differ.
+ const alpha=ladderMix*spacingMix*(1-radialMix);if(alpha<.005)return;
+ const angle=3*Math.PI/4,dx=Math.cos(angle),dy=Math.sin(angle),u=(1-Math.cos(Math.PI*reflectionMix))/2;
+ const xy=r=>{const x=r*dx,y=r*dy;return [C+(1-u)*x-u*y,C-u*x+(1-u)*y];};
+ g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=alpha;g2.strokeStyle=shade;g2.fillStyle=shade;g2.lineWidth=2;g2.font='16px ui-monospace,monospace';g2.textAlign='center';
+ const end=xy(R);g2.beginPath();g2.moveTo(C,C);g2.lineTo(...end);g2.stroke();g2.fillText('1',C-15,C+18);
+ for(let k=1,q=bridgePrime;q<=t;k++,q*=bridgePrime){
+  const r=R*Math.log(q)/Math.log(Math.max(t,2.0001)),[x,y]=xy(r);g2.globalAlpha=alpha;g2.beginPath();g2.arc(x,y,6,0,7);g2.fill();g2.fillText(q+' · '+jFraction(jDenominator/k),x-32,y);
+  const previous=xy(R*Math.log(q/bridgePrime)/Math.log(Math.max(t,2.0001)));g2.lineWidth=k===1?9:4;g2.globalAlpha=alpha*(k===1?1:.55);g2.beginPath();g2.moveTo(...previous);g2.lineTo(x,y);g2.stroke();g2.lineWidth=2;
+ }
+ g2.restore();
+}
+const guideBeforeBridge=updateGuide;updateGuide=function(){guideBeforeBridge();updateBridge();};
+
+// Initial orientation is the ordinary complex plane: real right, imaginary up.
+reflectionAim=reflectionMix=1;$('reflect').setAttribute('aria-pressed','true');
+$('tauDial').min=-35;
+const complexInput=document.createElement('div');complexInput.className='complex-input';
+const sigmaGroup=$('sigmaSlot').parentElement,tauGroup=$('tauSlot').parentElement;
+sigmaGroup.before(complexInput);
+complexInput.append(...sigmaGroup.children,...tauGroup.children);sigmaGroup.remove();tauGroup.remove();
+complexInput.insertAdjacentHTML('beforeend','<div id="complexPad" aria-hidden="true"><span id="complexDot"></span></div>');
+function pickComplex(e){const b=$('complexPad').getBoundingClientRect();tune(.2+2.8*Math.max(0,Math.min(1,(e.clientX-b.left)/b.width)),35-70*Math.max(0,Math.min(1,(e.clientY-b.top)/b.height)));}
+$('complexPad').onpointerdown=e=>{e.currentTarget.setPointerCapture(e.pointerId);pickComplex(e);};
+$('complexPad').onpointermove=e=>{if(e.currentTarget.hasPointerCapture(e.pointerId))pickComplex(e);};
+const productButton=document.createElement('button');productButton.textContent='Product';productButton.id='productView';productButton.setAttribute('popovertarget','productBubble');$('layerButtons').append(productButton);
+const productBubble=document.createElement('section');productBubble.id='productBubble';productBubble.className='bubble product-bubble';productBubble.setAttribute('popover','manual');
+productBubble.innerHTML=`<div class="bubble-head"><b>Euler product · one factor at a time</b><button popovertarget="productBubble" popovertargetaction="hide" aria-label="Close product graph">×</button></div>
+<canvas id="productGraph" width="600" height="300" aria-label="Complex plane: prime-coloured partial products, blue finite sum, gold zeta"></canvas>
+<div class="product-tools"><button id="productPrev" aria-label="Previous prime factor">←</button><button id="productNext" aria-label="Next prime factor">→</button><span>View ±</span><input id="productRange" type="range" min="0" max="3" step=".01" value=".30103" aria-label="Logarithmic graph extent"><output id="productExtent">2</output></div>
+<p id="productDetails"></p><p id="productStatus"></p>`;stage.append(productBubble);
+const analyticPrimes=[];for(let p=2;p<=5001;p++)if(isPrime(p))analyticPrimes.push(p);
+function eulerPath(x,sigma,tau){
+ let z=[1,0];const points=[{p:1,z:[1,0],factor:[1,0]}];
+ for(const p of analyticPrimes){if(p>x)break;const factor=div([1,0],sub([1,0],power(p,sigma,tau)));z=mul(z,factor);points.push({p,z:[...z],factor});}
+ const next=Math.floor(x)+1,fr=x-Math.floor(x);
+ let arriving=null;
+ if(fr>0&&isPrime(next)){const f=div([1,0],sub([1,0],power(next,sigma,tau))),r=Math.pow(abs(f),fr),a=Math.atan2(f[1],f[0])*fr;arriving=mul(z,[r*Math.cos(a),r*Math.sin(a)]);}
+ return {points,z,arriving};
+}
+let selectedProduct=-1,productHitPoints=[];
+$('productPrev').onclick=()=>{const last=eulerPath(t,SIGMA,TAUV).points.length-1;selectedProduct=Math.max(0,(selectedProduct<0?last:selectedProduct)-1);};
+$('productNext').onclick=()=>{const last=eulerPath(t,SIGMA,TAUV).points.length-1;selectedProduct=Math.min(last,(selectedProduct<0?last:selectedProduct)+1);};
+$('productGraph').onpointerdown=e=>{const b=e.currentTarget.getBoundingClientRect(),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;let best=Infinity;for(const p of productHitPoints){const d=Math.hypot(p.x-x,p.y-y);if(d<best){best=d;selectedProduct=p.i;}}};
+const complexText=z=>z.every(Number.isFinite)?z[0].toFixed(4)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toFixed(4)+'i':'outside numeric range';
+function drawProductGraph(){
+ if(!$('productBubble').matches(':popover-open'))return;
+ const ctx=$('productGraph').getContext('2d'),extent=10**+$('productRange').value,unit=125/extent,X=z=>300+unit*z[0],Y=z=>150-unit*z[1];
+ ctx.clearRect(0,0,600,300);ctx.font='12px ui-monospace';ctx.lineWidth=1;ctx.strokeStyle='#71897b66';ctx.fillStyle='#b0bfb6';
+ for(let i=-2;i<=2;i++){const v=i*extent/2;ctx.beginPath();ctx.moveTo(X([v,0]),25);ctx.lineTo(X([v,0]),275);ctx.moveTo(50,Y([0,v]));ctx.lineTo(550,Y([0,v]));ctx.stroke();ctx.fillText(v.toPrecision(2),X([v,0])+3,165);if(i)ctx.fillText(v.toPrecision(2),304,Y([0,v])-4);}
+ ctx.fillText('Re →',550,146);ctx.fillText('Im ↑',308,16);
+ const data=eulerPath(t,SIGMA,TAUV),points=data.points,idx=selectedProduct<0?points.length-1:Math.min(selectedProduct,points.length-1),selected=points[idx];productHitPoints=[];
+ ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
+ function dot(z,col,r,label){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<20||y>280)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();if(label)ctx.fillText(label,x+7,y-7);}
+ for(let i=0;i<points.length;i++){const q=points[i],col=i?'hsl('+hueOf(q.p)+' 68% 68%)':'#ddd';if(i&&q.z.every(Number.isFinite)&&points[i-1].z.every(Number.isFinite)){ctx.strokeStyle=col;ctx.lineWidth=i===idx?3:1.6;ctx.beginPath();ctx.moveTo(X(points[i-1].z),Y(points[i-1].z));ctx.lineTo(X(q.z),Y(q.z));ctx.stroke();}dot(q.z,col,i===idx?5:2,i===idx?(i?'p='+q.p:'start: 1'):'');if(Math.abs(X(q.z)-300)<300&&Math.abs(Y(q.z)-150)<130)productHitPoints.push({i,x:X(q.z),y:Y(q.z)});}
+ if(data.arriving){ctx.strokeStyle='#ddd8';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(data.z),Y(data.z));ctx.lineTo(X(data.arriving),Y(data.arriving));ctx.stroke();ctx.setLineDash([]);}
+ const sum=continuumSum(t,SIGMA,TAUV).z,pole=Math.hypot(SIGMA-1,TAUV)<1e-8,target=pole?[Infinity,0]:zeta(SIGMA,TAUV);
+ dot(sum,'#87bff2',4,'Σ');dot(target,'#e8bd65',4,'ζ');ctx.restore();
+ $('productExtent').textContent=extent.toPrecision(3);
+ $('productDetails').textContent=(idx?'p='+selected.p+' · × (1 − '+selected.p+'⁻ˢ)⁻¹ = '+complexText(selected.factor):'Empty product = 1')+' → '+complexText(selected.z);
+ const error=abs(sub(data.z,target));
+ $('productStatus').textContent=(SIGMA>1?'σ > 1: sum and product converge to gold ζ. ':'σ ≤ 1: finite products only; no convergence to the continued ζ is promised. ')+(pole?'ζ has a pole here. ':'Product error '+error.toPrecision(3)+'. ')+points.slice(1).length+' prime factors · blue Σ. Dashed: arriving factor.'+(Math.abs(data.z[0])*unit>290||Math.abs(data.z[1])*unit>130?' Product outside view; widen ±.':'');
+}
+$('viewBubble').insertAdjacentHTML('beforeend','<p id="psiExplanation">Prime count plots (ψ − smooth)/√x on the numbered axis. Gold: ledger residual; green: finite zero-pair approximation. ψ jumps by log p at pᵏ; between jumps the subtracted trend keeps moving. Smooth = x − log(2π) − ½ log(1 − x⁻²). At a jump the zero formula targets the midpoint.</p>');
+const analyticGuide=updateGuide;
+updateGuide=function(){analyticGuide();$('complexDot').style.left=(SIGMA-.2)/2.8*100+'%';$('complexDot').style.bottom=(TAUV+35)/70*100+'%';drawProductGraph();
+ $('stair').title='ψ = '+psiSum.toFixed(4)+'; graph: (ψ − smooth)/√x';
+ $('psiExplanation').hidden=stairMix<.005;
+};
+
+</script>
 </body>
 </html>

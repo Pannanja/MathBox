@@ -1,0 +1,49 @@
+from pathlib import Path
+root=Path(__file__).resolve().parent.parent
+f=root/'orrery-of-eratosthenes.html'
+p=f.read_text(encoding='utf-8')
+p=p.replace('</style>',(root/'.review/viewport.css').read_text(encoding='utf-8')+'\n</style>',1)
+p=p.replace('</script>',(root/'.review/viewport.js').read_text(encoding='utf-8')+'\n</script>',1)
+p=p.replace('</style>',(root/'.review/j-ledger.css').read_text(encoding='utf-8')+'\n</style>',1)
+p=p.replace('</script>',(root/'.review/j-ledger.js').read_text(encoding='utf-8')+'\n</script>',1)
+p=p.replace('</style>',(root/'.review/j-bridge.css').read_text(encoding='utf-8')+'\n</style>',1)
+p=p.replace('</script>',(root/'.review/j-bridge.js').read_text(encoding='utf-8')+'\n</script>',1)
+p=p.replace('const u=trip.elapsed/trip.duration, blend=u*u*(3-2*u);','const u=trip.elapsed/trip.duration, blend=1-(1-u)*(1-u);')
+# Draw the sum after the glass beam, so aligned vectors are visible at tau=0.
+p=p.replace('  drawContinuum(ms, rad);','')
+p=p.replace('  drawPrimeGlass(rad,n);','  drawPrimeGlass(rad,n);\n  drawContinuum(ms,rad);')
+p=p.replace('  const unit=R*.50,sy=C+900*separateMix,X=z=>C+unit*z[1],Y=z=>sy-unit*z[0];', '  const sumR=R*(1-.68*separateMix),unit=sumR,sx=C+R*.58*separateMix,sy=C+R*.58*separateMix,X=z=>sx+unit*z[1],Y=z=>sy-unit*z[0];')
+p=p.replace('g2.transform(ra,rb,rb,ra,C*(1-ra)-rb*sy,sy*(1-ra)-rb*C);','g2.transform(ra,rb,rb,ra,sx*(1-ra)-rb*sy,sy*(1-ra)-rb*sx);')
+p=p.replace('g2.arc(C,sy,R,0,7)','g2.arc(sx,sy,sumR+8,0,7)')
+p=p.replace("g2.strokeStyle='#87998f';g2.lineWidth=1;g2.stroke();", "g2.strokeStyle='#87998f';g2.lineWidth=1;g2.beginPath();g2.arc(sx,sy,sumR,0,7);g2.stroke();")
+p=p.replace('g2.arc(C,sy,R-3,0,2*Math.PI)','g2.arc(sx,sy,sumR+8,0,2*Math.PI)')
+p=p.replace('abs(z)*unit>R-3','abs(z)*unit>sumR+8').replace('abs(add(raw.z,z))*unit>R-3','abs(add(raw.z,z))*unit>sumR+8')
+p=p.replace('g2.moveTo(C-R,sy);g2.lineTo(C+R,sy);g2.moveTo(C,sy-R);g2.lineTo(C,sy+R);','g2.moveTo(sx-sumR,sy);g2.lineTo(sx+sumR,sy);g2.moveTo(sx,sy-sumR);g2.lineTo(sx,sy+sumR);')
+p=p.replace('    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?1.7:1)+3*fresh);','    lensArrow(X(a),Y(a),X(b),Y(b),"#0c1512",(k<8?7:4)+3*fresh);\n    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);')
+p=p.replace("g2.fillText('SUM · SAME BEAT, ITS OWN RULER',C,sy-R+28);", "g2.fillText('SUM · 1 = radius',sx,sy-sumR-12);")
+p=p.replace('const bx=C-unit/2,by=sy+R-30;', 'const bx=sx-unit/2,by=sy+sumR-18;')
+p=p.replace("g2.fillText('1',C,by-10)","g2.fillText('1',sx,by-10)")
+# Unused old slogan must not remain even in the hidden shell.
+p=p.replace('<small>One beat. One discovery.</small>','')
+p=p.replace('</style>',(root/'.review/analytic-views.css').read_text(encoding='utf-8')+'\n</style>',1)
+p=p.replace('</script>',(root/'.review/analytic-views.js').read_text(encoding='utf-8')+'\n</script>',1)
+# Give the prime-count residual a fixed, numbered coordinate system.
+a=p.index('    // one turn of the leading vector =')
+b=p.index('    let cx = C, cy = C, sum = 0;',a)
+p=p[:a]+'''    g2.strokeStyle='#87998f88';g2.fillStyle='#b2c6ba';
+    g2.lineWidth=1;g2.font='13px ui-monospace';g2.textAlign='left';
+    g2.beginPath();g2.moveTo(C,C-S);g2.lineTo(C,C+S);g2.stroke();
+    for(let d=-1;d<=1.001;d+=.25){
+      const y=yOf(d);g2.beginPath();g2.moveTo(C-7,y);g2.lineTo(C+7,y);g2.stroke();
+      g2.fillText(d.toFixed(2),C+10,y-9);
+    }
+    g2.fillText('(ψ − smooth) / √x',C-120,C+S+24);
+''' + p[b:]
+p=p.replace("g2.fillText('\\u03c8 = ' + psiSum.toFixed(2), C + 27, yN);", "g2.fillText('residual = ' + dN.toFixed(3), C + 65, yN);")
+# Keep the coordinate ruler legible over the glass panes.
+a=p.index('  if (stairMix > .005 && t > 1.000001) {')
+b=p.index('  const juice =',a)
+psi_drawing=p[a:b]
+p=p[:a]+p[b:]
+p=p.replace('  drawContinuum(ms,rad);','  drawContinuum(ms,rad);\n'+psi_drawing,1)
+f.write_text(p,encoding='utf-8')

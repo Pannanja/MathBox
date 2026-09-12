@@ -1,0 +1,24 @@
+.tune-bubble:popover-open{display:grid;grid-template-columns:155px 1fr;gap:4px 14px;width:min(370px,calc(100vw - 28px))}
+.tune-bubble .bubble-head,.tune-bubble .number-row,.tune-bubble #sumReadout{grid-column:1/-1}
+.complex-input{position:relative;height:166px;grid-column:1;grid-row:2/5;padding:0 0 0 28px}
+.complex-input #tauDial{position:absolute;left:0;top:20px;writing-mode:vertical-lr;direction:rtl;width:18px;height:112px;margin:0}
+.complex-input #sigmaDial{position:absolute;left:28px;bottom:7px;width:125px;height:18px;margin:0}
+.complex-input #sigmaSlot,.complex-input #tauSlot{display:contents}
+.complex-input label{margin:0;font:11px var(--mono);white-space:nowrap}
+.complex-input label[for=tauDial]{position:absolute;left:0;top:0}
+.complex-input label[for=sigmaDial]{position:absolute;bottom:28px;left:28px}
+#complexPad{position:absolute;left:29px;top:22px;width:123px;height:102px;touch-action:none;border:1px solid #61796b;cursor:crosshair;background:linear-gradient(transparent 49.5%,#71897b66 50%,transparent 50.5%)}
+#complexPad::after{content:'σ →';position:absolute;bottom:2px;right:3px;font:10px var(--mono);color:var(--dim)}
+#complexDot{position:absolute;width:7px;height:7px;background:var(--brass);border-radius:50%;transform:translate(-50%,50%);pointer-events:none}
+.tune-bubble .tune-control,.tune-bubble #zeroShortcut{grid-column:2!important}
+.tune-bubble #zeroShortcut{align-self:start;margin:0}
+.tune-bubble .number-row{flex-wrap:wrap}
+.product-bubble{inset:58px 16px auto auto;width:min(440px,calc(100vw - 28px))}
+#productGraph{display:block;width:100%;height:auto;aspect-ratio:600/300;touch-action:none}
+#productDetails,#productStatus{font:11px/1.4 var(--mono);min-height:30px}
+.product-tools{display:flex;gap:7px;align-items:center;font-size:11px}.product-tools button{padding:3px 8px}.product-tools input{max-width:120px}
+#psiExplanation{font-size:11px;line-height:1.4;color:var(--dim)}
+@media(max-height:500px){.view-bubble:popover-open{padding-top:7px;padding-bottom:7px}.product-bubble #productGraph{width:224px;height:112px;margin:auto}}
+@media(max-height:500px){.view-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.view-bubble .bubble-head,.view-bubble>p{grid-column:1/-1}.view-bubble #layerButtons{grid-column:1/-1}.view-bubble #orientationButtons{grid-column:1/-1}.view-bubble label[for=radialDial]{grid-column:1;grid-row:4}.view-bubble #rulerSlot{grid-column:1;grid-row:5}.view-bubble label[for=separateDial]{grid-column:2;grid-row:4}.view-bubble #splitSlot{grid-column:2;grid-row:5}.view-bubble .button-row button{padding:3px 8px}}
+@media(max-width:650px) and (min-height:501px){.product-bubble{top:90px}}
+@media(max-height:500px){.tune-bubble:popover-open{width:min(440px,calc(100vw - 28px));gap:0 14px}.complex-input{height:140px}.complex-input #tauDial{height:88px}#complexPad{height:78px}.product-bubble{top:44px;width:min(520px,calc(100vw - 28px));padding:8px 12px}#productGraph{height:112px;aspect-ratio:auto}.product-bubble .bubble-head{margin:0}.product-bubble p{margin:3px 0 0}#productDetails,#productStatus{min-height:0;font-size:10px}.view-bubble{width:min(460px,calc(100vw - 28px))}#psiExplanation{font-size:10px}}

@@ -1,0 +1,34 @@
+/* An open plotting surface, not a floating dialog. */
+#productBubble.euler-workspace{border:0;border-left:1px solid #8da89a24;border-radius:0;background:linear-gradient(110deg,#10201a44,transparent);box-shadow:none;padding:12px 18px;top:65px;right:0;width:48vw}
+#productBubble.euler-workspace .bubble-head{font:italic 24px Georgia,serif;color:#d6e5da;letter-spacing:.03em;margin:0 0 10px}
+#productBubble.euler-workspace #productGraph{border:0;background:transparent;cursor:grab;touch-action:none;min-height:110px}
+#eulerInputs{justify-content:space-between;gap:8px}
+#eulerInputs .complex-input{width:240px;height:54px;display:flex;gap:12px;align-items:center}
+#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{position:static;width:auto;display:flex;gap:5px;align-items:center}
+#eulerInputs input[type=number]{width:90px}
+#eulerInputs #complexPad,#eulerInputs #sigmaDial,#eulerInputs #tauDial,#eulerInputs #zeroShortcut{display:none}
+#planeActions{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;align-items:center}
+#planeActions label{white-space:nowrap}#planeActions input{accent-color:#bd97df}
+#tauSweep{display:flex;align-items:center;gap:8px;font-size:11px}#tauSweep label{white-space:nowrap}
+#tauSweep input[type=number]{width:48px;background:transparent;border:0;border-bottom:1px solid #819d8a66;color:inherit}
+#tauScrub{flex:1;min-width:35px;accent-color:#bd97df}
+#planeHint{font-size:10px;color:#91a99b;margin:2px 0 8px}
+#productBubble .product-tools{opacity:.85}#productBubble #productRange{display:none}
+#productBubble #productDetails{color:#aac5b7}#productBubble #productStatus{font-size:10px;color:#8fa296}
+@media(max-width:700px) and (min-height:501px){#productBubble.euler-workspace{top:37%;left:8px;right:8px;width:auto;height:calc(63dvh - 125px);padding:6px;border-left:0;border-top:1px solid #8da89a24}#productBubble.euler-workspace .bubble-head{font-size:18px;margin:0}#eulerInputs{flex-wrap:wrap;gap:0}#eulerInputs .complex-input{height:28px;width:100%;justify-content:center}#planeActions{font-size:9px;gap:5px}#planeHint{font-size:8px;margin:0}#tauSweep{gap:3px;font-size:9px}#tauSweep button{font-size:9px;padding:3px}#productBubble #productStatus{font-size:8px}#productBubble.euler-workspace #productGraph{min-height:60px}}
+@media(max-height:600px) and (min-aspect-ratio:1/1){#productBubble.euler-workspace:popover-open{display:flex;gap:1px;width:57vw;top:40px;height:calc(100dvh - 85px);padding:3px 6px}#productBubble.euler-workspace .bubble-head{font-size:14px;margin:0}#productBubble.euler-workspace #productGraph{height:auto;min-height:40px}#eulerInputs{flex-direction:row}#eulerInputs .complex-input{height:23px;width:auto;gap:3px}#eulerInputs input[type=number]{width:54px}#planeActions{font-size:8px;gap:1px}#planeActions button{padding:1px;font-size:8px}#tauSweep{font-size:8px;gap:2px}#tauSweep button{font-size:8px;padding:1px}#planeHint{font-size:8px;margin:0}#productBubble #productStatus{font-size:8px}}
+#planeNotes{inset:auto 20px 100px auto;width:min(440px,calc(100vw - 40px));font-size:12px;line-height:1.5}
+#planeNotes p{margin:10px 0}#planeNotes #sectorMeasure{font-size:11px}
+#productBubble.euler-workspace #productGraph{flex:1}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:32%;height:calc(68dvh - 140px);gap:1px}
+ #productBubble.euler-workspace .bubble-head{font-size:15px}
+ #productBubble.euler-workspace #productGraph{min-height:35px}
+ #eulerInputs .complex-input{height:23px}#eulerInputs input[type=number]{height:20px;width:80px;font-size:10px}
+ #planeActions{gap:2px;font-size:8px}#planeActions button{font-size:8px;padding:2px}
+ #planeActions label{display:flex;align-items:center;gap:1px}#planeActions input{margin:1px;width:10px;height:10px}
+ #planeHint{font-size:7px}#tauSweep{font-size:8px}#tauSweep input[type=number]{width:30px}
+ #productBubble .product-tools{gap:3px}#productBubble .product-tools button{font-size:9px;padding:2px 5px}
+}
+@media(max-width:700px) and (min-height:501px){#productBubble.euler-workspace{height:calc(63dvh - 160px)}}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){#productBubble.euler-workspace{height:calc(68dvh - 160px)}}

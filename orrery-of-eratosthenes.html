@@ -91,8 +91,12 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{p
 .complex-input label{margin:0;font:11px var(--mono);white-space:nowrap}
 .complex-input label[for=tauDial]{position:absolute;left:0;top:0}
 .complex-input label[for=sigmaDial]{position:absolute;bottom:28px;left:28px}
+.complex-input label[for=tauExact]{position:absolute;left:28px;top:-3px;width:125px;align-items:center}
+.complex-input label[for=sigmaExact]{position:absolute;left:28px;bottom:28px;width:125px;align-items:center}
+.complex-input input[type=number]{width:104px;min-width:0;padding:2px 3px;font:11px var(--mono);height:22px}
 #complexPad{position:absolute;left:29px;top:22px;width:123px;height:102px;touch-action:none;border:1px solid #61796b;cursor:crosshair;background:linear-gradient(transparent 49.5%,#71897b66 50%,transparent 50.5%)}
 #complexPad::after{content:'σ →';position:absolute;bottom:2px;right:3px;font:10px var(--mono);color:var(--dim)}
+#complexPad{height:90px}
 #complexDot{position:absolute;width:7px;height:7px;background:var(--brass);border-radius:50%;transform:translate(-50%,50%);pointer-events:none}
 .tune-bubble .tune-control,.tune-bubble #zeroShortcut{grid-column:2!important}
 .tune-bubble #zeroShortcut{align-self:start;margin:0}
@@ -101,11 +105,134 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{p
 #productGraph{display:block;width:100%;height:auto;aspect-ratio:600/300;touch-action:none}
 #productDetails,#productStatus{font:11px/1.4 var(--mono);min-height:30px}
 .product-tools{display:flex;gap:7px;align-items:center;font-size:11px}.product-tools button{padding:3px 8px}.product-tools input{max-width:120px}
+.product-tools{gap:4px}.product-tools input{min-width:35px;flex:1}.product-tools output{white-space:nowrap;font-size:10px}
 #psiExplanation{font-size:11px;line-height:1.4;color:var(--dim)}
 @media(max-height:500px){.view-bubble:popover-open{padding-top:7px;padding-bottom:7px}.product-bubble #productGraph{width:224px;height:112px;margin:auto}}
 @media(max-height:500px){.view-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.view-bubble .bubble-head,.view-bubble>p{grid-column:1/-1}.view-bubble #layerButtons{grid-column:1/-1}.view-bubble #orientationButtons{grid-column:1/-1}.view-bubble label[for=radialDial]{grid-column:1;grid-row:4}.view-bubble #rulerSlot{grid-column:1;grid-row:5}.view-bubble label[for=separateDial]{grid-column:2;grid-row:4}.view-bubble #splitSlot{grid-column:2;grid-row:5}.view-bubble .button-row button{padding:3px 8px}}
 @media(max-width:650px) and (min-height:501px){.product-bubble{top:90px}}
 @media(max-height:500px){.tune-bubble:popover-open{width:min(440px,calc(100vw - 28px));gap:0 14px}.complex-input{height:140px}.complex-input #tauDial{height:88px}#complexPad{height:78px}.product-bubble{top:44px;width:min(520px,calc(100vw - 28px));padding:8px 12px}#productGraph{height:112px;aspect-ratio:auto}.product-bubble .bubble-head{margin:0}.product-bubble p{margin:3px 0 0}#productDetails,#productStatus{min-height:0;font-size:10px}.view-bubble{width:min(460px,calc(100vw - 28px))}#psiExplanation{font-size:10px}}
+@media(max-height:500px){#complexPad{height:64px}}
+
+#clockStage>#cv{pointer-events:auto}
+#clockStage .fx{pointer-events:auto;cursor:pointer}
+#clockStage .fx:focus-visible{outline:2px solid var(--brass)}
+#clockStage .linked-term .term-ink,#clockStage .linked-factor .factor-ink{text-shadow:0 0 8px currentColor,0 0 2px white!important;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+#linkedReadout{position:absolute;left:50%;transform:translateX(-50%);top:43px;max-width:calc(100vw - 220px);font:11px/1.4 var(--mono);color:var(--ivory);background:#101c17ed;border-radius:8px;padding:5px 9px;z-index:6;text-align:center;pointer-events:none}
+#clearLink{padding:3px 6px}
+@media(max-width:650px){#linkedReadout{top:83px;max-width:calc(100vw - 24px);width:max-content;font-size:10px}}
+@media(max-height:500px){#linkedReadout{top:40px;font-size:9px;max-width:calc(100vw - 24px)}}
+
+#clockStage>#cv{width:min(49vw,83vh);height:min(49vw,83vh);left:26vw;top:49%}
+#clockStage .proof{width:min(380px,43vw)}
+#productBubble.euler-workspace{inset:62px 14px auto auto;height:calc(100dvh - 180px);width:46vw;max-height:none;padding:14px;box-sizing:border-box}
+#productBubble.euler-workspace:popover-open{display:flex;flex-direction:column;gap:5px}
+#productBubble.euler-workspace #productGraph{width:100%;height:auto;min-height:0;flex:1;object-fit:contain;aspect-ratio:2}
+#eulerInputs{display:flex;gap:18px;align-items:center;justify-content:center;flex-shrink:0}
+#eulerInputs .complex-input{width:270px;height:156px;padding:0;flex-shrink:0}
+#eulerInputs .complex-input #complexPad{left:30px;top:25px;width:236px;height:90px}
+#eulerInputs .complex-input #sigmaDial{left:30px;width:236px;bottom:0}
+#eulerInputs .complex-input #tauDial{top:25px;height:90px}
+#eulerInputs .complex-input label[for=tauExact]{left:30px;top:0;width:236px}
+#eulerInputs .complex-input label[for=sigmaExact]{left:30px;bottom:21px;width:236px}
+#eulerInputs input[type=number]{width:154px;font-size:13px}
+#productBubble .product-tools input{max-width:none}
+#productBubble #productDetails,#productBubble #productStatus,#sectorMeasure{min-height:0;font-size:11px;line-height:1.4;margin:0}
+#sectorMeasure{color:var(--patina);border-top:1px solid var(--edge2);padding-top:6px}
+#linkedReadout{left:25%;max-width:42vw;font-size:10px}
+#clockStage .linked-factor .factor-ink{color:var(--highlight);text-shadow:0 0 8px var(--highlight)!important}
+#clockStage .linked-term .term-ink{text-shadow:0 0 7px currentColor!important;filter:saturate(1.8)}
+@media(max-width:700px) and (min-height:501px){
+ #clockStage>#cv{width:min(69vw,32vh);height:min(69vw,32vh);left:45%;top:22%}
+ #clockStage .proof{width:230px}
+ #productBubble.euler-workspace{top:38%;bottom:auto;height:calc(62dvh - 123px);left:10px;right:10px;width:auto;padding:8px;gap:2px}
+ #productBubble.euler-workspace .bubble-head{margin:0;font-size:12px}
+ #eulerInputs{gap:6px}#eulerInputs .complex-input{width:200px;height:108px}
+ #eulerInputs .complex-input #complexPad{width:168px;height:43px;top:24px}
+ #eulerInputs .complex-input #tauDial{height:43px;top:24px}
+ #eulerInputs .complex-input #sigmaDial,#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{width:168px}
+ #eulerInputs input[type=number]{width:125px;font-size:11px}
+ #productBubble #productStatus,#sectorMeasure,#productBubble #productDetails{font-size:9px;line-height:1.25}
+ #linkedReadout{top:80px;left:50%;max-width:92vw}#zeroShortcut button{font-size:10px;padding:4px}
+}
+@media(max-height:600px) and (min-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:42px;bottom:auto;height:calc(100dvh - 87px);padding:6px;gap:1px;width:57vw;right:6px}
+ #clockStage>#cv{width:37vw;height:37vw;left:20vw}
+ #productBubble.euler-workspace .bubble-head{font-size:11px;margin:0}
+ #eulerInputs{gap:4px}#eulerInputs .complex-input{width:150px;height:74px}
+ #eulerInputs .complex-input #complexPad{width:120px;height:15px;top:21px}
+ #eulerInputs .complex-input #tauDial{height:15px;top:21px}
+ #eulerInputs .complex-input #sigmaDial,#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{width:120px}
+ #eulerInputs input[type=number]{width:99px;font-size:10px;height:19px}
+ #productBubble #productStatus,#sectorMeasure,#productBubble #productDetails{font-size:8px;line-height:1.2}
+ #productBubble .product-tools{gap:2px}#productBubble .product-tools button{font-size:9px;padding:2px 4px}#zeroShortcut button{font-size:9px;padding:2px}
+ #sectorMeasure{padding-top:2px}
+}
+@media(max-height:600px) and (min-aspect-ratio:1/1){
+ #productBubble.euler-workspace:popover-open{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 94px auto auto auto auto;align-content:start;column-gap:4px}
+ #productBubble.euler-workspace .bubble-head,#productBubble .product-tools,#productDetails,#productStatus,#sectorMeasure{grid-column:1/-1}
+ #productBubble.euler-workspace #productGraph{grid-column:1;grid-row:2;width:100%;height:94px;align-self:center}
+ #eulerInputs{grid-column:2;grid-row:2;flex-direction:column;gap:0}
+ #eulerInputs #zeroShortcut{margin:0}#eulerInputs #zeroShortcut button{padding:0;font-size:8px}
+}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:31%;height:calc(69dvh - 123px)}
+ #clockStage>#cv{width:26vh;height:26vh;top:19%}
+ #eulerInputs .complex-input{height:85px}
+ #eulerInputs .complex-input #complexPad,#eulerInputs .complex-input #tauDial{height:21px}
+}
+
+/* An open plotting surface, not a floating dialog. */
+#productBubble.euler-workspace{border:0;border-left:1px solid #8da89a24;border-radius:0;background:linear-gradient(110deg,#10201a44,transparent);box-shadow:none;padding:12px 18px;top:65px;right:0;width:48vw}
+#productBubble.euler-workspace .bubble-head{font:italic 24px Georgia,serif;color:#d6e5da;letter-spacing:.03em;margin:0 0 10px}
+#productBubble.euler-workspace #productGraph{border:0;background:transparent;cursor:grab;touch-action:none;min-height:110px}
+#eulerInputs{justify-content:space-between;gap:8px}
+#eulerInputs .complex-input{width:240px;height:54px;display:flex;gap:12px;align-items:center}
+#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{position:static;width:auto;display:flex;gap:5px;align-items:center}
+#eulerInputs input[type=number]{width:90px}
+#eulerInputs #complexPad,#eulerInputs #sigmaDial,#eulerInputs #tauDial,#eulerInputs #zeroShortcut{display:none}
+#planeActions{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;align-items:center}
+#planeActions label{white-space:nowrap}#planeActions input{accent-color:#bd97df}
+#tauSweep{display:flex;align-items:center;gap:8px;font-size:11px}#tauSweep label{white-space:nowrap}
+#tauSweep input[type=number]{width:48px;background:transparent;border:0;border-bottom:1px solid #819d8a66;color:inherit}
+#tauScrub{flex:1;min-width:35px;accent-color:#bd97df}
+#planeHint{font-size:10px;color:#91a99b;margin:2px 0 8px}
+#productBubble .product-tools{opacity:.85}#productBubble #productRange{display:none}
+#productBubble #productDetails{color:#aac5b7}#productBubble #productStatus{font-size:10px;color:#8fa296}
+@media(max-width:700px) and (min-height:501px){#productBubble.euler-workspace{top:37%;left:8px;right:8px;width:auto;height:calc(63dvh - 125px);padding:6px;border-left:0;border-top:1px solid #8da89a24}#productBubble.euler-workspace .bubble-head{font-size:18px;margin:0}#eulerInputs{flex-wrap:wrap;gap:0}#eulerInputs .complex-input{height:28px;width:100%;justify-content:center}#planeActions{font-size:9px;gap:5px}#planeHint{font-size:8px;margin:0}#tauSweep{gap:3px;font-size:9px}#tauSweep button{font-size:9px;padding:3px}#productBubble #productStatus{font-size:8px}#productBubble.euler-workspace #productGraph{min-height:60px}}
+@media(max-height:600px) and (min-aspect-ratio:1/1){#productBubble.euler-workspace:popover-open{display:flex;gap:1px;width:57vw;top:40px;height:calc(100dvh - 85px);padding:3px 6px}#productBubble.euler-workspace .bubble-head{font-size:14px;margin:0}#productBubble.euler-workspace #productGraph{height:auto;min-height:40px}#eulerInputs{flex-direction:row}#eulerInputs .complex-input{height:23px;width:auto;gap:3px}#eulerInputs input[type=number]{width:54px}#planeActions{font-size:8px;gap:1px}#planeActions button{padding:1px;font-size:8px}#tauSweep{font-size:8px;gap:2px}#tauSweep button{font-size:8px;padding:1px}#planeHint{font-size:8px;margin:0}#productBubble #productStatus{font-size:8px}}
+#planeNotes{inset:auto 20px 100px auto;width:min(440px,calc(100vw - 40px));font-size:12px;line-height:1.5}
+#planeNotes p{margin:10px 0}#planeNotes #sectorMeasure{font-size:11px}
+#productBubble.euler-workspace #productGraph{flex:1}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:32%;height:calc(68dvh - 140px);gap:1px}
+ #productBubble.euler-workspace .bubble-head{font-size:15px}
+ #productBubble.euler-workspace #productGraph{min-height:35px}
+ #eulerInputs .complex-input{height:23px}#eulerInputs input[type=number]{height:20px;width:80px;font-size:10px}
+ #planeActions{gap:2px;font-size:8px}#planeActions button{font-size:8px;padding:2px}
+ #planeActions label{display:flex;align-items:center;gap:1px}#planeActions input{margin:1px;width:10px;height:10px}
+ #planeHint{font-size:7px}#tauSweep{font-size:8px}#tauSweep input[type=number]{width:30px}
+ #productBubble .product-tools{gap:3px}#productBubble .product-tools button{font-size:9px;padding:2px 5px}
+}
+@media(max-width:700px) and (min-height:501px){#productBubble.euler-workspace{height:calc(63dvh - 160px)}}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){#productBubble.euler-workspace{height:calc(68dvh - 160px)}}
+
+#locusTools{display:flex;align-items:center;gap:10px;font-size:11px;color:#d9bd82}#locusTools select{background:#122119;color:#e5d5ad;border:1px solid #71897b66;border-radius:4px}#locusStatus{font-size:10px;color:#9caa9e}
+@media(max-width:700px),(max-height:600px){#locusTools{gap:5px;font-size:9px}#locusTools button{font-size:9px;padding:2px 5px}#locusStatus{font-size:8px}#locusTools select{font-size:9px}}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){#planeHint{display:none}#locusTools{gap:3px}#locusTools button{padding:1px 4px}#locusTools label{white-space:nowrap}#locusStatus{font-size:7px}#productBubble.euler-workspace #productGraph{min-height:30px}}
+
+#productBubble.euler-workspace [hidden]{display:none!important}
+#exploreDock{display:grid;grid-template-columns:1fr auto;gap:9px 12px;flex-shrink:0;padding:12px 0 0;border-top:1px solid #8da89a24}
+.axis-control{grid-column:1/-1;display:grid;grid-template-columns:64px minmax(30px,1fr) 110px;align-items:center;gap:12px;font-size:12px;color:#d5c4e5}
+.axis-control input[type=range]{position:static!important;width:100%!important;height:20px!important;margin:0;accent-color:#c79de4;writing-mode:horizontal-tb!important;direction:ltr!important;display:block!important}
+.axis-control input[type=number]{width:100%;box-sizing:border-box;font:13px var(--mono);height:30px;background:#14251e;border:1px solid #6f8d7c88;border-radius:5px;color:#ecdfef;padding:4px 6px}
+#exploreToolbar{grid-column:1/-1;display:flex;gap:7px;align-items:center}#exploreToolbar button{font-size:12px;padding:6px 12px}#exploreToolbar #fitLocus{color:#ebcb8b;border-color:#8b7954}#exploreMore{margin-left:auto}
+#liveCurveState,#exploreDock #locusStatus{font-size:10px;margin:0;line-height:1.4;color:#a5b4a9}#liveCurveState{grid-column:1}#exploreDock #locusStatus{grid-column:2;text-align:right}
+#planeHint{margin:0 0 6px;color:#9daea4}
+#exploreOptions{inset:auto 16px 95px auto;width:min(440px,calc(100vw - 36px));max-height:calc(100dvh - 145px);overflow:auto;padding:18px;box-sizing:border-box;font-size:12px}
+#exploreOptions p{color:#bfcabd;font-size:12px;margin:10px 0}#traceWindow,#extraViews{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#traceWindow input{width:70px;color:#e3dbc7;background:#14251e;border:1px solid #71897b66}#traceWindow select{color:#e3dbc7;background:#14251e}#exploreOptions #planeActions{margin-top:16px;gap:12px;display:flex;flex-direction:column;align-items:flex-start}#extraViews button{font-size:11px;padding:5px 8px}
+@media(max-width:700px),(max-height:600px){#exploreDock{gap:5px 7px;padding-top:5px}.axis-control{grid-template-columns:50px minmax(30px,1fr) 90px;gap:7px;font-size:10px}.axis-control input[type=number]{height:24px;font-size:11px}#exploreToolbar{gap:4px}#exploreToolbar button{padding:3px 8px;font-size:10px}#liveCurveState,#exploreDock #locusStatus{font-size:8px}#planeHint{font-size:8px;margin:0 0 3px}}
+@media(max-height:600px) and (min-aspect-ratio:1/1){#exploreDock{gap:2px}.axis-control{grid-template-columns:43px minmax(20px,1fr) 82px}.axis-control input[type=number]{height:20px}#exploreToolbar button{padding:1px 6px}#liveCurveState,#exploreDock #locusStatus{font-size:7px}}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){#exploreDock{gap:2px}.axis-control input[type=number]{height:21px}#liveCurveState,#exploreDock #locusStatus{font-size:7px}#exploreToolbar button{padding:2px 7px}}
 
 </style>
 </head>
@@ -303,12 +430,13 @@ const PR=(()=>{
   const now=performance.now(),dt=lastTime?Math.min(.05,(now-lastTime)/1000):0;lastTime=now;
   const ease=1-Math.exp(-dt*16),n=Math.floor(tt),width=parseFloat(getComputedStyle(tape).width),visible=Math.ceil(width/slot)+2;
   const born=primes.filter(p=>p<=n),active=[...new Set(factorize(n))];
+  const linked=typeof selectedPrime!=='undefined'&&selectedPrime<=n?selectedPrime:0;
   // Reserve places for every absorbing prime, then use spare room for recent
   // factors. The remainder stays accumulated in the ellipsis.
   const available=Math.max(48,pf.parentElement.parentElement.clientWidth-44);
   const upright=typeof reflectionMix!=='undefined'&&reflectionMix>.5;
-  const capacity=Math.max(active.length,Math.min(5,Math.floor(available/(upright?32:68))));
-  const shown=active.slice();
+  const shown=active.slice();if(linked&&!shown.includes(linked))shown.push(linked);
+  const capacity=Math.max(shown.length,Math.min(5,Math.floor(available/(upright?32:68))));
   for(let i=born.length-1;i>=0&&shown.length<capacity;i--)if(!shown.includes(born[i]))shown.push(born[i]);
   shown.sort((a,b)=>b-a);
   for(let k=Math.max(1,n-1);k<=n+visible;k++)if(!terms.has(k)){
@@ -592,8 +720,8 @@ function frame(ms) {
   focusMix += (focusAim - focusMix) * ease;
   glassMix += (specMode - glassMix) * ease;
   spacingMix += ((logRad ? 1 : 0) - spacingMix) * ease;
-  SIGMA += (sigmaAim - SIGMA) * ease;
-  TAUV += (tauAim - TAUV) * ease;
+  SIGMA += (sigmaAim - SIGMA) * (1-Math.exp(-dt*14));
+  TAUV += (tauAim - TAUV) * (1-Math.exp(-dt*14));
   weightMix += (weightAim - weightMix) * ease;
   sumMix += (sumAim - sumMix) * ease;
   continueMix += (continueAim - continueMix) * ease;
@@ -1132,6 +1260,7 @@ function drawContinuum(ms,rad) {
     const fresh=k===Math.floor(t)?Math.pow(1-(t%1),2):0;
     lensArrow(X(a),Y(a),X(b),Y(b),"#0c1512",(k<8?7:4)+3*fresh);
     lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);
+    if(selectedPrime && k%selectedPrime===0)lensArrow(X(a),Y(a),X(b),Y(b),primeHighlight(selectedPrime),5);
   }
   g2.globalAlpha=sumMix;g2.fillStyle='#91c9b5';g2.beginPath();g2.arc(X(raw.z),Y(raw.z),4,0,7);g2.fill();
   const key=SIGMA.toFixed(9)+','+TAUV.toFixed(9);
@@ -1642,7 +1771,7 @@ function updateJLedger(){
  g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=.4+.6*(1-(t-n));g2.strokeStyle=factorColour(current.p);g2.lineWidth=4;g2.beginPath();g2.arc(X,Y,17,0,2*Math.PI);g2.stroke();g2.restore();
 }
 const guideBeforeJ=updateGuide;updateGuide=function(){guideBeforeJ();updateJLedger();};
-jBubble.showPopover();updateJLedger();
+updateJLedger();
 
 // Two distinct infinite-series coefficient sequences, connected by a visual
 // interpolation, not the logarithm of a finite partial sum.
@@ -1717,16 +1846,27 @@ const complexInput=document.createElement('div');complexInput.className='complex
 const sigmaGroup=$('sigmaSlot').parentElement,tauGroup=$('tauSlot').parentElement;
 sigmaGroup.before(complexInput);
 complexInput.append(...sigmaGroup.children,...tauGroup.children);sigmaGroup.remove();tauGroup.remove();
+for(const [axis,min,max] of [['sigma',.2,3],['tau',-35,35]]){
+ const label=complexInput.querySelector('label[for="'+axis+'Dial"]'),field=document.createElement('input');
+ field.id=axis+'Exact';field.type='number';field.min=min;field.max=max;field.step='any';field.value=axis==='sigma'?sigmaAim:tauAim;
+ field.setAttribute('aria-label',axis==='sigma'?'Exact sigma':'Exact tau');field.title='↑ / ↓: 0.0001 · Shift: 0.01 · Alt: 0.000001';
+ label.querySelector('output').hidden=true;label.firstChild.textContent=axis==='sigma'?'σ':'τ';label.append(field);label.htmlFor=field.id;
+ field.oninput=()=>{if(field.value!==''&&field.validity.valid)tune(axis==='sigma'?+field.value:sigmaAim,axis==='tau'?+field.value:tauAim);};
+ field.onkeydown=e=>{if(!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.altKey?.000001:e.shiftKey?.01:.0001,value=Math.max(min,Math.min(max,(axis==='sigma'?sigmaAim:tauAim)+(e.key==='ArrowUp'?step:-step)));field.value=Number(value.toFixed(12));field.oninput();};
+ field.onblur=()=>{field.value=Number((axis==='sigma'?sigmaAim:tauAim).toFixed(12));};
+ $(axis+'Dial').step='.0001';
+}
 complexInput.insertAdjacentHTML('beforeend','<div id="complexPad" aria-hidden="true"><span id="complexDot"></span></div>');
 function pickComplex(e){const b=$('complexPad').getBoundingClientRect();tune(.2+2.8*Math.max(0,Math.min(1,(e.clientX-b.left)/b.width)),35-70*Math.max(0,Math.min(1,(e.clientY-b.top)/b.height)));}
 $('complexPad').onpointerdown=e=>{e.currentTarget.setPointerCapture(e.pointerId);pickComplex(e);};
 $('complexPad').onpointermove=e=>{if(e.currentTarget.hasPointerCapture(e.pointerId))pickComplex(e);};
-const productButton=document.createElement('button');productButton.textContent='Product';productButton.id='productView';productButton.setAttribute('popovertarget','productBubble');$('layerButtons').append(productButton);
+const productButton=document.createElement('button');productButton.textContent='Sum × Product';productButton.id='productView';productButton.setAttribute('popovertarget','productBubble');$('layerButtons').append(productButton);
 const productBubble=document.createElement('section');productBubble.id='productBubble';productBubble.className='bubble product-bubble';productBubble.setAttribute('popover','manual');
-productBubble.innerHTML=`<div class="bubble-head"><b>Euler product · one factor at a time</b><button popovertarget="productBubble" popovertargetaction="hide" aria-label="Close product graph">×</button></div>
+productBubble.innerHTML=`<div class="bubble-head"><b>Sum + product · one complex plane</b><button popovertarget="productBubble" popovertargetaction="hide" aria-label="Close product graph">×</button></div>
 <canvas id="productGraph" width="600" height="300" aria-label="Complex plane: prime-coloured partial products, blue finite sum, gold zeta"></canvas>
-<div class="product-tools"><button id="productPrev" aria-label="Previous prime factor">←</button><button id="productNext" aria-label="Next prime factor">→</button><span>View ±</span><input id="productRange" type="range" min="0" max="3" step=".01" value=".30103" aria-label="Logarithmic graph extent"><output id="productExtent">2</output></div>
+<div class="product-tools"><button id="productPrev" aria-label="Previous prime factor">←</button><button id="productNext" aria-label="Next prime factor">→</button><button id="fitPaths" title="Fit the current paths once; keep this ruler as the clock moves">Fit</button><button id="focusZeta" title="Centre on the current zeta value, then use the zoom slider">ζ</button><button id="homeGraph" title="Centre on zero with radius 2">0</button><input id="productRange" type="range" min="-5" max="3" step=".01" value=".30103" aria-label="Logarithmic graph extent"><output id="productExtent">±2</output></div>
 <p id="productDetails"></p><p id="productStatus"></p>`;stage.append(productBubble);
+$('productRange').step='any';
 const analyticPrimes=[];for(let p=2;p<=5001;p++)if(isPrime(p))analyticPrimes.push(p);
 function eulerPath(x,sigma,tau){
  let z=[1,0];const points=[{p:1,z:[1,0],factor:[1,0]}];
@@ -1739,32 +1879,279 @@ function eulerPath(x,sigma,tau){
 let selectedProduct=-1,productHitPoints=[];
 $('productPrev').onclick=()=>{const last=eulerPath(t,SIGMA,TAUV).points.length-1;selectedProduct=Math.max(0,(selectedProduct<0?last:selectedProduct)-1);};
 $('productNext').onclick=()=>{const last=eulerPath(t,SIGMA,TAUV).points.length-1;selectedProduct=Math.min(last,(selectedProduct<0?last:selectedProduct)+1);};
-$('productGraph').onpointerdown=e=>{const b=e.currentTarget.getBoundingClientRect(),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;let best=Infinity;for(const p of productHitPoints){const d=Math.hypot(p.x-x,p.y-y);if(d<best){best=d;selectedProduct=p.i;}}};
+$('productGraph').onpointerdown=e=>{const b=graphPlotRect(e.currentTarget),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;let best=Infinity;for(const p of productHitPoints){const d=Math.hypot(p.x-x,p.y-y);if(d<best){best=d;selectedProduct=p.i;}}};
 const complexText=z=>z.every(Number.isFinite)?z[0].toFixed(4)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toFixed(4)+'i':'outside numeric range';
+let graphCentre=[0,0],graphCentreAim=[0,0],graphLogExtent=Math.log10(2),graphLastMs=performance.now();
+function graphTick(value,step){const digits=Math.max(0,Math.ceil(-Math.log10(step))+1);return Math.abs(value)<1e7&&digits<=12?value.toFixed(digits):value.toPrecision(6);}
+function setGraphView(centre,extent){if(!centre.every(Number.isFinite)||!Number.isFinite(extent)||extent<=0)return;graphCentreAim=[...centre];const value=Math.log10(Math.max(1e-5,extent));$('productRange').max=Math.max(3,Math.ceil(value));$('productRange').value=value;}
+$('homeGraph').onclick=()=>setGraphView([0,0],2);
+$('focusZeta').onclick=()=>{if(Math.hypot(SIGMA-1,TAUV)>1e-8)setGraphView(zeta(SIGMA,TAUV),10**+$('productRange').value);};
+$('fitPaths').onclick=()=>{
+ const product=eulerPath(t,SIGMA,TAUV),sum=continuumSum(t,SIGMA,TAUV),zs=[...sum.points,...product.points.map(p=>p.z),sum.z];
+ if(product.arriving)zs.push(product.arriving);if(Math.hypot(SIGMA-1,TAUV)>1e-8)zs.push(zeta(SIGMA,TAUV));
+ const finite=zs.filter(z=>z.every(Number.isFinite));let lo=[Infinity,Infinity],hi=[-Infinity,-Infinity];
+ for(const z of finite)for(let a=0;a<2;a++){lo[a]=Math.min(lo[a],z[a]);hi[a]=Math.max(hi[a],z[a]);}
+ const centre=lo.map((v,i)=>v/2+hi[i]/2),extent=Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.01)*1.18;setGraphView(centre,extent);
+};
 function drawProductGraph(){
  if(!$('productBubble').matches(':popover-open'))return;
- const ctx=$('productGraph').getContext('2d'),extent=10**+$('productRange').value,unit=125/extent,X=z=>300+unit*z[0],Y=z=>150-unit*z[1];
+ const ms=performance.now(),ease=1-Math.exp(-Math.min(.05,(ms-graphLastMs)/1000)*12);graphLastMs=ms;
+ graphCentre=graphCentre.map((v,i)=>v+(graphCentreAim[i]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
+ const ctx=$('productGraph').getContext('2d'),extent=10**graphLogExtent,unit=125/extent,X=z=>300+unit*(z[0]-graphCentre[0]),Y=z=>150-unit*(z[1]-graphCentre[1]);
  ctx.clearRect(0,0,600,300);ctx.font='12px ui-monospace';ctx.lineWidth=1;ctx.strokeStyle='#71897b66';ctx.fillStyle='#b0bfb6';
- for(let i=-2;i<=2;i++){const v=i*extent/2;ctx.beginPath();ctx.moveTo(X([v,0]),25);ctx.lineTo(X([v,0]),275);ctx.moveTo(50,Y([0,v]));ctx.lineTo(550,Y([0,v]));ctx.stroke();ctx.fillText(v.toPrecision(2),X([v,0])+3,165);if(i)ctx.fillText(v.toPrecision(2),304,Y([0,v])-4);}
- ctx.fillText('Re →',550,146);ctx.fillText('Im ↑',308,16);
+ for(let i=-2;i<=2;i++){const x=300+i*125,y=150-i*62.5;ctx.beginPath();ctx.moveTo(x,25);ctx.lineTo(x,275);ctx.moveTo(50,y);ctx.lineTo(550,y);ctx.stroke();ctx.fillText(graphTick(graphCentre[0]+i*extent,extent),Math.min(500,Math.max(3,x+3)),290);if(i<2)ctx.fillText(graphTick(graphCentre[1]+i*extent/2,extent/2),4,y-4);}
+ ctx.fillText('Re →',550,16);ctx.fillText('Im ↑',4,16);
  const data=eulerPath(t,SIGMA,TAUV),points=data.points,idx=selectedProduct<0?points.length-1:Math.min(selectedProduct,points.length-1),selected=points[idx];productHitPoints=[];
  ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
  function dot(z,col,r,label){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<20||y>280)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();if(label)ctx.fillText(label,x+7,y-7);}
+ if(typeof drawExplorationUnderlay==='function')drawExplorationUnderlay(ctx,X,Y);
+ const rawSum=continuumSum(t,SIGMA,TAUV);ctx.strokeStyle='#87bff2';ctx.lineWidth=2;ctx.beginPath();
+ for(let i=0;i<rawSum.points.length;i++){const z=rawSum.points[i];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(rawSum.z),Y(rawSum.z));ctx.stroke();dot([0,0],'#87bff2',3,'Σ starts at 0');
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=4;for(let k=selectedPrime;k<rawSum.points.length;k+=selectedPrime){ctx.beginPath();ctx.moveTo(X(rawSum.points[k-1]),Y(rawSum.points[k-1]));ctx.lineTo(X(rawSum.points[k]),Y(rawSum.points[k]));ctx.stroke();}}
  for(let i=0;i<points.length;i++){const q=points[i],col=i?'hsl('+hueOf(q.p)+' 68% 68%)':'#ddd';if(i&&q.z.every(Number.isFinite)&&points[i-1].z.every(Number.isFinite)){ctx.strokeStyle=col;ctx.lineWidth=i===idx?3:1.6;ctx.beginPath();ctx.moveTo(X(points[i-1].z),Y(points[i-1].z));ctx.lineTo(X(q.z),Y(q.z));ctx.stroke();}dot(q.z,col,i===idx?5:2,i===idx?(i?'p='+q.p:'start: 1'):'');if(Math.abs(X(q.z)-300)<300&&Math.abs(Y(q.z)-150)<130)productHitPoints.push({i,x:X(q.z),y:Y(q.z)});}
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){const j=points.findIndex(q=>q.p===selectedPrime);if(j>0){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(X(points[j-1].z),Y(points[j-1].z));ctx.lineTo(X(points[j].z),Y(points[j].z));ctx.stroke();dot(points[j].z,primeHighlight(selectedPrime),6,'linked p='+selectedPrime);}}
  if(data.arriving){ctx.strokeStyle='#ddd8';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(data.z),Y(data.z));ctx.lineTo(X(data.arriving),Y(data.arriving));ctx.stroke();ctx.setLineDash([]);}
  const sum=continuumSum(t,SIGMA,TAUV).z,pole=Math.hypot(SIGMA-1,TAUV)<1e-8,target=pole?[Infinity,0]:zeta(SIGMA,TAUV);
  dot(sum,'#87bff2',4,'Σ');dot(target,'#e8bd65',4,'ζ');ctx.restore();
- $('productExtent').textContent=extent.toPrecision(3);
+ $('productExtent').textContent='±'+extent.toPrecision(2);$('focusZeta').disabled=pole;
  $('productDetails').textContent=(idx?'p='+selected.p+' · × (1 − '+selected.p+'⁻ˢ)⁻¹ = '+complexText(selected.factor):'Empty product = 1')+' → '+complexText(selected.z);
  const error=abs(sub(data.z,target));
- $('productStatus').textContent=(SIGMA>1?'σ > 1: sum and product converge to gold ζ. ':'σ ≤ 1: finite products only; no convergence to the continued ζ is promised. ')+(pole?'ζ has a pole here. ':'Product error '+error.toPrecision(3)+'. ')+points.slice(1).length+' prime factors · blue Σ. Dashed: arriving factor.'+(Math.abs(data.z[0])*unit>290||Math.abs(data.z[1])*unit>130?' Product outside view; widen ±.':'');
+ const outside=[...rawSum.points,...points.map(p=>p.z),target].some(z=>!z.every(Number.isFinite)||X(z)<0||X(z)>600||Y(z)<20||Y(z)>280);
+ $('productStatus').textContent=(SIGMA>1?'σ > 1: both converge to gold ζ. ':'σ ≤ 1: finite products only; no continued-ζ convergence promised. ')+(pole?'ζ has a pole. ':'Product error '+error.toPrecision(3)+'. ')+'Blue: full sum. Coloured: product; dashed: arrival.'+(outside?' Outside view · Fit to include paths.':' Ruler stays fixed until you change it.');
 }
 $('viewBubble').insertAdjacentHTML('beforeend','<p id="psiExplanation">Prime count plots (ψ − smooth)/√x on the numbered axis. Gold: ledger residual; green: finite zero-pair approximation. ψ jumps by log p at pᵏ; between jumps the subtracted trend keeps moving. Smooth = x − log(2π) − ½ log(1 − x⁻²). At a jump the zero formula targets the midpoint.</p>');
 const analyticGuide=updateGuide;
 updateGuide=function(){analyticGuide();$('complexDot').style.left=(SIGMA-.2)/2.8*100+'%';$('complexDot').style.bottom=(TAUV+35)/70*100+'%';drawProductGraph();
+ for(const [id,value] of [['sigmaExact',sigmaAim],['tauExact',tauAim]])if(document.activeElement!==$(id))$(id).value=Number(value.toFixed(12));
  $('stair').title='ψ = '+psiSum.toFixed(4)+'; graph: (ψ − smooth)/√x';
  $('psiExplanation').hidden=stairMix<.005;
 };
+
+// A prime-family selection connects exact divisibility, not approximate area.
+let selectedPrime=0,pinnedPrime=0;
+function primeHighlight(p){return 'hsl('+hueOf(p)+' 88% 51%)';}
+function previewPrime(p){selectedPrime=isPrime(p)?p:pinnedPrime;}
+function linkPrime(p){pinnedPrime=isPrime(p)?p:0;selectedPrime=pinnedPrime;if(selectedPrime){const i=eulerPath(t,SIGMA,TAUV).points.findIndex(q=>q.p===p);if(i>=0)selectedProduct=i;}}
+const linkedReadout=document.createElement('div');linkedReadout.id='linkedReadout';linkedReadout.hidden=true;linkedReadout.setAttribute('role','status');stage.append(linkedReadout);
+const clearLink=document.createElement('button');clearLink.id='clearLink';clearLink.textContent='Clear';clearLink.title='Clear the linked prime highlight';clearLink.onclick=()=>linkPrime(0);document.querySelector('.product-tools').append(clearLink);
+$('productView').title='Select a product point or use the arrows to link its prime across the clock, tape and sum';
+for(const id of ['productPrev','productNext']){const prior=$(id).onclick;$(id).onclick=()=>{prior();const q=eulerPath(t,SIGMA,TAUV).points[selectedProduct];linkPrime(q?q.p:0);};}
+const priorPick=$('productGraph').onpointerdown;
+$('productGraph').onpointerdown=e=>{const b=graphPlotRect(e.currentTarget),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;
+ if(!productHitPoints.some(p=>Math.hypot(p.x-x,p.y-y)<18))return;
+ priorPick(e);const q=eulerPath(t,SIGMA,TAUV).points[selectedProduct];linkPrime(q?q.p:0);
+};
+$('pf').addEventListener('click',e=>{const el=e.target.closest('.fx');if(el)linkPrime(+el.dataset.p);});
+$('pf').addEventListener('pointerover',e=>{const el=e.target.closest('.fx');if(el)previewPrime(+el.dataset.p);});
+$('pf').addEventListener('pointerleave',()=>previewPrime(0));
+$('productGraph').addEventListener('pointermove',e=>{const b=graphPlotRect(e.currentTarget),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;let hit=null,best=18;for(const p of productHitPoints){const d=Math.hypot(p.x-x,p.y-y);if(d<best){hit=p;best=d;}}const q=hit?eulerPath(t,SIGMA,TAUV).points[hit.i]:null;previewPrime(q?q.p:0);});
+$('productGraph').addEventListener('pointerleave',()=>previewPrime(0));
+$('pf').addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;const el=e.target.closest('.fx');if(el){e.preventDefault();e.stopPropagation();linkPrime(+el.dataset.p);}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')linkPrime(0);});
+function linkedRings(){return selectedPrime?rings.filter(r=>(r.base||r.p)===selectedPrime):[];}
+const unlinkedGlass=drawPrimeGlass;
+drawPrimeGlass=function(rad,n){unlinkedGlass(rad,n);if(!selectedPrime)return;g2.save();g2.strokeStyle=primeHighlight(selectedPrime);g2.fillStyle=g2.strokeStyle;
+ const primeRing=rings.find(r=>r.p===selectedPrime);if(primeRing){const radius=rad(primeRing.p),span=panelSpan(primeRing.p,t);g2.globalAlpha=.28;g2.beginPath();g2.moveTo(C,C);g2.arc(C,C,radius,span.c0+span.w/2,span.c0-span.w/2+2*Math.PI);g2.closePath();g2.fill();}
+ g2.globalAlpha=.9;g2.shadowColor=g2.strokeStyle;g2.shadowBlur=7;
+ for(const ring of linkedRings()){const r=rad(ring.p),sp=panelSpan(ring.p,t);if(r<=0||sp.w<=0)continue;g2.lineWidth=7;g2.beginPath();g2.arc(C,C,r,sp.c0-sp.w/2,sp.c0+sp.w/2);g2.stroke();}
+ g2.restore();
+};
+// Hit-test the actual arc band. Reflection's intermediate transform can become
+// singular; defer picking during that brief transition instead of guessing.
+function clockPrimeAt(e){const b=e.currentTarget.getBoundingClientRect(),dx=(e.clientX-b.left)*W/b.width-C,dy=(e.clientY-b.top)*W/b.height-C,c=Math.cos(Math.PI*reflectionMix);if(Math.abs(c)<.15)return 0;
+ const a=(1+c)/2,v=-(1-c)/2,x=(a*dx-v*dy)/c,y=(a*dy-v*dx)/c,r=Math.hypot(x,y),angle=Math.atan2(y,x);let nearest=null,best=14;
+ for(const ring of rings){const radius=clockRadius(ring.p),sp=panelSpan(ring.p,t),delta=Math.atan2(Math.sin(angle-sp.c0),Math.cos(angle-sp.c0)),distance=Math.abs(r-radius);if(sp.w>0&&Math.abs(delta)<=sp.w/2+.025&&distance<best){best=distance;nearest=ring;}}
+ return nearest?(nearest.base||nearest.p):0;
+}
+$('cv').addEventListener('click',e=>{const p=clockPrimeAt(e);if(p)linkPrime(p);});
+$('cv').addEventListener('pointermove',e=>previewPrime(clockPrimeAt(e)));
+$('cv').addEventListener('pointerleave',()=>previewPrime(0));
+const unlinkedGuide=updateGuide;
+updateGuide=function(){unlinkedGuide();
+ for(const el of $('strip').querySelectorAll('.tt'))el.classList.toggle('linked-term',!!selectedPrime&&+el.dataset.n%selectedPrime===0);
+ for(const el of $('pf').querySelectorAll('.fx')){el.classList.toggle('linked-factor',+el.dataset.p===selectedPrime);el.style.setProperty('--highlight',primeHighlight(+el.dataset.p));el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label','Link prime '+el.dataset.p+' across clock and sum');el.setAttribute('aria-pressed',String(+el.dataset.p===pinnedPrime));}
+ linkedReadout.hidden=!selectedPrime;clearLink.disabled=!selectedPrime;
+ if(selectedPrime){const powers=linkedRings().map(r=>r.p).sort((a,b)=>a-b);const message='p = '+selectedPrime+' · panes '+(powers.join(', ')||'not born yet')+' · sum: multiples of '+selectedPrime+' · Esc clears';if(linkedReadout.textContent!==message)linkedReadout.textContent=message;}
+};
+
+// Keep input, scale and output in one persistent instrument beside the clock.
+function graphPlotRect(canvas){const b=canvas.getBoundingClientRect(),width=Math.min(b.width,b.height*2),height=width/2;return {left:b.left+(b.width-width)/2,top:b.top+(b.height-height)/2,width,height};}
+$('productBubble').classList.add('euler-workspace');
+const controls=document.createElement('div');controls.id='eulerInputs';controls.append(complexInput,$('zeroShortcut'));$('productGraph').after(controls);
+$('productBubble').querySelector('.bubble-head b').textContent='Euler · input and complex paths';
+const mechanics=document.createElement('p');mechanics.id='sectorMeasure';mechanics.textContent='Hover a prime arc or product point to measure its complementary sector. Click to pin.';$('productStatus').after(mechanics);
+document.querySelector('[popovertarget="tuneBubble"]').textContent='Pace & count';
+$('tuneBubble').querySelector('.bubble-head b').textContent='Pace & count';
+$('productBubble').showPopover();
+const workspaceGuide=updateGuide;
+updateGuide=function(){workspaceGuide();
+ if(!selectedPrime){mechanics.textContent='Hover a prime arc or product point to measure its complementary sector. Click to pin.';return;}
+ const p=selectedPrime,span=panelSpan(p,t),fraction=1-span.w/(2*Math.PI),z=sub([1,0],power(p,SIGMA,TAUV));
+ mechanics.textContent='p = '+p+(pinnedPrime===p?' · pinned':' · preview')+' · sector remainder '+(fraction*100).toFixed(2)+'%'+(t<p?' (not born)':t<p+1?' (growing)':' = 1 − 1/'+p)+'. Weighted 1 − '+p+'⁻ˢ = '+complexText(z)+'. '+(t>=p+1&&Math.abs(SIGMA-1)<1e-5&&Math.abs(TAUV)<1e-5?'Equal at s = 1.':'Area and weight differ.');
+};
+
+// Shared coordinates for inputs and outputs; sampled loci are not summation paths.
+const plane=$('productGraph');
+$('productBubble').querySelector('.bubble-head b').textContent='The complex plane';
+$('productBubble').querySelector('.bubble-head button').hidden=true;
+$('eulerInputs').insertAdjacentHTML('beforeend',`<div id="planeActions"><button id="placeInput" aria-pressed="false">Place s</button><label><input id="lockSigma" type="checkbox" checked> Hold σ</label><label><input id="ghostPaths" type="checkbox" checked> −τ ghosts</label><label><input id="tauLoci" type="checkbox" checked> τ endpoint trails</label></div>`);
+const sweep=document.createElement('div');sweep.id='tauSweep';sweep.innerHTML=`<label>τ window <input id="tauLow" type="number" min="-35" max="35" step="any" value="0" aria-label="Tau window start"></label><input id="tauScrub" type="range" min="0" max="20" step=".0001" value="0" aria-label="Explore tau at fixed sigma"><input id="tauHigh" type="number" min="-35" max="35" step="any" value="20" aria-label="Tau window end"><button id="fitTogether">Fit s + paths</button>`;
+$('eulerInputs').before(sweep);
+const hint=document.createElement('p');hint.id='planeHint';hint.textContent='Drag s to tune · drag space to pan · wheel / pinch to zoom · dotted trails follow τ';sweep.before(hint);
+let placing=false,planeDrag=null,trailCache={key:'',rows:[],ms:0};
+$('placeInput').onclick=()=>{placing=!placing;$('placeInput').setAttribute('aria-pressed',String(placing));plane.style.cursor=placing?'crosshair':'grab';};
+function tauWindow(){return [+$('tauLow').value,+$('tauHigh').value];}
+for(const id of ['tauLow','tauHigh'])$(id).onchange=()=>{let [a,b]=tauWindow();if(!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -35||b>35){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};
+$('tauScrub').oninput=()=>tune(sigmaAim,+$('tauScrub').value);
+function planePixel(e){const b=graphPlotRect(plane);return [(e.clientX-b.left)*600/b.width,(e.clientY-b.top)*300/b.height];}
+function planeValue(q){const u=125/10**graphLogExtent;return [graphCentre[0]+(q[0]-300)/u,graphCentre[1]-(q[1]-150)/u];}
+function tunePoint(q){const z=planeValue(q);tune($('lockSigma').checked?sigmaAim:Math.max(.2,Math.min(3,z[0])),Math.max(-35,Math.min(35,z[1])));}
+const factorPick=plane.onpointerdown;
+const touches=new Map();let pinch=null;
+plane.onpointerdown=e=>{e.preventDefault();plane.setPointerCapture(e.pointerId);touches.set(e.pointerId,planePixel(e));if(touches.size===2){const [a,b]=[...touches.values()];pinch={distance:Math.hypot(a[0]-b[0],a[1]-b[1]),extent:10**graphLogExtent};planeDrag=null;return;}
+ const q=planePixel(e),z=planeValue(q),near=Math.hypot(z[0]-SIGMA,z[1]-TAUV)*125/10**graphLogExtent<16;
+ planeDrag={q,centre:[...graphCentre],unit:125/10**graphLogExtent,input:placing||near||e.shiftKey,moved:false};if(planeDrag.input)tunePoint(q);
+};
+plane.onpointermove=e=>{if(!touches.has(e.pointerId))return;const q=planePixel(e);touches.set(e.pointerId,q);if(pinch&&touches.size===2){const [a,b]=[...touches.values()];setGraphView(graphCentreAim,pinch.extent*pinch.distance/Math.max(1,Math.hypot(a[0]-b[0],a[1]-b[1])));return;}if(!planeDrag)return;const d=planeDrag;d.moved ||= Math.hypot(q[0]-d.q[0],q[1]-d.q[1])>3;if(d.input)tunePoint(q);else setGraphView([d.centre[0]-(q[0]-d.q[0])/d.unit,d.centre[1]+(q[1]-d.q[1])/d.unit],10**+$('productRange').value);};
+function endPlane(e){if(planeDrag&&!planeDrag.input&&!planeDrag.moved&&e.type==='pointerup')factorPick(e);touches.delete(e.pointerId);planeDrag=null;pinch=null;}
+plane.onpointerup=endPlane;plane.onpointercancel=endPlane;
+plane.addEventListener('wheel',e=>{e.preventDefault();const q=planePixel(e),anchor=planeValue(q),extent=Math.max(1e-5,Math.min(1e8,10**graphLogExtent*Math.exp(Math.max(-1,Math.min(1,e.deltaY*.002))))),unit=125/extent;setGraphView([anchor[0]-(q[0]-300)/unit,anchor[1]+(q[1]-150)/unit],extent);},{passive:false});
+plane.tabIndex=0;plane.setAttribute('aria-label','Shared input and output complex plane. Arrow keys adjust tau; Shift arrows adjust sigma. Drag input to tune, background to pan, wheel to zoom.');
+plane.onkeydown=e=>{if(!e.key.startsWith('Arrow'))return;e.preventDefault();const sign=['ArrowUp','ArrowRight'].includes(e.key)?1:-1,step=e.altKey?.001:.05;tune(e.shiftKey?sigmaAim+sign*step:sigmaAim,e.shiftKey?tauAim:tauAim+sign*step);};
+function tauTrails(){const [a,b]=tauWindow(),key=[t,SIGMA,a,b].join('/'),ms=performance.now();if(key!==trailCache.key&&ms-trailCache.ms>220){const rows=[];for(let i=0;i<=40;i++){const tau=a+(b-a)*i/40;rows.push({tau,sum:continuumSum(t,SIGMA,tau).z,product:eulerPath(t,SIGMA,tau).z});}trailCache={key,rows,ms};}return trailCache.rows;}
+function drawExplorationUnderlay(ctx,X,Y){
+ ctx.save();ctx.fillStyle='#9eafbf0c';ctx.fillRect(X([0,0]),20,X([1,0])-X([0,0]),260);ctx.strokeStyle='#a9b5c133';ctx.setLineDash([3,6]);for(const sigma of [0,.5,1,SIGMA]){ctx.beginPath();ctx.moveTo(X([sigma,0]),20);ctx.lineTo(X([sigma,0]),280);ctx.stroke();}ctx.setLineDash([]);
+ function path(zs,col,dash=[]){ctx.strokeStyle=col;ctx.lineWidth=1.3;ctx.setLineDash(dash);ctx.beginPath();let fresh=true;for(const z of zs){if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){ctx.moveTo(X(z),Y(z));fresh=false;}else ctx.lineTo(X(z),Y(z));}ctx.stroke();ctx.setLineDash([]);}
+ if($('ghostPaths').checked){const s=continuumSum(t,SIGMA,TAUV),p=eulerPath(t,SIGMA,TAUV);path([...s.points,s.z].map(z=>[z[0],-z[1]]),'#87bff240');for(let i=1;i<p.points.length;i++)path([p.points[i-1].z,p.points[i].z].map(z=>[z[0],-z[1]]),'hsla('+hueOf(p.points[i].p)+' 68% 68% / .23)');if(p.arriving)path([p.z,p.arriving].map(z=>[z[0],-z[1]]),'#ffffff30',[3,3]);}
+ if($('tauLoci').checked){const rows=tauTrails();path(rows.map(r=>r.sum),'#87bff270',[2,5]);path(rows.map(r=>r.product),'#db9e7470',[2,5]);}
+ ctx.restore();
+}
+$('fitTogether').onclick=()=>{const s=continuumSum(t,SIGMA,TAUV),p=eulerPath(t,SIGMA,TAUV);let zs=[...s.points,s.z,...p.points.map(q=>q.z)];if(p.arriving)zs.push(p.arriving);if(Math.hypot(SIGMA-1,TAUV)>1e-8)zs.push(zeta(SIGMA,TAUV));if($('ghostPaths').checked)zs.push(...zs.map(z=>[z[0],-z[1]]));if($('tauLoci').checked)for(const r of tauTrails())zs.push(r.sum,r.product);zs.push([SIGMA,TAUV],[sigmaAim,tauAim]);const finite=zs.filter(z=>z.every(Number.isFinite)),lo=[0,1].map(i=>Math.min(...finite.map(z=>z[i]))),hi=[0,1].map(i=>Math.max(...finite.map(z=>z[i])));setGraphView(lo.map((v,i)=>(v+hi[i])/2),Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.05)*1.2);};
+const explorationGuide=updateGuide;
+updateGuide=function(){explorationGuide();const ctx=plane.getContext('2d'),u=125/10**graphLogExtent,x=300+u*(SIGMA-graphCentre[0]),y=150-u*(TAUV-graphCentre[1]);ctx.save();ctx.strokeStyle='#e5b8ff';ctx.fillStyle='#e5b8ff';ctx.lineWidth=2;const px=Math.max(14,Math.min(580,x)),py=Math.max(32,Math.min(260,y));ctx.beginPath();ctx.arc(px,py,7,0,7);ctx.stroke();ctx.fillText('s'+(px!==x||py!==y?' ↗ off view':''),px+10,py-10);ctx.restore();if(document.activeElement!==$('tauScrub'))$('tauScrub').value=tauAim;};
+// Explanations belong in an optional overlay, leaving the plane unobstructed.
+const planeNotes=document.createElement('section');planeNotes.id='planeNotes';planeNotes.className='bubble';planeNotes.setAttribute('popover','auto');planeNotes.innerHTML='<div class="bubble-head"><b>Reading the plane</b><button popovertarget="planeNotes" popovertargetaction="hide">×</button></div><p>Purple s is the input; blue Σ and coloured Π are finite paths at the current beat. Dim paths use −τ: exact conjugates across the real axis. The faint band is 0 &lt; σ &lt; 1.</p><p>Dotted blue and amber curves sample the endpoints as τ varies across the chosen window, at fixed σ and beat. They are not additional sum terms. Drag the τ slider to follow them. The two infinite expressions converge together only for σ &gt; 1.</p><p>Hold σ constrains input dragging vertically. Turn it off to place s freely (0.2 ≤ σ ≤ 3, |τ| ≤ 35). Drag empty space to pan; wheel or pinch to zoom. Fit includes the current paths; Fit s + paths also includes the input, ghosts and enabled endpoint trails.</p>';
+planeNotes.append($('productDetails'),$('productStatus'),$('sectorMeasure'));stage.append(planeNotes);
+const explain=document.createElement('button');explain.textContent='Guide';explain.setAttribute('popovertarget','planeNotes');document.querySelector('.product-tools').append(explain);
+
+// Euler–Maclaurin evaluator shared verbatim by the page and its curve worker.
+// The truncation grows with |Im(s)|; the old fixed N=96 was only for small heights.
+function locusZeta(sigma,tau){
+ if(Math.hypot(sigma-1,tau)<1e-12)return [Infinity,Infinity];
+ const N=Math.max(96,Math.ceil(1.25*Math.abs(tau))),ln=Math.log(N);
+ let re=0,im=0,cr=0,ci=0;
+ for(let n=1;n<=N;n++){const l=Math.log(n),r=Math.exp(-sigma*l),a=-tau*l,yr=r*Math.cos(a)-cr,yi=r*Math.sin(a)-ci,tr=re+yr,ti=im+yi;cr=(tr-re)-yr;ci=(ti-im)-yi;re=tr;im=ti;}
+ const a=-tau*ln,r=Math.exp(-sigma*ln),nr=r*Math.cos(a),ni=r*Math.sin(a),d=(sigma-1)**2+tau*tau;
+ re+=N*(nr*(sigma-1)+ni*tau)/d-nr/2;im+=N*(ni*(sigma-1)-nr*tau)/d-ni/2;
+ const coeff=[1/12,-1/720,1/30240,-1/1209600,1/47900160,-691/1307674368000];let rr=1,ri=0,j=0;
+ for(let k=1;k<=6;k++){while(j<2*k-1){const next=rr*(sigma+j)-ri*tau;ri=rr*tau+ri*(sigma+j);rr=next;j++;}const f=coeff[k-1]*Math.pow(N,1-2*k);re+=f*(rr*nr-ri*ni);im+=f*(rr*ni+ri*nr);}
+ return [re,im];
+}
+zeta=locusZeta;
+// Extend every visible input route together, including the exact-field shortcuts.
+$('tauExact').min=$('tauDial').min=-1000;$('tauExact').max=$('tauDial').max=1000;
+$('tauExact').onkeydown=e=>{if(!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.altKey?.000001:e.shiftKey?.01:.0001;const value=Math.max(-1000,Math.min(1000,tauAim+(e.key==='ArrowUp'?step:-step)));$('tauExact').value=Number(value.toFixed(12));$('tauExact').oninput();};
+const rawTune=tune;tune=function(sigma,tau){rawTune(Math.max(.2,Math.min(3,sigma)),Math.max(-1000,Math.min(1000,tau)));};
+tunePoint=function(q){const z=planeValue(q);tune($('lockSigma').checked?sigmaAim:z[0],z[1]);};
+for(const id of ['tauLow','tauHigh']){$(id).min=-1000;$(id).max=1000;$(id).onchange=()=>{const [a,b]=tauWindow();if($(id).value===''||!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -1000||b>1000){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};}
+$('tauHigh').value=60;$('tauHigh').onchange();
+$('tauLoci').checked=false;planeNotes.append($('tauLoci').parentElement);
+$('planeActions').insertAdjacentHTML('beforeend','<label><input id="zetaLocus" type="checkbox" checked> ζ curve</label>');
+const locusTools=document.createElement('div');locusTools.id='locusTools';locusTools.innerHTML='<button id="fitLocus">Fit ζ curve</button><label>τ span <select id="locusSpan" aria-label="Zeta curve tau span"><option value="60">60</option><option value="100">100</option><option value="500">500</option><option value="1000">1000</option></select></label><output id="locusStatus" aria-live="polite">Preparing ζ curve…</output>';$('planeHint').before(locusTools);
+$('locusSpan').onchange=()=>{const width=+$('locusSpan').value,a=Math.min(+$('tauLow').value,1000-width);$('tauLow').value=a;$('tauHigh').value=a+width;$('tauHigh').onchange();};
+$('planeHint').textContent='Drag s · pan space · wheel to zoom · gold curve follows τ · brighter near current τ';
+planeNotes.insertAdjacentHTML('beforeend','<p>The gold curve is ζ(σ+iτ) itself, computed independently of the clock beat. Bright gold follows the current τ; dim gold is its −τ reflection when ghosts are enabled. Fit ζ curve frames the output alone, so a large input height does not squeeze the loops. τ spans up to 1000 in either direction are supported. Change the window endpoints to isolate a tangle.</p><p>Curve points stream from a background worker as they are computed; completed curves are cached for six recent σ/window combinations. Sampling uses steps no larger than 0.04 with extra subdivision for curvature. At extreme zoom a polyline still has finite resolution; narrow the τ window and inspect it. The pole at s=1 breaks the curve. The critical line has no singularity there at nonzero τ; its many visits near zero create the loops.</p>');
+for(const p of planeNotes.querySelectorAll('p'))p.innerHTML=p.innerHTML.replace('|τ| ≤ 35','|τ| ≤ 1000');
+let locusPrevious=null,locusData=null,locusWorker=null,locusWanted='',locusChanged=0,locusRequested='',locusFitPending=false;const locusCache=new Map();
+function computeLocusJob(){
+ self.onmessage=e=>{const {sigma,a,b,key}=e.data,start=performance.now(),rows=[];let sent=0,lastFlush=start,limited=false;
+ function flush(progress,done=false){const chunk=new Float64Array(rows.slice(sent));sent=rows.length;lastFlush=performance.now();self.postMessage({key,sigma,a,b,chunk,progress,done,limited,ms:lastFlush-start},[chunk.buffer]);}
+ const sample=tau=>[tau,...locusZeta(sigma,tau)];
+ function append(q){rows.push(...q);}
+ function refine(left,right,depth){const mid=sample((left[0]+right[0])/2);const err=Math.hypot(mid[1]-(left[1]+right[1])/2,mid[2]-(left[2]+right[2])/2),scale=1+Math.hypot(mid[1],mid[2]);if(depth<7&&err>2e-4*scale&&rows.length<360000){refine(left,mid,depth+1);refine(mid,right,depth+1);}else {if(err>2e-4*scale)limited=true;append(right);}}
+ const steps=Math.ceil((b-a)/.04);let left=sample(a);append(left);
+ for(let i=1;i<=steps;i++){const right=sample(a+(b-a)*i/steps);if(sigma===1&&left[0]<0&&right[0]>0){append([0,NaN,NaN]);append(right);}else refine(left,right,0);left=right;if(i===1||performance.now()-lastFlush>=32)flush(i/steps);}
+ flush(1,true);};
+}
+function requestLocus(){if(!$('zetaLocus').checked)return;const [a,b]=tauWindow(),sigma=sigmaAim,key=[sigma,a,b].join('/'),now=performance.now();if(key!==locusWanted){if(locusData?.done)locusPrevious=locusData;locusWanted=key;locusChanged=now;if(locusWorker){locusWorker.terminate();locusWorker=null;}locusRequested='';$('locusStatus').textContent='Preparing curve…';}if(key===locusRequested||now-locusChanged<40)return;locusRequested=key;
+ if(locusCache.has(key)){locusData=locusCache.get(key);$('locusStatus').textContent=locusData.data.length/3+' points · cached'+(locusData.limited?' · narrow window for detail':'');if(locusFitPending){locusFitPending=false;fitZetaCurve();}return;}
+ const url=URL.createObjectURL(new Blob([locusZeta.toString()+'\n('+computeLocusJob.toString()+')();'],{type:'text/javascript'}));
+ try{locusWorker=new Worker(url);}catch(error){$('locusStatus').textContent='Curve worker unavailable';URL.revokeObjectURL(url);return;}URL.revokeObjectURL(url);$('locusStatus').textContent='Computing ζ…';
+ const worker=locusWorker;let buffer=new Float64Array(3072),used=0;
+ worker.onmessage=e=>{if(worker!==locusWorker||e.data.key!==locusWanted)return;const {chunk,...meta}=e.data;
+  if(used+chunk.length>buffer.length){const expanded=new Float64Array(Math.max(buffer.length*2,used+chunk.length));expanded.set(buffer.subarray(0,used));buffer=expanded;}
+  buffer.set(chunk,used);used+=chunk.length;locusData={...meta,data:meta.done?buffer.slice(0,used):buffer.subarray(0,used)};
+  if(meta.done){locusCache.set(key,locusData);if(locusCache.size>6)locusCache.delete(locusCache.keys().next().value);$('locusStatus').textContent=used/3+' points · '+(meta.ms/1000).toFixed(2)+' s'+(meta.limited?' · narrow window for detail':'');worker.terminate();locusWorker=null;}
+  else $('locusStatus').textContent='Growing ζ · '+Math.round(meta.progress*100)+'% · '+used/3+' points';
+  if(locusFitPending)fitZetaCurve();
+ };
+ locusWorker.onerror=()=>{if(worker!==locusWorker)return;$('locusStatus').textContent='Curve calculation failed';locusWorker?.terminate();locusWorker=null;};locusWorker.postMessage({key,sigma,a,b});
+}
+function fitZetaCurve(){if(!locusData||locusData.key!==locusWanted){locusFitPending=true;return;}locusFitPending=!locusData.done;let lo=[Infinity,Infinity],hi=[-Infinity,-Infinity];const d=locusData.data;for(let i=0;i<d.length;i+=3){if(!Number.isFinite(d[i+1])||!Number.isFinite(d[i+2]))continue;for(let axis=0;axis<2;axis++){lo[axis]=Math.min(lo[axis],d[i+1+axis]);hi[axis]=Math.max(hi[axis],d[i+1+axis]);}if($('ghostPaths').checked){lo[1]=Math.min(lo[1],-d[i+2]);hi[1]=Math.max(hi[1],-d[i+2]);}}if(lo.every(Number.isFinite))setGraphView(lo.map((v,i)=>(v+hi[i])/2),Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.01)*1.15);}
+$('fitLocus').onclick=()=>{if(!$('zetaLocus').checked)$('zetaLocus').checked=true;requestLocus();fitZetaCurve();};
+const beforeLocus=drawExplorationUnderlay;
+// Keep the previous curve as labelled context; calculate live local detail at the
+// displayed input, never by morphing values from a different sigma.
+const locusRaster=document.createElement('canvas'),locusBackdrop=document.createElement('canvas');
+for(const canvas of [locusRaster,locusBackdrop]){canvas.width=600;canvas.height=300;}
+let locusRasterKey='',locusRasterCount=0;const backdropState={key:'',count:0};
+let liveLocusPreview={sigma:NaN,tau:NaN,rows:[],ms:0};
+function paintLocus(data,canvas,state,ctx,X,Y,alpha){
+ const d=data.data,key=[data.key,graphCentre[0].toPrecision(9),graphCentre[1].toPrecision(9),graphLogExtent.toPrecision(9),$('ghostPaths').checked].join('/');
+ if(key!==state.key||d.length!==state.count){const c=canvas.getContext('2d');if(key!==state.key||d.length<state.count){c.clearRect(0,0,600,300);state.count=0;}state.key=key;c.lineWidth=1;
+  for(const ghost of ($('ghostPaths').checked?[true,false]:[false])){c.strokeStyle=ghost?'#e8bd6518':'#e8bd654c';c.beginPath();let fresh=true;for(let i=Math.max(0,state.count-3);i<d.length;i+=3){const z=[d[i+1],ghost?-d[i+2]:d[i+2]];if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){c.moveTo(X(z),Y(z));fresh=false;}else c.lineTo(X(z),Y(z));}c.stroke();}state.count=d.length;}
+ ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(canvas,0,0);ctx.restore();
+}
+drawExplorationUnderlay=function(ctx,X,Y){beforeLocus(ctx,X,Y);requestLocus();if(!$('zetaLocus').checked)return;
+ const current=locusData?.key===locusWanted,settled=current&&Math.abs(SIGMA-locusData.sigma)<1e-4,ready=settled&&locusData.done;
+ if(!ready&&locusPrevious&&locusPrevious.key!==locusWanted)paintLocus(locusPrevious,locusBackdrop,backdropState,ctx,X,Y,.24);
+ if(current){const state={key:locusRasterKey,count:locusRasterCount};paintLocus(locusData,locusRaster,state,ctx,X,Y,settled?1:.25);locusRasterKey=state.key;locusRasterCount=state.count;}
+ if(liveLocusPreview.sigma!==SIGMA||liveLocusPreview.tau!==TAUV){const start=performance.now(),rows=[];for(let i=0;i<=24;i++){const tau=Math.max(-1000,Math.min(1000,TAUV-.6+i*.05));rows.push([tau,...locusZeta(SIGMA,tau)]);}liveLocusPreview={sigma:SIGMA,tau:TAUV,rows,ms:performance.now()-start};}
+ ctx.save();ctx.strokeStyle='#ffe3a1';ctx.lineWidth=2.4;ctx.setLineDash(ready?[]:[4,3]);ctx.beginPath();let fresh=true,prior=null;
+ for(const q of liveLocusPreview.rows){const z=q.slice(1);if(!z.every(Number.isFinite)){fresh=true;prior=q;continue;}if(SIGMA===1&&prior&&prior[0]<0&&q[0]>0)fresh=true;if(fresh){ctx.moveTo(X(z),Y(z));fresh=false;}else ctx.lineTo(X(z),Y(z));prior=q;}ctx.stroke();ctx.restore();
+ const text=ready?'Gold ζ · blue sum · coloured product':'Dashed: live detail'+(locusPrevious&&locusPrevious.key!==locusWanted?' · faint: previous σ '+Number(locusPrevious.sigma.toFixed(4)):' · full curve updating');
+ if($('liveCurveState')&&$('liveCurveState').textContent!==text)$('liveCurveState').textContent=text;
+};
+
+// A requested fit follows incoming bounds until completion; direct navigation releases it.
+for(const event of ['pointerdown','wheel'])plane.addEventListener(event,()=>{locusFitPending=false;},{capture:true,passive:true});
+for(const id of ['fitPaths','fitTogether','focusZeta','homeGraph'])$(id).addEventListener('click',()=>{locusFitPending=false;},{capture:true});
+$('productRange').addEventListener('input',()=>{locusFitPending=false;});
+
+// One everyday control surface; optional comparisons and factor tools are secondary.
+$('lockSigma').checked=false;
+const options=document.createElement('section');options.id='exploreOptions';options.className='bubble';options.setAttribute('popover','auto');options.innerHTML='<div class="bubble-head"><b>Exploration options</b><button popovertarget="exploreOptions" popovertargetaction="hide" aria-label="Close exploration options">×</button></div><p>Trace a vertical line</p><div id="traceWindow"><label>From τ </label><span>to</span></div><p>Compare and navigate</p><div id="extraViews"></div>';
+stage.append(options);
+const windowRow=$('traceWindow');windowRow.querySelector('label').append($('tauLow'));windowRow.append($('tauHigh'));const spanLabel=$('locusSpan').parentElement;spanLabel.firstChild.textContent='Span ';windowRow.append(spanLabel);
+options.append($('planeActions'));
+$('placeInput').textContent='Place input on plot';const oldPlace=$('placeInput').onclick;$('placeInput').onclick=()=>{oldPlace();options.hidePopover();};
+const lockLabel=$('lockSigma').parentElement;lockLabel.lastChild.textContent=' Lock real part (σ)';
+$('ghostPaths').parentElement.lastChild.textContent=' Mirror at −τ';
+$('zetaLocus').parentElement.lastChild.textContent=' Show ζ curve';
+const extras=$('extraViews');
+for(const [id,label] of [['fitPaths','Fit sum & product'],['fitTogether','Fit input & outputs'],['focusZeta','Centre on ζ'],['homeGraph','Centre on zero'],['productPrev','Previous factor'],['productNext','Next factor'],['clearLink','Clear factor']]){$(id).textContent=label;extras.append($(id));}
+const dock=document.createElement('div');dock.id='exploreDock';$('productGraph').after(dock);
+for(const [axis,title,slider] of [['sigma','Real σ',$('sigmaDial')],['tau','Height τ',$('tauScrub')]]){const row=document.createElement('div');row.className='axis-control';row.innerHTML='<label for="'+axis+'Exact">'+title+'</label>';row.append(slider,$(axis+'Exact'));dock.append(row);}
+$('sigmaDial').oninput=()=>tune(+$('sigmaDial').value,tauAim);
+const toolbar=document.createElement('div');toolbar.id='exploreToolbar';dock.append(toolbar);toolbar.append($('fitLocus'));$('fitLocus').textContent='Fit curve';
+for(const [id,text,factor] of [['zoomOut','−',1.6],['zoomIn','+',1/1.6]]){const button=document.createElement('button');button.id=id;button.textContent=text;button.setAttribute('aria-label',id==='zoomOut'?'Zoom out':'Zoom in');button.onclick=()=>{locusFitPending=false;setGraphView(graphCentreAim,10**+$('productRange').value*factor);};toolbar.append(button);}
+const explorerMoreButton=document.createElement('button');explorerMoreButton.id='exploreMore';explorerMoreButton.textContent='Options';explorerMoreButton.setAttribute('popovertarget','exploreOptions');toolbar.append(explorerMoreButton,explain);
+const caption=document.createElement('p');caption.id='liveCurveState';caption.textContent='Gold ζ · blue sum · coloured product';
+dock.append(toolbar,caption,$('locusStatus'));$('productGraph').after(dock);
+$('planeHint').textContent='Drag the purple s to change the input. Drag empty space to pan. Scroll to zoom.';
+$('planeHint').before(dock);dock.before($('planeHint'));
+// The old containers retain nonvisual state controls used by the renderer.
+for(const id of ['eulerInputs','tauSweep','locusTools'])$(id).hidden=true;
+document.querySelector('.product-tools').hidden=true;
+$('productBubble').querySelector('.bubble-head b').textContent='Explore ζ';
+// Picking an offscreen input badge should work just like picking its visible point.
+const inputPointerDown=plane.onpointerdown;
+plane.onpointerdown=e=>{const q=planePixel(e),unit=125/10**graphLogExtent,x=Math.max(14,Math.min(580,300+unit*(SIGMA-graphCentre[0]))),y=Math.max(32,Math.min(260,150-unit*(TAUV-graphCentre[1]))),near=Math.hypot(q[0]-x,q[1]-y)<16;
+ if(near&&!placing&&!e.shiftKey){e.preventDefault();plane.setPointerCapture(e.pointerId);touches.set(e.pointerId,q);if(touches.size>1){inputPointerDown(e);return;}planeDrag={q,centre:[...graphCentre],unit,input:true,moved:false,relative:[sigmaAim,tauAim]};return;}inputPointerDown(e);
+};
+const inputPointerMove=plane.onpointermove;
+plane.onpointermove=e=>{if(planeDrag?.relative&&touches.has(e.pointerId)){const q=planePixel(e),d=planeDrag;touches.set(e.pointerId,q);d.moved=true;tune($('lockSigma').checked?d.relative[0]:d.relative[0]+(q[0]-d.q[0])/d.unit,d.relative[1]-(q[1]-d.q[1])/d.unit);return;}inputPointerMove(e);};
+planeNotes.insertAdjacentHTML('beforeend','<p>While the full curve is recalculated, a dashed local preview is evaluated directly at the moving input. A faint previous curve is labelled with its real part. It is context, not an interpolated answer. The real part is unlocked by default; use Options to constrain dragging vertically.</p>');
 
 </script>
 </body>

@@ -1,0 +1,8 @@
+#clockStage>#cv{pointer-events:auto}
+#clockStage .fx{pointer-events:auto;cursor:pointer}
+#clockStage .fx:focus-visible{outline:2px solid var(--brass)}
+#clockStage .linked-term .term-ink,#clockStage .linked-factor .factor-ink{text-shadow:0 0 8px currentColor,0 0 2px white!important;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+#linkedReadout{position:absolute;left:50%;transform:translateX(-50%);top:43px;max-width:calc(100vw - 220px);font:11px/1.4 var(--mono);color:var(--ivory);background:#101c17ed;border-radius:8px;padding:5px 9px;z-index:6;text-align:center;pointer-events:none}
+#clearLink{padding:3px 6px}
+@media(max-width:650px){#linkedReadout{top:83px;max-width:calc(100vw - 24px);width:max-content;font-size:10px}}
+@media(max-height:500px){#linkedReadout{top:40px;font-size:9px;max-width:calc(100vw - 24px)}}

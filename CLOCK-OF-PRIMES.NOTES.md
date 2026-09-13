@@ -1,5 +1,74 @@
 # Clock of Primes — story integration
 
+## Current checkpoint — 13 September 2026
+
+The clock now sits beside a shared complex input/output plane. Prime-family
+hover/pin highlights link clock panes, tape factors and matching sum terms;
+selected complementary sectors report their actual geometric fraction. The J
+ledger starts closed. The sum and finite Euler product share a movable ruler,
+with optional conjugate ghosts and a gold ζ trajectory for fixed σ and varying τ.
+
+The ζ trajectory supports |τ| ≤ 1000 and streams from a background worker.
+Completed curves are cached; a directly evaluated local preview responds while
+σ changes, and a labelled faint previous curve provides context during rebuilding.
+The input remains continuous. Real σ and Height τ each have a slider and precise
+field; σ is unlocked by default. Fit, zoom and Options replace the scattered
+controls. The offscreen input badge is draggable.
+
+Validation at this checkpoint: current browser checks for direct input, preview
+latency, streaming, cancellation, cache reuse, pole breaks and responsive layouts
+passed. The evaluator was checked against 66 high-precision reference inputs.
+Build sources, current checks and fixtures accompany the standalone HTML; local
+screenshots and superseded untracked experiments are excluded from the commit.
+The dated entries below preserve earlier decisions and measured limitations.
+
+## Next priority — σ and τ in the clockwork
+
+**TODO: Find and visually establish a geometric representation of σ and τ on
+the clockwork itself.** This remains unimplemented at this checkpoint.
+
+The next experiment should connect an identifiable clock region or motion to
+both weight magnitude n^(-σ) and phase −τ log(n), with the same objects responding
+in the clock, tape and complex plane. Establish what follows from the existing
+clock geometry and what requires an additional weighted measure or reference
+frame. Preserve continuous transformations, repeated prime factors and the
+integer-beat handoff; matching colours alone is not the geometric explanation.
+
+
+## Euler workspace — 13 September 2026
+
+Complex input, graph scale and the overlaid sum/product paths now occupy one
+persistent workspace beside the clock (stacked on narrow portrait screens).
+Pace/count controls remain separate. The J ledger starts closed. Hover previews
+a prime family; clicking pins it, leaving the hover target restores the pinned
+family, and Clear/Escape clears it. Selected ink and arcs use saturated prime
+colour rather than whitening. Graph picking accounts for letterboxing so the
+same complex scale is retained on both axes at every viewport size.
+
+The selected prime's complementary sector is filled within its own disk.
+After its first growth beat, its fraction is exactly 1 − 1/p; during growth the
+readout reports the actual changing fraction. A separate readout evaluates
+1 − p^(-s). These agree at s = 1 after growth, not generally at other inputs.
+This angular-area construction is independent of the radial ruler. The original
+product spiral encoded accumulated sieve survival via its radius; it did not
+measure instantaneous uncovered clock area. Riemann integral work is deferred.
+
+The underlying glass DOES encode the scalar weights in a precise way. For a
+prime, the linear channel transmissions are
+T_i = exp(−3 sigma log(p) a_i / sum(a)), where a_i comes from the prime hue.
+Their geometric mean is p^(−sigma). Multiplying panes channel by channel gives
+geometric mean n^(−sigma) whenever the crossed panes represent n's factorization.
+For example, at 12 the 2, 4 and 3 panes contribute 2, 2 and 3, so at sigma = 2
+the transmission geometric mean is 1/144. Screen RGB includes display correction;
+the tape additionally boosts dark colours for legibility. Neither average screen
+brightness nor uniqueness of RGB mixtures is asserted. Prime identities and
+exponents remain exact arithmetic data, independent of possible colour collisions.
+
+The moving spatial intersections are a phase display. FTA is read at integer
+beats on the meeting ray; an arbitrary moving overlap is not an unchanging
+equation term. Scalar attenuation alone does not encode the complex phase
+−tau log(n), which remains explicit in the vector views.
+
 ## Checkpoint — 12 September 2026
 
 The standalone page now centres the experience on reversible, continuous beats.
@@ -16,19 +85,38 @@ and a numbered prime-count residual axis. Standard complex orientation is the
 default, with perpendicular sigma/tau controls. The sections below record the
 construction and its limitations.
 
-## Next work — requested, not implemented
+## Next work — progress after the checkpoint
 
-1. **Finer complex input.** Add precise numeric entry and small increments for
-   sigma and tau while preserving continuous transitions and the planar controls.
-2. **A zeta range strategy.** Make large excursions, near-pole behaviour and small
-   zero neighbourhoods inspectable with an explicit, understandable scale.
-   Avoid invisible off-screen values or rescaling that disguises convergence.
-3. **Overlay product and sum graphs.** The product inset already marks the sum's
-   endpoint; next show both complete paths on a common complex ruler, preserving
-   their distinct operations, arrival timing and convergence-domain labels.
-4. **Linked clock regions and equation terms.** Identify geometric regions that
-   correspond to individual terms or factors. Make them highlightable in both
-   directions so the region, tape and graph respond together.
+1. **Finer complex input — first pass implemented.** Numeric sigma/tau fields
+   accept precise values within the existing numerical domain (sigma 0.2–3,
+   tau −35–35). Arrow keys change 0.0001, Shift changes 0.01, and Alt changes
+   0.000001. Inputs set easing targets; they never move the beat. The perpendicular
+   sliders and pad remain available.
+2. **A zeta range strategy — first pass implemented.** Fit frames both current
+   paths and the finite zeta reference once. The ζ button centres on the current
+   reference without changing scale; zoom reaches a half-height of 0.00001.
+   The 0 button restores origin and half-height 2. Centres and logarithmic zoom
+   ease continuously, with equal real/imaginary units and numbered coordinates.
+   The view remains fixed as the beat or weights change. Clipping is reported;
+   Fit can expand beyond the usual slider maximum. ζ-centering is disabled at
+   the pole. The numerical evaluation domain has not been extended.
+3. **Overlay product and sum graphs — implemented.** View → Sum × Product draws
+   the complete blue partial-sum path and prime-coloured product path on one
+   ruler. The sum starts at 0; the empty product starts at 1. Fractional arrivals
+   retain their existing interpolation and convergence-domain labels. Product
+   factors remain individually selectable. This is a shared complex plot, not
+   yet a geometric identification with regions of the contracting clock.
+4. **Linked clock regions and equation terms — prime-family pass implemented.**
+   Select an arc band, a tape product factor, or a product graph point (also
+   accessible through its previous/next buttons). The selection outlines every
+   arrived p-power arc, underlines incoming sum terms divisible by p, keeps the
+   tape's p-factor outside the ellipsis, and highlights matching sum links and
+   the p-product segment in the complex graph. The clock sum also highlights
+   matching links when enabled. Clear or Escape removes the selection. Selecting
+   a family changes neither the beat nor the weights. Exact term selections,
+   repeated-factor multiplicities within a selected composite, and links to J's
+   receipts remain future extensions. Arc highlighting identifies the existing
+   geometric carrier; it does not assign an integral value to an enclosed area.
 5. **Riemann's first integral after Euler's product.** Revisit the opening of
    [Riemann's paper, translated by Wilkins](https://www.claymath.org/wp-content/uploads/2023/04/Wilkins-translation.pdf)
    and investigate whether the integral has a faithful region interpretation in
@@ -214,3 +302,43 @@ verify-analytic.cjs. Earlier geometry/game harnesses predate the persistent
 viewport and removal of puzzle gates. Product checks include exact first
 factors, convergence at s=2, conjugate symmetry, domain messaging, perpendicular
 controls, and unscrolled layouts at 320px portrait and 568px landscape.
+
+## Shared complex plane — 13 September 2026
+
+The Euler workspace is now an open plotting surface beside the clock. Its input s and finite sum/product outputs share the same complex coordinate ruler. Drag s (or enable Place s) to tune; Hold σ constrains this to vertical motion. Empty-space dragging pans, wheel zoom is anchored at the pointer, and two-touch pinch changes scale. Exact σ/τ fields remain available, including their fine keyboard increments. Input bounds remain 0.2 ≤ σ ≤ 3 and |τ| ≤ 35; changing the viewport does not change those numerical limits.
+
+The τ window controls a scrubber and optional dotted endpoint loci, sampled at 41 equally spaced τ values with fixed current σ and beat. These are finite-sum and finite-product endpoints, not extra summation segments or an analytic continuation. Samples refresh at most every 220 ms while tuning; sharp features may require narrowing the τ window. The optional dim −τ paths are exact conjugate reflections of the currently drawn finite paths, including the fractional arriving product segment. Fit s + paths includes the input, conjugates and enabled sampled endpoint loci; ordinary Fit retains its current-path meaning. The critical strip is a faint vertical band, with lines at 0, 1/2 and 1.
+
+Guide opens the mathematical interpretation and factor/sector details without consuming permanent graph space. The previous compact status override was removed so the numerical pole, convergence and clipping messages remain accessible. A growing panel no longer claims its incomplete complementary sector equals the completed factor at s=1.
+
+Validation: `.review/verify-exploration.cjs` exercises real mouse input with σ lock, panning, wheel zoom, numerical conjugacy, and no panel/body overflow at 1440×1000, 1024×768, 390×844, 568×320 and 320×568. Pinch is implemented but has not been tested on physical touch hardware.
+
+## ζ itself as a vertical-line image — 13 September 2026
+
+Added the gold locus τ ↦ ζ(σ+iτ), independent of beat. It defaults to τ=0…60, with span presets 60/100/500/1000, arbitrary window endpoints within −1000…1000, and a dedicated Fit ζ curve action. The existing finite endpoint trails are now off by default and remain optional in Guide. A brighter ±0.7 interval follows the current τ; the optional −τ ghost reflects the entire locus. Input σ still ranges from 0.2 to 3. All τ input routes now share the extended bounds.
+
+A Blob-backed Web Worker precomputes each fixed σ/window curve, with six results cached in memory for the session. The evaluator uses compensated summation and six Euler–Maclaurin corrections with N=max(96,ceil(1.25|τ|)), shared verbatim between page and worker. This replaces the previous fixed-N evaluator everywhere, including the gold marker. Sampling begins with Δτ≤0.04 and recursively refines midpoint chord error above 0.0002(1+|ζ|), up to depth 7 and a refinement budget of approximately 120,000 points. This is a plotting heuristic, not a rigorous uniform error bound. Hitting that budget asks the user to narrow the window. The pole creates a curve break. A cached raster handles the quiet full curve; only the short highlighted neighborhood redraws on each scrub frame. Changing σ cancels obsolete background work and hides mismatched cached curves; input values continue to ease.
+
+Measured in local headless Chrome on the critical line: 0…100 produced 4,652 points in 0.056–0.070 s; 0…500 produced 42,736 in 1.7–1.9 s; 0…1000 produced 97,658 in 7.5–8.3 s. After fitting the large curve, 60 sampled frame intervals had median 16.7 ms and 95th percentile 33.4 ms. These are machine-specific observations, not a universal performance promise. Precomputing makes repeated τ exploration cheap; changing σ or the window may require another job. Larger heights would warrant a more efficient evaluator, particularly Riemann–Siegel on σ=1/2, or an offline dataset.
+
+Validation: `.review/zeta-reference.py` generates 66 mpmath reference values at 40 decimal digits, spanning σ=0.2…3, τ up to ±1000, a known zero and near-pole points. `.review/verify-zeta-locus.cjs` compares the browser evaluator (maximum error/(1+|reference|) 4.6e-13), benchmarks the worker, checks cache reuse while τ changes, pole breaks and responsive layouts. This validates sampled values, not all points of the continuous domain. Rebuild remains `python .review/game-build.py`.
+
+Mathematical references: NIST DLMF https://dlmf.nist.gov/25.2 (continuation and Euler–Maclaurin) and https://dlmf.nist.gov/25.18 (computation methods). The critical strip is regular away from the sole pole s=1; the looping curve should not be interpreted as a singularity or a finite sum/product converging inside the strip.
+
+## Streaming ζ curve — 13 September 2026
+
+Worker output now arrives as ordered transferable Float64Array chunks: the first completed sampling interval is sent immediately, followed by batches about every 32 ms and an explicit completion message. The renderer appends into an amortized-growth buffer and extends the cached raster from the previous endpoint, preserving segment continuity and pole breaks. It rebuilds the raster when the view changes. Only completed curves enter the six-entry cache; obsolete workers and late messages cannot replace the current curve. Computation starts after the existing 180 ms input debounce, without waiting for σ's visual easing to finish; a curve is shown only when its σ agrees with the displayed input.
+
+Fit ζ curve during calculation follows incoming bounds using the existing eased view transform. Panning, wheel zoom and other view controls release that fit. The progress readout includes the growing point count. This changes delivery and rendering, not sampling or the evaluator.
+
+Streaming checks confirm partial data and a rendered partial curve before completion, preservation of the previously received prefix, completion-only caching, cancellation during a σ/window change, fit release on navigation, pole breaks, reference accuracy and responsive layouts. In the 0…1000 critical-line test, the first 5 points were emitted 0.5 ms after worker computation began (startup/debounce/display time is additional), and the completed curve retained 97,658 points. Full preparation remained about 8.3 s in that run.
+
+## Responsive real-part exploration and simpler controls — 13 September 2026
+
+The latency had two avoidable sources: a 180 ms request debounce and a renderer gate requiring the eased σ to agree with the target to 0.0001 before showing anything. Requests now debounce for 40 ms, and σ/τ ease at 14/s instead of 5/s. Values remain continuous.
+
+The curve renderer now evaluates a local 25-point ζ preview directly at the displayed σ and τ on each changing frame (τ ±0.6 in 0.05 increments, clamped to the supported domain). It uses a dashed stroke during rebuilding. A completed previous curve remains faint, explicitly labelled with its previous σ, while new samples stream in. A mismatched target curve is also dimmed during easing. These layers are not interpolated function values; the live preview is freshly evaluated. Once the matching full curve is complete, the local highlight becomes solid. Both full and previous curves use raster caches; streamed segments still append incrementally. Narrow local sampling is visual feedback, not a high-resolution substitute for the full adaptive curve.
+
+The everyday controls are now Real σ and Height τ, each with a slider and precise number field, followed by Fit curve, zoom out/in, Options and Guide. The σ lock is OFF by default. Options holds the τ window/span, mirror, curve toggle, optional placement mode, secondary fits and factor controls. Direct dragging of the purple input now works even when it is represented by the offscreen badge; this adjusts from the existing input using pointer displacement instead of jumping to the badge's clipped coordinate.
+
+Authoring: `.review/friendly-explorer.js/css`, plus the revised `.review/zeta-locus.js` and continuous input easing replacements in the full build pipeline. `.review/verify-friendly.cjs` checks default unlocked dragging with a real mouse, immediate preview feedback, options access, high-height preview cost, and five viewport sizes. Observed live feedback was ~32 ms over two animation frames, with 25-point preview costs ~0.1 ms near τ=14 and 1.6–2.3 ms near τ=1000. Machine-specific observations, not universal frame-rate guarantees. Existing zeta numerical/stream tests now access the span selector through its moved control rather than assuming it is always visible.

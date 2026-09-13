@@ -1,0 +1,58 @@
+#clockStage>#cv{width:min(49vw,83vh);height:min(49vw,83vh);left:26vw;top:49%}
+#clockStage .proof{width:min(380px,43vw)}
+#productBubble.euler-workspace{inset:62px 14px auto auto;height:calc(100dvh - 180px);width:46vw;max-height:none;padding:14px;box-sizing:border-box}
+#productBubble.euler-workspace:popover-open{display:flex;flex-direction:column;gap:5px}
+#productBubble.euler-workspace #productGraph{width:100%;height:auto;min-height:0;flex:1;object-fit:contain;aspect-ratio:2}
+#eulerInputs{display:flex;gap:18px;align-items:center;justify-content:center;flex-shrink:0}
+#eulerInputs .complex-input{width:270px;height:156px;padding:0;flex-shrink:0}
+#eulerInputs .complex-input #complexPad{left:30px;top:25px;width:236px;height:90px}
+#eulerInputs .complex-input #sigmaDial{left:30px;width:236px;bottom:0}
+#eulerInputs .complex-input #tauDial{top:25px;height:90px}
+#eulerInputs .complex-input label[for=tauExact]{left:30px;top:0;width:236px}
+#eulerInputs .complex-input label[for=sigmaExact]{left:30px;bottom:21px;width:236px}
+#eulerInputs input[type=number]{width:154px;font-size:13px}
+#productBubble .product-tools input{max-width:none}
+#productBubble #productDetails,#productBubble #productStatus,#sectorMeasure{min-height:0;font-size:11px;line-height:1.4;margin:0}
+#sectorMeasure{color:var(--patina);border-top:1px solid var(--edge2);padding-top:6px}
+#linkedReadout{left:25%;max-width:42vw;font-size:10px}
+#clockStage .linked-factor .factor-ink{color:var(--highlight);text-shadow:0 0 8px var(--highlight)!important}
+#clockStage .linked-term .term-ink{text-shadow:0 0 7px currentColor!important;filter:saturate(1.8)}
+@media(max-width:700px) and (min-height:501px){
+ #clockStage>#cv{width:min(69vw,32vh);height:min(69vw,32vh);left:45%;top:22%}
+ #clockStage .proof{width:230px}
+ #productBubble.euler-workspace{top:38%;bottom:auto;height:calc(62dvh - 123px);left:10px;right:10px;width:auto;padding:8px;gap:2px}
+ #productBubble.euler-workspace .bubble-head{margin:0;font-size:12px}
+ #eulerInputs{gap:6px}#eulerInputs .complex-input{width:200px;height:108px}
+ #eulerInputs .complex-input #complexPad{width:168px;height:43px;top:24px}
+ #eulerInputs .complex-input #tauDial{height:43px;top:24px}
+ #eulerInputs .complex-input #sigmaDial,#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{width:168px}
+ #eulerInputs input[type=number]{width:125px;font-size:11px}
+ #productBubble #productStatus,#sectorMeasure,#productBubble #productDetails{font-size:9px;line-height:1.25}
+ #linkedReadout{top:80px;left:50%;max-width:92vw}#zeroShortcut button{font-size:10px;padding:4px}
+}
+@media(max-height:600px) and (min-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:42px;bottom:auto;height:calc(100dvh - 87px);padding:6px;gap:1px;width:57vw;right:6px}
+ #clockStage>#cv{width:37vw;height:37vw;left:20vw}
+ #productBubble.euler-workspace .bubble-head{font-size:11px;margin:0}
+ #eulerInputs{gap:4px}#eulerInputs .complex-input{width:150px;height:74px}
+ #eulerInputs .complex-input #complexPad{width:120px;height:15px;top:21px}
+ #eulerInputs .complex-input #tauDial{height:15px;top:21px}
+ #eulerInputs .complex-input #sigmaDial,#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{width:120px}
+ #eulerInputs input[type=number]{width:99px;font-size:10px;height:19px}
+ #productBubble #productStatus,#sectorMeasure,#productBubble #productDetails{font-size:8px;line-height:1.2}
+ #productBubble .product-tools{gap:2px}#productBubble .product-tools button{font-size:9px;padding:2px 4px}#zeroShortcut button{font-size:9px;padding:2px}
+ #sectorMeasure{padding-top:2px}
+}
+@media(max-height:600px) and (min-aspect-ratio:1/1){
+ #productBubble.euler-workspace:popover-open{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 94px auto auto auto auto;align-content:start;column-gap:4px}
+ #productBubble.euler-workspace .bubble-head,#productBubble .product-tools,#productDetails,#productStatus,#sectorMeasure{grid-column:1/-1}
+ #productBubble.euler-workspace #productGraph{grid-column:1;grid-row:2;width:100%;height:94px;align-self:center}
+ #eulerInputs{grid-column:2;grid-row:2;flex-direction:column;gap:0}
+ #eulerInputs #zeroShortcut{margin:0}#eulerInputs #zeroShortcut button{padding:0;font-size:8px}
+}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:31%;height:calc(69dvh - 123px)}
+ #clockStage>#cv{width:26vh;height:26vh;top:19%}
+ #eulerInputs .complex-input{height:85px}
+ #eulerInputs .complex-input #complexPad,#eulerInputs .complex-input #tauDial{height:21px}
+}

@@ -16,12 +16,13 @@ const PR=(()=>{
   const now=performance.now(),dt=lastTime?Math.min(.05,(now-lastTime)/1000):0;lastTime=now;
   const ease=1-Math.exp(-dt*16),n=Math.floor(tt),width=parseFloat(getComputedStyle(tape).width),visible=Math.ceil(width/slot)+2;
   const born=primes.filter(p=>p<=n),active=[...new Set(factorize(n))];
+  const linked=typeof selectedPrime!=='undefined'&&selectedPrime<=n?selectedPrime:0;
   // Reserve places for every absorbing prime, then use spare room for recent
   // factors. The remainder stays accumulated in the ellipsis.
   const available=Math.max(48,pf.parentElement.parentElement.clientWidth-44);
   const upright=typeof reflectionMix!=='undefined'&&reflectionMix>.5;
-  const capacity=Math.max(active.length,Math.min(5,Math.floor(available/(upright?32:68))));
-  const shown=active.slice();
+  const shown=active.slice();if(linked&&!shown.includes(linked))shown.push(linked);
+  const capacity=Math.max(shown.length,Math.min(5,Math.floor(available/(upright?32:68))));
   for(let i=born.length-1;i>=0&&shown.length<capacity;i--)if(!shown.includes(born[i]))shown.push(born[i]);
   shown.sort((a,b)=>b-a);
   for(let k=Math.max(1,n-1);k<=n+visible;k++)if(!terms.has(k)){

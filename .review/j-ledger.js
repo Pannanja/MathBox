@@ -55,4 +55,4 @@ function updateJLedger(){
  g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=.4+.6*(1-(t-n));g2.strokeStyle=factorColour(current.p);g2.lineWidth=4;g2.beginPath();g2.arc(X,Y,17,0,2*Math.PI);g2.stroke();g2.restore();
 }
 const guideBeforeJ=updateGuide;updateGuide=function(){guideBeforeJ();updateJLedger();};
-jBubble.showPopover();updateJLedger();
+updateJLedger();

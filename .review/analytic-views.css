@@ -7,8 +7,12 @@
 .complex-input label{margin:0;font:11px var(--mono);white-space:nowrap}
 .complex-input label[for=tauDial]{position:absolute;left:0;top:0}
 .complex-input label[for=sigmaDial]{position:absolute;bottom:28px;left:28px}
+.complex-input label[for=tauExact]{position:absolute;left:28px;top:-3px;width:125px;align-items:center}
+.complex-input label[for=sigmaExact]{position:absolute;left:28px;bottom:28px;width:125px;align-items:center}
+.complex-input input[type=number]{width:104px;min-width:0;padding:2px 3px;font:11px var(--mono);height:22px}
 #complexPad{position:absolute;left:29px;top:22px;width:123px;height:102px;touch-action:none;border:1px solid #61796b;cursor:crosshair;background:linear-gradient(transparent 49.5%,#71897b66 50%,transparent 50.5%)}
 #complexPad::after{content:'σ →';position:absolute;bottom:2px;right:3px;font:10px var(--mono);color:var(--dim)}
+#complexPad{height:90px}
 #complexDot{position:absolute;width:7px;height:7px;background:var(--brass);border-radius:50%;transform:translate(-50%,50%);pointer-events:none}
 .tune-bubble .tune-control,.tune-bubble #zeroShortcut{grid-column:2!important}
 .tune-bubble #zeroShortcut{align-self:start;margin:0}
@@ -17,8 +21,10 @@
 #productGraph{display:block;width:100%;height:auto;aspect-ratio:600/300;touch-action:none}
 #productDetails,#productStatus{font:11px/1.4 var(--mono);min-height:30px}
 .product-tools{display:flex;gap:7px;align-items:center;font-size:11px}.product-tools button{padding:3px 8px}.product-tools input{max-width:120px}
+.product-tools{gap:4px}.product-tools input{min-width:35px;flex:1}.product-tools output{white-space:nowrap;font-size:10px}
 #psiExplanation{font-size:11px;line-height:1.4;color:var(--dim)}
 @media(max-height:500px){.view-bubble:popover-open{padding-top:7px;padding-bottom:7px}.product-bubble #productGraph{width:224px;height:112px;margin:auto}}
 @media(max-height:500px){.view-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.view-bubble .bubble-head,.view-bubble>p{grid-column:1/-1}.view-bubble #layerButtons{grid-column:1/-1}.view-bubble #orientationButtons{grid-column:1/-1}.view-bubble label[for=radialDial]{grid-column:1;grid-row:4}.view-bubble #rulerSlot{grid-column:1;grid-row:5}.view-bubble label[for=separateDial]{grid-column:2;grid-row:4}.view-bubble #splitSlot{grid-column:2;grid-row:5}.view-bubble .button-row button{padding:3px 8px}}
 @media(max-width:650px) and (min-height:501px){.product-bubble{top:90px}}
 @media(max-height:500px){.tune-bubble:popover-open{width:min(440px,calc(100vw - 28px));gap:0 14px}.complex-input{height:140px}.complex-input #tauDial{height:88px}#complexPad{height:78px}.product-bubble{top:44px;width:min(520px,calc(100vw - 28px));padding:8px 12px}#productGraph{height:112px;aspect-ratio:auto}.product-bubble .bubble-head{margin:0}.product-bubble p{margin:3px 0 0}#productDetails,#productStatus{min-height:0;font-size:10px}.view-bubble{width:min(460px,calc(100vw - 28px))}#psiExplanation{font-size:10px}}
+@media(max-height:500px){#complexPad{height:64px}}

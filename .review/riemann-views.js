@@ -191,13 +191,17 @@ for(const [id,axis] of [['sigmaDial','sigma'],['tauScrub','tau']]){
 }
 let domainKey='';
 function updateDomainSliders(){
- const d=ClockMath.viewDomain(paperMode),lo=+$('tauScrub').min,hi=+$('tauScrub').max,key=[paperMode,lo,hi,sigmaAim>1,Math.abs(tauAim)>d.tauLimit].join('/');if(key===domainKey)return;domainKey=key;
+ const d=ClockMath.viewDomain(paperMode),lo=+$('tauScrub').min,hi=+$('tauScrub').max;
+ const vertical=getComputedStyle($('tauScrub')).writingMode.startsWith('vertical');
+ const key=[paperMode,lo,hi,sigmaAim>1,Math.abs(tauAim)>d.tauLimit,vertical].join('/');if(key===domainKey)return;domainKey=key;
  const green='#609d87',amber='#b3904b',invalid='#665869';
  const percent=(v,a,b)=>Math.max(0,Math.min(100,100*(v-a)/(b-a)));
  const sigma=$('sigmaDial'),threshold=percent(1,+sigma.min,+sigma.max),left=d.boundaryKind==='finite only'?amber:invalid;
  const hatch='repeating-linear-gradient(135deg,#665869 0 3px,#382e40 3px 6px)';sigma.style.background=d.sigmaBoundary===null?green:d.boundaryKind==='finite only'?'linear-gradient(to right,'+left+' '+threshold+'%,'+green+' '+threshold+'%)':'linear-gradient(to right,transparent '+threshold+'%,'+green+' '+threshold+'%),'+hatch;
  const a=percent(-d.tauLimit,lo,hi),b=percent(d.tauLimit,lo,hi);
- $('tauScrub').style.background='linear-gradient(to right,transparent '+a+'%,'+green+' '+a+'%,'+green+' '+b+'%,transparent '+b+'%),'+hatch;
+ // The supported band runs along the track, whichever way the track lies.
+ const tauAxis=vertical?'to top':'to right';
+ $('tauScrub').style.background='linear-gradient('+tauAxis+',transparent '+a+'%,'+green+' '+a+'%,'+green+' '+b+'%,transparent '+b+'%),'+hatch;
  const sigmaText=d.boundaryKind==='finite only'?'σ ≤ 1: finite only · σ > 1: convergent':d.boundaryKind==='diverges'?'σ ≤ 1: integral diverges · σ > 1: supported':'σ 0.2–3: supported · shared clock range';
  const tauText='|τ| ≤ '+d.tauLimit+(d.tauLimit===1000?' · explorer range':' · numerical window')+(Math.abs(tauAim)>d.tauLimit?' · input outside':'');
  $('sigmaDomain').textContent=sigmaText;$('tauDomain').textContent=tauText;

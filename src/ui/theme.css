@@ -34,11 +34,12 @@
 #clockApp.redesigned #clockStage>#cv{left:50%;top:50%;width:var(--clock-size,600px);height:var(--clock-size,600px);transform:translate(calc(-50% + var(--clock-shift,0px)),-50%)}
 #clockApp.redesigned #clockTransport{position:relative;display:flex;align-items:center;justify-content:center;gap:20px;min-height:116px;padding:8px 12px}
 #clockApp.redesigned #transportCorner{position:static;max-width:none;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px 20px}
-#clockApp.redesigned .compact-count{grid-column:1;grid-row:1;flex-direction:column;align-items:flex-start;gap:0;width:136px;min-width:136px}
+#clockApp.redesigned .compact-count{grid-column:1;grid-row:1;flex-direction:column;align-items:flex-start;gap:0;width:84px;min-width:84px}
 #clockApp.redesigned #now{font:28px/1.2 var(--mono);font-variant-numeric:tabular-nums}
-#clockApp.redesigned #fac{font:12px/15px var(--mono);width:136px;height:30px;overflow:hidden}
+#clockApp.redesigned #fac{font:15px/20px var(--mono);width:auto;min-height:20px;text-align:center;color:var(--ivory);font-variant-numeric:tabular-nums}
 #clockApp.redesigned #transportCorner .transport{grid-column:2;grid-row:1;margin:0;gap:5px}
 #clockApp.redesigned #transportCorner .transport button{font:14px var(--mono);padding:7px 10px}
+#clockApp.redesigned #transportCorner .transport #play{min-width:74px!important}
 #clockApp.redesigned #transportCorner .scrubber{grid-column:1/-1;grid-row:2;width:100%;font:12px var(--mono);padding:0;background:none}
 #clockApp.redesigned #clockObserve{font-size:13px}
 #clockApp.redesigned #originalProof{position:fixed;z-index:6;width:var(--tape-span,380px);max-width:none;margin:0;transform:translate(-50%,-50%);pointer-events:none!important}
@@ -75,7 +76,7 @@
 #clockApp.redesigned #sigmaControl{grid-column:1;grid-row:2;padding:0 8px}
 #clockApp.redesigned #tauControl{grid-column:2;grid-row:1;flex-direction:column;justify-content:center;padding:12px 0}
 #clockApp.redesigned #sigmaControl input[type=range]{width:auto!important;flex:1}
-#clockApp.redesigned #tauControl input[type=range]{writing-mode:vertical-lr!important;direction:rtl!important;width:7px!important;height:auto!important;flex:1}
+#clockApp.redesigned #tauControl input[type=range]{writing-mode:vertical-lr!important;direction:rtl!important;width:9px!important;min-width:0!important;height:auto!important;flex:1;align-self:center}
 #clockApp.redesigned .axis-control input[type=number]{font:13px var(--mono);height:30px;width:85px;padding:4px}
 #clockApp.redesigned #tauControl input[type=number]{width:49px;font-size:12px}
 #clockApp.redesigned .domain-caption{display:none}
@@ -98,6 +99,6 @@
 #clockApp.redesigned #viewHelp .view-equation{font-size:17px}
 
 @media(min-width:1050px){#clockWorkspace:has(.inspector:not([hidden])){padding-right:286px}#clockApp.redesigned #clockInspector{position:absolute;right:0;top:66px;bottom:auto;width:272px;max-height:calc(100% - 84px);border:1px solid #8ca79433;border-radius:10px}#workspaceShell[data-layout=both] #clockWorkspace:has(.inspector:not([hidden])){padding-right:0}#workspaceShell[data-layout=both] #clockInspector{position:static;width:auto;max-height:46%;border:0;border-top:1px solid #8ca79444;border-radius:0}}
-@media(max-width:800px){#workspaceShell{padding:0 8px;grid-template-columns:minmax(0,1fr) 8px 0!important}#workspaceShell[data-layout=both],#workspaceShell[data-layout=explorer]{grid-template-columns:0 8px minmax(0,1fr)!important}#workspaceShell[data-layout=both] #clockWorkspace{visibility:hidden}.redesigned .workspace-title{height:58px;min-height:58px;padding:0 80px 0 8px}.redesigned .workspace-title h1{font-size:22px}#clockApp.redesigned #clockTransport{padding:8px 0;gap:4px}#clockApp.redesigned #transportCorner{gap:6px}#clockApp.redesigned #fac{width:104px}#clockApp.redesigned #clockObserve{position:absolute;right:4px;bottom:3px}#clockApp.redesigned #transportCorner .scrubber{padding-right:65px}#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font-size:12px}#clockApp.redesigned #clockTransport .transport button{padding:6px 8px}#clockApp.redesigned #clockSurface{min-height:80px}#clockApp.redesigned #productBubble.explorer-surface{padding:0 0 8px}#workspaceSwitch button{padding:7px 10px}#clockApp.redesigned #clockInspector{max-height:50%}}
+@media(max-width:800px){#workspaceShell{padding:0 8px;grid-template-columns:minmax(0,1fr) 8px 0!important}#workspaceShell[data-layout=both],#workspaceShell[data-layout=explorer]{grid-template-columns:0 8px minmax(0,1fr)!important}#workspaceShell[data-layout=both] #clockWorkspace{visibility:hidden}.redesigned .workspace-title{height:58px;min-height:58px;padding:0 80px 0 8px}.redesigned .workspace-title h1{font-size:22px}#clockApp.redesigned #clockTransport{padding:8px 0;gap:4px}#clockApp.redesigned #transportCorner{gap:6px}#clockApp.redesigned #fac{font-size:13px}#clockApp.redesigned #clockObserve{position:absolute;right:4px;bottom:3px}#clockApp.redesigned #transportCorner .scrubber{padding-right:65px}#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font-size:12px}#clockApp.redesigned #clockTransport .transport button{padding:6px 8px}#clockApp.redesigned #clockSurface{min-height:80px}#clockApp.redesigned #productBubble.explorer-surface{padding:0 0 8px}#workspaceSwitch button{padding:7px 10px}#clockApp.redesigned #clockInspector{max-height:50%}}
 @media(max-height:540px){.redesigned .workspace-title{height:45px;min-height:45px}.redesigned .workspace-title h1{font-size:20px}#workspaceShell{grid-template-rows:minmax(0,1fr) 44px}#clockApp.redesigned #clockTransport{min-height:84px}#clockApp.redesigned #tapeDomain{display:none}#clockApp.redesigned #clockSurface{min-height:60px}#clockApp.redesigned #graphSurface{min-height:90px}#clockApp.redesigned #locusStatus{display:none}#clockApp.redesigned #constructionChooser>summary{padding:3px 10px}#clockApp.redesigned .inspector{max-height:58%}}
 @media(prefers-reduced-motion:reduce){.redesigned *{scroll-behavior:auto!important}}

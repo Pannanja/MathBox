@@ -512,7 +512,7 @@ function frame(ms) {
       const f = factorize(k);
       $('now').textContent = k;
       $('now').style.color = (specMode > 0 && k > 1) ? colourOfN(k) : '';
-      $('fac').textContent = isPrime(k) ? 'prime · a new rhythm' : f.join(' × ');
+      $('fac').textContent = isPrime(k) ? 'prime' : f.join(' × ');
       $('fac').className = isPrime(k) ? 'prime' : '';
     }
   }

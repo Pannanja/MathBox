@@ -42,7 +42,7 @@ function advanceClock(next, ms) {
  }
  t=next;lastInt=n;unitLap=n;
  $('now').textContent=n;
- $('fac').textContent=n===1?'':isPrime(n)?'prime · a new rhythm':factorize(n).join(' × ');
+ $('fac').textContent=n===1?'':isPrime(n)?'prime':factorize(n).join(' × ');
  $('fac').className=isPrime(n)?'prime':'';
 }
 function updateClock(dt, ms) {

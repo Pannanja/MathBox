@@ -57,17 +57,18 @@ function drawProductGraph(){
  const ms=performance.now(),ease=1-Math.exp(-Math.min(.05,(ms-graphLastMs)/1000)*12);graphLastMs=ms;
  graphCentre=graphCentre.map((v,i)=>v+(graphCentreAim[i]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
  const ctx=$('productGraph').getContext('2d'),extent=10**graphLogExtent,unit=125/extent,X=z=>300+unit*(z[0]-graphCentre[0]),Y=z=>150-unit*(z[1]-graphCentre[1]);
- ctx.clearRect(0,0,600,300);ClockMath.drawComplexPlane(ctx,graphCentre,extent);
+ const bounds=ClockMath.plotBounds(ctx.canvas);ctx.clearRect(0,bounds.top,600,bounds.height);ClockMath.drawComplexPlane(ctx,graphCentre,extent,bounds);
  const data=eulerPath(t,SIGMA,TAUV),points=data.points,idx=selectedProduct<0?points.length-1:Math.min(selectedProduct,points.length-1),selected=points[idx];productHitPoints=[];
- ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
- function dot(z,col,r,label){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<20||y>280)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();if(label)ctx.fillText(label,x+7,y-7);}
+ // Markers and labels are sized in CSS pixels and culled against the live band.
+ ctx.save();const band=ClockMath.clipPlot(ctx),u=ClockMath.plotFont(ctx,13,'ui-sans-serif');
+ function dot(z,col,r,label,below){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<band.inTop||y>band.inBottom)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r*u,0,7);ctx.fill();if(label)ctx.fillText(label,x+7*u,y+(below?16:-7)*u);}
  if(typeof drawExplorationUnderlay==='function')drawExplorationUnderlay(ctx,X,Y);
- const rawSum=continuumSum(t,SIGMA,TAUV);ctx.strokeStyle='#87bff2';ctx.lineWidth=2;ctx.beginPath();
+ const rawSum=continuumSum(t,SIGMA,TAUV);ctx.strokeStyle='#87bff2';ctx.lineWidth=2*u;ctx.beginPath();
  for(let i=0;i<rawSum.points.length;i++){const z=rawSum.points[i];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(rawSum.z),Y(rawSum.z));ctx.stroke();dot([0,0],'#87bff2',3,'Σ starts at 0');
- if(typeof selectedPrime!=='undefined'&&selectedPrime){ctx.strokeStyle=factorColour(selectedPrime);ctx.lineWidth=4;for(let k=selectedPrime;k<rawSum.points.length;k+=selectedPrime){ctx.beginPath();ctx.moveTo(X(rawSum.points[k-1]),Y(rawSum.points[k-1]));ctx.lineTo(X(rawSum.points[k]),Y(rawSum.points[k]));ctx.stroke();}}
- for(let i=0;i<points.length;i++){const q=points[i],col=i?'hsl('+hueOf(q.p)+' 68% 68%)':'#ddd';if(i&&q.z.every(Number.isFinite)&&points[i-1].z.every(Number.isFinite)){ctx.strokeStyle=col;ctx.lineWidth=i===idx?3:1.6;ctx.beginPath();ctx.moveTo(X(points[i-1].z),Y(points[i-1].z));ctx.lineTo(X(q.z),Y(q.z));ctx.stroke();}dot(q.z,col,i===idx?5:2,i===idx?(i?'p='+q.p:'start: 1'):'');if(Math.abs(X(q.z)-300)<300&&Math.abs(Y(q.z)-150)<130)productHitPoints.push({i,x:X(q.z),y:Y(q.z)});}
- if(typeof selectedPrime!=='undefined'&&selectedPrime){const j=points.findIndex(q=>q.p===selectedPrime);if(j>0){ctx.strokeStyle='#fff2c0';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(X(points[j-1].z),Y(points[j-1].z));ctx.lineTo(X(points[j].z),Y(points[j].z));ctx.stroke();dot(points[j].z,'#fff2c0',6,'linked p='+selectedPrime);}}
- if(data.arriving){ctx.strokeStyle='#ddd8';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(data.z),Y(data.z));ctx.lineTo(X(data.arriving),Y(data.arriving));ctx.stroke();ctx.setLineDash([]);}
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){ctx.strokeStyle=factorColour(selectedPrime);ctx.lineWidth=4*u;for(let k=selectedPrime;k<rawSum.points.length;k+=selectedPrime){ctx.beginPath();ctx.moveTo(X(rawSum.points[k-1]),Y(rawSum.points[k-1]));ctx.lineTo(X(rawSum.points[k]),Y(rawSum.points[k]));ctx.stroke();}}
+ for(let i=0;i<points.length;i++){const q=points[i],col=i?'hsl('+hueOf(q.p)+' 68% 68%)':'#ddd';if(i&&q.z.every(Number.isFinite)&&points[i-1].z.every(Number.isFinite)){ctx.strokeStyle=col;ctx.lineWidth=(i===idx?3:1.6)*u;ctx.beginPath();ctx.moveTo(X(points[i-1].z),Y(points[i-1].z));ctx.lineTo(X(q.z),Y(q.z));ctx.stroke();}dot(q.z,col,i===idx?5:2,i===idx?(i?'p='+q.p:'Π starts at 1'):'',i===idx&&!i);if(Math.abs(X(q.z)-300)<300&&Y(q.z)>band.inTop&&Y(q.z)<band.inBottom)productHitPoints.push({i,x:X(q.z),y:Y(q.z)});}
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){const j=points.findIndex(q=>q.p===selectedPrime);if(j>0){ctx.strokeStyle='#fff2c0';ctx.lineWidth=5*u;ctx.beginPath();ctx.moveTo(X(points[j-1].z),Y(points[j-1].z));ctx.lineTo(X(points[j].z),Y(points[j].z));ctx.stroke();dot(points[j].z,'#fff2c0',6,'linked p='+selectedPrime);}}
+ if(data.arriving){ctx.strokeStyle='#ddd8';ctx.setLineDash([3*u,3*u]);ctx.beginPath();ctx.moveTo(X(data.z),Y(data.z));ctx.lineTo(X(data.arriving),Y(data.arriving));ctx.stroke();ctx.setLineDash([]);}
  const sum=continuumSum(t,SIGMA,TAUV).z,pole=Math.hypot(SIGMA-1,TAUV)<1e-8,target=pole?[Infinity,0]:zeta(SIGMA,TAUV);
  dot(sum,'#87bff2',4,'Σ');dot(target,'#e8bd65',4,'ζ');ctx.restore();
  $('productExtent').textContent='±'+extent.toPrecision(2);$('focusZeta').disabled=pole;

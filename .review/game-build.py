@@ -37,15 +37,15 @@ a=p.index('    if (ring.echo) {',p.index("g2.strokeStyle = 'rgba(80,90,102,0.30)
 p=p[:a]+'''    if (ring.echo) {
       if(glassMix<.001&&stairMix<.001)return;
       g2.save();g2.globalAlpha=Math.max(glassMix,stairMix);
-      const sp=panelSpan(p,t),w=Math.max(2.2,Math.min(5,1.2+r/40));
+      const sp=panelSpan(p,t),w=Math.max(.65,Math.min(1.7,r*Math.PI/p*.28));
       g2.strokeStyle='hsla('+hueOf(ring.base)+' 55% 60% / .25)';g2.lineWidth=1;g2.beginPath();g2.arc(C,C,r,0,7);g2.stroke();
       g2.fillStyle='hsl('+hueOf(ring.base)+' 68% 62%)';band(r-w,r+w,sp.c0-sp.w/2,sp.c0+sp.w/2);
-      if(r>55&&!(glassMix>.5&&n%p===0)){const bx=C+r*Math.cos(sp.c0+sp.w/2),by=C+r*Math.sin(sp.c0+sp.w/2);g2.fillStyle='hsl('+hueOf(ring.base)+' 65% 76%)';g2.font='24px ui-monospace,monospace';g2.textAlign='center';g2.fillText(String(p),bx+(bx>C?16:-16),by);}
+      if(r>55&&!(glassMix>.5&&n%p===0)){g2.fillStyle='hsl('+hueOf(ring.base)+' 65% 76%)';drawPaneLabel(p,r,sp.c0+sp.w/2);}
       g2.restore();return;
     }
 '''+p[b:]
 # Fade between the bare sieve ray and the factor-reading glass ray.
-a=p.index('  const juice = Math.max');b=p.index('  if (riemann)',a)
+a=p.index('  const juice = ');b=p.index('  if (riemann)',a)
 chunk=p[a:b].replace('(1 - focusMix)', '(1 - focusMix) * (1 - glassMix)')
 p=p[:a]+chunk+'  drawPrimeGlass(rad,n);\n'+p[b:]
 p=p.replace('if (r > 70) {', 'if (r > 70 && !(glassMix > .5 && n % p === 0)) {')

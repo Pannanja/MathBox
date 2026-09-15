@@ -98,6 +98,8 @@ file's modification time without changing its contents.
 The mathematical and visual roadmap is in
 [RIEMANN-VISUALIZATION-PLAN.md](RIEMANN-VISUALIZATION-PLAN.md). Changes and
 validation history are in [CLOCK-OF-PRIMES.NOTES.md](CLOCK-OF-PRIMES.NOTES.md).
+The current interface audit, visual guidelines, and implementation checklist are
+in [PRESENTATION-REDESIGN.md](PRESENTATION-REDESIGN.md).
 
 
 **Published site**

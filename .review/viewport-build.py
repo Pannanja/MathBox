@@ -71,4 +71,9 @@ p=p.replace('</script>', (root/'.build/clock-math.js').read_text(encoding='utf-8
 for name in ['riemann-views.js']:
  p=p.replace('</script>',(root/'.review'/name).read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace("$('productRange').step='any';", "$('productRange').step='any';$('productRange').min=-14;")
+# The typed workspace now owns presentation. Existing panels are docked into
+# its inspector rather than participating in the browser's popover top layer.
+p=p.replace(".matches(':popover-open')", ".matches('[data-open=\"true\"]')")
+p=p.replace('</style>',(root/'src/ui/theme.css').read_text(encoding='utf-8')+'\n</style>',1)
+p=p.replace('</script>',(root/'.review/workspace-bridge.js').read_text(encoding='utf-8')+'\n</script>',1)
 f.write_text(p,encoding='utf-8')

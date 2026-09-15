@@ -1,10 +1,15 @@
 const {chromium}=require('C:/Users/ZackO/AppData/Local/npm-cache/_npx/27c922a03b377bcf/node_modules/playwright');
 const assert=require('node:assert/strict'),path=require('node:path');
+// The construction catalogue is collapsed by default in the redesigned shell;
+// open it before choosing so tests exercise the same handler as a visitor.
+const pickView=(page,mode)=>page.evaluate(m=>{const c=document.getElementById('constructionChooser');if(c)c.open=true;document.querySelector('[data-view="'+m+'"]').click();},mode);
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('file:///'+path.resolve('orrery-of-eratosthenes.html').replaceAll('\\','/'));
+  // Both workspaces open on demand; browser checks show clock and explorer together.
+  await page.evaluate(()=>document.querySelector('#workspaceSwitch [data-layout=both]')?.click());await page.waitForTimeout(150);
  await page.evaluate(()=>{tune(2,1);advanceClock(4.5,performance.now());});
- const state=await page.evaluate(()=>[t,sigmaAim,tauAim]);await page.locator('[data-view="log"]').click();
+ const state=await page.evaluate(()=>[t,sigmaAim,tauAim]);await pickView(page,'log');
  assert.deepEqual(await page.evaluate(()=>[t,sigmaAim,tauAim]),state);
  await page.waitForFunction(()=>Math.abs(SIGMA-2)<1e-12&&Math.abs(TAUV-1)<1e-12);await page.locator('#fitLocus').click();await page.waitForTimeout(600);
  assert.equal(await page.evaluate(()=>logArmReadout.active.source.q),4);
@@ -42,7 +47,7 @@ const assert=require('node:assert/strict'),path=require('node:path');
   await page.setViewportSize({width:w,height:h});await page.waitForTimeout(130);await page.screenshot({path:'.review/log-arm-'+w+'.png'});
   const b=await page.locator('#productBubble').evaluate(e=>({h:e.clientHeight,s:e.scrollHeight}));assert.ok(b.s<=b.h+1);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth===innerWidth));
  }
- await page.setViewportSize({width:1440,height:1000});await page.locator('[data-view="theta"]').click();await page.waitForFunction(()=>paperData?.valid&&paperData.mode==='theta');
- await page.locator('[data-view="euler"]').click();await page.waitForFunction(()=>locusData?.done&&locusData.sigma===.5);assert.doesNotMatch(await page.locator('#liveCurveState').textContent(),/finite L/);
+ await page.setViewportSize({width:1440,height:1000});await pickView(page,'theta');await page.waitForFunction(()=>paperData?.valid&&paperData.mode==='theta');
+ await pickView(page,'euler');await page.waitForFunction(()=>locusData?.done&&locusData.sigma===.5);assert.doesNotMatch(await page.locator('#liveCurveState').textContent(),/finite L/);
  assert.deepEqual(errors,[]);console.log('Log arm: birth, hover/pin, rewind, replay, folding, layouts and return views passed.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

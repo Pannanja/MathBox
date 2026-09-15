@@ -519,6 +519,7 @@ function frame(ms) {
   PR.update(t);
 
   g2.clearRect(0, 0, W, W);
+  labelPositions=[];
 
   let block = Infinity;
   rings.forEach(ring => {
@@ -536,8 +537,8 @@ function frame(ms) {
     tx.clearRect(0, 0, S, S);
     tx.save();
     tx.beginPath(); tx.arc(SC, SC, R * SK, 0, 7); tx.clip();
-    tx.fillStyle = '#fff'; tx.fillRect(0, 0, S, S);
-    tx.globalCompositeOperation = 'multiply';
+    tx.fillStyle = lightMode==='light'?'#000':'#fff'; tx.fillRect(0, 0, S, S);
+    tx.globalCompositeOperation = lightMode==='light'?'screen':'multiply';
     rings.forEach(ring => {
       const p = ring.p, r = rad(p) * SK;
       const unit = 2 * Math.PI / p;
@@ -575,7 +576,7 @@ function frame(ms) {
   sx.globalCompositeOperation = 'source-over';
 
   lx.clearRect(0, 0, S, S);
-  const lv = 0.72;
+  const lv = 0.25;
   const grad = lx.createRadialGradient(SC, SC, 0, SC, SC, R * SK);
   grad.addColorStop(0, 'rgba(236,226,205,' + (0.95 * lv) + ')');
   grad.addColorStop(0.30, 'rgba(226,206,168,' + (0.42 * lv) + ')');
@@ -624,7 +625,7 @@ function frame(ms) {
       return;
     }
     const col = 'hsl(' + hueOf(p) + ' 68% 62%)';
-    const w = Math.max(2.2, Math.min(5, 1.2 + r / 40));
+    const w = Math.max(.65, Math.min(1.7, r * Math.PI / p * .28));
     const sp = panelSpan(p, t);
     const start = sp.c0 - sp.w / 2, lead = sp.c0 + sp.w / 2;
     const ping = Math.max(0, 1 - (ms - ring.hit) / (hold * 1000));
@@ -660,9 +661,9 @@ function frame(ms) {
     if (r > 70) {
       const bx = C + r * Math.cos(lead), by = C + r * Math.sin(lead);
       g2.fillStyle = 'rgba(216,212,200,0.85)';
-      g2.font = '24px ui-monospace, monospace';
+      g2.font = '17px system-ui,sans-serif';
       g2.textAlign = 'center'; g2.textBaseline = 'middle';
-      g2.fillText(p, bx + (bx > C ? 15 : -15), by);
+      drawPaneLabel(p,r,lead);
     }
   });
 
@@ -857,15 +858,15 @@ function frame(ms) {
 
   drawContinuum(ms, rad);
 
-  const juice = Math.max(0, 1 - (ms - primeMs) / 700);
+  const juice = Math.exp(-12*fr);
   g2.globalAlpha = (0.10 + 0.22 * juice) * (1 - focusMix);
   g2.strokeStyle = 'rgb(' + LASER + ')';
-  g2.lineWidth = 9 + 16 * juice;
-  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
+  g2.lineWidth = 4 + 4 * juice;g2.lineCap='round';
+  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - Math.min(rayR,R*beamReveal())); g2.stroke();
   g2.globalAlpha = 1;
   g2.globalAlpha = 1 - focusMix;
-  g2.lineWidth = 2 + 2 * juice;
-  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
+  g2.lineWidth = 1.5 + juice;
+  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - Math.min(rayR,R*beamReveal())); g2.stroke();
   for (let i = 3; i >= 1; i--) {
     g2.globalAlpha = (0.13 + 0.20 * juice) / i * (1 - focusMix);
     g2.fillStyle = 'rgb(' + LASER + ')';

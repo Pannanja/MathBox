@@ -10,4 +10,6 @@ export { xiArm } from './math/xi-arm';
 export { XiArmScene } from './scenes/xi-arm';
 export { drawComplexPlane } from './render/complex-plane';
 export { viewDomain } from './core/view-domains';
+export { mountWorkspace } from './ui/workspace';
+export { resizePlot, plotBounds, plotBand, clipPlot, plotFont } from './render/viewport';
 export function createIntegralWorker(): Worker { return new IntegralWorker(); }

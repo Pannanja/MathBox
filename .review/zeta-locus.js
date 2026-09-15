@@ -62,9 +62,12 @@ let locusRasterKey='',locusRasterCount=0;const backdropState={key:'',count:0};
 let liveLocusPreview={sigma:NaN,tau:NaN,rows:[],ms:0};
 function paintLocus(data,canvas,state,ctx,X,Y,alpha){
  const d=data.data,key=[data.key,graphCentre[0].toPrecision(9),graphCentre[1].toPrecision(9),graphLogExtent.toPrecision(9),$('ghostPaths').checked].join('/');
- if(key!==state.key||d.length!==state.count){const c=canvas.getContext('2d');if(key!==state.key||d.length<state.count){c.clearRect(0,0,600,300);state.count=0;}state.key=key;c.lineWidth=1;
+ // The raster shares the main canvas transform, so it is composited over the
+ // same visible logical rectangle rather than the retired 600x300 assumption.
+ const bounds=ClockMath.plotBounds(canvas);
+ if(key!==state.key||d.length!==state.count){const c=canvas.getContext('2d');if(key!==state.key||d.length<state.count){c.clearRect(0,bounds.top,600,bounds.height);state.count=0;}state.key=key;c.lineWidth=1;
   for(const ghost of ($('ghostPaths').checked?[true,false]:[false])){c.strokeStyle=ghost?'#e8bd6518':'#e8bd654c';c.beginPath();let fresh=true;for(let i=Math.max(0,state.count-3);i<d.length;i+=3){const z=[d[i+1],ghost?-d[i+2]:d[i+2]];if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){c.moveTo(X(z),Y(z));fresh=false;}else c.lineTo(X(z),Y(z));}c.stroke();}state.count=d.length;}
- ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(canvas,0,0);ctx.restore();
+ ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(canvas,0,bounds.top,600,bounds.height);ctx.restore();
 }
 drawExplorationUnderlay=function(ctx,X,Y){beforeLocus(ctx,X,Y);requestLocus();if(!$('zetaLocus').checked)return;
  const current=locusData?.key===locusWanted,settled=current&&Math.abs(SIGMA-locusData.sigma)<1e-4,ready=settled&&locusData.done;

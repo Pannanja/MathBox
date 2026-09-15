@@ -293,6 +293,107 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
 }
 #viewHelp{box-sizing:border-box}
 
+/* The workspace owns layout; legacy numeric controls may remain parked. */
+#clockApp.redesigned{--plate:#0b1511;--ivory:#eee9da;--dim:#b4c3b8;--brass:#e0bd76;--serif:Georgia,serif;--mono:ui-sans-serif,system-ui,sans-serif;font:14px/1.45 var(--mono);color:var(--ivory)}
+.redesigned *, .redesigned *::before,.redesigned *::after{box-sizing:border-box}
+.redesigned [hidden]{display:none!important}
+.redesigned button,.redesigned input,.redesigned select,.redesigned summary{font:inherit;color:inherit}
+.redesigned button{border:1px solid #78958442;border-radius:7px;background:transparent;padding:7px 11px;cursor:pointer;white-space:nowrap;min-height:34px}
+.redesigned button:hover{background:#9ac9ac13;border-color:#a7c7b27a}
+.redesigned button:disabled{opacity:.4;cursor:default}
+.redesigned button:focus-visible,.redesigned summary:focus-visible,.redesigned input:focus-visible,.redesigned select:focus-visible{outline:2px solid #e0bd76;outline-offset:3px}
+.redesigned .text-button{border-color:transparent;color:var(--dim)}
+.redesigned .icon-button{display:inline-grid;place-items:center;width:36px;padding:6px}
+.redesigned svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.redesigned .icon-button.muted{opacity:.5}
+.redesigned input[type=number],.redesigned select{background:#15271e;border:1px solid #78958466;border-radius:5px;padding:6px 8px;min-width:0;font-variant-numeric:tabular-nums}
+.redesigned input[type=range]{accent-color:#b2cbb8;min-width:0;cursor:pointer}
+#workspaceShell{position:absolute;inset:0;display:grid;grid-template-columns:var(--split,50%) 10px minmax(0,1fr);grid-template-rows:minmax(0,1fr) 54px;padding:0 20px;gap:0;overflow:hidden}
+#workspaceShell[data-layout=clock]{grid-template-columns:minmax(0,1fr) 14px 0}
+#workspaceShell[data-layout=explorer]{grid-template-columns:0 14px minmax(0,1fr)}
+.redesigned .workspace{min-width:0;min-height:0;position:relative;display:flex;flex-direction:column;overflow:hidden}
+.redesigned .workspace-title{height:66px;min-height:66px;display:flex;align-items:center;justify-content:center;gap:16px;position:relative;padding:0 100px}
+.redesigned .workspace-title h1{font:normal clamp(21px,2vw,29px) var(--serif);margin:0;white-space:nowrap}
+.redesigned .workspace-actions{position:absolute;right:8px;display:flex;align-items:center;gap:3px}
+.redesigned .small-disclosure{border:0;width:20px;min-width:0;padding:4px}
+#riemannHelp{position:absolute;right:8px}
+#workspaceDivider{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;cursor:col-resize;touch-action:none;z-index:4;border-right:1px solid #6f8a7922}
+#workspaceDivider i{height:48px;width:3px;background:#a4b9ab44;border-radius:2px}
+#workspaceDivider:hover i,#workspaceDivider:focus i{background:#e0bd76}
+#clockWorkspace{grid-column:1;grid-row:1}#riemannWorkspace{grid-column:3;grid-row:1}
+#workspaceSwitch{grid-column:1/-1;grid-row:2;display:flex;align-items:center;justify-content:center;gap:4px;border-top:1px solid #6f8a7922}
+#workspaceSwitch button{border:0;font-size:13px;color:var(--dim);padding:7px 16px}
+#workspaceSwitch [aria-pressed=true]{color:var(--brass);background:#e0bd7610}
+#clockSurface{flex:1;position:relative;min-height:80px}
+#clockApp.redesigned #clockStage{position:absolute;inset:0}
+#clockApp.redesigned #clockStage>#cv{left:50%;top:50%;width:var(--clock-size,600px);height:var(--clock-size,600px);transform:translate(-50%,-50%)}
+#clockApp.redesigned #clockTransport{position:relative;display:flex;align-items:center;justify-content:center;gap:20px;min-height:116px;padding:8px 12px}
+#clockApp.redesigned #transportCorner{position:static;max-width:none;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px 20px}
+#clockApp.redesigned .compact-count{grid-column:1;grid-row:1;flex-direction:column;align-items:flex-start;gap:0;min-width:60px}
+#clockApp.redesigned #now{font:28px/1.2 var(--mono);font-variant-numeric:tabular-nums}
+#clockApp.redesigned #fac{font:12px var(--mono);max-width:180px}
+#clockApp.redesigned #transportCorner .transport{grid-column:2;grid-row:1;margin:0;gap:5px}
+#clockApp.redesigned #transportCorner .transport button{font:14px var(--mono);padding:7px 10px}
+#clockApp.redesigned #transportCorner .scrubber{grid-column:1/-1;grid-row:2;width:100%;font:12px var(--mono);padding:0;background:none}
+#clockApp.redesigned #clockObserve{font-size:13px}
+#clockTape{position:relative;min-height:69px;padding:0 16px;overflow:hidden}
+#clockApp.redesigned #originalProof{position:relative;left:auto!important;top:auto!important;width:100%;max-width:min(100%,940px);margin:0 auto;transform:none;pointer-events:auto}
+#clockApp.redesigned .proof .work{height:42px;transform:none!important;display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);--counter-turn:0deg!important}
+#clockApp.redesigned .proof #tape,#clockApp.redesigned .proof .rhs,#clockApp.redesigned #factorWindow{height:42px;overflow:hidden}
+#clockApp.redesigned .proof #tape{width:100%}
+#clockApp.redesigned .proof #strip{top:9px}
+#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font:14px/24px var(--mono)}
+#clockApp.redesigned .proof .fx{cursor:pointer}
+#clockApp.redesigned .term-ink,#clockApp.redesigned .factor-ink{text-decoration:none!important}
+#clockApp.redesigned .proof #pf{top:50%}
+#clockApp.redesigned .proof #factorWindow{max-width:100%}
+#clockApp.redesigned .proof .dead{text-decoration:none!important;opacity:.36}
+#clockApp.redesigned .proof #tapeDomain{font:12px/1.5 var(--mono);min-height:18px;padding:0;margin:0;color:#9eb6a7}
+#clockApp.redesigned .proof .zeta-symbol{font:16px var(--serif)}
+#clockApp.redesigned .proof .product-dots{font:20px var(--serif);transform:none}
+#clockApp.redesigned #linkedReadout{display:none}
+#clockApp.redesigned #riemannContent{min-height:0;flex:1;display:flex}
+#clockApp.redesigned #productBubble.explorer-surface{position:relative;inset:auto;display:flex;flex-direction:column;gap:8px;width:100%;height:100%;min-height:0;max-height:none;padding:0 14px 8px;border:0;border-radius:0;background:none;box-shadow:none;margin:0;overflow:hidden}
+#clockApp.redesigned #constructionChooser{position:relative;flex-shrink:0;border:0;padding:0;z-index:3}
+#clockApp.redesigned #constructionChooser>summary{display:list-item;cursor:pointer;font-size:15px;color:#e0bd76;padding:7px 10px;list-style-position:inside;border-bottom:1px solid #8ca79433}
+#clockApp.redesigned #paperViews{position:absolute;top:42px;left:0;right:0;max-height:55vh;overflow:auto;display:block;background:#14231c;border:1px solid #71897b66;border-radius:9px;padding:12px;box-shadow:0 12px 30px #0008}
+#clockApp.redesigned .paper-view-row{display:grid;gap:5px;grid-template-columns:1fr}
+#clockApp.redesigned .paper-view-row>span{font:12px var(--mono);padding:8px 0;color:var(--dim)}
+#clockApp.redesigned .paper-view-row button{font:14px var(--mono);text-align:left;white-space:normal;padding:8px 12px}
+#clockApp.redesigned .paper-view-row small{display:block;font-size:12px;color:var(--dim);margin-top:3px}
+#clockApp.redesigned #graphSurface{flex:1;min-height:120px;display:grid;grid-template-columns:minmax(0,1fr) 50px;grid-template-rows:minmax(0,1fr) 50px;position:relative}
+#clockApp.redesigned #productGraph{grid-column:1;grid-row:1;min-height:0;width:100%;height:100%;aspect-ratio:auto;object-fit:fill;touch-action:none}
+#clockApp.redesigned .axis-control{display:flex;align-items:center;gap:8px;font-size:13px;position:relative;padding:0}
+#clockApp.redesigned #sigmaControl{grid-column:1;grid-row:2;padding:0 8px}
+#clockApp.redesigned #tauControl{grid-column:2;grid-row:1;flex-direction:column;justify-content:center;padding:12px 0}
+#clockApp.redesigned #sigmaControl input[type=range]{width:auto!important;flex:1}
+#clockApp.redesigned #tauControl input[type=range]{writing-mode:vertical-lr!important;direction:rtl!important;width:7px!important;height:auto!important;flex:1}
+#clockApp.redesigned .axis-control input[type=number]{font:13px var(--mono);height:30px;width:85px;padding:4px}
+#clockApp.redesigned #tauControl input[type=number]{width:49px;font-size:12px}
+#clockApp.redesigned .domain-caption{display:none}
+#clockApp.redesigned #exploreDock{display:flex;flex-direction:column;gap:4px;padding:0;border:0}
+#clockApp.redesigned #exploreToolbar{display:flex;flex-wrap:wrap;gap:5px}
+#clockApp.redesigned #exploreToolbar button{font:13px var(--mono);min-height:32px;padding:5px 8px}
+#clockApp.redesigned #liveCurveState,#clockApp.redesigned #locusStatus{font:12px/1.4 var(--mono);color:var(--dim);margin:0;text-align:left}
+#clockApp.redesigned .inspector{flex:0 1 42%;min-height:0;overflow:auto;border-top:1px solid #8ca79444;background:#122019;padding:14px 18px;overscroll-behavior:contain}
+#clockApp.redesigned .inspector-page{position:static;inset:auto;width:100%;height:auto;max-height:none;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;background:none;overflow:visible;font:14px/1.55 var(--mono)}
+#clockApp.redesigned .inspector-page p{font:14px/1.55 var(--mono);margin:10px 0;color:#bfcec4}
+#clockApp.redesigned .inspector-page .bubble-head{font:16px var(--mono);margin:0 0 10px;position:sticky;top:-14px;background:#122019;padding:8px 0;z-index:2}
+#clockApp.redesigned .inspector-page label.field{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;margin:12px 0}
+#clockApp.redesigned .inspector-page label.check{display:flex;justify-content:flex-start;align-items:center;gap:9px;font-size:14px;margin:10px 0}
+#clockApp.redesigned .inspector-page input[type=range]{width:100%;height:18px}
+#clockApp.redesigned .inspector-page .small-note{font-size:12px}
+#clockApp.redesigned .inspector-page button{font-size:14px}
+#clockApp.redesigned .view-equation{font:17px/1.8 'Cambria Math',Georgia,serif;background:#0b1511;padding:12px;overflow-wrap:anywhere}
+#clockApp.redesigned #spectrumPreview{display:flex;gap:4px}#spectrumPreview i{flex:1;height:8px;border-radius:4px}
+#clockApp.redesigned #psiExplanation{font-size:13px}
+#clockApp.redesigned #viewHelp .view-equation{font-size:17px}
+#clockApp.redesigned #clockConnector{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;stroke:#b7c8bc3b;stroke-width:1;z-index:0}
+@media(min-width:1050px){#clockWorkspace:has(.inspector:not([hidden])){padding-right:300px}#clockApp.redesigned #clockInspector{position:absolute;right:0;top:66px;bottom:10px;width:286px;max-height:none;border:1px solid #8ca79433;border-radius:10px}#workspaceShell[data-layout=both] #clockWorkspace:has(.inspector:not([hidden])){padding-right:0}#workspaceShell[data-layout=both] #clockInspector{position:static;width:auto;max-height:42%;border:0;border-top:1px solid #8ca79444;border-radius:0}}
+@media(max-width:800px){#workspaceShell{padding:0 8px;grid-template-columns:minmax(0,1fr) 8px 0!important}#workspaceShell[data-layout=both],#workspaceShell[data-layout=explorer]{grid-template-columns:0 8px minmax(0,1fr)!important}#workspaceShell[data-layout=both] #clockWorkspace{visibility:hidden}.redesigned .workspace-title{height:58px;min-height:58px;padding:0 80px 0 8px}.redesigned .workspace-title h1{font-size:22px}#clockApp.redesigned #clockTransport{padding:8px 0;gap:4px}#clockApp.redesigned #transportCorner{gap:6px}#clockApp.redesigned #fac{max-width:105px}#clockApp.redesigned #clockObserve{position:absolute;right:4px;bottom:3px}#clockApp.redesigned #transportCorner .scrubber{padding-right:65px}#clockApp.redesigned #clockTape{padding:0 2px}#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font-size:12px}#clockApp.redesigned #clockTransport .transport button{padding:6px 8px}#clockApp.redesigned #clockSurface{min-height:80px}#clockApp.redesigned #productBubble.explorer-surface{padding:0 0 8px}#workspaceSwitch button{padding:7px 10px}#clockApp.redesigned #clockInspector{max-height:42%}}
+@media(max-height:540px){.redesigned .workspace-title{height:45px;min-height:45px}.redesigned .workspace-title h1{font-size:20px}#workspaceShell{grid-template-rows:minmax(0,1fr) 44px}#clockApp.redesigned #clockTransport{min-height:84px}#clockApp.redesigned #clockTape{min-height:48px}#clockApp.redesigned #tapeDomain{display:none}#clockApp.redesigned #clockSurface{min-height:60px}#clockApp.redesigned #graphSurface{min-height:90px}#clockApp.redesigned #locusStatus{display:none}#clockApp.redesigned #constructionChooser>summary{padding:3px 10px}#clockApp.redesigned .inspector{flex-basis:50%}}
+@media(prefers-reduced-motion:reduce){.redesigned *{scroll-behavior:auto!important}}
+
 </style>
 </head>
 <body>
@@ -493,7 +594,7 @@ const PR=(()=>{
   // Reserve places for every absorbing prime, then use spare room for recent
   // factors. The remainder stays accumulated in the ellipsis.
   const available=Math.max(48,pf.parentElement.parentElement.clientWidth-44);
-  const upright=typeof reflectionMix!=='undefined'&&reflectionMix>.5;
+  const upright=window.tapeUpright!==undefined?window.tapeUpright:(typeof reflectionMix!=='undefined'&&reflectionMix>.5);
   const shown=active.slice();if(linked&&!shown.includes(linked))shown.push(linked);
   const capacity=Math.max(shown.length,Math.min(5,Math.floor(available/(upright?32:68))));
   for(let i=born.length-1;i>=0&&shown.length<capacity;i--)if(!shown.includes(born[i]))shown.push(born[i]);
@@ -511,7 +612,7 @@ const PR=(()=>{
   const total=(shown.length?columns*cell:0)+(hidden?20:0);$('factorWindow').style.width=total+'px';
   dots.style.left=Math.max(0,total-20)+'px';dots.style.opacity=hidden?'1':'0';dots.dataset.hiddenCount=hidden;dots.title=hidden+' accumulated prime factors are folded here';
   for(const p of shown)if(!factors.has(p)){
-   const el=document.createElement('span');el.className='fx';el.dataset.p=p;el.innerHTML='<span class="factor-ink">(1−'+p+'<sup>−s</sup>)</span>';el.style.color=factorColour(p);pf.appendChild(el);factors.set(p,{el,x:p>lastN?0:total-20,y:0,alpha:0});
+   const el=document.createElement('span');el.className='fx';el.dataset.p=p;el.innerHTML='<span class="factor-ink">(1−1/'+p+'<sup>s</sup>)</span>';el.style.color=factorColour(p);pf.appendChild(el);factors.set(p,{el,x:p>lastN?0:total-20,y:0,alpha:0});
   }
   const phase=tt-n,pulse=.3+.7*Math.pow(1-phase,2);
   for(const [p,f] of factors){
@@ -717,12 +818,12 @@ function crossedPanes(n){return rings.filter(r=>n%r.p===0).sort((a,b)=>a.p-b.p);
 function paneWeight(n){return crossedPanes(n).reduce((w,r)=>w*Math.pow(r.base||r.p,-SIGMA),1);}
 function drawPrimeGlass(rad,n){
  if(glassMix<.001)return;
- const alpha=glassMix*(1-focusMix*(1-separateMix)),cross=crossedPanes(n).sort((a,b)=>rad(a.p)-rad(b.p));let trans=[1,1,1],last=0;
+ const alpha=glassMix*(1-focusMix*(1-separateMix)),cross=crossedPanes(n).sort((a,b)=>rad(a.p)-rad(b.p));let trans=lightMode==='light'?[.12,.12,.12]:[1,1,1],last=0;
  g2.save();
- const segment=(a,b)=>{if(b-a<.1)return;g2.globalAlpha=alpha;g2.strokeStyle='#0c1512';g2.lineWidth=15;g2.beginPath();g2.moveTo(C,C-a);g2.lineTo(C,C-b);g2.stroke();g2.strokeStyle=transmissionColour(trans);g2.lineWidth=9;g2.stroke();};
- for(const r of cross){const radius=rad(r.p);segment(last,radius);last=radius;const pane=paneTransmission(r.base||r.p);trans=trans.map((v,i)=>v*pane[i]);}
+ const segment=(a,b)=>{b=Math.min(b,R*beamReveal());if(b-a<.1)return;g2.globalAlpha=alpha;g2.lineCap='round';g2.strokeStyle=transmissionColour(trans);g2.shadowColor=g2.strokeStyle;g2.shadowBlur=10;g2.lineWidth=2.4;g2.beginPath();g2.moveTo(C,C-a);g2.lineTo(C,C-b);g2.stroke();g2.shadowBlur=0;};
+ for(const r of cross){const radius=rad(r.p);segment(last,radius);last=radius;const pane=paneTransmission(r.base||r.p);trans=trans.map((v,i)=>lightMode==='light'?1-(1-v)*(1-pane[i]):v*pane[i]);}
  segment(last,R);
- for(const r of cross){const y=C-rad(r.p);g2.globalAlpha=alpha;g2.strokeStyle='hsl('+hueOf(r.base||r.p)+' 70% 70%)';g2.lineWidth=3;g2.beginPath();g2.moveTo(C-12,y);g2.lineTo(C+12,y);g2.stroke();g2.fillStyle=g2.strokeStyle;g2.font='22px ui-monospace,monospace';g2.textAlign='right';g2.fillText(String(r.p),C-22,y+7);}
+ for(const r of cross){const y=C-rad(r.p);g2.globalAlpha=alpha;g2.strokeStyle='hsl('+hueOf(r.base||r.p)+' 70% 70%)';g2.lineWidth=1.5;g2.beginPath();g2.moveTo(C-6,y);g2.lineTo(C+6,y);g2.stroke();g2.fillStyle=g2.strokeStyle;drawPaneLabel(r.p,rad(r.p),TOP);}
  g2.restore();
 }
 
@@ -798,6 +899,7 @@ function frame(ms) {
 
   g2.clearRect(0, 0, W, $("cv").height);
   beginReflection(dt);
+  labelPositions=[];
 
   let block = Infinity;
   rings.forEach(ring => {
@@ -815,8 +917,8 @@ function frame(ms) {
     tx.clearRect(0, 0, S, S);
     tx.save();
     tx.beginPath(); tx.arc(SC, SC, R * SK, 0, 7); tx.clip();
-    tx.fillStyle = '#fff'; tx.fillRect(0, 0, S, S);
-    tx.globalCompositeOperation = 'multiply';
+    tx.fillStyle = lightMode==='light'?'#000':'#fff'; tx.fillRect(0, 0, S, S);
+    tx.globalCompositeOperation = lightMode==='light'?'screen':'multiply';
     rings.forEach(ring => {
       const p = ring.p, r = rad(p) * SK;
       const unit = 2 * Math.PI / p;
@@ -854,7 +956,7 @@ function frame(ms) {
   sx.globalCompositeOperation = 'source-over';
 
   lx.clearRect(0, 0, S, S);
-  const lv = 0.72;
+  const lv = 0.25;
   const grad = lx.createRadialGradient(SC, SC, 0, SC, SC, R * SK);
   grad.addColorStop(0, 'rgba(236,226,205,' + (0.95 * lv) + ')');
   grad.addColorStop(0.30, 'rgba(226,206,168,' + (0.42 * lv) + ')');
@@ -888,14 +990,14 @@ function frame(ms) {
     if (ring.echo) {
       if(glassMix<.001&&stairMix<.001)return;
       g2.save();g2.globalAlpha=Math.max(glassMix,stairMix);
-      const sp=panelSpan(p,t),w=Math.max(2.2,Math.min(5,1.2+r/40));
+      const sp=panelSpan(p,t),w=Math.max(.65,Math.min(1.7,r*Math.PI/p*.28));
       g2.strokeStyle='hsla('+hueOf(ring.base)+' 55% 60% / .25)';g2.lineWidth=1;g2.beginPath();g2.arc(C,C,r,0,7);g2.stroke();
       g2.fillStyle='hsl('+hueOf(ring.base)+' 68% 62%)';band(r-w,r+w,sp.c0-sp.w/2,sp.c0+sp.w/2);
-      if(r>55&&!(glassMix>.5&&n%p===0)){const bx=C+r*Math.cos(sp.c0+sp.w/2),by=C+r*Math.sin(sp.c0+sp.w/2);g2.fillStyle='hsl('+hueOf(ring.base)+' 65% 76%)';g2.font='24px ui-monospace,monospace';g2.textAlign='center';g2.fillText(String(p),bx+(bx>C?16:-16),by);}
+      if(r>55&&!(glassMix>.5&&n%p===0)){g2.fillStyle='hsl('+hueOf(ring.base)+' 65% 76%)';drawPaneLabel(p,r,sp.c0+sp.w/2);}
       g2.restore();return;
     }
     const col = 'hsl(' + hueOf(p) + ' 68% 62%)';
-    const w = Math.max(2.2, Math.min(5, 1.2 + r / 40));
+    const w = Math.max(.65, Math.min(1.7, r * Math.PI / p * .28));
     const sp = panelSpan(p, t);
     const start = sp.c0 - sp.w / 2, lead = sp.c0 + sp.w / 2;
     const ping = Math.max(0, 1 - (ms - ring.hit) / (hold * 1000));
@@ -931,9 +1033,9 @@ function frame(ms) {
     if (r > 70 && !(glassMix > .5 && n % p === 0)) {
       const bx = C + r * Math.cos(lead), by = C + r * Math.sin(lead);
       g2.fillStyle = 'rgba(216,212,200,0.85)';
-      g2.font = '24px ui-monospace, monospace';
+      g2.font = '17px system-ui,sans-serif';
       g2.textAlign = 'center'; g2.textBaseline = 'middle';
-      g2.fillText(p, bx + (bx > C ? 15 : -15), by);
+      drawPaneLabel(p,r,lead);
     }
   });
 
@@ -1064,15 +1166,15 @@ function frame(ms) {
   }
   // The explicit formula applies at x > 1; the correction is singular as x
   // approaches 1. Finite zero chains are approximate, including near jumps.
-  const juice = Math.max(0, 1 - (ms - primeMs) / 700);
+  const juice = Math.exp(-12*fr);
   g2.globalAlpha = (0.10 + 0.22 * juice) * (1 - focusMix) * (1 - glassMix);
   g2.strokeStyle = 'rgb(' + LASER + ')';
-  g2.lineWidth = 9 + 16 * juice;
-  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
+  g2.lineWidth = 4 + 4 * juice;g2.lineCap='round';
+  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - Math.min(rayR,R*beamReveal())); g2.stroke();
   g2.globalAlpha = 1;
   g2.globalAlpha = 1 - focusMix;
-  g2.lineWidth = 2 + 2 * juice;
-  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - rayR); g2.stroke();
+  g2.lineWidth = 1.5 + juice;
+  g2.beginPath(); g2.moveTo(C, C); g2.lineTo(C, C - Math.min(rayR,R*beamReveal())); g2.stroke();
   for (let i = 3; i >= 1; i--) {
     g2.globalAlpha = (0.13 + 0.20 * juice) / i * (1 - focusMix) * (1 - glassMix);
     g2.fillStyle = 'rgb(' + LASER + ')';
@@ -1390,7 +1492,7 @@ function advanceClock(next, ms) {
     bearings.push({a:k,b:0,ang:TOP,sp:0,pinned:true});
    }
    cand = {n:k,born:ms,prime:isP};
-   if (soundOn) {tick(); if(isP){strike(k,3.2,.26/Math.pow(k,.28));remember(k);}}
+   if (soundOn && next-old<=1.05) {tick(); if(isP){strike(k,3.2,.26/Math.pow(k,.28));remember(k);}}
   }
  } else {
   // A panel has already shrunk to zero before its birth is crossed in reverse.
@@ -1403,7 +1505,7 @@ function advanceClock(next, ms) {
  }
  for (const ring of rings) {
   const lap=Math.floor(next/ring.p);
-  if(next>old && lap>ring.lap){ring.hit=ms;if(soundOn)strike(ring.base||ring.p,3.2,.26/Math.pow(ring.p,.28));}
+  if(next>old && lap>ring.lap){ring.hit=ms;if(soundOn&&next-old<=1.05)strike(ring.base||ring.p,3.2,.26/Math.pow(ring.p,.28));}
   ring.lap=lap;
  }
  t=next;lastInt=n;unitLap=n;
@@ -1419,7 +1521,7 @@ function updateClock(dt, ms) {
   if(u===1){clockTween=null;$('play').textContent='Play';if(trip.after)trip.after();}
  }else if(window.__run){
   const destination=stopAt===null?limit:Math.min(limit,stopAt);
-  advanceClock(Math.min(destination,t+Math.min(.2,dt*+$('speed').value)),ms);
+  advanceClock(Math.min(destination,t+dt*+$('speed').value),ms);
   if(t>=destination){stopAt=null;window.__run=false;$('play').textContent='Play';}
  }
 }
@@ -1821,7 +1923,7 @@ function updateJLedger(){
   $('jEarlier').textContent=earlier?'Earlier births: '+jFraction(earlier)+'. A full bar is 1.':'Bar height shows the contribution; a full bar is 1.';
  }
  for(const [q,node] of jCards){node.classList.toggle('j-current',q===n);node.style.setProperty('--pulse',String(q===n?1-(t-n):0));}
- if(!jBubble.matches(':popover-open')||!current)return;
+ if(!jBubble.matches('[data-open="true"]')||!current)return;
  // Point out the actual newborn arc, in the clock's current radius law and
  // orientation. This halo is phase-driven, so stepping back retraces it.
  const rad=clockRadius(current.q),sp=panelSpan(current.q,t),a=sp.c0-sp.w/2;
@@ -1861,7 +1963,7 @@ function updateBridge(){
  const now=performance.now(),dt=bridgeStamp?Math.min(.05,(now-bridgeStamp)/1000):0;bridgeStamp=now;const e=1-Math.exp(-dt*7);
  bridgeMix+=(bridgeAim-bridgeMix)*e;areaMix+=(areaAim-areaMix)*e;ladderMix+=(ladderAim-ladderMix)*e;
  const shade=factorColour(bridgePrime);
- if(!bridge.matches(':popover-open')){drawBridgeLadder(shade);return;}
+ if(!bridge.matches('[data-open="true"]')){drawBridgeLadder(shade);return;}
  $('bridgeExpansionRead').textContent=bridgeMix<.005?'ζ':bridgeMix>.995?'log ζ':'changing';
  $('bridgeExpansionNote').textContent=bridgeMix<.005?'Each integer has coefficient 1. Shown: arrived terms through 12.':bridgeMix>.995?'Only prime powers remain, with coefficient 1/k. These are infinite-series coefficients, not log of this finite sample.':'Comparing two expansions; the in-between picture is a visual morph.';
  for(let n=1;n<=12;n++){
@@ -1953,21 +2055,22 @@ $('fitPaths').onclick=()=>{
  const centre=lo.map((v,i)=>v/2+hi[i]/2),extent=Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.01)*1.18;setGraphView(centre,extent);
 };
 function drawProductGraph(){
- if(!$('productBubble').matches(':popover-open'))return;
+ if(!$('productBubble').matches('[data-open="true"]'))return;
  const ms=performance.now(),ease=1-Math.exp(-Math.min(.05,(ms-graphLastMs)/1000)*12);graphLastMs=ms;
  graphCentre=graphCentre.map((v,i)=>v+(graphCentreAim[i]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
  const ctx=$('productGraph').getContext('2d'),extent=10**graphLogExtent,unit=125/extent,X=z=>300+unit*(z[0]-graphCentre[0]),Y=z=>150-unit*(z[1]-graphCentre[1]);
- ctx.clearRect(0,0,600,300);ClockMath.drawComplexPlane(ctx,graphCentre,extent);
+ const bounds=ClockMath.plotBounds(ctx.canvas);ctx.clearRect(0,bounds.top,600,bounds.height);ClockMath.drawComplexPlane(ctx,graphCentre,extent,bounds);
  const data=eulerPath(t,SIGMA,TAUV),points=data.points,idx=selectedProduct<0?points.length-1:Math.min(selectedProduct,points.length-1),selected=points[idx];productHitPoints=[];
- ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
- function dot(z,col,r,label){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<20||y>280)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();if(label)ctx.fillText(label,x+7,y-7);}
+ // Markers and labels are sized in CSS pixels and culled against the live band.
+ ctx.save();const band=ClockMath.clipPlot(ctx),u=ClockMath.plotFont(ctx,13,'ui-sans-serif');
+ function dot(z,col,r,label,below){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<band.inTop||y>band.inBottom)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r*u,0,7);ctx.fill();if(label)ctx.fillText(label,x+7*u,y+(below?16:-7)*u);}
  if(typeof drawExplorationUnderlay==='function')drawExplorationUnderlay(ctx,X,Y);
- const rawSum=continuumSum(t,SIGMA,TAUV);ctx.strokeStyle='#87bff2';ctx.lineWidth=2;ctx.beginPath();
+ const rawSum=continuumSum(t,SIGMA,TAUV);ctx.strokeStyle='#87bff2';ctx.lineWidth=2*u;ctx.beginPath();
  for(let i=0;i<rawSum.points.length;i++){const z=rawSum.points[i];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(rawSum.z),Y(rawSum.z));ctx.stroke();dot([0,0],'#87bff2',3,'Σ starts at 0');
- if(typeof selectedPrime!=='undefined'&&selectedPrime){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=4;for(let k=selectedPrime;k<rawSum.points.length;k+=selectedPrime){ctx.beginPath();ctx.moveTo(X(rawSum.points[k-1]),Y(rawSum.points[k-1]));ctx.lineTo(X(rawSum.points[k]),Y(rawSum.points[k]));ctx.stroke();}}
- for(let i=0;i<points.length;i++){const q=points[i],col=i?'hsl('+hueOf(q.p)+' 68% 68%)':'#ddd';if(i&&q.z.every(Number.isFinite)&&points[i-1].z.every(Number.isFinite)){ctx.strokeStyle=col;ctx.lineWidth=i===idx?3:1.6;ctx.beginPath();ctx.moveTo(X(points[i-1].z),Y(points[i-1].z));ctx.lineTo(X(q.z),Y(q.z));ctx.stroke();}dot(q.z,col,i===idx?5:2,i===idx?(i?'p='+q.p:'start: 1'):'');if(Math.abs(X(q.z)-300)<300&&Math.abs(Y(q.z)-150)<130)productHitPoints.push({i,x:X(q.z),y:Y(q.z)});}
- if(typeof selectedPrime!=='undefined'&&selectedPrime){const j=points.findIndex(q=>q.p===selectedPrime);if(j>0){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(X(points[j-1].z),Y(points[j-1].z));ctx.lineTo(X(points[j].z),Y(points[j].z));ctx.stroke();dot(points[j].z,primeHighlight(selectedPrime),6,'linked p='+selectedPrime);}}
- if(data.arriving){ctx.strokeStyle='#ddd8';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(data.z),Y(data.z));ctx.lineTo(X(data.arriving),Y(data.arriving));ctx.stroke();ctx.setLineDash([]);}
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=4*u;for(let k=selectedPrime;k<rawSum.points.length;k+=selectedPrime){ctx.beginPath();ctx.moveTo(X(rawSum.points[k-1]),Y(rawSum.points[k-1]));ctx.lineTo(X(rawSum.points[k]),Y(rawSum.points[k]));ctx.stroke();}}
+ for(let i=0;i<points.length;i++){const q=points[i],col=i?'hsl('+hueOf(q.p)+' 68% 68%)':'#ddd';if(i&&q.z.every(Number.isFinite)&&points[i-1].z.every(Number.isFinite)){ctx.strokeStyle=col;ctx.lineWidth=(i===idx?3:1.6)*u;ctx.beginPath();ctx.moveTo(X(points[i-1].z),Y(points[i-1].z));ctx.lineTo(X(q.z),Y(q.z));ctx.stroke();}dot(q.z,col,i===idx?5:2,i===idx?(i?'p='+q.p:'Π starts at 1'):'',i===idx&&!i);if(Math.abs(X(q.z)-300)<300&&Y(q.z)>band.inTop&&Y(q.z)<band.inBottom)productHitPoints.push({i,x:X(q.z),y:Y(q.z)});}
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){const j=points.findIndex(q=>q.p===selectedPrime);if(j>0){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=5*u;ctx.beginPath();ctx.moveTo(X(points[j-1].z),Y(points[j-1].z));ctx.lineTo(X(points[j].z),Y(points[j].z));ctx.stroke();dot(points[j].z,primeHighlight(selectedPrime),6,'linked p='+selectedPrime);}}
+ if(data.arriving){ctx.strokeStyle='#ddd8';ctx.setLineDash([3*u,3*u]);ctx.beginPath();ctx.moveTo(X(data.z),Y(data.z));ctx.lineTo(X(data.arriving),Y(data.arriving));ctx.stroke();ctx.setLineDash([]);}
  const sum=continuumSum(t,SIGMA,TAUV).z,pole=Math.hypot(SIGMA-1,TAUV)<1e-8,target=pole?[Infinity,0]:zeta(SIGMA,TAUV);
  dot(sum,'#87bff2',4,'Σ');dot(target,'#e8bd65',4,'ζ');ctx.restore();
  $('productExtent').textContent='±'+extent.toPrecision(2);$('focusZeta').disabled=pole;
@@ -2078,14 +2181,15 @@ plane.onkeydown=e=>{if(!e.key.startsWith('Arrow'))return;e.preventDefault();cons
 function tauTrails(){const [a,b]=tauWindow(),key=[t,SIGMA,a,b].join('/'),ms=performance.now();if(key!==trailCache.key&&ms-trailCache.ms>220){const rows=[];for(let i=0;i<=40;i++){const tau=a+(b-a)*i/40;rows.push({tau,sum:continuumSum(t,SIGMA,tau).z,product:eulerPath(t,SIGMA,tau).z});}trailCache={key,rows,ms};}return trailCache.rows;}
 function drawExplorationUnderlay(ctx,X,Y){
  ctx.save();
- function path(zs,col,dash=[]){ctx.strokeStyle=col;ctx.lineWidth=1.3;ctx.setLineDash(dash);ctx.beginPath();let fresh=true;for(const z of zs){if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){ctx.moveTo(X(z),Y(z));fresh=false;}else ctx.lineTo(X(z),Y(z));}ctx.stroke();ctx.setLineDash([]);}
+ const pu=ClockMath.plotBounds(ctx.canvas).scale;
+ function path(zs,col,dash=[]){ctx.strokeStyle=col;ctx.lineWidth=1.3*pu;ctx.setLineDash(dash.map(v=>v*pu));ctx.beginPath();let fresh=true;for(const z of zs){if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){ctx.moveTo(X(z),Y(z));fresh=false;}else ctx.lineTo(X(z),Y(z));}ctx.stroke();ctx.setLineDash([]);}
  if($('ghostPaths').checked){const s=continuumSum(t,SIGMA,TAUV),p=eulerPath(t,SIGMA,TAUV);path([...s.points,s.z].map(z=>[z[0],-z[1]]),'#87bff240');for(let i=1;i<p.points.length;i++)path([p.points[i-1].z,p.points[i].z].map(z=>[z[0],-z[1]]),'hsla('+hueOf(p.points[i].p)+' 68% 68% / .23)');if(p.arriving)path([p.z,p.arriving].map(z=>[z[0],-z[1]]),'#ffffff30',[3,3]);}
  if($('tauLoci').checked){const rows=tauTrails();path(rows.map(r=>r.sum),'#87bff270',[2,5]);path(rows.map(r=>r.product),'#db9e7470',[2,5]);}
  ctx.restore();
 }
 $('fitTogether').onclick=()=>{const s=continuumSum(t,SIGMA,TAUV),p=eulerPath(t,SIGMA,TAUV);let zs=[...s.points,s.z,...p.points.map(q=>q.z)];if(p.arriving)zs.push(p.arriving);if(Math.hypot(SIGMA-1,TAUV)>1e-8)zs.push(zeta(SIGMA,TAUV));if($('ghostPaths').checked)zs.push(...zs.map(z=>[z[0],-z[1]]));if($('tauLoci').checked)for(const r of tauTrails())zs.push(r.sum,r.product);zs.push([SIGMA,TAUV],[sigmaAim,tauAim]);const finite=zs.filter(z=>z.every(Number.isFinite)),lo=[0,1].map(i=>Math.min(...finite.map(z=>z[i]))),hi=[0,1].map(i=>Math.max(...finite.map(z=>z[i])));setGraphView(lo.map((v,i)=>(v+hi[i])/2),Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.05)*1.2);};
 const explorationGuide=updateGuide;
-updateGuide=function(){explorationGuide();const ctx=plane.getContext('2d'),u=125/10**graphLogExtent,x=300+u*(SIGMA-graphCentre[0]),y=150-u*(TAUV-graphCentre[1]);ctx.save();ctx.strokeStyle='#e5b8ff';ctx.fillStyle='#e5b8ff';ctx.lineWidth=2;const px=Math.max(14,Math.min(580,x)),py=Math.max(32,Math.min(260,y));ctx.beginPath();ctx.arc(px,py,7,0,7);ctx.stroke();ctx.textAlign=px>450?'right':'left';const direction=(x<px?'←':x>px?'→':'')+(y<py?'↑':y>py?'↓':'');ctx.fillText('s'+(direction?' '+direction+' off view':''),px+(px>450?-10:10),py-10);ctx.restore();if(document.activeElement!==$('tauScrub'))$('tauScrub').value=tauAim;};
+updateGuide=function(){explorationGuide();if(document.activeElement!==$('tauScrub'))$('tauScrub').value=tauAim;if(!$('productBubble').matches('[data-open="true"]'))return;const ctx=plane.getContext('2d'),u=125/10**graphLogExtent,x=300+u*(SIGMA-graphCentre[0]),y=150-u*(TAUV-graphCentre[1]);const band=ClockMath.plotBand(ctx.canvas),cu=ClockMath.plotFont(ctx,13,'ui-sans-serif');ctx.save();ctx.strokeStyle='#e5b8ff';ctx.fillStyle='#e5b8ff';ctx.lineWidth=2*cu;const px=Math.max(14*cu,Math.min(600-14*cu,x)),py=Math.max(band.inTop+12*cu,Math.min(band.inBottom-12*cu,y));ctx.beginPath();ctx.arc(px,py,7*cu,0,7);ctx.stroke();ctx.textAlign=px>450?'right':'left';const direction=(x<px?'←':x>px?'→':'')+(y<py?'↑':y>py?'↓':'');ctx.fillText('s'+(direction?' '+direction+' off view':''),px+(px>450?-10*cu:10*cu),py-10*cu);ctx.restore();};
 // Explanations belong in an optional overlay, leaving the plane unobstructed.
 const planeNotes=document.createElement('section');planeNotes.id='planeNotes';planeNotes.className='bubble';planeNotes.setAttribute('popover','auto');planeNotes.innerHTML='<div class="bubble-head"><b>Reading the plane</b><button popovertarget="planeNotes" popovertargetaction="hide">×</button></div><p>Purple s is the input; blue Σ and coloured Π are finite paths at the current beat. Dim paths use −τ: exact conjugates across the real axis. The faint band is 0 &lt; σ &lt; 1.</p><p>Dotted blue and amber curves sample the endpoints as τ varies across the chosen window, at fixed σ and beat. They are not additional sum terms. Drag the τ slider to follow them. The two infinite expressions converge together only for σ &gt; 1.</p><p>Hold σ constrains input dragging vertically. Turn it off to place s freely (0.2 ≤ σ ≤ 3, |τ| ≤ 35). Drag empty space to pan; wheel or pinch to zoom. Fit includes the current paths; Fit s + paths also includes the input, ghosts and enabled endpoint trails.</p>';
 planeNotes.append($('productDetails'),$('productStatus'),$('sectorMeasure'));stage.append(planeNotes);
@@ -2155,9 +2259,12 @@ let locusRasterKey='',locusRasterCount=0;const backdropState={key:'',count:0};
 let liveLocusPreview={sigma:NaN,tau:NaN,rows:[],ms:0};
 function paintLocus(data,canvas,state,ctx,X,Y,alpha){
  const d=data.data,key=[data.key,graphCentre[0].toPrecision(9),graphCentre[1].toPrecision(9),graphLogExtent.toPrecision(9),$('ghostPaths').checked].join('/');
- if(key!==state.key||d.length!==state.count){const c=canvas.getContext('2d');if(key!==state.key||d.length<state.count){c.clearRect(0,0,600,300);state.count=0;}state.key=key;c.lineWidth=1;
+ // The raster shares the main canvas transform, so it is composited over the
+ // same visible logical rectangle rather than the retired 600x300 assumption.
+ const bounds=ClockMath.plotBounds(canvas);
+ if(key!==state.key||d.length!==state.count){const c=canvas.getContext('2d');if(key!==state.key||d.length<state.count){c.clearRect(0,bounds.top,600,bounds.height);state.count=0;}state.key=key;c.lineWidth=1;
   for(const ghost of ($('ghostPaths').checked?[true,false]:[false])){c.strokeStyle=ghost?'#e8bd6518':'#e8bd654c';c.beginPath();let fresh=true;for(let i=Math.max(0,state.count-3);i<d.length;i+=3){const z=[d[i+1],ghost?-d[i+2]:d[i+2]];if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){c.moveTo(X(z),Y(z));fresh=false;}else c.lineTo(X(z),Y(z));}c.stroke();}state.count=d.length;}
- ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(canvas,0,0);ctx.restore();
+ ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(canvas,0,bounds.top,600,bounds.height);ctx.restore();
 }
 drawExplorationUnderlay=function(ctx,X,Y){beforeLocus(ctx,X,Y);requestLocus();if(!$('zetaLocus').checked)return;
  const current=locusData?.key===locusWanted,settled=current&&Math.abs(SIGMA-locusData.sigma)<1e-4,ready=settled&&locusData.done;
@@ -2427,6 +2534,40 @@ var ClockMath = (function(exports) {
     });
     return { ...full, time, terms, completedCutoffEndpoint: full.endpoint, endpoint: sumComplex(terms.map((t) => t.value)) };
   }
+  function plotBounds(canvas) {
+    const height = Number(canvas.dataset.logicalHeight) || 300, scale = Number(canvas.dataset.logicalScale) || 1;
+    return { top: 150 - height / 2, bottom: 150 + height / 2, height, scale };
+  }
+  function resizePlot(canvas, rasters = []) {
+    const box = canvas.getBoundingClientRect();
+    if (box.width < 1 || box.height < 1) return;
+    const ratio = Math.min(3, window.devicePixelRatio || 1), width = Math.round(box.width * ratio), height = Math.round(box.height * ratio);
+    const logicalHeight = 600 * height / width, top = 150 - logicalHeight / 2;
+    for (const c of [canvas, ...rasters]) {
+      if (c.width === width && c.height === height) continue;
+      c.width = width;
+      c.height = height;
+      c.dataset.logicalHeight = String(logicalHeight);
+      c.dataset.logicalScale = String(600 / box.width);
+      c.getContext("2d").setTransform(width / 600, 0, 0, width / 600, 0, -top * width / 600);
+    }
+  }
+  function plotBand(canvas) {
+    const b = plotBounds(canvas);
+    return { ...b, inTop: b.top + 26 * b.scale, inBottom: b.bottom - 20 * b.scale };
+  }
+  function clipPlot(ctx) {
+    const b = plotBand(ctx.canvas);
+    ctx.beginPath();
+    ctx.rect(0, b.inTop, 600, b.inBottom - b.inTop);
+    ctx.clip();
+    return b;
+  }
+  function plotFont(ctx, px, family = "ui-monospace") {
+    const scale = plotBounds(ctx.canvas).scale;
+    ctx.font = px * scale + "px " + family;
+    return scale;
+  }
   function layoutArm(items) {
     let re = 0, im = 0, cr = 0, ci = 0;
     return items.map((item) => {
@@ -2466,14 +2607,15 @@ var ClockMath = (function(exports) {
     let remaining = lengths.reduce((a, b) => a + b, 0) * Math.max(0, Math.min(1, progress));
     let tip = [0, 0];
     const hits = [];
+    const u = plotBounds(ctx.canvas).scale;
     ctx.save();
     ctx.lineCap = "round";
     segments.forEach((segment, i) => {
       const a = style.project(segment.from), b = style.project(segment.to), item = segment.items[0], folded = segment.items.length > 1;
       const highlighted = !folded && style.highlighted(item), colour2 = folded ? "#9aafa2" : style.colour(item);
       ctx.strokeStyle = colour2;
-      ctx.setLineDash(folded ? [3, 5] : []);
-      ctx.lineWidth = highlighted ? 3.6 : 2;
+      ctx.setLineDash(folded ? [3 * u, 5 * u] : []);
+      ctx.lineWidth = (highlighted ? 3.6 : 2) * u;
       ctx.globalAlpha = 0.2;
       ctx.beginPath();
       ctx.moveTo(...a);
@@ -2488,13 +2630,13 @@ var ClockMath = (function(exports) {
         ctx.moveTo(...a);
         ctx.lineTo(...end);
         ctx.stroke();
-        if (!folded && Math.hypot(end[0] - a[0], end[1] - a[1]) > 14) {
+        if (!folded && Math.hypot(end[0] - a[0], end[1] - a[1]) > 14 * u) {
           const angle = Math.atan2(end[1] - a[1], end[0] - a[0]);
           ctx.setLineDash([]);
           ctx.beginPath();
-          ctx.moveTo(end[0] - 6 * Math.cos(angle - 0.45), end[1] - 6 * Math.sin(angle - 0.45));
+          ctx.moveTo(end[0] - 6 * u * Math.cos(angle - 0.45), end[1] - 6 * u * Math.sin(angle - 0.45));
           ctx.lineTo(...end);
-          ctx.lineTo(end[0] - 6 * Math.cos(angle + 0.45), end[1] - 6 * Math.sin(angle + 0.45));
+          ctx.lineTo(end[0] - 6 * u * Math.cos(angle + 0.45), end[1] - 6 * u * Math.sin(angle + 0.45));
           ctx.stroke();
         }
       }
@@ -2573,12 +2715,10 @@ var ClockMath = (function(exports) {
       const visible = frame.compact ? foldArm(segments, expanded) : segments, unit = 125 / extent;
       const project = (z) => [300 + unit * (z[0] - centre[0]), 150 - unit * (z[1] - centre[1])];
       ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, 20, 600, 260);
-      ctx.clip();
+      const u = clipPlot(ctx).scale;
       ctx.strokeStyle = "#8da798";
       ctx.globalAlpha = 0.2;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = u;
       ctx.beginPath();
       ctx.moveTo(...project([0, 0]));
       for (const segment of segments) ctx.lineTo(...project(segment.to));
@@ -2589,7 +2729,7 @@ var ClockMath = (function(exports) {
         const at = project(anchor), radius = unit * active.magnitude;
         ctx.strokeStyle = frame.colour(active.source.p);
         ctx.globalAlpha = 0.25;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = u;
         ctx.beginPath();
         ctx.arc(at[0], at[1], radius, 0, 2 * Math.PI);
         ctx.stroke();
@@ -2600,15 +2740,15 @@ var ClockMath = (function(exports) {
       const tip = project(drawn.tip);
       ctx.fillStyle = "#e9be67";
       ctx.beginPath();
-      ctx.arc(tip[0], tip[1], 4, 0, 2 * Math.PI);
+      ctx.arc(tip[0], tip[1], 4 * u, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.font = "12px ui-monospace";
-      ctx.fillText(progress < 0.999 ? "partial L" : "L", tip[0] + 9, tip[1] - 9);
+      plotFont(ctx, 12);
+      ctx.fillText(progress < 0.999 ? "partial L" : "L", tip[0] + 9 * u, tip[1] - 9 * u);
       if (active) {
         const segment = segments.find((s) => s.items[0].meta === active);
         const at = project(segment.to);
         ctx.fillStyle = frame.highlightColour(active.source.p);
-        ctx.fillText("q=" + active.source.q, at[0] + 8, at[1] + 18);
+        ctx.fillText("q=" + active.source.q, at[0] + 8 * u, at[1] + 18 * u);
       }
       ctx.restore();
       const folded = visible.filter((s) => s.items.length > 1).reduce((a, s) => a + s.items.length, 0);
@@ -2758,12 +2898,10 @@ var ClockMath = (function(exports) {
       const visible = frame.compact ? foldArm(segments, expanded) : segments, unit = 125 / extent;
       const project = (z) => [300 + unit * (z[0] - centre[0]), 150 - unit * (z[1] - centre[1])];
       ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, 20, 600, 260);
-      ctx.clip();
+      const u = clipPlot(ctx).scale;
       ctx.strokeStyle = "#91afbe";
       ctx.globalAlpha = 0.24;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = u;
       ctx.beginPath();
       ctx.moveTo(...project([0, 0]));
       for (const segment of segments) ctx.lineTo(...project(segment.to));
@@ -2773,7 +2911,7 @@ var ClockMath = (function(exports) {
         const term = segment.items[0].meta, at = project(segment.from);
         ctx.strokeStyle = colour(term.source.direction);
         ctx.globalAlpha = 0.4;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = u;
         ctx.beginPath();
         ctx.arc(at[0], at[1], unit * term.magnitude, 0, 2 * Math.PI);
         ctx.stroke();
@@ -2784,119 +2922,423 @@ var ClockMath = (function(exports) {
       const tip = project(drawn.tip), goal = project(target);
       ctx.fillStyle = "#a9d8f2";
       ctx.beginPath();
-      ctx.arc(tip[0], tip[1], 3, 0, 2 * Math.PI);
+      ctx.arc(tip[0], tip[1], 3 * u, 0, 2 * Math.PI);
       ctx.fill();
       ctx.strokeStyle = "#e9be67";
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2 * u;
       ctx.beginPath();
-      ctx.arc(goal[0], goal[1], 6, 0, 2 * Math.PI);
+      ctx.arc(goal[0], goal[1], 6 * u, 0, 2 * Math.PI);
       ctx.stroke();
-      ctx.font = "12px ui-monospace";
+      plotFont(ctx, 12);
       ctx.fillStyle = "#e9be67";
-      ctx.fillText("ξ", goal[0] + 10, goal[1] - 10);
+      ctx.fillText("ξ", goal[0] + 10 * u, goal[1] - 10 * u);
       if (progress < 0.999) {
         ctx.fillStyle = "#a9d8f2";
-        ctx.fillText("partial", tip[0] + 8, tip[1] + 17);
+        ctx.fillText("partial", tip[0] + 8 * u, tip[1] + 17 * u);
       }
       ctx.restore();
       return { model, active: model.terms.filter((t) => t.source.index === active), foldedPairs: visible.filter((s) => s.items.length > 1).reduce((a, s) => a + s.items.length / 2, 0), tip: drawn.tip };
     }
   }
-  function drawComplexPlane(ctx, centre, extent) {
+  function drawComplexPlane(ctx, centre, extent, bounds = { top: 0, bottom: 300, height: 300, scale: 1 }) {
     const unit = 125 / extent, X = (re) => 300 + unit * (re - centre[0]), Y = (im) => 150 - unit * (im - centre[1]);
+    const u = bounds.scale, pad = 6 * u;
+    const inTop = bounds.top + 26 * u, inBottom = bounds.bottom - 20 * u;
+    const rows = Math.max(1, Math.floor((inBottom - inTop) / 125));
     const tick = (v, step) => {
       const digits = Math.max(0, Math.ceil(-Math.log10(step)) + 1);
       return Math.abs(v) < 1e7 && digits <= 12 ? v.toFixed(digits) : v.toPrecision(5);
     };
     ctx.save();
-    ctx.font = "12px ui-monospace";
-    ctx.lineWidth = 1;
+    ctx.font = 13 * u + "px ui-monospace";
+    ctx.lineWidth = u;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(0, 20, 600, 260);
+    ctx.rect(0, inTop, 600, inBottom - inTop);
     ctx.clip();
     const left = Math.max(0, X(0)), right = Math.min(600, X(1));
     if (right > left) {
       ctx.fillStyle = "#b18cd015";
-      ctx.fillRect(left, 20, right - left, 260);
+      ctx.fillRect(left, inTop, right - left, inBottom - inTop);
     }
     ctx.strokeStyle = "#71897b38";
+    ctx.beginPath();
     for (let i = -2; i <= 2; i++) {
-      ctx.beginPath();
-      ctx.moveTo(300 + i * 125, 20);
-      ctx.lineTo(300 + i * 125, 280);
-      ctx.moveTo(0, 150 - i * 62.5);
-      ctx.lineTo(600, 150 - i * 62.5);
-      ctx.stroke();
+      ctx.moveTo(300 + i * 125, inTop);
+      ctx.lineTo(300 + i * 125, inBottom);
     }
+    for (let k = -rows; k <= rows; k++) {
+      const y = 150 + k * 62.5;
+      if (y < inTop || y > inBottom) continue;
+      ctx.moveTo(0, y);
+      ctx.lineTo(600, y);
+    }
+    ctx.stroke();
     for (const re of [0, 0.5, 1]) {
       const x = X(re);
       if (x < 0 || x > 600) continue;
       ctx.strokeStyle = re === 0.5 ? "#c79de4a0" : "#c79de466";
-      ctx.setLineDash(re === 0.5 ? [5, 5] : []);
+      ctx.setLineDash(re === 0.5 ? [5 * u, 5 * u] : []);
       ctx.beginPath();
-      ctx.moveTo(x, 20);
-      ctx.lineTo(x, 280);
+      ctx.moveTo(x, inTop);
+      ctx.lineTo(x, inBottom);
       ctx.stroke();
     }
     ctx.setLineDash([]);
     ctx.strokeStyle = "#bfd0c7b0";
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.5 * u;
     const x0 = X(0), y0 = Y(0);
     if (x0 >= 0 && x0 <= 600) {
       ctx.beginPath();
-      ctx.moveTo(x0, 20);
-      ctx.lineTo(x0, 280);
+      ctx.moveTo(x0, inTop);
+      ctx.lineTo(x0, inBottom);
       ctx.stroke();
     }
-    if (y0 >= 20 && y0 <= 280) {
+    if (y0 >= inTop && y0 <= inBottom) {
       ctx.beginPath();
       ctx.moveTo(0, y0);
       ctx.lineTo(600, y0);
       ctx.stroke();
     }
-    if (x0 >= 0 && x0 <= 600 && y0 >= 20 && y0 <= 280) {
+    if (x0 >= 0 && x0 <= 600 && y0 >= inTop && y0 <= inBottom) {
       ctx.fillStyle = "#d7e4dc";
-      ctx.fillText("0", Math.min(586, x0 + 5), Math.min(275, y0 + 15));
+      ctx.fillText("0", Math.min(600 - 14 * u, x0 + pad), Math.min(inBottom - pad, y0 + 16 * u));
     }
     ctx.restore();
     ctx.fillStyle = "#acbdb2";
-    for (let i = -2; i <= 2; i++) {
-      ctx.fillText(tick(centre[0] + i * extent, extent), Math.min(500, Math.max(3, 303 + i * 125)), 296);
-      if (i < 2) ctx.fillText(tick(centre[1] + i * extent / 2, extent / 2), 4, 146 - i * 62.5);
+    for (let i = -2; i <= 2; i++) ctx.fillText(tick(centre[0] + i * extent, extent), Math.min(600 - 56 * u, Math.max(pad, 300 + i * 125 + pad)), bounds.bottom - 5 * u);
+    for (let k = -rows; k <= rows; k++) {
+      const y = 150 + k * 62.5;
+      if (y < inTop + 13 * u || y > inBottom) continue;
+      ctx.fillText(tick(centre[1] - k * extent / 2, extent / 2), pad, y - 5 * u);
     }
+    ctx.font = 14 * u + "px ui-monospace";
     ctx.fillStyle = "#c7d6cd";
-    ctx.fillText("Im(z) ↑", 4, 14);
-    ctx.fillText("Re(z) →", 535, 14);
+    ctx.fillText("Im(z) ↑", pad, bounds.top + 15 * u);
+    ctx.textAlign = "right";
+    ctx.fillText("Re(z) →", 600 - pad, bounds.top + 15 * u);
     ctx.fillStyle = "#c79de4";
     ctx.textAlign = "center";
     const stripVisible = right > left;
-    ctx.fillText(stripVisible ? "critical strip · input s" : X(1) < 0 ? "← input critical strip off view" : "input critical strip off view →", 300, 14);
+    ctx.fillText(stripVisible ? "critical strip · input s" : X(1) < 0 ? "← input critical strip off view" : "input critical strip off view →", 300, bounds.top + 14);
+    ctx.font = 13 * u + "px ui-monospace";
     for (const re of [0.5, 1]) {
       const x = X(re);
-      if (x > 48 && x < 550) ctx.fillText(re === 0.5 ? "σ=½" : "σ=1", x, 34);
+      if (x > 48 * u && x < 600 - 50 * u) ctx.fillText(re === 0.5 ? "σ=½" : "σ=1", x, inTop + 14 * u);
     }
     ctx.textAlign = "left";
-    if (x0 < 0 || x0 > 600 || y0 < 20 || y0 > 280) {
-      const horizontal = x0 < 0 ? "←" : x0 > 600 ? "→" : "", vertical = y0 < 20 ? "↑" : y0 > 280 ? "↓" : "";
+    if (x0 < 0 || x0 > 600 || y0 < inTop || y0 > inBottom) {
+      const horizontal = x0 < 0 ? "←" : x0 > 600 ? "→" : "", vertical = y0 < inTop ? "↑" : y0 > inBottom ? "↓" : "";
       ctx.fillStyle = "#acbdb2";
-      ctx.fillText("0 " + horizontal + vertical + " off view", 8, 272);
+      ctx.fillText("0 " + horizontal + vertical + " off view", pad, bounds.bottom - 24 * u);
     }
     ctx.restore();
+  }
+  const icon = (name) => {
+    const paths = { sound: "M11 5 6 9H3v6h3l5 4V5m4 3a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14", gear: "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0-5v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4", paint: "M4 18 18 4m-8 0h8v8M4 13v7h7", close: "m6 6 12 12M6 18 18 6" };
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[name] || paths.gear}"/></svg>`;
+  };
+  const el = (id) => document.getElementById(id);
+  function mountWorkspace(actions) {
+    const app = el("clockApp"), clockStage = el("clockStage"), product = el("productBubble");
+    app.classList.add("redesigned");
+    const shell = document.createElement("div");
+    shell.id = "workspaceShell";
+    shell.dataset.layout = "clock";
+    shell.innerHTML = `<section id="clockWorkspace" class="workspace" aria-label="Clock of Primes">
+ <header class="workspace-title"><h1>Clock of Primes</h1><div class="workspace-actions"><button id="appearanceButton" class="icon-button" title="Clock appearance" aria-label="Clock appearance">${icon("paint")}</button><span id="soundSlot"></span><button id="soundSettings" class="small-disclosure" aria-label="Sound settings" title="Sound settings">⌄</button></div></header>
+ <div id="clockSurface"></div><div id="clockTape"></div><footer id="clockTransport"></footer>
+ <aside id="clockInspector" class="inspector" hidden></aside></section>
+ <div id="workspaceDivider" role="separator" tabindex="0" aria-label="Resize clock and explorer" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div>
+ <section id="riemannWorkspace" class="workspace" aria-label="Riemann explorer"><header class="workspace-title"><h1>Riemann explorer</h1><button id="riemannHelp" class="text-button">Inspect</button></header><div id="riemannContent"></div><aside id="riemannInspector" class="inspector" hidden></aside></section>
+ <nav id="workspaceSwitch" aria-label="Workspace"><button data-layout="clock" aria-pressed="true">Clock</button><button data-layout="both" aria-pressed="false">Both</button><button data-layout="explorer" aria-pressed="false">Riemann explorer <span aria-hidden="true">↗</span></button></nav>`;
+    app.append(shell);
+    el("clockSurface").append(clockStage);
+    el("clockTape").append(el("originalProof"));
+    el("clockTransport").append(el("transportCorner"));
+    const panels = /* @__PURE__ */ new Map();
+    let openClock = "", openRiemann = "";
+    const close = (owner) => {
+      const id = owner === "clock" ? openClock : openRiemann;
+      if (id) {
+        const entry = panels.get(id);
+        entry.node.hidden = true;
+        entry.node.dataset.open = "false";
+      }
+      el(owner + "Inspector").hidden = true;
+      if (owner === "clock") openClock = "";
+      else openRiemann = "";
+      actions.resize();
+    };
+    const open = (id) => {
+      const entry = panels.get(id);
+      if (!entry) return;
+      const { owner, node } = entry;
+      if ((owner === "clock" ? openClock : openRiemann) === id) {
+        close(owner);
+        return;
+      }
+      close(owner);
+      el(owner + "Inspector").append(node);
+      node.hidden = false;
+      node.dataset.open = "true";
+      el(owner + "Inspector").hidden = false;
+      el(owner + "Inspector").scrollTop = 0;
+      if (owner === "clock") openClock = id;
+      else openRiemann = id;
+      actions.resize();
+    };
+    const register = (node, owner) => {
+      if (node.matches(":popover-open")) node.hidePopover();
+      node.removeAttribute("popover");
+      node.classList.add("inspector-page");
+      node.hidden = true;
+      node.dataset.open = "false";
+      panels.set(node.id, { node, owner });
+      el(owner + "Inspector").append(node);
+      node.showPopover = () => {
+        if (node.dataset.open !== "true") open(node.id);
+      };
+      node.hidePopover = () => {
+        if (node.dataset.open === "true") close(owner);
+      };
+      node.togglePopover = () => {
+        open(node.id);
+        return node.dataset.open === "true";
+      };
+    };
+    for (const id of ["viewBubble", "tuneBubble", "observeBubble", "jBubble", "bridgeBubble"]) register(el(id), "clock");
+    for (const id of ["exploreOptions", "planeNotes", "viewHelp"]) register(el(id), "riemann");
+    if (product.matches(":popover-open")) product.hidePopover();
+    product.removeAttribute("popover");
+    product.dataset.open = "false";
+    product.classList.add("explorer-surface");
+    el("riemannContent").append(product);
+    product.querySelector(".bubble-head").hidden = true;
+    for (const selector of ["#clockApp>.clock-title", "#clockApp>.north-west", "#clockApp>.north-east", "#clockApp>.south-east", "#destinations"]) app.querySelector(selector)?.remove();
+    el("productView").remove();
+    const sound = el("sound");
+    el("soundSlot").append(sound);
+    sound.className = "icon-button";
+    sound.innerHTML = icon("sound");
+    sound.setAttribute("aria-label", "Enable sound");
+    el("soundSettings").onclick = () => open("soundPanel");
+    el("appearanceButton").onclick = () => open("viewBubble");
+    el("riemannHelp").onclick = () => el("explainView").click();
+    el("viewBubble").querySelector(".bubble-head b").textContent = "Clock appearance";
+    const custom = document.createElement("div");
+    custom.innerHTML = `<label class="field">Spectrum<select id="spectrumChoice"><option value="0">Pitch · log₂ p</option><option value="2">Spectrum · 1/p</option><option value="1">Spectrum · 1/p²</option></select></label><div id="spectrumPreview" aria-label="Prime colour preview"></div>
+ <label class="field">Pane light<select id="lightChoice"><option value="filter">Filtering glass</option><option value="light">Accumulating light</option></select></label><label class="field">Colour depth<input id="colourDepth" type="range" min="0.1" max="1.2" step="0.01" value="0.42"></label><label class="check"><input id="weightBrightness" type="checkbox"> Link absorption to σ</label><p class="small-note">Colour is a display mapping. ξ does not control brightness.</p><label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
+    el("viewBubble").append(custom);
+    for (const [id, key] of [["spectrumChoice", "spectrum"], ["lightChoice", "light"], ["colourDepth", "depth"], ["weightBrightness", "weightBrightness"], ["allPaneLabels", "labels"], ["jRadiusToggle", "jRadius"]]) el(id).addEventListener("input", () => {
+      const field = el(id);
+      actions.setting(key, field.type === "checkbox" ? field.checked : field.value);
+    });
+    el("inspectJ").onclick = () => open("jBubble");
+    const createPanel = (id, title, html) => {
+      const p = document.createElement("section");
+      p.id = id;
+      p.className = "bubble";
+      p.innerHTML = `<div class="bubble-head"><b>${title}</b><button class="inspector-close" aria-label="Close ${title}">×</button></div>${html}`;
+      register(p, "clock");
+      p.querySelector(".inspector-close").onclick = () => close("clock");
+      return p;
+    };
+    const gear = createPanel("clockSettings", "Clock controls", `<label class="field">Snap / step targets<select id="snapChoice"><option value="integer">On the beat</option><option value="free">Keep fractional position</option><option value="prime">Primes</option><option value="twin">Twin-prime centers</option></select></label><p class="small-note" id="snapHint">Snap winds to a destination. Jump goes there instantly.</p><div id="speedControl"></div><label class="field">Go to number<input id="clockDestination" type="number" min="1" max="5000" step="any" value="100"></label><div class="button-row"><button id="windTo">Wind to</button><button id="jumpTo">Jump</button></div><label class="field">Fine position<input id="fineClock" type="range" min="1" max="21" step="0.001" value="1"></label><p id="travelFeedback" class="small-note" role="status"></p>`);
+    const speedLabel = document.createElement("label");
+    speedLabel.className = "field";
+    speedLabel.innerHTML = "Play speed · beats/s";
+    speedLabel.append(el("speed"), el("liveSpeed"));
+    el("speedControl").append(speedLabel);
+    const gearButton = document.createElement("button");
+    gearButton.id = "clockGear";
+    gearButton.className = "icon-button";
+    gearButton.innerHTML = icon("gear");
+    gearButton.setAttribute("aria-label", "Clock controls");
+    gearButton.title = "Clock controls";
+    gearButton.onclick = () => open(gear.id);
+    el("transportCorner").querySelector(".transport").append(gearButton);
+    const observe = document.createElement("button");
+    observe.id = "clockObserve";
+    observe.className = "text-button";
+    observe.textContent = "Observe";
+    observe.onclick = () => open("observeBubble");
+    el("clockTransport").append(observe);
+    el("snapChoice").onchange = () => {
+      const value = el("snapChoice").value;
+      actions.setting("snap", value);
+      el("snapHint").textContent = value === "twin" ? "Visit the center between twin primes; 4 is the exceptional first center." : value === "free" ? "One step preserves the fractional position where you paused." : "Steps wind to the next or previous matching beat.";
+    };
+    const travel = (jump) => {
+      const input = el("clockDestination"), n = Number(input.value);
+      if (!input.value || !Number.isFinite(n) || n < 1 || n > 5e3) {
+        el("travelFeedback").textContent = "Enter a number from 1 to 5000.";
+        return;
+      }
+      jump ? actions.jump(n) : actions.seek(n);
+      el("travelFeedback").textContent = (jump ? "Jumped to " : "Winding toward ") + n;
+    };
+    el("windTo").onclick = () => travel(false);
+    el("jumpTo").onclick = () => travel(true);
+    el("clockDestination").onkeydown = (e) => {
+      if (e.key === "Enter") travel(e.shiftKey);
+    };
+    el("fineClock").oninput = () => actions.setting("fine", el("fineClock").value);
+    createPanel("soundPanel", "Sound", `<label class="field">Pitch · Hz per number<input id="pitchMultiplier" type="range" min="1" max="20" step="0.1" value="20"><output id="pitchReadout">20n Hz</output></label><div id="volumeControl"></div><p class="small-note">At 1n Hz, the earliest primes may be inaudible. Ratios remain proportional. Fast winding skips the backlog of notes.</p>`);
+    const volume = document.createElement("label");
+    volume.className = "field";
+    volume.textContent = "Volume";
+    volume.append(el("vol"));
+    el("volumeControl").append(volume);
+    el("pitchMultiplier").oninput = () => {
+      const value = el("pitchMultiplier").value;
+      el("pitchReadout").textContent = value + "n Hz";
+      actions.setting("pitch", value);
+    };
+    const chooser = document.createElement("details");
+    chooser.id = "constructionChooser";
+    const summary = document.createElement("summary");
+    summary.id = "constructionSummary";
+    summary.textContent = "Sum & product";
+    chooser.append(summary, el("paperViews"));
+    product.prepend(chooser);
+    for (const button of el("paperViews").querySelectorAll("button")) {
+      const copy = document.createElement("small");
+      copy.textContent = button.title;
+      button.append(copy);
+      button.addEventListener("click", () => {
+        chooser.open = false;
+        summary.textContent = button.childNodes[0].textContent;
+      });
+    }
+    const graphWrap = document.createElement("div");
+    graphWrap.id = "graphSurface";
+    const graph = el("productGraph");
+    graph.before(graphWrap);
+    graphWrap.append(graph);
+    const sigmaRow = el("sigmaDial").closest(".axis-control"), tauRow = el("tauScrub").closest(".axis-control");
+    sigmaRow.id = "sigmaControl";
+    tauRow.id = "tauControl";
+    graphWrap.append(sigmaRow, tauRow);
+    el("paperViewTitle").hidden = true;
+    el("paperEquation").hidden = true;
+    el("planeHint").hidden = true;
+    el("exploreDock").append(el("exploreToolbar"));
+    el("exploreToolbar").querySelector('[popovertarget="planeNotes"]')?.remove();
+    el("explainView").textContent = "Inspect";
+    el("fitLocus").textContent = "Frame curve";
+    el("exploreMore").textContent = "Options";
+    const reference = document.createElement("button");
+    reference.id = "openPlaneNotes";
+    reference.textContent = "Equations & reference";
+    reference.onclick = () => open("planeNotes");
+    el("exploreOptions").append(reference);
+    app.addEventListener("click", (e) => {
+      const target = e.target.closest("[popovertarget]");
+      if (!target) return;
+      const id = target.getAttribute("popovertarget");
+      if (!panels.has(id)) return;
+      e.preventDefault();
+      if (target.getAttribute("popovertargetaction") === "hide") close(panels.get(id).owner);
+      else open(id);
+    }, true);
+    let layout = "clock";
+    let fraction = 0.5;
+    const setLayout = (next) => {
+      layout = next;
+      shell.dataset.layout = next;
+      product.hidden = next === "clock";
+      product.dataset.open = String(next !== "clock");
+      el("riemannWorkspace").inert = next === "clock";
+      el("clockWorkspace").inert = next === "explorer";
+      for (const b of shell.querySelectorAll("[data-layout]")) b.setAttribute("aria-pressed", String(b.dataset.layout === next));
+      el("workspaceDivider").setAttribute("aria-valuenow", next === "clock" ? "100" : next === "explorer" ? "0" : String(Math.round(fraction * 100)));
+      actions.setting("layout", next);
+      actions.resize();
+    };
+    for (const b of shell.querySelectorAll("[data-layout]")) b.onclick = () => setLayout(b.dataset.layout);
+    const divider = el("workspaceDivider");
+    divider.onpointerdown = (e) => {
+      divider.setPointerCapture(e.pointerId);
+    };
+    divider.onpointermove = (e) => {
+      if (!divider.hasPointerCapture(e.pointerId)) return;
+      const box = shell.getBoundingClientRect();
+      fraction = Math.max(0.05, Math.min(0.95, (e.clientX - box.left) / box.width));
+      shell.style.setProperty("--split", fraction * 100 + "%");
+      if (layout !== "both") setLayout("both");
+      actions.resize();
+    };
+    divider.onpointerup = (e) => {
+      if (divider.hasPointerCapture(e.pointerId)) divider.releasePointerCapture(e.pointerId);
+      if (fraction < 0.18) setLayout("explorer");
+      else if (fraction > 0.82) setLayout("clock");
+      else setLayout("both");
+    };
+    divider.onkeydown = (e) => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        const direction = e.key === "ArrowLeft" ? -1 : 1;
+        if (layout === "clock") setLayout("both");
+        else if (layout === "explorer") setLayout("both");
+        else {
+          fraction = Math.max(0.15, Math.min(0.85, fraction + direction * 0.1));
+          shell.style.setProperty("--split", fraction * 100 + "%");
+          if (fraction <= 0.15) setLayout("explorer");
+          else if (fraction >= 0.85) setLayout("clock");
+          actions.resize();
+        }
+      }
+    };
+    const resize = new ResizeObserver(() => actions.resize());
+    resize.observe(el("clockSurface"));
+    resize.observe(graphWrap);
+    setLayout("clock");
+    let lastMode = "", lastTime = -1, lastSound;
+    return { setLayout, update() {
+      const state = actions.read();
+      if (lastSound !== state.sound) {
+        lastSound = state.sound;
+        sound.innerHTML = icon("sound");
+        sound.classList.toggle("muted", !state.sound);
+        sound.setAttribute("aria-pressed", String(state.sound));
+        sound.setAttribute("aria-label", state.sound ? "Mute sound" : "Enable sound");
+        sound.title = state.sound ? "Mute sound" : "Enable sound";
+      }
+      if (lastMode !== state.mode) {
+        lastMode = state.mode;
+        summary.textContent = el("paperViews").querySelector('[aria-pressed="true"]')?.childNodes[0].textContent || state.mode;
+        el("paperTrace").disabled = state.mode === "euler";
+        el("paperTrace").title = state.mode === "euler" ? "Choose a construction to replay its path" : "Replay this construction";
+      }
+      const fine2 = el("fineClock");
+      if (document.activeElement !== fine2 && Math.abs(state.time - lastTime) > 1e-3) {
+        fine2.min = String(Math.max(1, state.time - 10));
+        fine2.max = String(Math.min(5e3, state.time + 10));
+        fine2.value = String(state.time);
+        lastTime = state.time;
+      }
+    }, open };
   }
   function createIntegralWorker() {
     return new WorkerWrapper();
   }
   exports.LogArmScene = LogArmScene;
   exports.XiArmScene = XiArmScene;
+  exports.clipPlot = clipPlot;
   exports.createIntegralWorker = createIntegralWorker;
   exports.drawComplexPlane = drawComplexPlane;
   exports.foldArm = foldArm;
   exports.layoutArm = layoutArm;
   exports.logArmAt = logArmAt;
   exports.logEuler = logEuler;
+  exports.mountWorkspace = mountWorkspace;
   exports.paneAt = paneAt;
+  exports.plotBand = plotBand;
+  exports.plotBounds = plotBounds;
+  exports.plotFont = plotFont;
   exports.primePowersThrough = primePowersThrough;
+  exports.resizePlot = resizePlot;
   exports.riemannGamma = riemannGamma;
   exports.riemannIntegrate = riemannIntegrate;
   exports.viewDomain = viewDomain;
@@ -2957,7 +3399,7 @@ paperEquation.textContent=paperViews.euler.description;paperGuideEquation.innerH
 function paperTarget(mode,sigma,tau,n){const gamma=riemannGamma(sigma,tau);if(mode==='term')return mul(gamma,power(n,sigma,tau));if(mode==='finite')return mul(gamma,continuumSum(n,sigma,tau).z);if(mode==='infinite')return mul(gamma,zeta(sigma,tau));if(Math.hypot(sigma-1,tau)<1e-10)return [.5,0];const pref=scale(mul([sigma,tau],[sigma-1,tau]),.5),piWeight=power(Math.PI,sigma/2,tau/2);return mul(mul(pref,riemannGamma(sigma/2,tau/2)),mul(piWeight,zeta(sigma,tau)));}
 function paperComplex(z){return z.every(Number.isFinite)?z[0].toPrecision(5)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toPrecision(5)+'i':'outside numeric range';}
 paperSelector.onchange=()=>{paperMode=paperSelector.value;updatePaperNavigation();paperEquation.textContent=paperViews[paperMode].description;paperGuideEquation.innerHTML=paperFormulas[paperMode];paperData=null;paperProgress=0;paperProgressAim=0;paperPlaying=!['euler','log','xiarm'].includes(paperMode);if(['log','xiarm'].includes(paperMode))paperProgress=paperProgressAim=1;paperRewinding=false;paperFitPending=false;paperRequested='';paperWorker?.terminate();paperWorker=null;productHitPoints=[];};
-$('paperTrace').onclick=()=>{if(paperMode==='euler'){paperSelector.value='term';paperSelector.onchange();}else{paperProgressAim=0;paperPlaying=false;paperRewinding=true;}$('exploreOptions').hidePopover();};
+$('paperTrace').onclick=()=>{if(paperMode==='euler')return;paperProgressAim=0;paperPlaying=false;paperRewinding=true;$('exploreOptions').hidePopover();};
 $('paperScrub').oninput=e=>{paperPlaying=false;paperRewinding=false;paperProgressAim=+e.target.value;};
 function requestPaper(){if(['log','xiarm'].includes(paperMode))return;const n=Math.max(1,Math.floor(t)),key=[paperMode,sigmaAim,tauAim,paperMode==='term'||paperMode==='finite'?n:0].join('/'),now=performance.now();if(key!==paperKey){paperKey=key;paperChanged=now;paperRequested='';paperWorker?.terminate();paperWorker=null;}if(key===paperRequested||now-paperChanged<50)return;paperRequested=key;
  if(Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit||(paperMode==='infinite'&&sigmaAim<=1)){paperData={key,...riemannIntegrate({mode:paperMode,sigma:sigmaAim,tau:tauAim,n})};return;}
@@ -2972,9 +3414,9 @@ const normalFitTogether=$('fitTogether').onclick;$('fitTogether').onclick=()=>{i
 for(const event of ['pointerdown','wheel'])plane.addEventListener(event,()=>paperFitPending=false,{capture:true,passive:true});
 function tickPaperProgress(dt,ease,canPlay){if(canPlay&&paperRewinding&&paperProgress<.002){paperRewinding=false;paperPlaying=true;}if(canPlay&&paperPlaying){paperProgressAim=Math.min(1,paperProgressAim+dt/7);if(paperProgressAim===1)paperPlaying=false;}paperProgress+=(paperProgressAim-paperProgress)*ease;if(document.activeElement!==$('paperScrub'))$('paperScrub').value=paperProgress;}
 const normalProductGraph=drawProductGraph;
-drawProductGraph=function(){if(paperMode==='euler'){normalProductGraph();return;}if(!$('productBubble').matches(':popover-open'))return;
+drawProductGraph=function(){if(paperMode==='euler'){normalProductGraph();return;}if(!$('productBubble').matches('[data-open="true"]'))return;
  requestPaper();const now=performance.now(),dt=Math.min(.05,(now-paperLast)/1000),ease=1-Math.exp(-dt*12);paperLast=now;graphLastMs=now;graphCentre=graphCentre.map((v,k)=>v+(graphCentreAim[k]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
- const ctx=plane.getContext('2d'),extent=10**graphLogExtent,u=125/extent,X=z=>300+u*(z[0]-graphCentre[0]),Y=z=>150-u*(z[1]-graphCentre[1]);ctx.clearRect(0,0,600,300);ClockMath.drawComplexPlane(ctx,graphCentre,extent);productHitPoints=[];
+ const ctx=plane.getContext('2d'),extent=10**graphLogExtent,u=125/extent,X=z=>300+u*(z[0]-graphCentre[0]),Y=z=>150-u*(z[1]-graphCentre[1]);const bounds=ClockMath.plotBounds(ctx.canvas);ctx.clearRect(0,bounds.top,600,bounds.height);ClockMath.drawComplexPlane(ctx,graphCentre,extent,bounds);productHitPoints=[];
  if(paperMode==='log'){
   tickPaperProgress(dt,ease,true);
   logArmReadout=logArmScene.draw(ctx,{input:{sigma:SIGMA,tau:TAUV},time:t,selectedPrime,progress:paperProgress,centre:graphCentre,extent,compact:$('foldArmTerms').checked,colour:factorColour,highlightColour:primeHighlight});
@@ -2985,13 +3427,13 @@ drawProductGraph=function(){if(paperMode==='euler'){normalProductGraph();return;
  }
  if(paperMode==='xiarm'){drawXiArm(ctx,extent,dt,ease);return;}
  const current=paperData?.key===paperKey,settled=current&&paperData.valid&&Math.abs(SIGMA-paperData.sigma)<1e-4&&Math.abs(TAUV-paperData.tau)<1e-4;
- if(current&&!paperData.valid){ctx.fillStyle='#dcb884';ctx.font='14px ui-sans-serif';const lines=Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit?['This view resolves |τ| ≤ '+ClockMath.viewDomain(paperMode).tauLimit+'.','The Euler explorer still supports |τ| ≤ 1000.']:paperMode==='infinite'&&sigmaAim<=1?['The integral fails at its lower endpoint.','For σ ≤ 1, choose Finite sum or Symmetry.']:[paperData.reason,'Try another input or return to Euler.'];lines.forEach((line,i)=>ctx.fillText(line,65,130+i*25));$('productDetails').textContent=paperData.reason;$('productStatus').textContent='No integral endpoint was calculated.';return;}
+ if(current&&!paperData.valid){ctx.fillStyle='#dcb884';const nu=ClockMath.plotFont(ctx,14,'ui-sans-serif');const lines=Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit?['This view resolves |τ| ≤ '+ClockMath.viewDomain(paperMode).tauLimit+'.','The Euler explorer still supports |τ| ≤ 1000.']:paperMode==='infinite'&&sigmaAim<=1?['The integral fails at its lower endpoint.','For σ ≤ 1, choose Finite sum or Symmetry.']:[paperData.reason,'Try another input or return to Euler.'];lines.forEach((line,i)=>ctx.fillText(line,40*nu,150+(i-lines.length/2+1)*22*nu));$('productDetails').textContent=paperData.reason;$('productStatus').textContent='No integral endpoint was calculated.';return;}
  if(!paperData?.valid){$('productDetails').textContent='Computing the integral independently…';$('productStatus').textContent='';return;}
  const d=paperData.rows;tickPaperProgress(dt,ease,settled);
  const stopLength=paperProgress*paperData.length;let stop=0;while(stop+4<d.length&&d[stop+7]<stopLength)stop+=4;
  const next=Math.min(stop+4,d.length-4),den=d[next+3]-d[stop+3],f=den>0?Math.max(0,Math.min(1,(stopLength-d[stop+3])/den)):1,point=[d[stop+1]+f*(d[next+1]-d[stop+1]),d[stop+2]+f*(d[next+2]-d[stop+2])],xValue=d[stop]+f*(d[next]-d[stop]);
- ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();ctx.globalAlpha=settled?1:.2;ctx.strokeStyle='#87bff23a';ctx.lineWidth=1.4;ctx.beginPath();for(let i=0;i<d.length;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.stroke();ctx.strokeStyle='#87bff2';ctx.lineWidth=2.6;ctx.beginPath();for(let i=0;i<=stop;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(point),Y(point));ctx.stroke();ctx.fillStyle='#9bcff8';ctx.beginPath();ctx.arc(X(point),Y(point),4,0,7);ctx.fill();
- const target=paperData.target??=paperTarget(paperMode,paperData.sigma,paperData.tau,paperData.n);ctx.strokeStyle='#e9be67';ctx.lineWidth=2;ctx.beginPath();ctx.arc(X(target),Y(target),6,0,7);ctx.stroke();ctx.restore();
+ ctx.save();const su=ClockMath.clipPlot(ctx).scale;ctx.globalAlpha=settled?1:.2;ctx.strokeStyle='#87bff23a';ctx.lineWidth=1.4*su;ctx.beginPath();for(let i=0;i<d.length;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.stroke();ctx.strokeStyle='#87bff2';ctx.lineWidth=2.6*su;ctx.beginPath();for(let i=0;i<=stop;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(point),Y(point));ctx.stroke();ctx.fillStyle='#9bcff8';ctx.beginPath();ctx.arc(X(point),Y(point),4*su,0,7);ctx.fill();
+ const target=paperData.target??=paperTarget(paperMode,paperData.sigma,paperData.tau,paperData.n);ctx.strokeStyle='#e9be67';ctx.lineWidth=2*su;ctx.beginPath();ctx.arc(X(target),Y(target),6*su,0,7);ctx.stroke();ctx.restore();
  $('productDetails').textContent='Integral endpoint '+paperComplex(paperData.endpoint)+'; independent target '+paperComplex(target)+'.';
  $('productStatus').textContent='Endpoint gap '+abs(sub(paperData.endpoint,target)).toExponential(2)+' · numerical estimate '+(paperData.estimatedQuadratureError+paperData.estimatedRoundoffError).toExponential(1)+' · omitted-tail bound '+paperData.omittedBound.toExponential(1)+'.';
  $('productExtent').textContent='±'+extent.toPrecision(2);paperData.displayX=xValue;
@@ -3019,8 +3461,8 @@ planeNotes.insertAdjacentHTML('beforeend','<p>The prime-power arm shows L=Σ g_q
 
 function drawXiArm(ctx,extent,dt,ease){
  if(!xiInputValid()){
-  xiArmReadout=null;xiArmScene.invalidate();ctx.fillStyle='#dcb884';ctx.font='14px ui-sans-serif';
-  ctx.fillText('The ξ arm resolves 0.2 ≤ σ ≤ 3, |τ| ≤ 15.',55,130);ctx.fillText('Move s into this window, or return to Euler.',55,155);
+  xiArmReadout=null;xiArmScene.invalidate();ctx.fillStyle='#dcb884';const xu=ClockMath.plotFont(ctx,14,'ui-sans-serif');
+  ctx.fillText('The ξ arm resolves 0.2 ≤ σ ≤ 3, |τ| ≤ 15.',40*xu,150-11*xu);ctx.fillText('Move s into this window, or return to Euler.',40*xu,150+11*xu);
   $('productDetails').textContent='No paired endpoint is shown outside the validated window.';$('productStatus').textContent='The Euler explorer retains its wider τ range.';return;
  }
  tickPaperProgress(dt,ease,true);
@@ -3116,6 +3558,67 @@ function updateDomainSliders(){
 const domainGuide=updateGuide;updateGuide=function(){domainGuide();updateDomainSliders();};
 const explainChange=paperSelector.onchange;paperSelector.onchange=()=>{explainChange();refreshViewHelp();updateDomainSliders();};
 refreshViewHelp();updateDomainSliders();
+
+// Bridge the typed presentation shell to the established continuous instrument.
+let snapMode='integer',pitchMultiplier=20,displayDepth=.42,weightBrightness=false,lightMode='filter',allPaneLabels=false,jRadiusOn=false;
+let workspaceLayout='clock';const graphBounds={top:0,bottom:300,height:300};
+// The tape is a horizontal rail in every composition, reflected clock included.
+window.tapeUpright=false;
+function matchedBeat(value,direction=0){
+ if(snapMode==='free')return Math.max(1,Math.min(limit,value));
+ const matches=n=>snapMode==='integer'||snapMode==='prime'&&isPrime(n)||snapMode==='twin'&&isPrime(n-1)&&isPrime(n+1);
+ if(direction){for(let n=direction>0?Math.floor(value+1e-8)+1:Math.ceil(value-1e-8)-1;n>=1&&n<=limit;n+=direction)if(matches(n))return n;return direction>0?limit:1;}
+ let near=Math.round(value);for(let d=0;d<=limit;d++)for(const n of [near+d,near-d])if(n>=1&&n<=limit&&matches(n))return n;return value;
+}
+stepClock=function(direction){const from=clockTween?.kind==='step'?clockTween.to:t;const target=snapMode==='free'?from+direction:matchedBeat(from,direction);moveClock(target);clockTween.kind='step';clockTween.duration=.48;};
+seekFrontier=function(value){moveClock(matchedBeat(Number(value)));if(clockTween){clockTween.kind='scrub';clockTween.duration=.32;}};
+function jumpClock(value){clockTween=null;stopAt=null;window.__run=false;clearVoices();const audible=soundOn;soundOn=false;advanceClock(Math.max(1,Math.min(limit,value)),performance.now());soundOn=audible;PR.update(t);$('play').textContent='Play';}
+freqOf=function(n){return pitchMultiplier*n;};
+// Display colour depth is independent of sigma unless deliberately linked.
+paneTransmission=function(p){const c=hueRGB(hueOf(p)),depth=weightBrightness?SIGMA:displayDepth;
+ if(lightMode==='light')return c.map(v=>1-Math.exp(-depth*Math.log(p)*(.12+v)));
+ const a=c.map(v=>1-v),sum=a.reduce((x,y)=>x+y,0)||1;return a.map(v=>Math.exp(-3*depth*Math.log(p)*v/sum));
+};
+function paneName(q){const f=factorize(q);if(f.length>1&&f.every(p=>p===f[0]))return String(f[0])+String(f.length).replace(/\d/g,n=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[n]);return String(q);}
+function factoredName(n){const counts=new Map();for(const p of factorize(n))counts.set(p,(counts.get(p)||0)+1);return [...counts].map(([p,k])=>k===1?String(p):p+String(k).replace(/\d/g,n=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[n])).join(' × ');}
+const labelAlphas=new Map();let labelPositions=[];
+function drawPaneLabel(q,r,a){
+ const selected=(typeof selectedPrime!=='undefined'&&selectedPrime===(rings.find(v=>v.p===q)?.base||q));
+ const x=C+(r+18)*Math.cos(a),y=C+(r+18)*Math.sin(a),text=paneName(q);
+ const priority=selected||q===Math.floor(t)||Math.floor(t)%q===0||q<=13;
+ const canShow=r>35&&(allPaneLabels||priority||!labelPositions.some(p=>Math.hypot(x-p[0],y-p[1])<48));
+ let alpha=labelAlphas.get(q)||0;alpha+=(Number(canShow)-alpha)*.14;labelAlphas.set(q,alpha);if(canShow)labelPositions.push([x,y]);if(alpha<.01)return;
+ g2.save();g2.globalAlpha*=alpha;g2.font=(selected?'600 ':'')+'17px system-ui,sans-serif';g2.textAlign='center';g2.textBaseline='middle';g2.fillText(text,x,y);g2.restore();
+}
+function beamReveal(){return Math.max(0,Math.min(1,t-1));}
+function drawJRadius(){if(!jRadiusOn)return;const j=jValue(t),ratio=j/t,angle=Math.PI*.72,dx=Math.cos(angle),dy=Math.sin(angle);g2.save();g2.setTransform(1,0,0,1,0,0);g2.strokeStyle='#a8c7b666';g2.lineWidth=1;g2.setLineDash([3,6]);g2.beginPath();g2.moveTo(C,C);g2.lineTo(C+R*dx,C+R*dy);g2.stroke();g2.setLineDash([]);g2.strokeStyle='#a8c7b6';g2.lineWidth=2;g2.beginPath();g2.moveTo(C,C);g2.lineTo(C+R*ratio*dx,C+R*ratio*dy);g2.stroke();g2.fillStyle='#bad8c7';g2.beginPath();g2.arc(C+R*ratio*dx,C+R*ratio*dy,4,0,7);g2.fill();g2.font='16px system-ui';g2.textAlign='center';g2.fillText('J = '+j.toFixed(2),C+R*.75*dx,C+R*.75*dy+24);g2.restore();}
+function resizeWorkspace(){
+ const surface=$('clockSurface');if(!surface)return;const b=surface.getBoundingClientRect(),diameter=Math.max(30,Math.min(b.width,b.height)*.90);surface.style.setProperty('--clock-size',diameter+'px');
+ ClockMath.resizePlot(plane,[locusRaster,locusBackdrop]);Object.assign(graphBounds,ClockMath.plotBounds(plane));
+ locusRasterKey='';backdropState.key='';
+}
+graphPlotRect=function(canvas){const b=canvas.getBoundingClientRect(),unit=b.width/600;return {left:b.left,top:b.top-graphBounds.top*unit,width:b.width,height:300*unit};};
+dockTape=function(){};
+const workspace=ClockMath.mountWorkspace({
+ read:()=>({time:t,target:clockTween?.to??t,mode:paperMode,sound:soundOn,selected:selectedPrime,sigma:SIGMA,tau:TAUV,j:jValue(t)}),
+ seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
+ setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;resizeWorkspace();}else if(key==='spectrum'){SPECTRUM=+value;PR.recolor();updateSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light')lightMode=value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
+});
+function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19].map(p=>'<i title="'+p+'" style="background:'+factorColour(p)+'"></i>').join('');}
+updateSpectrum();
+$('scrub').max=limit;$('reach').value=limit;$('scrubEnd').textContent=limit;
+$('sigmaControl').querySelector('label').textContent='σ';$('tauControl').querySelector('label').textContent='τ';
+// Formula details retain denominator notation, with the active input stated.
+paperFormulas.euler='Σ 1/n<sup>s</sup> = ∏ 1/(1 − 1/p<sup>s</sup>) = ζ(s), for σ > 1';
+paperFormulas.log='log ζ(s) = Σₚ Σₖ≥₁ 1/[k(p<sup>k</sup>)<sup>s</sup>] · σ > 1';
+paperFormulas.term='∫₀<sup>∞</sup> e<sup>−nx</sup>x<sup>s−1</sup> dx = Γ(s)/n<sup>s</sup> · σ > 0';
+$('jIntro').insertAdjacentHTML('beforebegin','<p>On the optional J radius, one count unit is R/t: length = R·J(t)/t. Credits jump by 1/k at pᵏ. This measures a weighted count, not log(q).</p>');
+const inspectRadius=document.createElement('button');inspectRadius.textContent='Show J radius';inspectRadius.onclick=()=>{jRadiusOn=!jRadiusOn;$('jRadiusToggle').checked=jRadiusOn;inspectRadius.textContent=jRadiusOn?'Hide J radius':'Show J radius';};$('jBubble').append(inspectRadius);
+const redesignedGuide=updateGuide;
+updateGuide=function(){redesignedGuide();workspace.update();drawJRadius();const n=Math.floor(t);if(!isPrime(n)&&n>1)$('fac').textContent=factoredName(n);};
+// Capture global keyboard shortcuts only outside controls and the graph.
+document.addEventListener('keydown',e=>{if(e.target.closest('input,select,textarea,button,summary,#productGraph,[role=separator]'))e.stopPropagation();},true);
+resizeWorkspace();
 
 </script>
 </body>

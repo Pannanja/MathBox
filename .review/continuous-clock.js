@@ -24,7 +24,7 @@ function advanceClock(next, ms) {
     bearings.push({a:k,b:0,ang:TOP,sp:0,pinned:true});
    }
    cand = {n:k,born:ms,prime:isP};
-   if (soundOn) {tick(); if(isP){strike(k,3.2,.26/Math.pow(k,.28));remember(k);}}
+   if (soundOn && next-old<=1.05) {tick(); if(isP){strike(k,3.2,.26/Math.pow(k,.28));remember(k);}}
   }
  } else {
   // A panel has already shrunk to zero before its birth is crossed in reverse.
@@ -37,7 +37,7 @@ function advanceClock(next, ms) {
  }
  for (const ring of rings) {
   const lap=Math.floor(next/ring.p);
-  if(next>old && lap>ring.lap){ring.hit=ms;if(soundOn)strike(ring.base||ring.p,3.2,.26/Math.pow(ring.p,.28));}
+  if(next>old && lap>ring.lap){ring.hit=ms;if(soundOn&&next-old<=1.05)strike(ring.base||ring.p,3.2,.26/Math.pow(ring.p,.28));}
   ring.lap=lap;
  }
  t=next;lastInt=n;unitLap=n;
@@ -53,7 +53,7 @@ function updateClock(dt, ms) {
   if(u===1){clockTween=null;$('play').textContent='Play';if(trip.after)trip.after();}
  }else if(window.__run){
   const destination=stopAt===null?limit:Math.min(limit,stopAt);
-  advanceClock(Math.min(destination,t+Math.min(.2,dt*+$('speed').value)),ms);
+  advanceClock(Math.min(destination,t+dt*+$('speed').value),ms);
   if(t>=destination){stopAt=null;window.__run=false;$('play').textContent='Play';}
  }
 }

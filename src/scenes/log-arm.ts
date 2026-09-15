@@ -3,6 +3,7 @@ import { logArmAt } from '../math/log-arm';
 import type { LogArmModel, LogArmTerm } from '../math/log-arm';
 import { drawArm, foldArm, layoutArm, segmentDistance } from '../render/arm';
 import type { ArmSegment } from '../render/arm';
+import { clipPlot, plotFont } from '../render/viewport';
 
 interface Frame {
   time: number; input: ComplexInput; selectedPrime: number; progress: number;
@@ -57,21 +58,21 @@ export class LogArmScene {
     if(active)expanded.add(active.id);
     const visible=frame.compact?foldArm(segments,expanded):segments,unit=125/extent;
     const project=(z: Complex): Complex=>[300+unit*(z[0]-centre[0]),150-unit*(z[1]-centre[1])];
-    ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
+    ctx.save();const u=clipPlot(ctx).scale;
     // Preserve the actual intermediate geometry underneath folded aggregates.
-    ctx.strokeStyle='#8da798';ctx.globalAlpha=.2;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(...project([0,0]));
+    ctx.strokeStyle='#8da798';ctx.globalAlpha=.2;ctx.lineWidth=u;ctx.beginPath();ctx.moveTo(...project([0,0]));
     for(const segment of segments)ctx.lineTo(...project(segment.to));ctx.stroke();ctx.globalAlpha=1;
     const anchor=segments.find(s=>s.items[0].meta===active)?.from;
     if(active&&anchor){
       const at=project(anchor),radius=unit*active.magnitude;
-      ctx.strokeStyle=frame.colour(active.source.p);ctx.globalAlpha=.25;ctx.lineWidth=1;
+      ctx.strokeStyle=frame.colour(active.source.p);ctx.globalAlpha=.25;ctx.lineWidth=u;
       ctx.beginPath();ctx.arc(at[0],at[1],radius,0,2*Math.PI);ctx.stroke();ctx.globalAlpha=1;
     }
     const drawn=drawArm(ctx,visible,progress,{project,colour:item=>item.meta.source.q===this.activeQ||item.meta.source.p===selectedPrime?frame.highlightColour(item.meta.source.p):frame.colour(item.meta.source.p),highlighted:item=>item.meta.source.q===this.activeQ});
     this.hits=drawn.hits;
-    const tip=project(drawn.tip);ctx.fillStyle='#e9be67';ctx.beginPath();ctx.arc(tip[0],tip[1],4,0,2*Math.PI);ctx.fill();
-    ctx.font='12px ui-monospace';ctx.fillText(progress<.999?'partial L':'L',tip[0]+9,tip[1]-9);
-    if(active){const segment=segments.find(s=>s.items[0].meta===active)!;const at=project(segment.to);ctx.fillStyle=frame.highlightColour(active.source.p);ctx.fillText('q='+active.source.q,at[0]+8,at[1]+18);}
+    const tip=project(drawn.tip);ctx.fillStyle='#e9be67';ctx.beginPath();ctx.arc(tip[0],tip[1],4*u,0,2*Math.PI);ctx.fill();
+    plotFont(ctx,12);ctx.fillText(progress<.999?'partial L':'L',tip[0]+9*u,tip[1]-9*u);
+    if(active){const segment=segments.find(s=>s.items[0].meta===active)!;const at=project(segment.to);ctx.fillStyle=frame.highlightColour(active.source.p);ctx.fillText('q='+active.source.q,at[0]+8*u,at[1]+18*u);}
     ctx.restore();
     const folded=visible.filter(s=>s.items.length>1).reduce((a,s)=>a+s.items.length,0);
     return {model,active,folded,replaying:progress<.999,tip:drawn.tip};

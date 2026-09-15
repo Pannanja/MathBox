@@ -1,0 +1,100 @@
+/* The workspace owns layout; legacy numeric controls may remain parked. */
+#clockApp.redesigned{--plate:#0b1511;--ivory:#eee9da;--dim:#b4c3b8;--brass:#e0bd76;--serif:Georgia,serif;--mono:ui-sans-serif,system-ui,sans-serif;font:14px/1.45 var(--mono);color:var(--ivory)}
+.redesigned *, .redesigned *::before,.redesigned *::after{box-sizing:border-box}
+.redesigned [hidden]{display:none!important}
+.redesigned button,.redesigned input,.redesigned select,.redesigned summary{font:inherit;color:inherit}
+.redesigned button{border:1px solid #78958442;border-radius:7px;background:transparent;padding:7px 11px;cursor:pointer;white-space:nowrap;min-height:34px}
+.redesigned button:hover{background:#9ac9ac13;border-color:#a7c7b27a}
+.redesigned button:disabled{opacity:.4;cursor:default}
+.redesigned button:focus-visible,.redesigned summary:focus-visible,.redesigned input:focus-visible,.redesigned select:focus-visible{outline:2px solid #e0bd76;outline-offset:3px}
+.redesigned .text-button{border-color:transparent;color:var(--dim)}
+.redesigned .icon-button{display:inline-grid;place-items:center;width:36px;padding:6px}
+.redesigned svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.redesigned .icon-button.muted{opacity:.5}
+.redesigned input[type=number],.redesigned select{background:#15271e;border:1px solid #78958466;border-radius:5px;padding:6px 8px;min-width:0;font-variant-numeric:tabular-nums}
+.redesigned input[type=range]{accent-color:#b2cbb8;min-width:0;cursor:pointer}
+#workspaceShell{position:absolute;inset:0;display:grid;grid-template-columns:var(--split,50%) 10px minmax(0,1fr);grid-template-rows:minmax(0,1fr) 54px;padding:0 20px;gap:0;overflow:hidden}
+#workspaceShell[data-layout=clock]{grid-template-columns:minmax(0,1fr) 14px 0}
+#workspaceShell[data-layout=explorer]{grid-template-columns:0 14px minmax(0,1fr)}
+.redesigned .workspace{min-width:0;min-height:0;position:relative;display:flex;flex-direction:column;overflow:hidden}
+.redesigned .workspace-title{height:66px;min-height:66px;display:flex;align-items:center;justify-content:center;gap:16px;position:relative;padding:0 100px}
+.redesigned .workspace-title h1{font:normal clamp(21px,2vw,29px) var(--serif);margin:0;white-space:nowrap}
+.redesigned .workspace-actions{position:absolute;right:8px;display:flex;align-items:center;gap:3px}
+.redesigned .small-disclosure{border:0;width:20px;min-width:0;padding:4px}
+#riemannHelp{position:absolute;right:8px}
+#workspaceDivider{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;cursor:col-resize;touch-action:none;z-index:4;border-right:1px solid #6f8a7922}
+#workspaceDivider i{height:48px;width:3px;background:#a4b9ab44;border-radius:2px}
+#workspaceDivider:hover i,#workspaceDivider:focus i{background:#e0bd76}
+#clockWorkspace{grid-column:1;grid-row:1}#riemannWorkspace{grid-column:3;grid-row:1}
+#workspaceSwitch{grid-column:1/-1;grid-row:2;display:flex;align-items:center;justify-content:center;gap:4px;border-top:1px solid #6f8a7922}
+#workspaceSwitch button{border:0;font-size:13px;color:var(--dim);padding:7px 16px}
+#workspaceSwitch [aria-pressed=true]{color:var(--brass);background:#e0bd7610}
+#clockSurface{flex:1;position:relative;min-height:80px}
+#clockApp.redesigned #clockStage{position:absolute;inset:0}
+#clockApp.redesigned #clockStage>#cv{left:50%;top:50%;width:var(--clock-size,600px);height:var(--clock-size,600px);transform:translate(-50%,-50%)}
+#clockApp.redesigned #clockTransport{position:relative;display:flex;align-items:center;justify-content:center;gap:20px;min-height:116px;padding:8px 12px}
+#clockApp.redesigned #transportCorner{position:static;max-width:none;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px 20px}
+#clockApp.redesigned .compact-count{grid-column:1;grid-row:1;flex-direction:column;align-items:flex-start;gap:0;min-width:60px}
+#clockApp.redesigned #now{font:28px/1.2 var(--mono);font-variant-numeric:tabular-nums}
+#clockApp.redesigned #fac{font:12px var(--mono);max-width:180px}
+#clockApp.redesigned #transportCorner .transport{grid-column:2;grid-row:1;margin:0;gap:5px}
+#clockApp.redesigned #transportCorner .transport button{font:14px var(--mono);padding:7px 10px}
+#clockApp.redesigned #transportCorner .scrubber{grid-column:1/-1;grid-row:2;width:100%;font:12px var(--mono);padding:0;background:none}
+#clockApp.redesigned #clockObserve{font-size:13px}
+#clockTape{position:relative;min-height:69px;padding:0 16px;overflow:hidden}
+#clockApp.redesigned #originalProof{position:relative;left:auto!important;top:auto!important;width:100%;max-width:min(100%,940px);margin:0 auto;transform:none;pointer-events:auto}
+#clockApp.redesigned .proof .work{height:42px;transform:none!important;display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr);--counter-turn:0deg!important}
+#clockApp.redesigned .proof #tape,#clockApp.redesigned .proof .rhs,#clockApp.redesigned #factorWindow{height:42px;overflow:hidden}
+#clockApp.redesigned .proof #tape{width:100%}
+#clockApp.redesigned .proof #strip{top:9px}
+#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font:14px/24px var(--mono)}
+#clockApp.redesigned .proof .fx{cursor:pointer}
+#clockApp.redesigned .term-ink,#clockApp.redesigned .factor-ink{text-decoration:none!important}
+#clockApp.redesigned .proof #pf{top:50%}
+#clockApp.redesigned .proof #factorWindow{max-width:100%}
+#clockApp.redesigned .proof .dead{text-decoration:none!important;opacity:.36}
+#clockApp.redesigned .proof #tapeDomain{font:12px/1.5 var(--mono);min-height:18px;padding:0;margin:0;color:#9eb6a7}
+#clockApp.redesigned .proof .zeta-symbol{font:16px var(--serif)}
+#clockApp.redesigned .proof .product-dots{font:20px var(--serif);transform:none}
+#clockApp.redesigned #linkedReadout{display:none}
+#clockApp.redesigned #riemannContent{min-height:0;flex:1;display:flex}
+#clockApp.redesigned #productBubble.explorer-surface{position:relative;inset:auto;display:flex;flex-direction:column;gap:8px;width:100%;height:100%;min-height:0;max-height:none;padding:0 14px 8px;border:0;border-radius:0;background:none;box-shadow:none;margin:0;overflow:hidden}
+#clockApp.redesigned #constructionChooser{position:relative;flex-shrink:0;border:0;padding:0;z-index:3}
+#clockApp.redesigned #constructionChooser>summary{display:list-item;cursor:pointer;font-size:15px;color:#e0bd76;padding:7px 10px;list-style-position:inside;border-bottom:1px solid #8ca79433}
+#clockApp.redesigned #paperViews{position:absolute;top:42px;left:0;right:0;max-height:55vh;overflow:auto;display:block;background:#14231c;border:1px solid #71897b66;border-radius:9px;padding:12px;box-shadow:0 12px 30px #0008}
+#clockApp.redesigned .paper-view-row{display:grid;gap:5px;grid-template-columns:1fr}
+#clockApp.redesigned .paper-view-row>span{font:12px var(--mono);padding:8px 0;color:var(--dim)}
+#clockApp.redesigned .paper-view-row button{font:14px var(--mono);text-align:left;white-space:normal;padding:8px 12px}
+#clockApp.redesigned .paper-view-row small{display:block;font-size:12px;color:var(--dim);margin-top:3px}
+#clockApp.redesigned #graphSurface{flex:1;min-height:120px;display:grid;grid-template-columns:minmax(0,1fr) 50px;grid-template-rows:minmax(0,1fr) 50px;position:relative}
+#clockApp.redesigned #productGraph{grid-column:1;grid-row:1;min-height:0;width:100%;height:100%;aspect-ratio:auto;object-fit:fill;touch-action:none}
+#clockApp.redesigned .axis-control{display:flex;align-items:center;gap:8px;font-size:13px;position:relative;padding:0}
+#clockApp.redesigned #sigmaControl{grid-column:1;grid-row:2;padding:0 8px}
+#clockApp.redesigned #tauControl{grid-column:2;grid-row:1;flex-direction:column;justify-content:center;padding:12px 0}
+#clockApp.redesigned #sigmaControl input[type=range]{width:auto!important;flex:1}
+#clockApp.redesigned #tauControl input[type=range]{writing-mode:vertical-lr!important;direction:rtl!important;width:7px!important;height:auto!important;flex:1}
+#clockApp.redesigned .axis-control input[type=number]{font:13px var(--mono);height:30px;width:85px;padding:4px}
+#clockApp.redesigned #tauControl input[type=number]{width:49px;font-size:12px}
+#clockApp.redesigned .domain-caption{display:none}
+#clockApp.redesigned #exploreDock{display:flex;flex-direction:column;gap:4px;padding:0;border:0}
+#clockApp.redesigned #exploreToolbar{display:flex;flex-wrap:wrap;gap:5px}
+#clockApp.redesigned #exploreToolbar button{font:13px var(--mono);min-height:32px;padding:5px 8px}
+#clockApp.redesigned #liveCurveState,#clockApp.redesigned #locusStatus{font:12px/1.4 var(--mono);color:var(--dim);margin:0;text-align:left}
+#clockApp.redesigned .inspector{flex:0 1 42%;min-height:0;overflow:auto;border-top:1px solid #8ca79444;background:#122019;padding:14px 18px;overscroll-behavior:contain}
+#clockApp.redesigned .inspector-page{position:static;inset:auto;width:100%;height:auto;max-height:none;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;background:none;overflow:visible;font:14px/1.55 var(--mono)}
+#clockApp.redesigned .inspector-page p{font:14px/1.55 var(--mono);margin:10px 0;color:#bfcec4}
+#clockApp.redesigned .inspector-page .bubble-head{font:16px var(--mono);margin:0 0 10px;position:sticky;top:-14px;background:#122019;padding:8px 0;z-index:2}
+#clockApp.redesigned .inspector-page label.field{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;margin:12px 0}
+#clockApp.redesigned .inspector-page label.check{display:flex;justify-content:flex-start;align-items:center;gap:9px;font-size:14px;margin:10px 0}
+#clockApp.redesigned .inspector-page input[type=range]{width:100%;height:18px}
+#clockApp.redesigned .inspector-page .small-note{font-size:12px}
+#clockApp.redesigned .inspector-page button{font-size:14px}
+#clockApp.redesigned .view-equation{font:17px/1.8 'Cambria Math',Georgia,serif;background:#0b1511;padding:12px;overflow-wrap:anywhere}
+#clockApp.redesigned #spectrumPreview{display:flex;gap:4px}#spectrumPreview i{flex:1;height:8px;border-radius:4px}
+#clockApp.redesigned #psiExplanation{font-size:13px}
+#clockApp.redesigned #viewHelp .view-equation{font-size:17px}
+#clockApp.redesigned #clockConnector{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;stroke:#b7c8bc3b;stroke-width:1;z-index:0}
+@media(min-width:1050px){#clockWorkspace:has(.inspector:not([hidden])){padding-right:300px}#clockApp.redesigned #clockInspector{position:absolute;right:0;top:66px;bottom:10px;width:286px;max-height:none;border:1px solid #8ca79433;border-radius:10px}#workspaceShell[data-layout=both] #clockWorkspace:has(.inspector:not([hidden])){padding-right:0}#workspaceShell[data-layout=both] #clockInspector{position:static;width:auto;max-height:42%;border:0;border-top:1px solid #8ca79444;border-radius:0}}
+@media(max-width:800px){#workspaceShell{padding:0 8px;grid-template-columns:minmax(0,1fr) 8px 0!important}#workspaceShell[data-layout=both],#workspaceShell[data-layout=explorer]{grid-template-columns:0 8px minmax(0,1fr)!important}#workspaceShell[data-layout=both] #clockWorkspace{visibility:hidden}.redesigned .workspace-title{height:58px;min-height:58px;padding:0 80px 0 8px}.redesigned .workspace-title h1{font-size:22px}#clockApp.redesigned #clockTransport{padding:8px 0;gap:4px}#clockApp.redesigned #transportCorner{gap:6px}#clockApp.redesigned #fac{max-width:105px}#clockApp.redesigned #clockObserve{position:absolute;right:4px;bottom:3px}#clockApp.redesigned #transportCorner .scrubber{padding-right:65px}#clockApp.redesigned #clockTape{padding:0 2px}#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font-size:12px}#clockApp.redesigned #clockTransport .transport button{padding:6px 8px}#clockApp.redesigned #clockSurface{min-height:80px}#clockApp.redesigned #productBubble.explorer-surface{padding:0 0 8px}#workspaceSwitch button{padding:7px 10px}#clockApp.redesigned #clockInspector{max-height:42%}}
+@media(max-height:540px){.redesigned .workspace-title{height:45px;min-height:45px}.redesigned .workspace-title h1{font-size:20px}#workspaceShell{grid-template-rows:minmax(0,1fr) 44px}#clockApp.redesigned #clockTransport{min-height:84px}#clockApp.redesigned #clockTape{min-height:48px}#clockApp.redesigned #tapeDomain{display:none}#clockApp.redesigned #clockSurface{min-height:60px}#clockApp.redesigned #graphSurface{min-height:90px}#clockApp.redesigned #locusStatus{display:none}#clockApp.redesigned #constructionChooser>summary{padding:3px 10px}#clockApp.redesigned .inspector{flex-basis:50%}}
+@media(prefers-reduced-motion:reduce){.redesigned *{scroll-behavior:auto!important}}

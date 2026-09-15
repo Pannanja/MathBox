@@ -49,7 +49,7 @@ paperEquation.textContent=paperViews.euler.description;paperGuideEquation.innerH
 function paperTarget(mode,sigma,tau,n){const gamma=riemannGamma(sigma,tau);if(mode==='term')return mul(gamma,power(n,sigma,tau));if(mode==='finite')return mul(gamma,continuumSum(n,sigma,tau).z);if(mode==='infinite')return mul(gamma,zeta(sigma,tau));if(Math.hypot(sigma-1,tau)<1e-10)return [.5,0];const pref=scale(mul([sigma,tau],[sigma-1,tau]),.5),piWeight=power(Math.PI,sigma/2,tau/2);return mul(mul(pref,riemannGamma(sigma/2,tau/2)),mul(piWeight,zeta(sigma,tau)));}
 function paperComplex(z){return z.every(Number.isFinite)?z[0].toPrecision(5)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toPrecision(5)+'i':'outside numeric range';}
 paperSelector.onchange=()=>{paperMode=paperSelector.value;updatePaperNavigation();paperEquation.textContent=paperViews[paperMode].description;paperGuideEquation.innerHTML=paperFormulas[paperMode];paperData=null;paperProgress=0;paperProgressAim=0;paperPlaying=!['euler','log','xiarm'].includes(paperMode);if(['log','xiarm'].includes(paperMode))paperProgress=paperProgressAim=1;paperRewinding=false;paperFitPending=false;paperRequested='';paperWorker?.terminate();paperWorker=null;productHitPoints=[];};
-$('paperTrace').onclick=()=>{if(paperMode==='euler'){paperSelector.value='term';paperSelector.onchange();}else{paperProgressAim=0;paperPlaying=false;paperRewinding=true;}$('exploreOptions').hidePopover();};
+$('paperTrace').onclick=()=>{if(paperMode==='euler')return;paperProgressAim=0;paperPlaying=false;paperRewinding=true;$('exploreOptions').hidePopover();};
 $('paperScrub').oninput=e=>{paperPlaying=false;paperRewinding=false;paperProgressAim=+e.target.value;};
 function requestPaper(){if(['log','xiarm'].includes(paperMode))return;const n=Math.max(1,Math.floor(t)),key=[paperMode,sigmaAim,tauAim,paperMode==='term'||paperMode==='finite'?n:0].join('/'),now=performance.now();if(key!==paperKey){paperKey=key;paperChanged=now;paperRequested='';paperWorker?.terminate();paperWorker=null;}if(key===paperRequested||now-paperChanged<50)return;paperRequested=key;
  if(Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit||(paperMode==='infinite'&&sigmaAim<=1)){paperData={key,...riemannIntegrate({mode:paperMode,sigma:sigmaAim,tau:tauAim,n})};return;}
@@ -66,7 +66,7 @@ function tickPaperProgress(dt,ease,canPlay){if(canPlay&&paperRewinding&&paperPro
 const normalProductGraph=drawProductGraph;
 drawProductGraph=function(){if(paperMode==='euler'){normalProductGraph();return;}if(!$('productBubble').matches(':popover-open'))return;
  requestPaper();const now=performance.now(),dt=Math.min(.05,(now-paperLast)/1000),ease=1-Math.exp(-dt*12);paperLast=now;graphLastMs=now;graphCentre=graphCentre.map((v,k)=>v+(graphCentreAim[k]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
- const ctx=plane.getContext('2d'),extent=10**graphLogExtent,u=125/extent,X=z=>300+u*(z[0]-graphCentre[0]),Y=z=>150-u*(z[1]-graphCentre[1]);ctx.clearRect(0,0,600,300);ClockMath.drawComplexPlane(ctx,graphCentre,extent);productHitPoints=[];
+ const ctx=plane.getContext('2d'),extent=10**graphLogExtent,u=125/extent,X=z=>300+u*(z[0]-graphCentre[0]),Y=z=>150-u*(z[1]-graphCentre[1]);const bounds=ClockMath.plotBounds(ctx.canvas);ctx.clearRect(0,bounds.top,600,bounds.height);ClockMath.drawComplexPlane(ctx,graphCentre,extent,bounds);productHitPoints=[];
  if(paperMode==='log'){
   tickPaperProgress(dt,ease,true);
   logArmReadout=logArmScene.draw(ctx,{input:{sigma:SIGMA,tau:TAUV},time:t,selectedPrime,progress:paperProgress,centre:graphCentre,extent,compact:$('foldArmTerms').checked,colour:factorColour,highlightColour:primeHighlight});
@@ -77,13 +77,13 @@ drawProductGraph=function(){if(paperMode==='euler'){normalProductGraph();return;
  }
  if(paperMode==='xiarm'){drawXiArm(ctx,extent,dt,ease);return;}
  const current=paperData?.key===paperKey,settled=current&&paperData.valid&&Math.abs(SIGMA-paperData.sigma)<1e-4&&Math.abs(TAUV-paperData.tau)<1e-4;
- if(current&&!paperData.valid){ctx.fillStyle='#dcb884';ctx.font='14px ui-sans-serif';const lines=Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit?['This view resolves |τ| ≤ '+ClockMath.viewDomain(paperMode).tauLimit+'.','The Euler explorer still supports |τ| ≤ 1000.']:paperMode==='infinite'&&sigmaAim<=1?['The integral fails at its lower endpoint.','For σ ≤ 1, choose Finite sum or Symmetry.']:[paperData.reason,'Try another input or return to Euler.'];lines.forEach((line,i)=>ctx.fillText(line,65,130+i*25));$('productDetails').textContent=paperData.reason;$('productStatus').textContent='No integral endpoint was calculated.';return;}
+ if(current&&!paperData.valid){ctx.fillStyle='#dcb884';const nu=ClockMath.plotFont(ctx,14,'ui-sans-serif');const lines=Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit?['This view resolves |τ| ≤ '+ClockMath.viewDomain(paperMode).tauLimit+'.','The Euler explorer still supports |τ| ≤ 1000.']:paperMode==='infinite'&&sigmaAim<=1?['The integral fails at its lower endpoint.','For σ ≤ 1, choose Finite sum or Symmetry.']:[paperData.reason,'Try another input or return to Euler.'];lines.forEach((line,i)=>ctx.fillText(line,40*nu,150+(i-lines.length/2+1)*22*nu));$('productDetails').textContent=paperData.reason;$('productStatus').textContent='No integral endpoint was calculated.';return;}
  if(!paperData?.valid){$('productDetails').textContent='Computing the integral independently…';$('productStatus').textContent='';return;}
  const d=paperData.rows;tickPaperProgress(dt,ease,settled);
  const stopLength=paperProgress*paperData.length;let stop=0;while(stop+4<d.length&&d[stop+7]<stopLength)stop+=4;
  const next=Math.min(stop+4,d.length-4),den=d[next+3]-d[stop+3],f=den>0?Math.max(0,Math.min(1,(stopLength-d[stop+3])/den)):1,point=[d[stop+1]+f*(d[next+1]-d[stop+1]),d[stop+2]+f*(d[next+2]-d[stop+2])],xValue=d[stop]+f*(d[next]-d[stop]);
- ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();ctx.globalAlpha=settled?1:.2;ctx.strokeStyle='#87bff23a';ctx.lineWidth=1.4;ctx.beginPath();for(let i=0;i<d.length;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.stroke();ctx.strokeStyle='#87bff2';ctx.lineWidth=2.6;ctx.beginPath();for(let i=0;i<=stop;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(point),Y(point));ctx.stroke();ctx.fillStyle='#9bcff8';ctx.beginPath();ctx.arc(X(point),Y(point),4,0,7);ctx.fill();
- const target=paperData.target??=paperTarget(paperMode,paperData.sigma,paperData.tau,paperData.n);ctx.strokeStyle='#e9be67';ctx.lineWidth=2;ctx.beginPath();ctx.arc(X(target),Y(target),6,0,7);ctx.stroke();ctx.restore();
+ ctx.save();const su=ClockMath.clipPlot(ctx).scale;ctx.globalAlpha=settled?1:.2;ctx.strokeStyle='#87bff23a';ctx.lineWidth=1.4*su;ctx.beginPath();for(let i=0;i<d.length;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.stroke();ctx.strokeStyle='#87bff2';ctx.lineWidth=2.6*su;ctx.beginPath();for(let i=0;i<=stop;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(point),Y(point));ctx.stroke();ctx.fillStyle='#9bcff8';ctx.beginPath();ctx.arc(X(point),Y(point),4*su,0,7);ctx.fill();
+ const target=paperData.target??=paperTarget(paperMode,paperData.sigma,paperData.tau,paperData.n);ctx.strokeStyle='#e9be67';ctx.lineWidth=2*su;ctx.beginPath();ctx.arc(X(target),Y(target),6*su,0,7);ctx.stroke();ctx.restore();
  $('productDetails').textContent='Integral endpoint '+paperComplex(paperData.endpoint)+'; independent target '+paperComplex(target)+'.';
  $('productStatus').textContent='Endpoint gap '+abs(sub(paperData.endpoint,target)).toExponential(2)+' · numerical estimate '+(paperData.estimatedQuadratureError+paperData.estimatedRoundoffError).toExponential(1)+' · omitted-tail bound '+paperData.omittedBound.toExponential(1)+'.';
  $('productExtent').textContent='±'+extent.toPrecision(2);paperData.displayX=xValue;
@@ -111,8 +111,8 @@ planeNotes.insertAdjacentHTML('beforeend','<p>The prime-power arm shows L=Σ g_q
 
 function drawXiArm(ctx,extent,dt,ease){
  if(!xiInputValid()){
-  xiArmReadout=null;xiArmScene.invalidate();ctx.fillStyle='#dcb884';ctx.font='14px ui-sans-serif';
-  ctx.fillText('The ξ arm resolves 0.2 ≤ σ ≤ 3, |τ| ≤ 15.',55,130);ctx.fillText('Move s into this window, or return to Euler.',55,155);
+  xiArmReadout=null;xiArmScene.invalidate();ctx.fillStyle='#dcb884';const xu=ClockMath.plotFont(ctx,14,'ui-sans-serif');
+  ctx.fillText('The ξ arm resolves 0.2 ≤ σ ≤ 3, |τ| ≤ 15.',40*xu,150-11*xu);ctx.fillText('Move s into this window, or return to Euler.',40*xu,150+11*xu);
   $('productDetails').textContent='No paired endpoint is shown outside the validated window.';$('productStatus').textContent='The Euler explorer retains its wider τ range.';return;
  }
  tickPaperProgress(dt,ease,true);

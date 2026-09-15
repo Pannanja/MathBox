@@ -3,6 +3,7 @@ import { xiArm } from '../math/xi-arm';
 import type { XiArmModel, XiVector } from '../math/xi-arm';
 import { drawArm, foldArm, layoutArm, segmentDistance } from '../render/arm';
 import type { ArmSegment } from '../render/arm';
+import { clipPlot, plotFont } from '../render/viewport';
 
 interface Frame {
   input: ComplexInput; target: Complex; progress: number; centre: Complex; extent: number;
@@ -70,21 +71,21 @@ export class XiArmScene {
     for(const term of model.terms)if(Math.abs(term.source.index-active)<=1||this.extra.has(term.source.index))expanded.add(term.id);
     const visible=frame.compact?foldArm(segments,expanded):segments,unit=125/extent;
     const project=(z: Complex): Complex=>[300+unit*(z[0]-centre[0]),150-unit*(z[1]-centre[1])];
-    ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
-    ctx.strokeStyle='#91afbe';ctx.globalAlpha=.24;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(...project([0,0]));
+    ctx.save();const u=clipPlot(ctx).scale;
+    ctx.strokeStyle='#91afbe';ctx.globalAlpha=.24;ctx.lineWidth=u;ctx.beginPath();ctx.moveTo(...project([0,0]));
     for(const segment of segments)ctx.lineTo(...project(segment.to));ctx.stroke();ctx.globalAlpha=1;
     for(const segment of segments)if(segment.items[0].meta.source.index===active){
       const term=segment.items[0].meta,at=project(segment.from);
-      ctx.strokeStyle=colour(term.source.direction);ctx.globalAlpha=.4;ctx.lineWidth=1;
+      ctx.strokeStyle=colour(term.source.direction);ctx.globalAlpha=.4;ctx.lineWidth=u;
       ctx.beginPath();ctx.arc(at[0],at[1],unit*term.magnitude,0,2*Math.PI);ctx.stroke();ctx.globalAlpha=1;
     }
     const drawn=drawArm(ctx,visible,progress,{project,colour:item=>colour(item.meta.source.direction),highlighted:item=>item.meta.source.index===active});
     this.hits=drawn.hits;
     const tip=project(drawn.tip),goal=project(target);
-    ctx.fillStyle='#a9d8f2';ctx.beginPath();ctx.arc(tip[0],tip[1],3,0,2*Math.PI);ctx.fill();
-    ctx.strokeStyle='#e9be67';ctx.lineWidth=2;ctx.beginPath();ctx.arc(goal[0],goal[1],6,0,2*Math.PI);ctx.stroke();
-    ctx.font='12px ui-monospace';ctx.fillStyle='#e9be67';ctx.fillText('ξ',goal[0]+10,goal[1]-10);
-    if(progress<.999){ctx.fillStyle='#a9d8f2';ctx.fillText('partial',tip[0]+8,tip[1]+17);}
+    ctx.fillStyle='#a9d8f2';ctx.beginPath();ctx.arc(tip[0],tip[1],3*u,0,2*Math.PI);ctx.fill();
+    ctx.strokeStyle='#e9be67';ctx.lineWidth=2*u;ctx.beginPath();ctx.arc(goal[0],goal[1],6*u,0,2*Math.PI);ctx.stroke();
+    plotFont(ctx,12);ctx.fillStyle='#e9be67';ctx.fillText('ξ',goal[0]+10*u,goal[1]-10*u);
+    if(progress<.999){ctx.fillStyle='#a9d8f2';ctx.fillText('partial',tip[0]+8*u,tip[1]+17*u);}
     ctx.restore();
     return {model,active:model.terms.filter(t=>t.source.index===active),foldedPairs:visible.filter(s=>s.items.length>1).reduce((a,s)=>a+s.items.length/2,0),tip:drawn.tip};
   }

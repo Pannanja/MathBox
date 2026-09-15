@@ -3,8 +3,6 @@ let snapMode='integer',pitchMultiplier=20,displayDepth=.42,weightBrightness=fals
 // The beat and the primes keep independent levels; the beat opens quiet and low.
 function mixLevel(bus,value){if(bus)bus.gain.setTargetAtTime(value,ctx.currentTime,.03);}
 let workspaceLayout='clock';const graphBounds={top:0,bottom:300,height:300};
-// The tape is a horizontal rail in every composition, reflected clock included.
-window.tapeUpright=false;
 function matchedBeat(value,direction=0){
  if(snapMode==='free')return Math.max(1,Math.min(limit,value));
  const matches=n=>snapMode==='integer'||snapMode==='prime'&&isPrime(n)||snapMode==='twin'&&isPrime(n-1)&&isPrime(n+1);
@@ -34,32 +32,33 @@ function drawPaneLabel(q,r,a){
 function beamReveal(){return Math.max(0,Math.min(1,t-1));}
 function drawJRadius(){if(!jRadiusOn)return;const j=jValue(t),ratio=j/t,angle=Math.PI*.72,dx=Math.cos(angle),dy=Math.sin(angle);g2.save();g2.setTransform(1,0,0,1,0,0);g2.strokeStyle='#a8c7b666';g2.lineWidth=1;g2.setLineDash([3,6]);g2.beginPath();g2.moveTo(C,C);g2.lineTo(C+R*dx,C+R*dy);g2.stroke();g2.setLineDash([]);g2.strokeStyle='#a8c7b6';g2.lineWidth=2;g2.beginPath();g2.moveTo(C,C);g2.lineTo(C+R*ratio*dx,C+R*ratio*dy);g2.stroke();g2.fillStyle='#bad8c7';g2.beginPath();g2.arc(C+R*ratio*dx,C+R*ratio*dy,4,0,7);g2.fill();g2.font='16px system-ui';g2.textAlign='center';g2.fillText('J = '+j.toFixed(2),C+R*.75*dx,C+R*.75*dy+24);g2.restore();}
 function resizeWorkspace(){
- const surface=$('clockSurface');if(!surface)return;const b=surface.getBoundingClientRect(),diameter=Math.max(30,Math.min(b.width,b.height)*.90);surface.style.setProperty('--clock-size',diameter+'px');
+ const surface=$('clockSurface');if(!surface)return;const b=surface.getBoundingClientRect();
+ // Reserve a gutter for the docked tape's upright ink and slide the clock off
+ // centre by half of it, so the dial and the equation share the surface.
+ const gutter=Math.min(132,b.width*.24),diameter=Math.max(30,Math.min(b.width-gutter,b.height)*.94);
+ surface.style.setProperty('--clock-size',diameter+'px');
+ surface.style.setProperty('--clock-shift',(-gutter/2)+'px');
+ surface.style.setProperty('--tape-span',Math.max(220,Math.min(560,b.height-48))+'px');
+ surface.style.setProperty('--tape-thick',(innerWidth<=650?56:80)+'px');
+ dockTape();
  ClockMath.resizePlot(plane,[locusRaster,locusBackdrop]);Object.assign(graphBounds,ClockMath.plotBounds(plane));
  locusRasterKey='';backdropState.key='';
 }
 graphPlotRect=function(canvas){const b=canvas.getBoundingClientRect(),unit=b.width/600;return {left:b.left,top:b.top-graphBounds.top*unit,width:b.width,height:300*unit};};
-// Dock the rail to the meeting ray. The equals sign sits under the point where
-// the beam leaves the rim, joined by the rim's own tangent, so a term is absorbed
-// at the instant the beat crosses the beam.
+// Dock the tape to the meeting ray: the equals sign sits on the beam just
+// outside the rim and the strip turns with the reflection, so the term arriving
+// at the equals sign is the beat crossing the beam. Ink counter-rotates upright.
 dockTape=function(){
- const proof=$('originalProof'),work=proof&&proof.querySelector('.work'),path=$('clockConnectorPath');
- if(!work||!path)return;
- const frame=$('cv').getBoundingClientRect(),box=proof.getBoundingClientRect(),host=$('clockWorkspace').getBoundingClientRect();
- if(frame.width<2||box.width<2||workspaceLayout==='explorer'){path.removeAttribute('d');return;}
- const u=(1-Math.cos(Math.PI*reflectionMix))/2,r=R/W*frame.width;
- const exitX=frame.left+frame.width/2+u*r,exitY=frame.top+frame.height/2-(1-u)*r;
- // Dock exactly where the rail is wide enough; otherwise reserve room for the
- // product and let the connector show the offset instead of hiding it.
- // Dock the equals sign under the beam only while the product still has room to
- // read. Otherwise keep the balanced split and let the connector carry the offset.
- const lead=exitX-box.left-16,room=box.width-lead;
- if(lead>48&&room>=260)work.style.setProperty('--tape-lead',lead+'px');
- else work.style.removeProperty('--tape-lead');
- const eq=$('equals').getBoundingClientRect(),x=eq.left+eq.width/2-host.left,top=eq.top-host.top-2;
- const ray=exitX-host.left,turn=top-Math.min(18,Math.max(6,Math.abs(x-ray)));
- path.setAttribute('d','M'+ray+' '+(exitY-host.top)+'V'+turn+'H'+x+'V'+top);
- path.setAttribute('stroke',factorColour(Math.floor(t)));
+ const proof=$('originalProof'),work=proof&&proof.querySelector('.work');
+ if(!work)return;
+ const c=$('cv').getBoundingClientRect(),visible=c.width>2&&workspaceLayout!=='explorer';
+ proof.hidden=!visible;if(!visible)return;
+ const u=(1-Math.cos(Math.PI*reflectionMix))/2,angle=Math.atan2(u,1-u)*180/Math.PI;
+ const r=R/W*c.width,cx=c.left+c.width/2,cy=c.top+c.height/2,gap=innerWidth<=650?18:30;
+ proof.style.left=(cx+u*(r+gap))+'px';
+ proof.style.top=(cy-(1-u)*(r+gap))+'px';
+ work.style.transform='rotate('+(-angle)+'deg)';
+ work.style.setProperty('--counter-turn',angle+'deg');
 };
 const workspace=ClockMath.mountWorkspace({
  read:()=>({time:t,target:clockTween?.to??t,mode:paperMode,sound:soundOn,selected:selectedPrime,sigma:SIGMA,tau:TAUV,j:jValue(t)}),

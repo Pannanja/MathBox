@@ -21,12 +21,12 @@ export function mountWorkspace(actions:WorkspaceActions){
  const shell=document.createElement('div');shell.id='workspaceShell';shell.dataset.layout='clock';
  shell.innerHTML=`<section id="clockWorkspace" class="workspace" aria-label="Clock of Primes">
  <header class="workspace-title"><h1>Clock of Primes</h1><div class="workspace-actions"><span id="soundSlot"></span><button id="levelsButton" class="icon-button" title="Sound & light" aria-label="Sound and light levels">${icon('levels')}</button><button id="appearanceButton" class="icon-button" title="Clock appearance" aria-label="Clock appearance">${icon('layers')}</button></div></header>
- <svg id="clockConnector" aria-hidden="true"><path id="clockConnectorPath" fill="none"/></svg><div id="clockSurface"></div><div id="clockTape"></div><footer id="clockTransport"></footer>
+ <div id="clockSurface"></div><footer id="clockTransport"></footer>
  <aside id="clockInspector" class="inspector" hidden></aside></section>
  <div id="workspaceDivider" role="separator" tabindex="0" aria-label="Resize clock and explorer" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div>
  <section id="riemannWorkspace" class="workspace" aria-label="Riemann explorer"><header class="workspace-title"><h1>Riemann explorer</h1><button id="riemannHelp" class="text-button">Inspect</button></header><div id="riemannContent"></div><aside id="riemannInspector" class="inspector" hidden></aside></section>
  <nav id="workspaceSwitch" aria-label="Workspace"><button data-layout="clock" aria-pressed="true">Clock</button><button data-layout="both" aria-pressed="false">Both</button><button data-layout="explorer" aria-pressed="false">Riemann explorer <span aria-hidden="true">↗</span></button></nav>`;
- app.append(shell);el('clockSurface').append(clockStage);el('clockTape').append(el('originalProof'));el('clockTransport').append(el('transportCorner'));
+ app.append(shell);el('clockSurface').append(clockStage,el('originalProof'));el('clockTransport').append(el('transportCorner'));el('clockWorkspace').insertBefore(el('tapeDomain'),el('clockTransport'));
  const panels=new Map<string,{node:HTMLElement;owner:string}>();let openClock='',openRiemann='';
  const close=(owner:string)=>{const id=owner==='clock'?openClock:openRiemann;if(id){const entry=panels.get(id)!;entry.node.hidden=true;entry.node.dataset.open='false';}el(owner+'Inspector').hidden=true;if(owner==='clock')openClock='';else openRiemann='';actions.resize();};
  const open=(id:string)=>{const entry=panels.get(id);if(!entry)return;const {owner,node}=entry;if((owner==='clock'?openClock:openRiemann)===id){close(owner);return;}close(owner);el(owner+'Inspector').append(node);node.hidden=false;node.dataset.open='true';el(owner+'Inspector').hidden=false;el(owner+'Inspector').scrollTop=0;if(owner==='clock')openClock=id;else openRiemann=id;actions.resize();};

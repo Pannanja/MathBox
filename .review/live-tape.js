@@ -20,7 +20,7 @@ const PR=(()=>{
   // Reserve places for every absorbing prime, then use spare room for recent
   // factors. The remainder stays accumulated in the ellipsis.
   const available=Math.max(48,pf.parentElement.parentElement.clientWidth-44);
-  const upright=window.tapeUpright!==undefined?window.tapeUpright:(typeof reflectionMix!=='undefined'&&reflectionMix>.5);
+  const upright=typeof reflectionMix!=='undefined'&&reflectionMix>.5;
   const shown=active.slice();if(linked&&!shown.includes(linked))shown.push(linked);
   const capacity=Math.max(shown.length,Math.min(5,Math.floor(available/(upright?32:68))));
   for(let i=born.length-1;i>=0&&shown.length<capacity;i--)if(!shown.includes(born[i]))shown.push(born[i]);

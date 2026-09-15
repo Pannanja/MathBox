@@ -91,8 +91,12 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{p
 .complex-input label{margin:0;font:11px var(--mono);white-space:nowrap}
 .complex-input label[for=tauDial]{position:absolute;left:0;top:0}
 .complex-input label[for=sigmaDial]{position:absolute;bottom:28px;left:28px}
+.complex-input label[for=tauExact]{position:absolute;left:28px;top:-3px;width:125px;align-items:center}
+.complex-input label[for=sigmaExact]{position:absolute;left:28px;bottom:28px;width:125px;align-items:center}
+.complex-input input[type=number]{width:104px;min-width:0;padding:2px 3px;font:11px var(--mono);height:22px}
 #complexPad{position:absolute;left:29px;top:22px;width:123px;height:102px;touch-action:none;border:1px solid #61796b;cursor:crosshair;background:linear-gradient(transparent 49.5%,#71897b66 50%,transparent 50.5%)}
 #complexPad::after{content:'σ →';position:absolute;bottom:2px;right:3px;font:10px var(--mono);color:var(--dim)}
+#complexPad{height:90px}
 #complexDot{position:absolute;width:7px;height:7px;background:var(--brass);border-radius:50%;transform:translate(-50%,50%);pointer-events:none}
 .tune-bubble .tune-control,.tune-bubble #zeroShortcut{grid-column:2!important}
 .tune-bubble #zeroShortcut{align-self:start;margin:0}
@@ -101,11 +105,193 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{p
 #productGraph{display:block;width:100%;height:auto;aspect-ratio:600/300;touch-action:none}
 #productDetails,#productStatus{font:11px/1.4 var(--mono);min-height:30px}
 .product-tools{display:flex;gap:7px;align-items:center;font-size:11px}.product-tools button{padding:3px 8px}.product-tools input{max-width:120px}
+.product-tools{gap:4px}.product-tools input{min-width:35px;flex:1}.product-tools output{white-space:nowrap;font-size:10px}
 #psiExplanation{font-size:11px;line-height:1.4;color:var(--dim)}
 @media(max-height:500px){.view-bubble:popover-open{padding-top:7px;padding-bottom:7px}.product-bubble #productGraph{width:224px;height:112px;margin:auto}}
 @media(max-height:500px){.view-bubble:popover-open{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.view-bubble .bubble-head,.view-bubble>p{grid-column:1/-1}.view-bubble #layerButtons{grid-column:1/-1}.view-bubble #orientationButtons{grid-column:1/-1}.view-bubble label[for=radialDial]{grid-column:1;grid-row:4}.view-bubble #rulerSlot{grid-column:1;grid-row:5}.view-bubble label[for=separateDial]{grid-column:2;grid-row:4}.view-bubble #splitSlot{grid-column:2;grid-row:5}.view-bubble .button-row button{padding:3px 8px}}
 @media(max-width:650px) and (min-height:501px){.product-bubble{top:90px}}
 @media(max-height:500px){.tune-bubble:popover-open{width:min(440px,calc(100vw - 28px));gap:0 14px}.complex-input{height:140px}.complex-input #tauDial{height:88px}#complexPad{height:78px}.product-bubble{top:44px;width:min(520px,calc(100vw - 28px));padding:8px 12px}#productGraph{height:112px;aspect-ratio:auto}.product-bubble .bubble-head{margin:0}.product-bubble p{margin:3px 0 0}#productDetails,#productStatus{min-height:0;font-size:10px}.view-bubble{width:min(460px,calc(100vw - 28px))}#psiExplanation{font-size:10px}}
+@media(max-height:500px){#complexPad{height:64px}}
+
+#clockStage>#cv{pointer-events:auto}
+#clockStage .fx{pointer-events:auto;cursor:pointer}
+#clockStage .fx:focus-visible{outline:2px solid var(--brass)}
+#clockStage .linked-term .term-ink,#clockStage .linked-factor .factor-ink{text-shadow:0 0 8px currentColor,0 0 2px white!important;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+#linkedReadout{position:absolute;left:50%;transform:translateX(-50%);top:43px;max-width:calc(100vw - 220px);font:11px/1.4 var(--mono);color:var(--ivory);background:#101c17ed;border-radius:8px;padding:5px 9px;z-index:6;text-align:center;pointer-events:none}
+#clearLink{padding:3px 6px}
+@media(max-width:650px){#linkedReadout{top:83px;max-width:calc(100vw - 24px);width:max-content;font-size:10px}}
+@media(max-height:500px){#linkedReadout{top:40px;font-size:9px;max-width:calc(100vw - 24px)}}
+
+#clockStage>#cv{width:min(49vw,83vh);height:min(49vw,83vh);left:26vw;top:49%}
+#clockStage .proof{width:min(380px,43vw)}
+#productBubble.euler-workspace{inset:62px 14px auto auto;height:calc(100dvh - 180px);width:46vw;max-height:none;padding:14px;box-sizing:border-box}
+#productBubble.euler-workspace:popover-open{display:flex;flex-direction:column;gap:5px}
+#productBubble.euler-workspace #productGraph{width:100%;height:auto;min-height:0;flex:1;object-fit:contain;aspect-ratio:2}
+#eulerInputs{display:flex;gap:18px;align-items:center;justify-content:center;flex-shrink:0}
+#eulerInputs .complex-input{width:270px;height:156px;padding:0;flex-shrink:0}
+#eulerInputs .complex-input #complexPad{left:30px;top:25px;width:236px;height:90px}
+#eulerInputs .complex-input #sigmaDial{left:30px;width:236px;bottom:0}
+#eulerInputs .complex-input #tauDial{top:25px;height:90px}
+#eulerInputs .complex-input label[for=tauExact]{left:30px;top:0;width:236px}
+#eulerInputs .complex-input label[for=sigmaExact]{left:30px;bottom:21px;width:236px}
+#eulerInputs input[type=number]{width:154px;font-size:13px}
+#productBubble .product-tools input{max-width:none}
+#productBubble #productDetails,#productBubble #productStatus,#sectorMeasure{min-height:0;font-size:11px;line-height:1.4;margin:0}
+#sectorMeasure{color:var(--patina);border-top:1px solid var(--edge2);padding-top:6px}
+#linkedReadout{left:25%;max-width:42vw;font-size:10px}
+#clockStage .linked-factor .factor-ink{color:var(--highlight);text-shadow:0 0 8px var(--highlight)!important}
+#clockStage .linked-term .term-ink{text-shadow:0 0 7px currentColor!important;filter:saturate(1.8)}
+@media(max-width:700px) and (min-height:501px){
+ #clockStage>#cv{width:min(69vw,32vh);height:min(69vw,32vh);left:45%;top:22%}
+ #clockStage .proof{width:230px}
+ #productBubble.euler-workspace{top:38%;bottom:auto;height:calc(62dvh - 123px);left:10px;right:10px;width:auto;padding:8px;gap:2px}
+ #productBubble.euler-workspace .bubble-head{margin:0;font-size:12px}
+ #eulerInputs{gap:6px}#eulerInputs .complex-input{width:200px;height:108px}
+ #eulerInputs .complex-input #complexPad{width:168px;height:43px;top:24px}
+ #eulerInputs .complex-input #tauDial{height:43px;top:24px}
+ #eulerInputs .complex-input #sigmaDial,#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{width:168px}
+ #eulerInputs input[type=number]{width:125px;font-size:11px}
+ #productBubble #productStatus,#sectorMeasure,#productBubble #productDetails{font-size:9px;line-height:1.25}
+ #linkedReadout{top:80px;left:50%;max-width:92vw}#zeroShortcut button{font-size:10px;padding:4px}
+}
+@media(max-height:600px) and (min-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:42px;bottom:auto;height:calc(100dvh - 87px);padding:6px;gap:1px;width:57vw;right:6px}
+ #clockStage>#cv{width:37vw;height:37vw;left:20vw}
+ #productBubble.euler-workspace .bubble-head{font-size:11px;margin:0}
+ #eulerInputs{gap:4px}#eulerInputs .complex-input{width:150px;height:74px}
+ #eulerInputs .complex-input #complexPad{width:120px;height:15px;top:21px}
+ #eulerInputs .complex-input #tauDial{height:15px;top:21px}
+ #eulerInputs .complex-input #sigmaDial,#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{width:120px}
+ #eulerInputs input[type=number]{width:99px;font-size:10px;height:19px}
+ #productBubble #productStatus,#sectorMeasure,#productBubble #productDetails{font-size:8px;line-height:1.2}
+ #productBubble .product-tools{gap:2px}#productBubble .product-tools button{font-size:9px;padding:2px 4px}#zeroShortcut button{font-size:9px;padding:2px}
+ #sectorMeasure{padding-top:2px}
+}
+@media(max-height:600px) and (min-aspect-ratio:1/1){
+ #productBubble.euler-workspace:popover-open{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 94px auto auto auto auto;align-content:start;column-gap:4px}
+ #productBubble.euler-workspace .bubble-head,#productBubble .product-tools,#productDetails,#productStatus,#sectorMeasure{grid-column:1/-1}
+ #productBubble.euler-workspace #productGraph{grid-column:1;grid-row:2;width:100%;height:94px;align-self:center}
+ #eulerInputs{grid-column:2;grid-row:2;flex-direction:column;gap:0}
+ #eulerInputs #zeroShortcut{margin:0}#eulerInputs #zeroShortcut button{padding:0;font-size:8px}
+}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:31%;height:calc(69dvh - 123px)}
+ #clockStage>#cv{width:26vh;height:26vh;top:19%}
+ #eulerInputs .complex-input{height:85px}
+ #eulerInputs .complex-input #complexPad,#eulerInputs .complex-input #tauDial{height:21px}
+}
+
+/* An open plotting surface, not a floating dialog. */
+#productBubble.euler-workspace{border:0;border-left:1px solid #8da89a24;border-radius:0;background:linear-gradient(110deg,#10201a44,transparent);box-shadow:none;padding:12px 18px;top:65px;right:0;width:48vw}
+#productBubble.euler-workspace .bubble-head{font:italic 24px Georgia,serif;color:#d6e5da;letter-spacing:.03em;margin:0 0 10px}
+#productBubble.euler-workspace #productGraph{border:0;background:transparent;cursor:grab;touch-action:none;min-height:110px}
+#eulerInputs{justify-content:space-between;gap:8px}
+#eulerInputs .complex-input{width:240px;height:54px;display:flex;gap:12px;align-items:center}
+#eulerInputs .complex-input label[for=sigmaExact],#eulerInputs .complex-input label[for=tauExact]{position:static;width:auto;display:flex;gap:5px;align-items:center}
+#eulerInputs input[type=number]{width:90px}
+#eulerInputs #complexPad,#eulerInputs #sigmaDial,#eulerInputs #tauDial,#eulerInputs #zeroShortcut{display:none}
+#planeActions{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;align-items:center}
+#planeActions label{white-space:nowrap}#planeActions input{accent-color:#bd97df}
+#tauSweep{display:flex;align-items:center;gap:8px;font-size:11px}#tauSweep label{white-space:nowrap}
+#tauSweep input[type=number]{width:48px;background:transparent;border:0;border-bottom:1px solid #819d8a66;color:inherit}
+#tauScrub{flex:1;min-width:35px;accent-color:#bd97df}
+#planeHint{font-size:10px;color:#91a99b;margin:2px 0 8px}
+#productBubble .product-tools{opacity:.85}#productBubble #productRange{display:none}
+#productBubble #productDetails{color:#aac5b7}#productBubble #productStatus{font-size:10px;color:#8fa296}
+@media(max-width:700px) and (min-height:501px){#productBubble.euler-workspace{top:37%;left:8px;right:8px;width:auto;height:calc(63dvh - 125px);padding:6px;border-left:0;border-top:1px solid #8da89a24}#productBubble.euler-workspace .bubble-head{font-size:18px;margin:0}#eulerInputs{flex-wrap:wrap;gap:0}#eulerInputs .complex-input{height:28px;width:100%;justify-content:center}#planeActions{font-size:9px;gap:5px}#planeHint{font-size:8px;margin:0}#tauSweep{gap:3px;font-size:9px}#tauSweep button{font-size:9px;padding:3px}#productBubble #productStatus{font-size:8px}#productBubble.euler-workspace #productGraph{min-height:60px}}
+@media(max-height:600px) and (min-aspect-ratio:1/1){#productBubble.euler-workspace:popover-open{display:flex;gap:1px;width:57vw;top:40px;height:calc(100dvh - 85px);padding:3px 6px}#productBubble.euler-workspace .bubble-head{font-size:14px;margin:0}#productBubble.euler-workspace #productGraph{height:auto;min-height:40px}#eulerInputs{flex-direction:row}#eulerInputs .complex-input{height:23px;width:auto;gap:3px}#eulerInputs input[type=number]{width:54px}#planeActions{font-size:8px;gap:1px}#planeActions button{padding:1px;font-size:8px}#tauSweep{font-size:8px;gap:2px}#tauSweep button{font-size:8px;padding:1px}#planeHint{font-size:8px;margin:0}#productBubble #productStatus{font-size:8px}}
+#planeNotes{inset:auto 20px 100px auto;width:min(440px,calc(100vw - 40px));font-size:12px;line-height:1.5}
+#planeNotes p{margin:10px 0}#planeNotes #sectorMeasure{font-size:11px}
+#productBubble.euler-workspace #productGraph{flex:1}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){
+ #productBubble.euler-workspace{top:32%;height:calc(68dvh - 140px);gap:1px}
+ #productBubble.euler-workspace .bubble-head{font-size:15px}
+ #productBubble.euler-workspace #productGraph{min-height:35px}
+ #eulerInputs .complex-input{height:23px}#eulerInputs input[type=number]{height:20px;width:80px;font-size:10px}
+ #planeActions{gap:2px;font-size:8px}#planeActions button{font-size:8px;padding:2px}
+ #planeActions label{display:flex;align-items:center;gap:1px}#planeActions input{margin:1px;width:10px;height:10px}
+ #planeHint{font-size:7px}#tauSweep{font-size:8px}#tauSweep input[type=number]{width:30px}
+ #productBubble .product-tools{gap:3px}#productBubble .product-tools button{font-size:9px;padding:2px 5px}
+}
+@media(max-width:700px) and (min-height:501px){#productBubble.euler-workspace{height:calc(63dvh - 160px)}}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){#productBubble.euler-workspace{height:calc(68dvh - 160px)}}
+
+#locusTools{display:flex;align-items:center;gap:10px;font-size:11px;color:#d9bd82}#locusTools select{background:#122119;color:#e5d5ad;border:1px solid #71897b66;border-radius:4px}#locusStatus{font-size:10px;color:#9caa9e}
+@media(max-width:700px),(max-height:600px){#locusTools{gap:5px;font-size:9px}#locusTools button{font-size:9px;padding:2px 5px}#locusStatus{font-size:8px}#locusTools select{font-size:9px}}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){#planeHint{display:none}#locusTools{gap:3px}#locusTools button{padding:1px 4px}#locusTools label{white-space:nowrap}#locusStatus{font-size:7px}#productBubble.euler-workspace #productGraph{min-height:30px}}
+
+#productBubble.euler-workspace [hidden]{display:none!important}
+#exploreDock{display:grid;grid-template-columns:1fr auto;gap:9px 12px;flex-shrink:0;padding:12px 0 0;border-top:1px solid #8da89a24}
+.axis-control{grid-column:1/-1;display:grid;grid-template-columns:64px minmax(30px,1fr) 110px;align-items:center;gap:12px;font-size:12px;color:#d5c4e5}
+.axis-control input[type=range]{position:static!important;width:100%!important;height:20px!important;margin:0;accent-color:#c79de4;writing-mode:horizontal-tb!important;direction:ltr!important;display:block!important}
+.axis-control input[type=number]{width:100%;box-sizing:border-box;font:13px var(--mono);height:30px;background:#14251e;border:1px solid #6f8d7c88;border-radius:5px;color:#ecdfef;padding:4px 6px}
+#exploreToolbar{grid-column:1/-1;display:flex;gap:7px;align-items:center}#exploreToolbar button{font-size:12px;padding:6px 12px}#exploreToolbar #fitLocus{color:#ebcb8b;border-color:#8b7954}#exploreMore{margin-left:auto}
+#liveCurveState,#exploreDock #locusStatus{font-size:10px;margin:0;line-height:1.4;color:#a5b4a9}#liveCurveState{grid-column:1}#exploreDock #locusStatus{grid-column:2;text-align:right}
+#planeHint{margin:0 0 6px;color:#9daea4}
+#exploreOptions{inset:auto 16px 95px auto;width:min(440px,calc(100vw - 36px));max-height:calc(100dvh - 145px);overflow:auto;padding:18px;box-sizing:border-box;font-size:12px}
+#exploreOptions p{color:#bfcabd;font-size:12px;margin:10px 0}#traceWindow,#extraViews{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#traceWindow input{width:70px;color:#e3dbc7;background:#14251e;border:1px solid #71897b66}#traceWindow select{color:#e3dbc7;background:#14251e}#exploreOptions #planeActions{margin-top:16px;gap:12px;display:flex;flex-direction:column;align-items:flex-start}#extraViews button{font-size:11px;padding:5px 8px}
+@media(max-width:700px),(max-height:600px){#exploreDock{gap:5px 7px;padding-top:5px}.axis-control{grid-template-columns:50px minmax(30px,1fr) 90px;gap:7px;font-size:10px}.axis-control input[type=number]{height:24px;font-size:11px}#exploreToolbar{gap:4px}#exploreToolbar button{padding:3px 8px;font-size:10px}#liveCurveState,#exploreDock #locusStatus{font-size:8px}#planeHint{font-size:8px;margin:0 0 3px}}
+@media(max-height:600px) and (min-aspect-ratio:1/1){#exploreDock{gap:2px}.axis-control{grid-template-columns:43px minmax(20px,1fr) 82px}.axis-control input[type=number]{height:20px}#exploreToolbar button{padding:1px 6px}#liveCurveState,#exploreDock #locusStatus{font-size:7px}}
+@media(max-width:700px) and (max-height:650px) and (max-aspect-ratio:1/1){#exploreDock{gap:2px}.axis-control input[type=number]{height:21px}#liveCurveState,#exploreDock #locusStatus{font-size:7px}#exploreToolbar button{padding:2px 7px}}
+
+#paperViews{display:grid;gap:5px;flex-shrink:0}
+.paper-view-row{display:flex;gap:5px;align-items:center}
+.paper-view-row>span{font:10px var(--mono);color:#9daea4;min-width:60px}
+.paper-view-row button{flex:1;min-width:0;padding:5px 4px;font-size:11px;border-color:#71897b44;color:#b5c6bb;white-space:nowrap}
+.paper-view-row button[aria-pressed=true]{background:#354034;color:#ffe0a0;border-color:#c6a464;box-shadow:inset 0 -2px #c6a464}
+#paperViewTitle{font:15px/1.3 Georgia,serif;color:#ecdbb5;flex-shrink:0;margin-top:3px}
+#paperEquation{font:11px/1.4 var(--mono);color:#b7ad97;min-height:18px;flex-shrink:0}
+#paperControls{display:flex;gap:8px;align-items:center;margin-top:16px}
+#paperControls input{flex:1;min-width:30px;accent-color:#87bff2}#paperControls button{font-size:11px}
+#foldArmOption{display:flex;align-items:center;gap:8px;margin-top:14px;color:#c5d2c9;font-size:12px}
+#foldArmTerms{accent-color:#e9be67}
+@media(max-width:700px),(max-height:600px){
+ #paperViews{gap:3px}.paper-view-row{gap:3px}.paper-view-row>span{min-width:45px;font-size:8px}
+ .paper-view-row button{font-size:9px;padding:3px 2px}
+ #paperViewTitle{font-size:12px;margin:0}#paperEquation{font-size:8px;min-height:12px}
+ #liveCurveState{overflow-wrap:anywhere}
+}
+@media(max-width:700px) and (max-height:650px){
+ #paperViews{gap:2px}.paper-view-row button{padding:1px 2px;font-size:8px}
+ .paper-view-row>span{font-size:7px;min-width:39px}
+ #paperViewTitle{font-size:10px}#paperEquation{font-size:7px;min-height:10px}
+}
+
+/* Short screens retain all view choices and controls; the equation is in Guide. */
+@media(max-height:600px){
+ #productBubble.euler-workspace>.bubble-head{display:none}
+ #productBubble.euler-workspace #paperEquation{display:none}
+ #productBubble.euler-workspace:popover-open{gap:1px}
+}
+
+@media(max-height:600px) and (min-aspect-ratio:1/1){
+ #clockApp>.south-east{bottom:8px;right:10px}
+}
+
+#paperViewTitle{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#explainView{font:12px Georgia,serif;padding:4px 9px;white-space:nowrap;color:#e8c889}
+#paperEquation{font:13px/1.45 Georgia,serif;color:#b7c9bd;min-height:38px}
+#viewHelp{inset:auto 18px 90px auto;width:min(520px,calc(100vw - 36px));max-height:calc(100dvh - 120px);overflow:auto;font:15px/1.6 Georgia,serif}
+#viewHelp .bubble-head{font-size:18px}#viewHelp p{margin:13px 0}
+#viewHelp .view-equation{padding:12px;background:#14251e;font:14px/1.7 var(--mono);overflow-wrap:anywhere}
+#viewHelp .domain-key{font-size:12px;color:#a9c0b3}
+.axis-control .domain-caption{grid-column:2/-1;font:10px/1.2 var(--mono);color:#b7c9bd;margin-top:-5px}
+.axis-control input.domain-range{appearance:none;-webkit-appearance:none;border-radius:3px;height:7px!important;border:0}
+input.domain-range::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:#d2a5ee;border:1px solid #eed3ff}
+input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#d2a5ee;border:1px solid #eed3ff}
+.axis-control input.outside-domain{border-color:#daaa74;background:#3a2824}
+@media(max-width:700px),(max-height:600px){
+ #paperEquation{font-size:11px;min-height:30px}#explainView{font-size:10px;padding:2px 5px}
+ .axis-control .domain-caption{font-size:8px;margin-top:-2px}
+}
+@media(max-height:600px){
+ .axis-control .domain-caption{display:none}#explainView{font-size:9px}
+}
+
+@media(max-width:700px){
+ #productBubble.euler-workspace>.bubble-head{display:none}
+}
+#viewHelp{box-sizing:border-box}
 
 </style>
 </head>
@@ -303,12 +489,13 @@ const PR=(()=>{
   const now=performance.now(),dt=lastTime?Math.min(.05,(now-lastTime)/1000):0;lastTime=now;
   const ease=1-Math.exp(-dt*16),n=Math.floor(tt),width=parseFloat(getComputedStyle(tape).width),visible=Math.ceil(width/slot)+2;
   const born=primes.filter(p=>p<=n),active=[...new Set(factorize(n))];
+  const linked=typeof selectedPrime!=='undefined'&&selectedPrime<=n?selectedPrime:0;
   // Reserve places for every absorbing prime, then use spare room for recent
   // factors. The remainder stays accumulated in the ellipsis.
   const available=Math.max(48,pf.parentElement.parentElement.clientWidth-44);
   const upright=typeof reflectionMix!=='undefined'&&reflectionMix>.5;
-  const capacity=Math.max(active.length,Math.min(5,Math.floor(available/(upright?32:68))));
-  const shown=active.slice();
+  const shown=active.slice();if(linked&&!shown.includes(linked))shown.push(linked);
+  const capacity=Math.max(shown.length,Math.min(5,Math.floor(available/(upright?32:68))));
   for(let i=born.length-1;i>=0&&shown.length<capacity;i--)if(!shown.includes(born[i]))shown.push(born[i]);
   shown.sort((a,b)=>b-a);
   for(let k=Math.max(1,n-1);k<=n+visible;k++)if(!terms.has(k)){
@@ -592,8 +779,8 @@ function frame(ms) {
   focusMix += (focusAim - focusMix) * ease;
   glassMix += (specMode - glassMix) * ease;
   spacingMix += ((logRad ? 1 : 0) - spacingMix) * ease;
-  SIGMA += (sigmaAim - SIGMA) * ease;
-  TAUV += (tauAim - TAUV) * ease;
+  SIGMA += (sigmaAim - SIGMA) * (1-Math.exp(-dt*14));
+  TAUV += (tauAim - TAUV) * (1-Math.exp(-dt*14));
   weightMix += (weightAim - weightMix) * ease;
   sumMix += (sumAim - sumMix) * ease;
   continueMix += (continueAim - continueMix) * ease;
@@ -1132,6 +1319,7 @@ function drawContinuum(ms,rad) {
     const fresh=k===Math.floor(t)?Math.pow(1-(t%1),2):0;
     lensArrow(X(a),Y(a),X(b),Y(b),"#0c1512",(k<8?7:4)+3*fresh);
     lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);
+    if(selectedPrime && k%selectedPrime===0)lensArrow(X(a),Y(a),X(b),Y(b),primeHighlight(selectedPrime),5);
   }
   g2.globalAlpha=sumMix;g2.fillStyle='#91c9b5';g2.beginPath();g2.arc(X(raw.z),Y(raw.z),4,0,7);g2.fill();
   const key=SIGMA.toFixed(9)+','+TAUV.toFixed(9);
@@ -1642,7 +1830,7 @@ function updateJLedger(){
  g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=.4+.6*(1-(t-n));g2.strokeStyle=factorColour(current.p);g2.lineWidth=4;g2.beginPath();g2.arc(X,Y,17,0,2*Math.PI);g2.stroke();g2.restore();
 }
 const guideBeforeJ=updateGuide;updateGuide=function(){guideBeforeJ();updateJLedger();};
-jBubble.showPopover();updateJLedger();
+updateJLedger();
 
 // Two distinct infinite-series coefficient sequences, connected by a visual
 // interpolation, not the logarithm of a finite partial sum.
@@ -1717,16 +1905,27 @@ const complexInput=document.createElement('div');complexInput.className='complex
 const sigmaGroup=$('sigmaSlot').parentElement,tauGroup=$('tauSlot').parentElement;
 sigmaGroup.before(complexInput);
 complexInput.append(...sigmaGroup.children,...tauGroup.children);sigmaGroup.remove();tauGroup.remove();
+for(const [axis,min,max] of [['sigma',.2,3],['tau',-35,35]]){
+ const label=complexInput.querySelector('label[for="'+axis+'Dial"]'),field=document.createElement('input');
+ field.id=axis+'Exact';field.type='number';field.min=min;field.max=max;field.step='any';field.value=axis==='sigma'?sigmaAim:tauAim;
+ field.setAttribute('aria-label',axis==='sigma'?'Exact sigma':'Exact tau');field.title='↑ / ↓: 0.0001 · Shift: 0.01 · Alt: 0.000001';
+ label.querySelector('output').hidden=true;label.firstChild.textContent=axis==='sigma'?'σ':'τ';label.append(field);label.htmlFor=field.id;
+ field.oninput=()=>{if(field.value!==''&&field.validity.valid)tune(axis==='sigma'?+field.value:sigmaAim,axis==='tau'?+field.value:tauAim);};
+ field.onkeydown=e=>{if(!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.altKey?.000001:e.shiftKey?.01:.0001,value=Math.max(min,Math.min(max,(axis==='sigma'?sigmaAim:tauAim)+(e.key==='ArrowUp'?step:-step)));field.value=Number(value.toFixed(12));field.oninput();};
+ field.onblur=()=>{field.value=Number((axis==='sigma'?sigmaAim:tauAim).toFixed(12));};
+ $(axis+'Dial').step='.0001';
+}
 complexInput.insertAdjacentHTML('beforeend','<div id="complexPad" aria-hidden="true"><span id="complexDot"></span></div>');
 function pickComplex(e){const b=$('complexPad').getBoundingClientRect();tune(.2+2.8*Math.max(0,Math.min(1,(e.clientX-b.left)/b.width)),35-70*Math.max(0,Math.min(1,(e.clientY-b.top)/b.height)));}
 $('complexPad').onpointerdown=e=>{e.currentTarget.setPointerCapture(e.pointerId);pickComplex(e);};
 $('complexPad').onpointermove=e=>{if(e.currentTarget.hasPointerCapture(e.pointerId))pickComplex(e);};
-const productButton=document.createElement('button');productButton.textContent='Product';productButton.id='productView';productButton.setAttribute('popovertarget','productBubble');$('layerButtons').append(productButton);
+const productButton=document.createElement('button');productButton.textContent='Sum × Product';productButton.id='productView';productButton.setAttribute('popovertarget','productBubble');$('layerButtons').append(productButton);
 const productBubble=document.createElement('section');productBubble.id='productBubble';productBubble.className='bubble product-bubble';productBubble.setAttribute('popover','manual');
-productBubble.innerHTML=`<div class="bubble-head"><b>Euler product · one factor at a time</b><button popovertarget="productBubble" popovertargetaction="hide" aria-label="Close product graph">×</button></div>
+productBubble.innerHTML=`<div class="bubble-head"><b>Sum + product · one complex plane</b><button popovertarget="productBubble" popovertargetaction="hide" aria-label="Close product graph">×</button></div>
 <canvas id="productGraph" width="600" height="300" aria-label="Complex plane: prime-coloured partial products, blue finite sum, gold zeta"></canvas>
-<div class="product-tools"><button id="productPrev" aria-label="Previous prime factor">←</button><button id="productNext" aria-label="Next prime factor">→</button><span>View ±</span><input id="productRange" type="range" min="0" max="3" step=".01" value=".30103" aria-label="Logarithmic graph extent"><output id="productExtent">2</output></div>
+<div class="product-tools"><button id="productPrev" aria-label="Previous prime factor">←</button><button id="productNext" aria-label="Next prime factor">→</button><button id="fitPaths" title="Fit the current paths once; keep this ruler as the clock moves">Fit</button><button id="focusZeta" title="Centre on the current zeta value, then use the zoom slider">ζ</button><button id="homeGraph" title="Centre on zero with radius 2">0</button><input id="productRange" type="range" min="-5" max="3" step=".01" value=".30103" aria-label="Logarithmic graph extent"><output id="productExtent">±2</output></div>
 <p id="productDetails"></p><p id="productStatus"></p>`;stage.append(productBubble);
+$('productRange').step='any';$('productRange').min=-14;
 const analyticPrimes=[];for(let p=2;p<=5001;p++)if(isPrime(p))analyticPrimes.push(p);
 function eulerPath(x,sigma,tau){
  let z=[1,0];const points=[{p:1,z:[1,0],factor:[1,0]}];
@@ -1739,32 +1938,1184 @@ function eulerPath(x,sigma,tau){
 let selectedProduct=-1,productHitPoints=[];
 $('productPrev').onclick=()=>{const last=eulerPath(t,SIGMA,TAUV).points.length-1;selectedProduct=Math.max(0,(selectedProduct<0?last:selectedProduct)-1);};
 $('productNext').onclick=()=>{const last=eulerPath(t,SIGMA,TAUV).points.length-1;selectedProduct=Math.min(last,(selectedProduct<0?last:selectedProduct)+1);};
-$('productGraph').onpointerdown=e=>{const b=e.currentTarget.getBoundingClientRect(),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;let best=Infinity;for(const p of productHitPoints){const d=Math.hypot(p.x-x,p.y-y);if(d<best){best=d;selectedProduct=p.i;}}};
+$('productGraph').onpointerdown=e=>{const b=graphPlotRect(e.currentTarget),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;let best=Infinity;for(const p of productHitPoints){const d=Math.hypot(p.x-x,p.y-y);if(d<best){best=d;selectedProduct=p.i;}}};
 const complexText=z=>z.every(Number.isFinite)?z[0].toFixed(4)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toFixed(4)+'i':'outside numeric range';
+let graphCentre=[0,0],graphCentreAim=[0,0],graphLogExtent=Math.log10(2),graphLastMs=performance.now();
+function graphTick(value,step){const digits=Math.max(0,Math.ceil(-Math.log10(step))+1);return Math.abs(value)<1e7&&digits<=12?value.toFixed(digits):value.toPrecision(6);}
+function setGraphView(centre,extent){if(!centre.every(Number.isFinite)||!Number.isFinite(extent)||extent<=0)return;graphCentreAim=[...centre];const value=Math.log10(Math.max(1e-14,extent));$('productRange').max=Math.max(3,Math.ceil(value));$('productRange').value=value;}
+$('homeGraph').onclick=()=>setGraphView([0,0],2);
+$('focusZeta').onclick=()=>{if(Math.hypot(SIGMA-1,TAUV)>1e-8)setGraphView(zeta(SIGMA,TAUV),10**+$('productRange').value);};
+$('fitPaths').onclick=()=>{
+ const product=eulerPath(t,SIGMA,TAUV),sum=continuumSum(t,SIGMA,TAUV),zs=[...sum.points,...product.points.map(p=>p.z),sum.z];
+ if(product.arriving)zs.push(product.arriving);if(Math.hypot(SIGMA-1,TAUV)>1e-8)zs.push(zeta(SIGMA,TAUV));
+ const finite=zs.filter(z=>z.every(Number.isFinite));let lo=[Infinity,Infinity],hi=[-Infinity,-Infinity];
+ for(const z of finite)for(let a=0;a<2;a++){lo[a]=Math.min(lo[a],z[a]);hi[a]=Math.max(hi[a],z[a]);}
+ const centre=lo.map((v,i)=>v/2+hi[i]/2),extent=Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.01)*1.18;setGraphView(centre,extent);
+};
 function drawProductGraph(){
  if(!$('productBubble').matches(':popover-open'))return;
- const ctx=$('productGraph').getContext('2d'),extent=10**+$('productRange').value,unit=125/extent,X=z=>300+unit*z[0],Y=z=>150-unit*z[1];
- ctx.clearRect(0,0,600,300);ctx.font='12px ui-monospace';ctx.lineWidth=1;ctx.strokeStyle='#71897b66';ctx.fillStyle='#b0bfb6';
- for(let i=-2;i<=2;i++){const v=i*extent/2;ctx.beginPath();ctx.moveTo(X([v,0]),25);ctx.lineTo(X([v,0]),275);ctx.moveTo(50,Y([0,v]));ctx.lineTo(550,Y([0,v]));ctx.stroke();ctx.fillText(v.toPrecision(2),X([v,0])+3,165);if(i)ctx.fillText(v.toPrecision(2),304,Y([0,v])-4);}
- ctx.fillText('Re →',550,146);ctx.fillText('Im ↑',308,16);
+ const ms=performance.now(),ease=1-Math.exp(-Math.min(.05,(ms-graphLastMs)/1000)*12);graphLastMs=ms;
+ graphCentre=graphCentre.map((v,i)=>v+(graphCentreAim[i]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
+ const ctx=$('productGraph').getContext('2d'),extent=10**graphLogExtent,unit=125/extent,X=z=>300+unit*(z[0]-graphCentre[0]),Y=z=>150-unit*(z[1]-graphCentre[1]);
+ ctx.clearRect(0,0,600,300);ClockMath.drawComplexPlane(ctx,graphCentre,extent);
  const data=eulerPath(t,SIGMA,TAUV),points=data.points,idx=selectedProduct<0?points.length-1:Math.min(selectedProduct,points.length-1),selected=points[idx];productHitPoints=[];
  ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
  function dot(z,col,r,label){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<20||y>280)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();if(label)ctx.fillText(label,x+7,y-7);}
+ if(typeof drawExplorationUnderlay==='function')drawExplorationUnderlay(ctx,X,Y);
+ const rawSum=continuumSum(t,SIGMA,TAUV);ctx.strokeStyle='#87bff2';ctx.lineWidth=2;ctx.beginPath();
+ for(let i=0;i<rawSum.points.length;i++){const z=rawSum.points[i];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(rawSum.z),Y(rawSum.z));ctx.stroke();dot([0,0],'#87bff2',3,'Σ starts at 0');
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=4;for(let k=selectedPrime;k<rawSum.points.length;k+=selectedPrime){ctx.beginPath();ctx.moveTo(X(rawSum.points[k-1]),Y(rawSum.points[k-1]));ctx.lineTo(X(rawSum.points[k]),Y(rawSum.points[k]));ctx.stroke();}}
  for(let i=0;i<points.length;i++){const q=points[i],col=i?'hsl('+hueOf(q.p)+' 68% 68%)':'#ddd';if(i&&q.z.every(Number.isFinite)&&points[i-1].z.every(Number.isFinite)){ctx.strokeStyle=col;ctx.lineWidth=i===idx?3:1.6;ctx.beginPath();ctx.moveTo(X(points[i-1].z),Y(points[i-1].z));ctx.lineTo(X(q.z),Y(q.z));ctx.stroke();}dot(q.z,col,i===idx?5:2,i===idx?(i?'p='+q.p:'start: 1'):'');if(Math.abs(X(q.z)-300)<300&&Math.abs(Y(q.z)-150)<130)productHitPoints.push({i,x:X(q.z),y:Y(q.z)});}
+ if(typeof selectedPrime!=='undefined'&&selectedPrime){const j=points.findIndex(q=>q.p===selectedPrime);if(j>0){ctx.strokeStyle=primeHighlight(selectedPrime);ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(X(points[j-1].z),Y(points[j-1].z));ctx.lineTo(X(points[j].z),Y(points[j].z));ctx.stroke();dot(points[j].z,primeHighlight(selectedPrime),6,'linked p='+selectedPrime);}}
  if(data.arriving){ctx.strokeStyle='#ddd8';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(data.z),Y(data.z));ctx.lineTo(X(data.arriving),Y(data.arriving));ctx.stroke();ctx.setLineDash([]);}
  const sum=continuumSum(t,SIGMA,TAUV).z,pole=Math.hypot(SIGMA-1,TAUV)<1e-8,target=pole?[Infinity,0]:zeta(SIGMA,TAUV);
  dot(sum,'#87bff2',4,'Σ');dot(target,'#e8bd65',4,'ζ');ctx.restore();
- $('productExtent').textContent=extent.toPrecision(3);
+ $('productExtent').textContent='±'+extent.toPrecision(2);$('focusZeta').disabled=pole;
  $('productDetails').textContent=(idx?'p='+selected.p+' · × (1 − '+selected.p+'⁻ˢ)⁻¹ = '+complexText(selected.factor):'Empty product = 1')+' → '+complexText(selected.z);
  const error=abs(sub(data.z,target));
- $('productStatus').textContent=(SIGMA>1?'σ > 1: sum and product converge to gold ζ. ':'σ ≤ 1: finite products only; no convergence to the continued ζ is promised. ')+(pole?'ζ has a pole here. ':'Product error '+error.toPrecision(3)+'. ')+points.slice(1).length+' prime factors · blue Σ. Dashed: arriving factor.'+(Math.abs(data.z[0])*unit>290||Math.abs(data.z[1])*unit>130?' Product outside view; widen ±.':'');
+ const outside=[...rawSum.points,...points.map(p=>p.z),target].some(z=>!z.every(Number.isFinite)||X(z)<0||X(z)>600||Y(z)<20||Y(z)>280);
+ $('productStatus').textContent=(SIGMA>1?'σ > 1: both converge to gold ζ. ':'σ ≤ 1: finite products only; no continued-ζ convergence promised. ')+(pole?'ζ has a pole. ':'Product error '+error.toPrecision(3)+'. ')+'Blue: full sum. Coloured: product; dashed: arrival.'+(outside?' Outside view · Fit to include paths.':' Ruler stays fixed until you change it.');
 }
 $('viewBubble').insertAdjacentHTML('beforeend','<p id="psiExplanation">Prime count plots (ψ − smooth)/√x on the numbered axis. Gold: ledger residual; green: finite zero-pair approximation. ψ jumps by log p at pᵏ; between jumps the subtracted trend keeps moving. Smooth = x − log(2π) − ½ log(1 − x⁻²). At a jump the zero formula targets the midpoint.</p>');
 const analyticGuide=updateGuide;
 updateGuide=function(){analyticGuide();$('complexDot').style.left=(SIGMA-.2)/2.8*100+'%';$('complexDot').style.bottom=(TAUV+35)/70*100+'%';drawProductGraph();
+ for(const [id,value] of [['sigmaExact',sigmaAim],['tauExact',tauAim]])if(document.activeElement!==$(id))$(id).value=Number(value.toFixed(12));
  $('stair').title='ψ = '+psiSum.toFixed(4)+'; graph: (ψ − smooth)/√x';
  $('psiExplanation').hidden=stairMix<.005;
 };
+
+// A prime-family selection connects exact divisibility, not approximate area.
+let selectedPrime=0,pinnedPrime=0;
+function primeHighlight(p){return 'hsl('+hueOf(p)+' 88% 51%)';}
+function previewPrime(p){selectedPrime=isPrime(p)?p:pinnedPrime;}
+function linkPrime(p){pinnedPrime=isPrime(p)?p:0;selectedPrime=pinnedPrime;if(selectedPrime){const i=eulerPath(t,SIGMA,TAUV).points.findIndex(q=>q.p===p);if(i>=0)selectedProduct=i;}}
+const linkedReadout=document.createElement('div');linkedReadout.id='linkedReadout';linkedReadout.hidden=true;linkedReadout.setAttribute('role','status');stage.append(linkedReadout);
+const clearLink=document.createElement('button');clearLink.id='clearLink';clearLink.textContent='Clear';clearLink.title='Clear the linked prime highlight';clearLink.onclick=()=>linkPrime(0);document.querySelector('.product-tools').append(clearLink);
+$('productView').title='Select a product point or use the arrows to link its prime across the clock, tape and sum';
+for(const id of ['productPrev','productNext']){const prior=$(id).onclick;$(id).onclick=()=>{prior();const q=eulerPath(t,SIGMA,TAUV).points[selectedProduct];linkPrime(q?q.p:0);};}
+const priorPick=$('productGraph').onpointerdown;
+$('productGraph').onpointerdown=e=>{const b=graphPlotRect(e.currentTarget),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;
+ if(!productHitPoints.some(p=>Math.hypot(p.x-x,p.y-y)<18))return;
+ priorPick(e);const q=eulerPath(t,SIGMA,TAUV).points[selectedProduct];linkPrime(q?q.p:0);
+};
+$('pf').addEventListener('click',e=>{const el=e.target.closest('.fx');if(el)linkPrime(+el.dataset.p);});
+$('pf').addEventListener('pointerover',e=>{const el=e.target.closest('.fx');if(el)previewPrime(+el.dataset.p);});
+$('pf').addEventListener('pointerleave',()=>previewPrime(0));
+$('productGraph').addEventListener('pointermove',e=>{const b=graphPlotRect(e.currentTarget),x=(e.clientX-b.left)*600/b.width,y=(e.clientY-b.top)*300/b.height;let hit=null,best=18;for(const p of productHitPoints){const d=Math.hypot(p.x-x,p.y-y);if(d<best){hit=p;best=d;}}const q=hit?eulerPath(t,SIGMA,TAUV).points[hit.i]:null;previewPrime(q?q.p:0);});
+$('productGraph').addEventListener('pointerleave',()=>previewPrime(0));
+$('pf').addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;const el=e.target.closest('.fx');if(el){e.preventDefault();e.stopPropagation();linkPrime(+el.dataset.p);}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')linkPrime(0);});
+function linkedRings(){return selectedPrime?rings.filter(r=>(r.base||r.p)===selectedPrime):[];}
+const unlinkedGlass=drawPrimeGlass;
+drawPrimeGlass=function(rad,n){unlinkedGlass(rad,n);if(!selectedPrime)return;g2.save();g2.strokeStyle=primeHighlight(selectedPrime);g2.fillStyle=g2.strokeStyle;
+ const primeRing=rings.find(r=>r.p===selectedPrime);if(primeRing){const radius=rad(primeRing.p),span=panelSpan(primeRing.p,t);g2.globalAlpha=.28;g2.beginPath();g2.moveTo(C,C);g2.arc(C,C,radius,span.c0+span.w/2,span.c0-span.w/2+2*Math.PI);g2.closePath();g2.fill();}
+ g2.globalAlpha=.9;g2.shadowColor=g2.strokeStyle;g2.shadowBlur=7;
+ for(const ring of linkedRings()){const r=rad(ring.p),sp=panelSpan(ring.p,t);if(r<=0||sp.w<=0)continue;g2.lineWidth=typeof logArmScene!=='undefined'&&paperMode==='log'&&ring.p===logArmScene.activeQ?11:7;g2.beginPath();g2.arc(C,C,r,sp.c0-sp.w/2,sp.c0+sp.w/2);g2.stroke();}
+ g2.restore();
+};
+// Hit-test the actual arc band. Reflection's intermediate transform can become
+// singular; defer picking during that brief transition instead of guessing.
+function clockPrimeAt(e){const b=e.currentTarget.getBoundingClientRect(),dx=(e.clientX-b.left)*W/b.width-C,dy=(e.clientY-b.top)*W/b.height-C,c=Math.cos(Math.PI*reflectionMix);if(Math.abs(c)<.15)return 0;
+ const a=(1+c)/2,v=-(1-c)/2,x=(a*dx-v*dy)/c,y=(a*dy-v*dx)/c,r=Math.hypot(x,y),angle=Math.atan2(y,x);let nearest=null,best=14;
+ for(const ring of rings){const radius=clockRadius(ring.p),sp=panelSpan(ring.p,t),delta=Math.atan2(Math.sin(angle-sp.c0),Math.cos(angle-sp.c0)),distance=Math.abs(r-radius);if(sp.w>0&&Math.abs(delta)<=sp.w/2+.025&&distance<best){best=distance;nearest=ring;}}
+ return nearest?(nearest.base||nearest.p):0;
+}
+$('cv').addEventListener('click',e=>{const p=clockPrimeAt(e);if(p)linkPrime(p);});
+$('cv').addEventListener('pointermove',e=>previewPrime(clockPrimeAt(e)));
+$('cv').addEventListener('pointerleave',()=>previewPrime(0));
+const unlinkedGuide=updateGuide;
+updateGuide=function(){unlinkedGuide();
+ for(const el of $('strip').querySelectorAll('.tt'))el.classList.toggle('linked-term',!!selectedPrime&&+el.dataset.n%selectedPrime===0);
+ for(const el of $('pf').querySelectorAll('.fx')){el.classList.toggle('linked-factor',+el.dataset.p===selectedPrime);el.style.setProperty('--highlight',primeHighlight(+el.dataset.p));el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label','Link prime '+el.dataset.p+' across clock and sum');el.setAttribute('aria-pressed',String(+el.dataset.p===pinnedPrime));}
+ linkedReadout.hidden=!selectedPrime;clearLink.disabled=!selectedPrime;
+ if(selectedPrime){const powers=linkedRings().map(r=>r.p).sort((a,b)=>a-b);const message='p = '+selectedPrime+' · panes '+(powers.join(', ')||'not born yet')+' · sum: multiples of '+selectedPrime+' · Esc clears';if(linkedReadout.textContent!==message)linkedReadout.textContent=message;}
+};
+
+// Keep input, scale and output in one persistent instrument beside the clock.
+function graphPlotRect(canvas){const b=canvas.getBoundingClientRect(),width=Math.min(b.width,b.height*2),height=width/2;return {left:b.left+(b.width-width)/2,top:b.top+(b.height-height)/2,width,height};}
+$('productBubble').classList.add('euler-workspace');
+const controls=document.createElement('div');controls.id='eulerInputs';controls.append(complexInput,$('zeroShortcut'));$('productGraph').after(controls);
+$('productBubble').querySelector('.bubble-head b').textContent='Euler · input and complex paths';
+const mechanics=document.createElement('p');mechanics.id='sectorMeasure';mechanics.textContent='Hover a prime arc or product point to measure its complementary sector. Click to pin.';$('productStatus').after(mechanics);
+document.querySelector('[popovertarget="tuneBubble"]').textContent='Pace & count';
+$('tuneBubble').querySelector('.bubble-head b').textContent='Pace & count';
+$('productBubble').showPopover();
+const workspaceGuide=updateGuide;
+updateGuide=function(){workspaceGuide();
+ if(!selectedPrime){mechanics.textContent='Hover a prime arc or product point to measure its complementary sector. Click to pin.';return;}
+ const p=selectedPrime,span=panelSpan(p,t),fraction=1-span.w/(2*Math.PI),z=sub([1,0],power(p,SIGMA,TAUV));
+ mechanics.textContent='p = '+p+(pinnedPrime===p?' · pinned':' · preview')+' · sector remainder '+(fraction*100).toFixed(2)+'%'+(t<p?' (not born)':t<p+1?' (growing)':' = 1 − 1/'+p)+'. Weighted 1 − '+p+'⁻ˢ = '+complexText(z)+'. '+(t>=p+1&&Math.abs(SIGMA-1)<1e-5&&Math.abs(TAUV)<1e-5?'Equal at s = 1.':'Area and weight differ.');
+};
+
+// Shared coordinates for inputs and outputs; sampled loci are not summation paths.
+const plane=$('productGraph');
+$('productBubble').querySelector('.bubble-head b').textContent='The complex plane';
+$('productBubble').querySelector('.bubble-head button').hidden=true;
+$('eulerInputs').insertAdjacentHTML('beforeend',`<div id="planeActions"><button id="placeInput" aria-pressed="false">Place s</button><label><input id="lockSigma" type="checkbox" checked> Hold σ</label><label><input id="ghostPaths" type="checkbox" checked> −τ ghosts</label><label><input id="tauLoci" type="checkbox" checked> τ endpoint trails</label></div>`);
+const sweep=document.createElement('div');sweep.id='tauSweep';sweep.innerHTML=`<label>τ window <input id="tauLow" type="number" min="-35" max="35" step="any" value="0" aria-label="Tau window start"></label><input id="tauScrub" type="range" min="0" max="20" step=".0001" value="0" aria-label="Explore tau at fixed sigma"><input id="tauHigh" type="number" min="-35" max="35" step="any" value="20" aria-label="Tau window end"><button id="fitTogether">Fit s + paths</button>`;
+$('eulerInputs').before(sweep);
+const hint=document.createElement('p');hint.id='planeHint';hint.textContent='Drag s to tune · drag space to pan · wheel / pinch to zoom · dotted trails follow τ';sweep.before(hint);
+let placing=false,planeDrag=null,trailCache={key:'',rows:[],ms:0};
+$('placeInput').onclick=()=>{placing=!placing;$('placeInput').setAttribute('aria-pressed',String(placing));plane.style.cursor=placing?'crosshair':'grab';};
+function tauWindow(){return [+$('tauLow').value,+$('tauHigh').value];}
+for(const id of ['tauLow','tauHigh'])$(id).onchange=()=>{let [a,b]=tauWindow();if(!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -35||b>35){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};
+$('tauScrub').oninput=()=>tune(sigmaAim,+$('tauScrub').value);
+function planePixel(e){const b=graphPlotRect(plane);return [(e.clientX-b.left)*600/b.width,(e.clientY-b.top)*300/b.height];}
+function planeValue(q){const u=125/10**graphLogExtent;return [graphCentre[0]+(q[0]-300)/u,graphCentre[1]-(q[1]-150)/u];}
+function tunePoint(q){const z=planeValue(q);tune($('lockSigma').checked?sigmaAim:Math.max(.2,Math.min(3,z[0])),Math.max(-35,Math.min(35,z[1])));}
+const factorPick=plane.onpointerdown;
+const touches=new Map();let pinch=null;
+plane.onpointerdown=e=>{e.preventDefault();plane.setPointerCapture(e.pointerId);touches.set(e.pointerId,planePixel(e));if(touches.size===2){const [a,b]=[...touches.values()];pinch={distance:Math.hypot(a[0]-b[0],a[1]-b[1]),extent:10**graphLogExtent};planeDrag=null;return;}
+ const q=planePixel(e),z=planeValue(q),near=Math.hypot(z[0]-SIGMA,z[1]-TAUV)*125/10**graphLogExtent<16;
+ planeDrag={q,centre:[...graphCentre],unit:125/10**graphLogExtent,input:placing||near||e.shiftKey,moved:false};if(planeDrag.input)tunePoint(q);
+};
+plane.onpointermove=e=>{if(!touches.has(e.pointerId))return;const q=planePixel(e);touches.set(e.pointerId,q);if(pinch&&touches.size===2){const [a,b]=[...touches.values()];setGraphView(graphCentreAim,pinch.extent*pinch.distance/Math.max(1,Math.hypot(a[0]-b[0],a[1]-b[1])));return;}if(!planeDrag)return;const d=planeDrag;d.moved ||= Math.hypot(q[0]-d.q[0],q[1]-d.q[1])>3;if(d.input)tunePoint(q);else setGraphView([d.centre[0]-(q[0]-d.q[0])/d.unit,d.centre[1]+(q[1]-d.q[1])/d.unit],10**+$('productRange').value);};
+function endPlane(e){if(planeDrag&&!planeDrag.input&&!planeDrag.moved&&e.type==='pointerup')factorPick(e);touches.delete(e.pointerId);planeDrag=null;pinch=null;}
+plane.onpointerup=endPlane;plane.onpointercancel=endPlane;
+plane.addEventListener('wheel',e=>{e.preventDefault();const q=planePixel(e),anchor=planeValue(q),extent=Math.max(1e-14,Math.min(1e8,10**graphLogExtent*Math.exp(Math.max(-1,Math.min(1,e.deltaY*.002))))),unit=125/extent;setGraphView([anchor[0]-(q[0]-300)/unit,anchor[1]+(q[1]-150)/unit],extent);},{passive:false});
+plane.tabIndex=0;plane.setAttribute('aria-label','Shared input and output complex plane. Arrow keys adjust tau; Shift arrows adjust sigma. Drag input to tune, background to pan, wheel to zoom.');
+plane.onkeydown=e=>{if(!e.key.startsWith('Arrow'))return;e.preventDefault();const sign=['ArrowUp','ArrowRight'].includes(e.key)?1:-1,step=e.altKey?.001:.05;tune(e.shiftKey?sigmaAim+sign*step:sigmaAim,e.shiftKey?tauAim:tauAim+sign*step);};
+function tauTrails(){const [a,b]=tauWindow(),key=[t,SIGMA,a,b].join('/'),ms=performance.now();if(key!==trailCache.key&&ms-trailCache.ms>220){const rows=[];for(let i=0;i<=40;i++){const tau=a+(b-a)*i/40;rows.push({tau,sum:continuumSum(t,SIGMA,tau).z,product:eulerPath(t,SIGMA,tau).z});}trailCache={key,rows,ms};}return trailCache.rows;}
+function drawExplorationUnderlay(ctx,X,Y){
+ ctx.save();
+ function path(zs,col,dash=[]){ctx.strokeStyle=col;ctx.lineWidth=1.3;ctx.setLineDash(dash);ctx.beginPath();let fresh=true;for(const z of zs){if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){ctx.moveTo(X(z),Y(z));fresh=false;}else ctx.lineTo(X(z),Y(z));}ctx.stroke();ctx.setLineDash([]);}
+ if($('ghostPaths').checked){const s=continuumSum(t,SIGMA,TAUV),p=eulerPath(t,SIGMA,TAUV);path([...s.points,s.z].map(z=>[z[0],-z[1]]),'#87bff240');for(let i=1;i<p.points.length;i++)path([p.points[i-1].z,p.points[i].z].map(z=>[z[0],-z[1]]),'hsla('+hueOf(p.points[i].p)+' 68% 68% / .23)');if(p.arriving)path([p.z,p.arriving].map(z=>[z[0],-z[1]]),'#ffffff30',[3,3]);}
+ if($('tauLoci').checked){const rows=tauTrails();path(rows.map(r=>r.sum),'#87bff270',[2,5]);path(rows.map(r=>r.product),'#db9e7470',[2,5]);}
+ ctx.restore();
+}
+$('fitTogether').onclick=()=>{const s=continuumSum(t,SIGMA,TAUV),p=eulerPath(t,SIGMA,TAUV);let zs=[...s.points,s.z,...p.points.map(q=>q.z)];if(p.arriving)zs.push(p.arriving);if(Math.hypot(SIGMA-1,TAUV)>1e-8)zs.push(zeta(SIGMA,TAUV));if($('ghostPaths').checked)zs.push(...zs.map(z=>[z[0],-z[1]]));if($('tauLoci').checked)for(const r of tauTrails())zs.push(r.sum,r.product);zs.push([SIGMA,TAUV],[sigmaAim,tauAim]);const finite=zs.filter(z=>z.every(Number.isFinite)),lo=[0,1].map(i=>Math.min(...finite.map(z=>z[i]))),hi=[0,1].map(i=>Math.max(...finite.map(z=>z[i])));setGraphView(lo.map((v,i)=>(v+hi[i])/2),Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.05)*1.2);};
+const explorationGuide=updateGuide;
+updateGuide=function(){explorationGuide();const ctx=plane.getContext('2d'),u=125/10**graphLogExtent,x=300+u*(SIGMA-graphCentre[0]),y=150-u*(TAUV-graphCentre[1]);ctx.save();ctx.strokeStyle='#e5b8ff';ctx.fillStyle='#e5b8ff';ctx.lineWidth=2;const px=Math.max(14,Math.min(580,x)),py=Math.max(32,Math.min(260,y));ctx.beginPath();ctx.arc(px,py,7,0,7);ctx.stroke();ctx.textAlign=px>450?'right':'left';const direction=(x<px?'←':x>px?'→':'')+(y<py?'↑':y>py?'↓':'');ctx.fillText('s'+(direction?' '+direction+' off view':''),px+(px>450?-10:10),py-10);ctx.restore();if(document.activeElement!==$('tauScrub'))$('tauScrub').value=tauAim;};
+// Explanations belong in an optional overlay, leaving the plane unobstructed.
+const planeNotes=document.createElement('section');planeNotes.id='planeNotes';planeNotes.className='bubble';planeNotes.setAttribute('popover','auto');planeNotes.innerHTML='<div class="bubble-head"><b>Reading the plane</b><button popovertarget="planeNotes" popovertargetaction="hide">×</button></div><p>Purple s is the input; blue Σ and coloured Π are finite paths at the current beat. Dim paths use −τ: exact conjugates across the real axis. The faint band is 0 &lt; σ &lt; 1.</p><p>Dotted blue and amber curves sample the endpoints as τ varies across the chosen window, at fixed σ and beat. They are not additional sum terms. Drag the τ slider to follow them. The two infinite expressions converge together only for σ &gt; 1.</p><p>Hold σ constrains input dragging vertically. Turn it off to place s freely (0.2 ≤ σ ≤ 3, |τ| ≤ 35). Drag empty space to pan; wheel or pinch to zoom. Fit includes the current paths; Fit s + paths also includes the input, ghosts and enabled endpoint trails.</p>';
+planeNotes.append($('productDetails'),$('productStatus'),$('sectorMeasure'));stage.append(planeNotes);
+const explain=document.createElement('button');explain.textContent='Guide';explain.setAttribute('popovertarget','planeNotes');document.querySelector('.product-tools').append(explain);
+
+// Euler–Maclaurin evaluator shared verbatim by the page and its curve worker.
+// The truncation grows with |Im(s)|; the old fixed N=96 was only for small heights.
+function locusZeta(sigma,tau){
+ if(Math.hypot(sigma-1,tau)<1e-12)return [Infinity,Infinity];
+ const N=Math.max(96,Math.ceil(1.25*Math.abs(tau))),ln=Math.log(N);
+ let re=0,im=0,cr=0,ci=0;
+ for(let n=1;n<=N;n++){const l=Math.log(n),r=Math.exp(-sigma*l),a=-tau*l,yr=r*Math.cos(a)-cr,yi=r*Math.sin(a)-ci,tr=re+yr,ti=im+yi;cr=(tr-re)-yr;ci=(ti-im)-yi;re=tr;im=ti;}
+ const a=-tau*ln,r=Math.exp(-sigma*ln),nr=r*Math.cos(a),ni=r*Math.sin(a),d=(sigma-1)**2+tau*tau;
+ re+=N*(nr*(sigma-1)+ni*tau)/d-nr/2;im+=N*(ni*(sigma-1)-nr*tau)/d-ni/2;
+ const coeff=[1/12,-1/720,1/30240,-1/1209600,1/47900160,-691/1307674368000];let rr=1,ri=0,j=0;
+ for(let k=1;k<=6;k++){while(j<2*k-1){const next=rr*(sigma+j)-ri*tau;ri=rr*tau+ri*(sigma+j);rr=next;j++;}const f=coeff[k-1]*Math.pow(N,1-2*k);re+=f*(rr*nr-ri*ni);im+=f*(rr*ni+ri*nr);}
+ return [re,im];
+}
+zeta=locusZeta;
+// Extend every visible input route together, including the exact-field shortcuts.
+$('tauExact').min=$('tauDial').min=-1000;$('tauExact').max=$('tauDial').max=1000;
+$('tauExact').onkeydown=e=>{if(!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.altKey?.000001:e.shiftKey?.01:.0001;const value=Math.max(-1000,Math.min(1000,tauAim+(e.key==='ArrowUp'?step:-step)));$('tauExact').value=Number(value.toFixed(12));$('tauExact').oninput();};
+const rawTune=tune;tune=function(sigma,tau){rawTune(Math.max(.2,Math.min(3,sigma)),Math.max(-1000,Math.min(1000,tau)));};
+tunePoint=function(q){const z=planeValue(q);tune($('lockSigma').checked?sigmaAim:z[0],z[1]);};
+for(const id of ['tauLow','tauHigh']){$(id).min=-1000;$(id).max=1000;$(id).onchange=()=>{const [a,b]=tauWindow();if($(id).value===''||!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -1000||b>1000){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};}
+$('tauHigh').value=60;$('tauHigh').onchange();
+$('tauLoci').checked=false;planeNotes.append($('tauLoci').parentElement);
+$('planeActions').insertAdjacentHTML('beforeend','<label><input id="zetaLocus" type="checkbox" checked> ζ curve</label>');
+const locusTools=document.createElement('div');locusTools.id='locusTools';locusTools.innerHTML='<button id="fitLocus">Fit ζ curve</button><label>τ span <select id="locusSpan" aria-label="Zeta curve tau span"><option value="60">60</option><option value="100">100</option><option value="500">500</option><option value="1000">1000</option></select></label><output id="locusStatus" aria-live="polite">Preparing ζ curve…</output>';$('planeHint').before(locusTools);
+$('locusSpan').onchange=()=>{const width=+$('locusSpan').value,a=Math.min(+$('tauLow').value,1000-width);$('tauLow').value=a;$('tauHigh').value=a+width;$('tauHigh').onchange();};
+$('planeHint').textContent='Drag s · pan space · wheel to zoom · gold curve follows τ · brighter near current τ';
+planeNotes.insertAdjacentHTML('beforeend','<p>The gold curve is ζ(σ+iτ) itself, computed independently of the clock beat. Bright gold follows the current τ; dim gold is its −τ reflection when ghosts are enabled. Fit ζ curve frames the output alone, so a large input height does not squeeze the loops. τ spans up to 1000 in either direction are supported. Change the window endpoints to isolate a tangle.</p><p>Curve points stream from a background worker as they are computed; completed curves are cached for six recent σ/window combinations. Sampling uses steps no larger than 0.04 with extra subdivision for curvature. At extreme zoom a polyline still has finite resolution; narrow the τ window and inspect it. The pole at s=1 breaks the curve. The critical line has no singularity there at nonzero τ; its many visits near zero create the loops.</p>');
+for(const p of planeNotes.querySelectorAll('p'))p.innerHTML=p.innerHTML.replace('|τ| ≤ 35','|τ| ≤ 1000');
+let locusPrevious=null,locusData=null,locusWorker=null,locusWanted='',locusChanged=0,locusRequested='',locusFitPending=false;const locusCache=new Map();
+function computeLocusJob(){
+ self.onmessage=e=>{const {sigma,a,b,key}=e.data,start=performance.now(),rows=[];let sent=0,lastFlush=start,limited=false;
+ function flush(progress,done=false){const chunk=new Float64Array(rows.slice(sent));sent=rows.length;lastFlush=performance.now();self.postMessage({key,sigma,a,b,chunk,progress,done,limited,ms:lastFlush-start},[chunk.buffer]);}
+ const sample=tau=>[tau,...locusZeta(sigma,tau)];
+ function append(q){rows.push(...q);}
+ function refine(left,right,depth){const mid=sample((left[0]+right[0])/2);const err=Math.hypot(mid[1]-(left[1]+right[1])/2,mid[2]-(left[2]+right[2])/2),scale=1+Math.hypot(mid[1],mid[2]);if(depth<7&&err>2e-4*scale&&rows.length<360000){refine(left,mid,depth+1);refine(mid,right,depth+1);}else {if(err>2e-4*scale)limited=true;append(right);}}
+ const steps=Math.ceil((b-a)/.04);let left=sample(a);append(left);
+ for(let i=1;i<=steps;i++){const right=sample(a+(b-a)*i/steps);if(sigma===1&&left[0]<0&&right[0]>0){append([0,NaN,NaN]);append(right);}else refine(left,right,0);left=right;if(i===1||performance.now()-lastFlush>=32)flush(i/steps);}
+ flush(1,true);};
+}
+function requestLocus(){if(!$('zetaLocus').checked)return;const [a,b]=tauWindow(),sigma=sigmaAim,key=[sigma,a,b].join('/'),now=performance.now();if(key!==locusWanted){if(locusData?.done)locusPrevious=locusData;locusWanted=key;locusChanged=now;if(locusWorker){locusWorker.terminate();locusWorker=null;}locusRequested='';$('locusStatus').textContent='Preparing curve…';}if(key===locusRequested||now-locusChanged<40)return;locusRequested=key;
+ if(locusCache.has(key)){locusData=locusCache.get(key);$('locusStatus').textContent=locusData.data.length/3+' points · cached'+(locusData.limited?' · narrow window for detail':'');if(locusFitPending){locusFitPending=false;fitZetaCurve();}return;}
+ const url=URL.createObjectURL(new Blob([locusZeta.toString()+'\n('+computeLocusJob.toString()+')();'],{type:'text/javascript'}));
+ try{locusWorker=new Worker(url);}catch(error){$('locusStatus').textContent='Curve worker unavailable';URL.revokeObjectURL(url);return;}URL.revokeObjectURL(url);$('locusStatus').textContent='Computing ζ…';
+ const worker=locusWorker;let buffer=new Float64Array(3072),used=0;
+ worker.onmessage=e=>{if(worker!==locusWorker||e.data.key!==locusWanted)return;const {chunk,...meta}=e.data;
+  if(used+chunk.length>buffer.length){const expanded=new Float64Array(Math.max(buffer.length*2,used+chunk.length));expanded.set(buffer.subarray(0,used));buffer=expanded;}
+  buffer.set(chunk,used);used+=chunk.length;locusData={...meta,data:meta.done?buffer.slice(0,used):buffer.subarray(0,used)};
+  if(meta.done){locusCache.set(key,locusData);if(locusCache.size>6)locusCache.delete(locusCache.keys().next().value);$('locusStatus').textContent=used/3+' points · '+(meta.ms/1000).toFixed(2)+' s'+(meta.limited?' · narrow window for detail':'');worker.terminate();locusWorker=null;}
+  else $('locusStatus').textContent='Growing ζ · '+Math.round(meta.progress*100)+'% · '+used/3+' points';
+  if(locusFitPending)fitZetaCurve();
+ };
+ locusWorker.onerror=()=>{if(worker!==locusWorker)return;$('locusStatus').textContent='Curve calculation failed';locusWorker?.terminate();locusWorker=null;};locusWorker.postMessage({key,sigma,a,b});
+}
+function fitZetaCurve(){if(!locusData||locusData.key!==locusWanted){locusFitPending=true;return;}locusFitPending=!locusData.done;let lo=[Infinity,Infinity],hi=[-Infinity,-Infinity];const d=locusData.data;for(let i=0;i<d.length;i+=3){if(!Number.isFinite(d[i+1])||!Number.isFinite(d[i+2]))continue;for(let axis=0;axis<2;axis++){lo[axis]=Math.min(lo[axis],d[i+1+axis]);hi[axis]=Math.max(hi[axis],d[i+1+axis]);}if($('ghostPaths').checked){lo[1]=Math.min(lo[1],-d[i+2]);hi[1]=Math.max(hi[1],-d[i+2]);}}if(lo.every(Number.isFinite))setGraphView(lo.map((v,i)=>(v+hi[i])/2),Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,.01)*1.15);}
+$('fitLocus').onclick=()=>{if(!$('zetaLocus').checked)$('zetaLocus').checked=true;requestLocus();fitZetaCurve();};
+const beforeLocus=drawExplorationUnderlay;
+// Keep the previous curve as labelled context; calculate live local detail at the
+// displayed input, never by morphing values from a different sigma.
+const locusRaster=document.createElement('canvas'),locusBackdrop=document.createElement('canvas');
+for(const canvas of [locusRaster,locusBackdrop]){canvas.width=600;canvas.height=300;}
+let locusRasterKey='',locusRasterCount=0;const backdropState={key:'',count:0};
+let liveLocusPreview={sigma:NaN,tau:NaN,rows:[],ms:0};
+function paintLocus(data,canvas,state,ctx,X,Y,alpha){
+ const d=data.data,key=[data.key,graphCentre[0].toPrecision(9),graphCentre[1].toPrecision(9),graphLogExtent.toPrecision(9),$('ghostPaths').checked].join('/');
+ if(key!==state.key||d.length!==state.count){const c=canvas.getContext('2d');if(key!==state.key||d.length<state.count){c.clearRect(0,0,600,300);state.count=0;}state.key=key;c.lineWidth=1;
+  for(const ghost of ($('ghostPaths').checked?[true,false]:[false])){c.strokeStyle=ghost?'#e8bd6518':'#e8bd654c';c.beginPath();let fresh=true;for(let i=Math.max(0,state.count-3);i<d.length;i+=3){const z=[d[i+1],ghost?-d[i+2]:d[i+2]];if(!z.every(Number.isFinite)){fresh=true;continue;}if(fresh){c.moveTo(X(z),Y(z));fresh=false;}else c.lineTo(X(z),Y(z));}c.stroke();}state.count=d.length;}
+ ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(canvas,0,0);ctx.restore();
+}
+drawExplorationUnderlay=function(ctx,X,Y){beforeLocus(ctx,X,Y);requestLocus();if(!$('zetaLocus').checked)return;
+ const current=locusData?.key===locusWanted,settled=current&&Math.abs(SIGMA-locusData.sigma)<1e-4,ready=settled&&locusData.done;
+ if(!ready&&locusPrevious&&locusPrevious.key!==locusWanted)paintLocus(locusPrevious,locusBackdrop,backdropState,ctx,X,Y,.24);
+ if(current){const state={key:locusRasterKey,count:locusRasterCount};paintLocus(locusData,locusRaster,state,ctx,X,Y,settled?1:.25);locusRasterKey=state.key;locusRasterCount=state.count;}
+ if(liveLocusPreview.sigma!==SIGMA||liveLocusPreview.tau!==TAUV){const start=performance.now(),rows=[];for(let i=0;i<=24;i++){const tau=Math.max(-1000,Math.min(1000,TAUV-.6+i*.05));rows.push([tau,...locusZeta(SIGMA,tau)]);}liveLocusPreview={sigma:SIGMA,tau:TAUV,rows,ms:performance.now()-start};}
+ ctx.save();ctx.strokeStyle='#ffe3a1';ctx.lineWidth=2.4;ctx.setLineDash(ready?[]:[4,3]);ctx.beginPath();let fresh=true,prior=null;
+ for(const q of liveLocusPreview.rows){const z=q.slice(1);if(!z.every(Number.isFinite)){fresh=true;prior=q;continue;}if(SIGMA===1&&prior&&prior[0]<0&&q[0]>0)fresh=true;if(fresh){ctx.moveTo(X(z),Y(z));fresh=false;}else ctx.lineTo(X(z),Y(z));prior=q;}ctx.stroke();ctx.restore();
+ const text=ready?'Gold ζ · blue sum · coloured product':'Dashed: live detail'+(locusPrevious&&locusPrevious.key!==locusWanted?' · faint: previous σ '+Number(locusPrevious.sigma.toFixed(4)):' · full curve updating');
+ if($('liveCurveState')&&$('liveCurveState').textContent!==text)$('liveCurveState').textContent=text;
+};
+
+// A requested fit follows incoming bounds until completion; direct navigation releases it.
+for(const event of ['pointerdown','wheel'])plane.addEventListener(event,()=>{locusFitPending=false;},{capture:true,passive:true});
+for(const id of ['fitPaths','fitTogether','focusZeta','homeGraph'])$(id).addEventListener('click',()=>{locusFitPending=false;},{capture:true});
+$('productRange').addEventListener('input',()=>{locusFitPending=false;});
+
+// One everyday control surface; optional comparisons and factor tools are secondary.
+$('lockSigma').checked=false;
+const options=document.createElement('section');options.id='exploreOptions';options.className='bubble';options.setAttribute('popover','auto');options.innerHTML='<div class="bubble-head"><b>Exploration options</b><button popovertarget="exploreOptions" popovertargetaction="hide" aria-label="Close exploration options">×</button></div><p>Trace a vertical line</p><div id="traceWindow"><label>From τ </label><span>to</span></div><p>Compare and navigate</p><div id="extraViews"></div>';
+stage.append(options);
+const windowRow=$('traceWindow');windowRow.querySelector('label').append($('tauLow'));windowRow.append($('tauHigh'));const spanLabel=$('locusSpan').parentElement;spanLabel.firstChild.textContent='Span ';windowRow.append(spanLabel);
+options.append($('planeActions'));
+$('placeInput').textContent='Place input on plot';const oldPlace=$('placeInput').onclick;$('placeInput').onclick=()=>{oldPlace();options.hidePopover();};
+const lockLabel=$('lockSigma').parentElement;lockLabel.lastChild.textContent=' Lock real part (σ)';
+$('ghostPaths').parentElement.lastChild.textContent=' Mirror at −τ';
+$('zetaLocus').parentElement.lastChild.textContent=' Show ζ curve';
+const extras=$('extraViews');
+for(const [id,label] of [['fitPaths','Fit sum & product'],['fitTogether','Fit input & outputs'],['focusZeta','Centre on ζ'],['homeGraph','Centre on zero'],['productPrev','Previous factor'],['productNext','Next factor'],['clearLink','Clear factor']]){$(id).textContent=label;extras.append($(id));}
+const dock=document.createElement('div');dock.id='exploreDock';$('productGraph').after(dock);
+for(const [axis,title,slider] of [['sigma','Real σ',$('sigmaDial')],['tau','Height τ',$('tauScrub')]]){const row=document.createElement('div');row.className='axis-control';row.innerHTML='<label for="'+axis+'Exact">'+title+'</label>';row.append(slider,$(axis+'Exact'));dock.append(row);}
+$('sigmaDial').oninput=()=>tune(+$('sigmaDial').value,tauAim);
+const toolbar=document.createElement('div');toolbar.id='exploreToolbar';dock.append(toolbar);toolbar.append($('fitLocus'));$('fitLocus').textContent='Fit curve';
+for(const [id,text,factor] of [['zoomOut','−',1.6],['zoomIn','+',1/1.6]]){const button=document.createElement('button');button.id=id;button.textContent=text;button.setAttribute('aria-label',id==='zoomOut'?'Zoom out':'Zoom in');button.onclick=()=>{locusFitPending=false;setGraphView(graphCentreAim,10**+$('productRange').value*factor);};toolbar.append(button);}
+const explorerMoreButton=document.createElement('button');explorerMoreButton.id='exploreMore';explorerMoreButton.textContent='Options';explorerMoreButton.setAttribute('popovertarget','exploreOptions');toolbar.append(explorerMoreButton,explain);
+const caption=document.createElement('p');caption.id='liveCurveState';caption.textContent='Gold ζ · blue sum · coloured product';
+dock.append(toolbar,caption,$('locusStatus'));$('productGraph').after(dock);
+$('planeHint').textContent='Drag the purple s to change the input. Drag empty space to pan. Scroll to zoom.';
+$('planeHint').before(dock);dock.before($('planeHint'));
+// The old containers retain nonvisual state controls used by the renderer.
+for(const id of ['eulerInputs','tauSweep','locusTools'])$(id).hidden=true;
+document.querySelector('.product-tools').hidden=true;
+$('productBubble').querySelector('.bubble-head b').textContent='Explore ζ';
+// Picking an offscreen input badge should work just like picking its visible point.
+const inputPointerDown=plane.onpointerdown;
+plane.onpointerdown=e=>{const q=planePixel(e),unit=125/10**graphLogExtent,x=Math.max(14,Math.min(580,300+unit*(SIGMA-graphCentre[0]))),y=Math.max(32,Math.min(260,150-unit*(TAUV-graphCentre[1]))),near=Math.hypot(q[0]-x,q[1]-y)<16;
+ if(near&&!placing&&!e.shiftKey){e.preventDefault();plane.setPointerCapture(e.pointerId);touches.set(e.pointerId,q);if(touches.size>1){inputPointerDown(e);return;}planeDrag={q,centre:[...graphCentre],unit,input:true,moved:false,relative:[sigmaAim,tauAim]};return;}inputPointerDown(e);
+};
+const inputPointerMove=plane.onpointermove;
+plane.onpointermove=e=>{if(planeDrag?.relative&&touches.has(e.pointerId)){const q=planePixel(e),d=planeDrag;touches.set(e.pointerId,q);d.moved=true;tune($('lockSigma').checked?d.relative[0]:d.relative[0]+(q[0]-d.q[0])/d.unit,d.relative[1]-(q[1]-d.q[1])/d.unit);return;}inputPointerMove(e);};
+planeNotes.insertAdjacentHTML('beforeend','<p>While the full curve is recalculated, a dashed local preview is evaluated directly at the moving input. A faint previous curve is labelled with its real part. It is context, not an interpolated answer. The real part is unlocked by default; use Options to constrain dragging vertically.</p>');
+
+// Fixed output translation: w=z-1, with one output unit equal to the rim radius.
+// This is independent of graph pan/zoom and never moves the clock or complex input.
+const shiftedClockChoice=document.createElement('label');shiftedClockChoice.innerHTML='<input id="shiftedClock" type="checkbox"> Overlay ζ − 1 on clock';$('planeActions').append(shiftedClockChoice);
+const shiftedPathsChoice=document.createElement('label');shiftedPathsChoice.innerHTML='<input id="shiftedClockPaths" type="checkbox" checked> Include shifted sum & product';$('planeActions').append(shiftedPathsChoice);
+planeNotes.insertAdjacentHTML('beforeend','<p>Clock overlay: output z is drawn at z−1, with one unit equal to the clock radius. Output 1 is at the axle; output 0 is on the negative-real rim. Thus S₁ and the empty product share the axle, and every ζ zero maps to the same rim point. The pole is unbounded and does not move to the axle. Parts beyond the clock canvas are clipped; this view never rescales to fit.</p>');
+let shiftedClockMix=0,shiftedClockLast=performance.now();
+const shiftedClockRaster=document.createElement('canvas');shiftedClockRaster.width=shiftedClockRaster.height=W;let shiftedClockCacheKey='',shiftedClockCacheCount=0;
+function shiftedClockPoint(z){const c=Math.cos(Math.PI*reflectionMix),a=(1+c)/2,b=-(1-c)/2,dx=R*z[1],dy=-R*(z[0]-1);return [C+a*dx+b*dy,C+b*dx+a*dy];}
+function drawShiftedClock(){const now=performance.now(),dt=Math.min(.05,(now-shiftedClockLast)/1000);shiftedClockLast=now;shiftedClockMix+=(Number($('shiftedClock').checked)-shiftedClockMix)*(1-Math.exp(-dt*10));if(shiftedClockMix<.001)return;
+ const ctx=g2,current=locusData?.key===locusWanted&&Math.abs(SIGMA-locusData.sigma)<1e-4;
+ ctx.save();ctx.globalAlpha=shiftedClockMix;ctx.beginPath();ctx.rect(0,0,W,W);ctx.clip();
+ function line(points,colour,width=2,dash=[]){ctx.strokeStyle=colour;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.beginPath();let fresh=true;for(const z of points){if(!z.every(Number.isFinite)){fresh=true;continue;}const p=shiftedClockPoint(z);if(fresh){ctx.moveTo(...p);fresh=false;}else ctx.lineTo(...p);}ctx.stroke();ctx.setLineDash([]);}
+ if(current&&$('zetaLocus').checked){const data=locusData.data,key=[locusData.key,reflectionMix.toPrecision(9),$('ghostPaths').checked].join('/'),c=shiftedClockRaster.getContext('2d');if(key!==shiftedClockCacheKey||shiftedClockCacheCount>data.length){c.clearRect(0,0,W,W);shiftedClockCacheCount=0;shiftedClockCacheKey=key;}if(data.length!==shiftedClockCacheCount){for(const ghost of ($('ghostPaths').checked?[true,false]:[false])){c.strokeStyle=ghost?'#e8bd651b':'#e8bd6570';c.lineWidth=1.4;c.beginPath();let fresh=true;for(let i=Math.max(0,shiftedClockCacheCount-3);i<data.length;i+=3){const z=[data[i+1],ghost?-data[i+2]:data[i+2]];if(!z.every(Number.isFinite)){fresh=true;continue;}const p=shiftedClockPoint(z);if(fresh){c.moveTo(...p);fresh=false;}else c.lineTo(...p);}c.stroke();}shiftedClockCacheCount=data.length;}ctx.drawImage(shiftedClockRaster,0,0);}
+ if($('shiftedClockPaths').checked){const sum=continuumSum(t,SIGMA,TAUV),prod=eulerPath(t,SIGMA,TAUV);line([...sum.points,sum.z],'#87bff2aa',2);for(let i=1;i<prod.points.length;i++)line([prod.points[i-1].z,prod.points[i].z],'hsla('+hueOf(prod.points[i].p)+' 80% 64% / .65)',2);if(prod.arriving)line([prod.z,prod.arriving],'#bfcbbb88',2,[4,4]);}
+ if($('zetaLocus').checked&&liveLocusPreview.sigma===SIGMA&&liveLocusPreview.tau===TAUV){const points=[];let prior=null;for(const q of liveLocusPreview.rows){if(SIGMA===1&&prior&&prior[0]<0&&q[0]>0)points.push([NaN,NaN]);points.push(q.slice(1));prior=q;}line(points,'#ffdfa0',3,current&&locusData.done?[]:[5,4]);}
+ const pole=Math.hypot(SIGMA-1,TAUV)<1e-8,z=pole?[Infinity,Infinity]:zeta(SIGMA,TAUV);if(z.every(Number.isFinite)){const p=shiftedClockPoint(z);ctx.fillStyle='#ffdfa0';ctx.beginPath();ctx.arc(...p,5,0,7);ctx.fill();}
+ // Two landmarks only. Label outputs, rather than confusing them with input s.
+ ctx.font='15px ui-monospace';ctx.textAlign='center';ctx.fillStyle='#f2dfac';for(const [value,label] of [[1,'1'],[0,'0']]){const p=shiftedClockPoint([value,0]);ctx.strokeStyle='#efd5a0';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(...p,6,0,7);ctx.stroke();ctx.fillText(label,p[0],p[1]+24);}ctx.restore();
+}
+const shiftedClockGuide=updateGuide;updateGuide=function(){shiftedClockGuide();drawShiftedClock();};
+
+var ClockMath = (function(exports) {
+  "use strict";
+  const jsContent = '(function() {\n  "use strict";\n  function viewDomain(mode) {\n    return {\n      tauLimit: mode === "theta" ? 35 : ["term", "finite", "infinite", "xiarm"].includes(mode) ? 15 : 1e3,\n      sigmaBoundary: ["euler", "log", "infinite"].includes(mode) ? 1 : null,\n      boundaryKind: mode === "infinite" ? "diverges" : ["euler", "log"].includes(mode) ? "finite only" : "none",\n      sigmaMin: 0.2,\n      sigmaMax: 3\n    };\n  }\n  function riemannIntegrate(job) {\n    const { mode, sigma, tau, n } = job;\n    if (!["term", "finite", "infinite", "theta"].includes(mode) || !Number.isSafeInteger(n) || n < 1) return { valid: false, reason: "A valid integral mode and positive integer term count are required." };\n    const tauLimit = viewDomain(mode).tauLimit;\n    if (!(sigma > 0) || sigma > 3 || !Number.isFinite(tau) || Math.abs(tau) > tauLimit) return { valid: false, reason: `This integral view currently resolves 0 < σ ≤ 3 and |τ| ≤ ${tauLimit}. This is a numerical window, not the domain of ξ or ζ.` };\n    if (mode === "infinite" && sigma <= 1) return { valid: false, reason: "This real-axis integral diverges at x = 0 when σ ≤ 1. Choose Finite sum or Symmetry to continue exploring." };\n    const cmul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]], polar = (r, a) => [r * Math.cos(a), r * Math.sin(a)];\n    const theta = mode === "theta", upperX = theta ? 16 : 40 + sigma + Math.abs(tau), rate = mode === "infinite" ? sigma - 1 : sigma;\n    const low = theta ? 0 : -Math.min(300, Math.max(26, 30 / rate)), high = Math.log(upperX), logn = Math.log(n);\n    const coeff = theta ? [0.5 * (sigma * (sigma - 1) - tau * tau), 0.5 * tau * (2 * sigma - 1)] : [1, 0];\n    function integrand(u) {\n      const x = Math.exp(u);\n      if (theta) {\n        let psi = 0;\n        for (let k = 1; k < 12; k++) {\n          const term = Math.exp(-Math.PI * k * k * x);\n          psi += term;\n          if (term < 1e-22) break;\n        }\n        const a = polar(Math.exp(sigma * u / 2), tau * u / 2), b = polar(Math.exp((1 - sigma) * u / 2), -tau * u / 2);\n        return cmul(coeff, [(a[0] + b[0]) * psi, (a[1] + b[1]) * psi]);\n      }\n      let r, phase = tau * u;\n      if (mode === "term") {\n        r = Math.exp(sigma * (u - logn) - x);\n        phase = tau * (u - logn);\n      } else if (mode === "finite") {\n        const kernel = -Math.expm1(-n * x) / Math.expm1(x);\n        r = Math.exp(sigma * u) * kernel;\n      } else r = x < 1e-8 ? Math.exp((sigma - 1) * u) * (1 - x / 2) : Math.exp(sigma * u) / Math.expm1(x);\n      return polar(r, phase);\n    }\n    const g8x = [0.1834346424956498, 0.525532409916329, 0.7966664774136267, 0.9602898564975363], g8w = [0.362683783378362, 0.3137066458778873, 0.2223810344533745, 0.1012285362903763];\n    const g4x = [0.3399810435848563, 0.8611363115940526], g4w = [0.6521451548625461, 0.3478548451374538];\n    function gauss(a, b, x, w) {\n      const mid = (a + b) / 2, h = (b - a) / 2;\n      let re2 = 0, im2 = 0;\n      for (let j = 0; j < x.length; j++) {\n        const l = integrand(mid - h * x[j]), r = integrand(mid + h * x[j]);\n        re2 += w[j] * (l[0] + r[0]);\n        im2 += w[j] * (l[1] + r[1]);\n      }\n      return [h * re2, h * im2];\n    }\n    const steps = Math.ceil((high - low) / Math.min(0.1, 0.5 / (1 + Math.abs(tau)))), rows = [];\n    let re = theta ? 0.5 : 0, im = 0, cr = 0, ci = 0, length = 0, error = 0;\n    function point(u) {\n      rows.push(theta ? Math.exp(u) : mode === "term" ? Math.exp(u) / n : Math.exp(u), re, im, length);\n    }\n    point(low);\n    for (let j = 0; j < steps; j++) {\n      const a = low + (high - low) * j / steps, b = low + (high - low) * (j + 1) / steps, dz = gauss(a, b, g8x, g8w), coarse = gauss(a, b, g4x, g4w);\n      error += Math.hypot(dz[0] - coarse[0], dz[1] - coarse[1]);\n      const yr = dz[0] - cr, yi = dz[1] - ci, tr = re + yr, ti = im + yi;\n      cr = tr - re - yr;\n      ci = ti - im - yi;\n      re = tr;\n      im = ti;\n      length += Math.hypot(...dz);\n      point(b);\n    }\n    const tailBound = (B, a, decay = 1) => Math.exp(-decay * B) * B ** a / (decay - Math.max(a, 0) / B);\n    let omitted;\n    if (theta) {\n      omitted = Math.hypot(...coeff) * (tailBound(upperX, sigma / 2 - 1, Math.PI) + tailBound(upperX, -(sigma + 1) / 2, Math.PI)) / (1 - Math.exp(-3 * Math.PI * upperX));\n    } else {\n      const small = Math.exp(rate * low) / rate * (mode === "term" ? n ** -sigma : mode === "finite" ? n : 1), large = tailBound(upperX, sigma - 1) * (mode === "term" ? n ** -sigma : 1) / (mode === "term" ? 1 : 1 - Math.exp(-upperX));\n      omitted = small + large;\n    }\n    return { valid: true, mode, sigma, tau, n, rows: new Float64Array(rows), endpoint: [re, im], estimatedQuadratureError: error, estimatedRoundoffError: 32 * Number.EPSILON * (length + (theta ? 0.5 : 0)), omittedBound: omitted, low, high, length, steps };\n  }\n  onmessage = (event) => {\n    const result = riemannIntegrate(event.data);\n    const response = { ...result, key: event.data.key };\n    postMessage(response, { transfer: result.valid ? [result.rows.buffer] : [] });\n  };\n})();\n';
+  const blob = typeof self !== "undefined" && self.Blob && new Blob([jsContent], { type: "text/javascript;charset=utf-8" });
+  function WorkerWrapper(options) {
+    let objURL;
+    try {
+      objURL = blob && (self.URL || self.webkitURL).createObjectURL(blob);
+      if (!objURL) throw "";
+      const worker = new Worker(objURL, {
+        name: options?.name
+      });
+      worker.addEventListener("error", () => {
+        (self.URL || self.webkitURL).revokeObjectURL(objURL);
+      });
+      return worker;
+    } catch (e) {
+      return new Worker(
+        "data:text/javascript;charset=utf-8," + encodeURIComponent(jsContent),
+        {
+          name: options?.name
+        }
+      );
+    } finally {
+      objURL && (self.URL || self.webkitURL).revokeObjectURL(objURL);
+    }
+  }
+  function viewDomain(mode) {
+    return {
+      tauLimit: mode === "theta" ? 35 : ["term", "finite", "infinite", "xiarm"].includes(mode) ? 15 : 1e3,
+      sigmaBoundary: ["euler", "log", "infinite"].includes(mode) ? 1 : null,
+      boundaryKind: mode === "infinite" ? "diverges" : ["euler", "log"].includes(mode) ? "finite only" : "none",
+      sigmaMin: 0.2,
+      sigmaMax: 3
+    };
+  }
+  function riemannGamma(real, imag) {
+    if (!(real > 0) || !Number.isFinite(real) || !Number.isFinite(imag)) return [NaN, NaN];
+    const cmul = (a2, b) => [a2[0] * b[0] - a2[1] * b[1], a2[0] * b[1] + a2[1] * b[0]];
+    const cdiv = (a2, b) => {
+      const d = b[0] * b[0] + b[1] * b[1];
+      return [(a2[0] * b[0] + a2[1] * b[1]) / d, (a2[1] * b[0] - a2[0] * b[1]) / d];
+    };
+    if (real < 1) return cdiv(riemannGamma(real + 1, imag), [real, imag]);
+    const coefficients = [676.5203681218851, -1259.1392167224028, 771.3234287776531, -176.6150291621406, 12.507343278686905, -0.13857109526572012, 9984369578019572e-21, 15056327351493116e-23];
+    const z = [real - 1, imag];
+    let a = [0.9999999999998099, 0];
+    coefficients.forEach((c, i) => {
+      const q = cdiv([c, 0], [z[0] + i + 1, z[1]]);
+      a = [a[0] + q[0], a[1] + q[1]];
+    });
+    const w = [z[0] + 7.5, z[1]], logw = [Math.log(Math.hypot(...w)), Math.atan2(w[1], w[0])], exponent = cmul([z[0] + 0.5, z[1]], logw);
+    const magnitude = Math.sqrt(2 * Math.PI) * Math.exp(exponent[0] - w[0]), angle = exponent[1] - w[1];
+    return cmul(a, [magnitude * Math.cos(angle), magnitude * Math.sin(angle)]);
+  }
+  function riemannIntegrate(job) {
+    const { mode, sigma, tau, n } = job;
+    if (!["term", "finite", "infinite", "theta"].includes(mode) || !Number.isSafeInteger(n) || n < 1) return { valid: false, reason: "A valid integral mode and positive integer term count are required." };
+    const tauLimit = viewDomain(mode).tauLimit;
+    if (!(sigma > 0) || sigma > 3 || !Number.isFinite(tau) || Math.abs(tau) > tauLimit) return { valid: false, reason: `This integral view currently resolves 0 < σ ≤ 3 and |τ| ≤ ${tauLimit}. This is a numerical window, not the domain of ξ or ζ.` };
+    if (mode === "infinite" && sigma <= 1) return { valid: false, reason: "This real-axis integral diverges at x = 0 when σ ≤ 1. Choose Finite sum or Symmetry to continue exploring." };
+    const cmul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]], polar2 = (r, a) => [r * Math.cos(a), r * Math.sin(a)];
+    const theta = mode === "theta", upperX = theta ? 16 : 40 + sigma + Math.abs(tau), rate = mode === "infinite" ? sigma - 1 : sigma;
+    const low = theta ? 0 : -Math.min(300, Math.max(26, 30 / rate)), high = Math.log(upperX), logn = Math.log(n);
+    const coeff = theta ? [0.5 * (sigma * (sigma - 1) - tau * tau), 0.5 * tau * (2 * sigma - 1)] : [1, 0];
+    function integrand(u) {
+      const x = Math.exp(u);
+      if (theta) {
+        let psi = 0;
+        for (let k = 1; k < 12; k++) {
+          const term = Math.exp(-Math.PI * k * k * x);
+          psi += term;
+          if (term < 1e-22) break;
+        }
+        const a = polar2(Math.exp(sigma * u / 2), tau * u / 2), b = polar2(Math.exp((1 - sigma) * u / 2), -tau * u / 2);
+        return cmul(coeff, [(a[0] + b[0]) * psi, (a[1] + b[1]) * psi]);
+      }
+      let r, phase = tau * u;
+      if (mode === "term") {
+        r = Math.exp(sigma * (u - logn) - x);
+        phase = tau * (u - logn);
+      } else if (mode === "finite") {
+        const kernel = -Math.expm1(-n * x) / Math.expm1(x);
+        r = Math.exp(sigma * u) * kernel;
+      } else r = x < 1e-8 ? Math.exp((sigma - 1) * u) * (1 - x / 2) : Math.exp(sigma * u) / Math.expm1(x);
+      return polar2(r, phase);
+    }
+    const g8x = [0.1834346424956498, 0.525532409916329, 0.7966664774136267, 0.9602898564975363], g8w = [0.362683783378362, 0.3137066458778873, 0.2223810344533745, 0.1012285362903763];
+    const g4x = [0.3399810435848563, 0.8611363115940526], g4w = [0.6521451548625461, 0.3478548451374538];
+    function gauss(a, b, x, w) {
+      const mid = (a + b) / 2, h = (b - a) / 2;
+      let re2 = 0, im2 = 0;
+      for (let j = 0; j < x.length; j++) {
+        const l = integrand(mid - h * x[j]), r = integrand(mid + h * x[j]);
+        re2 += w[j] * (l[0] + r[0]);
+        im2 += w[j] * (l[1] + r[1]);
+      }
+      return [h * re2, h * im2];
+    }
+    const steps = Math.ceil((high - low) / Math.min(0.1, 0.5 / (1 + Math.abs(tau)))), rows = [];
+    let re = theta ? 0.5 : 0, im = 0, cr = 0, ci = 0, length = 0, error = 0;
+    function point(u) {
+      rows.push(theta ? Math.exp(u) : mode === "term" ? Math.exp(u) / n : Math.exp(u), re, im, length);
+    }
+    point(low);
+    for (let j = 0; j < steps; j++) {
+      const a = low + (high - low) * j / steps, b = low + (high - low) * (j + 1) / steps, dz = gauss(a, b, g8x, g8w), coarse2 = gauss(a, b, g4x, g4w);
+      error += Math.hypot(dz[0] - coarse2[0], dz[1] - coarse2[1]);
+      const yr = dz[0] - cr, yi = dz[1] - ci, tr = re + yr, ti = im + yi;
+      cr = tr - re - yr;
+      ci = ti - im - yi;
+      re = tr;
+      im = ti;
+      length += Math.hypot(...dz);
+      point(b);
+    }
+    const tailBound = (B, a, decay = 1) => Math.exp(-decay * B) * B ** a / (decay - Math.max(a, 0) / B);
+    let omitted;
+    if (theta) {
+      omitted = Math.hypot(...coeff) * (tailBound(upperX, sigma / 2 - 1, Math.PI) + tailBound(upperX, -(sigma + 1) / 2, Math.PI)) / (1 - Math.exp(-3 * Math.PI * upperX));
+    } else {
+      const small = Math.exp(rate * low) / rate * (mode === "term" ? n ** -sigma : mode === "finite" ? n : 1), large = tailBound(upperX, sigma - 1) * (mode === "term" ? n ** -sigma : 1) / (mode === "term" ? 1 : 1 - Math.exp(-upperX));
+      omitted = small + large;
+    }
+    return { valid: true, mode, sigma, tau, n, rows: new Float64Array(rows), endpoint: [re, im], estimatedQuadratureError: error, estimatedRoundoffError: 32 * Number.EPSILON * (length + (theta ? 0.5 : 0)), omittedBound: omitted, low, high, length, steps };
+  }
+  function paneAt(source, time) {
+    if (!Number.isFinite(time) || time < 1) throw new RangeError("Clock time must be finite and at least 1.");
+    const q = source.q, born = time >= q;
+    return {
+      source,
+      time,
+      born,
+      birthAt: q,
+      growthCompleteAt: q + 1,
+      sumTermCompleteAt: q,
+      growth: Math.max(0, Math.min(1, time - q)),
+      radiusInClockUnits: born ? q / time : 0,
+      leadingAngle: 2 * Math.PI * (time / q % 1)
+    };
+  }
+  function polar(radius, phase) {
+    return [radius * Math.cos(phase), radius * Math.sin(phase)];
+  }
+  function sumComplex(values) {
+    let re = 0, im = 0, cr = 0, ci = 0;
+    for (const z of values) {
+      const yr = z[0] - cr, yi = z[1] - ci, tr = re + yr, ti = im + yi;
+      cr = tr - re - yr;
+      ci = ti - im - yi;
+      re = tr;
+      im = ti;
+    }
+    return [re, im];
+  }
+  function primePowersThrough(limit) {
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1e6)
+      throw new RangeError("Prime-power enumeration supports integer limits from 1 to 1,000,000.");
+    const composite = new Uint8Array(limit + 1), sources = [];
+    for (let p = 2; p <= limit; p++) {
+      if (composite[p]) continue;
+      for (let m = p * p; m <= limit; m += p) composite[m] = 1;
+      for (let q = p, k = 1; q <= limit; q *= p, k++) sources.push({ kind: "prime-power", p, k, q });
+    }
+    return sources.sort((a, b) => a.q - b.q);
+  }
+  function logEuler(input, limit) {
+    const { sigma, tau } = input;
+    if (!Number.isFinite(sigma) || !Number.isFinite(tau)) throw new RangeError("Complex input must be finite.");
+    const contributions = primePowersThrough(limit).map((source) => {
+      const { q, k } = source, ledgerWeight = 1 / k;
+      const magnitude = Math.exp(-sigma * Math.log(q)) * ledgerWeight, phase = -tau * Math.log(q);
+      if (!Number.isFinite(magnitude) || !Number.isFinite(phase)) throw new RangeError("Contribution exceeds floating-point range.");
+      return { id: `prime-power:${q}`, quantity: "log-zeta", source, ledgerWeight, magnitude, phase, value: polar(magnitude, phase) };
+    });
+    const endpoint = sumComplex(contributions.map((c) => c.value));
+    if (!endpoint.every(Number.isFinite)) throw new RangeError("Sum exceeds floating-point range.");
+    return {
+      input: { ...input },
+      limit,
+      contributions,
+      endpoint,
+      convergentDomain: sigma > 1,
+      truncation: "prime-powers-through-limit"
+    };
+  }
+  function logArmAt(input, time) {
+    if (!Number.isFinite(time) || time < 1) throw new RangeError("Clock time must be at least 1.");
+    const full = logEuler(input, Math.floor(time));
+    const terms = full.contributions.map((term) => {
+      const growth = Math.max(0, Math.min(1, time - term.source.q));
+      const value = [term.value[0] * growth, term.value[1] * growth];
+      return { ...term, fullValue: term.value, value, growth };
+    });
+    return { ...full, time, terms, completedCutoffEndpoint: full.endpoint, endpoint: sumComplex(terms.map((t) => t.value)) };
+  }
+  function layoutArm(items) {
+    let re = 0, im = 0, cr = 0, ci = 0;
+    return items.map((item) => {
+      const from = [re, im], yr = item.value[0] - cr, yi = item.value[1] - ci, tr = re + yr, ti = im + yi;
+      cr = tr - re - yr;
+      ci = ti - im - yi;
+      re = tr;
+      im = ti;
+      return { from, to: [re, im], items: [item] };
+    });
+  }
+  function foldArm(segments, expanded) {
+    const result = [];
+    let pending = [];
+    function flush() {
+      if (pending.length) {
+        result.push({ from: pending[0].from, to: pending[pending.length - 1].to, items: pending.flatMap((s) => s.items) });
+        pending = [];
+      }
+    }
+    for (const segment of segments) {
+      if (expanded.has(segment.items[0].id)) {
+        flush();
+        result.push(segment);
+      } else pending.push(segment);
+    }
+    flush();
+    return result;
+  }
+  function segmentDistance(point, from, to) {
+    const dx = to[0] - from[0], dy = to[1] - from[1], d = dx * dx + dy * dy;
+    const f = d ? Math.max(0, Math.min(1, ((point[0] - from[0]) * dx + (point[1] - from[1]) * dy) / d)) : 0;
+    return Math.hypot(point[0] - from[0] - f * dx, point[1] - from[1] - f * dy);
+  }
+  function drawArm(ctx, segments, progress, style) {
+    const lengths = segments.map((s) => Math.hypot(s.to[0] - s.from[0], s.to[1] - s.from[1]));
+    let remaining = lengths.reduce((a, b) => a + b, 0) * Math.max(0, Math.min(1, progress));
+    let tip = [0, 0];
+    const hits = [];
+    ctx.save();
+    ctx.lineCap = "round";
+    segments.forEach((segment, i) => {
+      const a = style.project(segment.from), b = style.project(segment.to), item = segment.items[0], folded = segment.items.length > 1;
+      const highlighted = !folded && style.highlighted(item), colour2 = folded ? "#9aafa2" : style.colour(item);
+      ctx.strokeStyle = colour2;
+      ctx.setLineDash(folded ? [3, 5] : []);
+      ctx.lineWidth = highlighted ? 3.6 : 2;
+      ctx.globalAlpha = 0.2;
+      ctx.beginPath();
+      ctx.moveTo(...a);
+      ctx.lineTo(...b);
+      ctx.stroke();
+      const f = lengths[i] === 0 ? progress >= 1 ? 1 : 0 : Math.max(0, Math.min(1, remaining / lengths[i]));
+      if (f > 0) {
+        tip = [segment.from[0] + f * (segment.to[0] - segment.from[0]), segment.from[1] + f * (segment.to[1] - segment.from[1])];
+        const end = style.project(tip);
+        ctx.globalAlpha = folded ? 0.6 : 1;
+        ctx.beginPath();
+        ctx.moveTo(...a);
+        ctx.lineTo(...end);
+        ctx.stroke();
+        if (!folded && Math.hypot(end[0] - a[0], end[1] - a[1]) > 14) {
+          const angle = Math.atan2(end[1] - a[1], end[0] - a[0]);
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(end[0] - 6 * Math.cos(angle - 0.45), end[1] - 6 * Math.sin(angle - 0.45));
+          ctx.lineTo(...end);
+          ctx.lineTo(end[0] - 6 * Math.cos(angle + 0.45), end[1] - 6 * Math.sin(angle + 0.45));
+          ctx.stroke();
+        }
+      }
+      remaining -= lengths[i];
+      hits.push({ segment, from: a, to: b });
+    });
+    ctx.restore();
+    return { tip, hits };
+  }
+  class LogArmScene {
+    key = "";
+    model = null;
+    hits = [];
+    hoverQ = 0;
+    pinnedQ = 0;
+    extra = /* @__PURE__ */ new Set();
+    activeQ = 0;
+    snapshot(input, time) {
+      const key = [input.sigma, input.tau, time].join("/");
+      if (key !== this.key) {
+        this.model = logArmAt(input, time);
+        this.key = key;
+      }
+      return this.model;
+    }
+    clear() {
+      this.hoverQ = 0;
+      this.pinnedQ = 0;
+      this.extra.clear();
+    }
+    active(model, prime) {
+      const eligible = model.terms.filter((t) => !prime || t.source.p === prime);
+      return eligible.find((t) => t.source.q === this.hoverQ) || eligible.find((t) => t.source.q === this.pinnedQ) || eligible[eligible.length - 1];
+    }
+    pick(point, pin = false) {
+      let nearest, best = 10;
+      for (const hit of this.hits) {
+        const d = segmentDistance(point, hit.from, hit.to);
+        if (d <= best) {
+          best = d;
+          nearest = hit;
+        }
+      }
+      if (nearest?.segment.items.length === 1) {
+        const term = nearest.segment.items[0].meta;
+        this.hoverQ = term.source.q;
+        if (pin) this.pinnedQ = this.hoverQ;
+        return term.source.p;
+      }
+      this.hoverQ = 0;
+      if (pin && nearest) {
+        for (const item of nearest.segment.items.slice(0, 4)) this.extra.add(item.id);
+      }
+      return 0;
+    }
+    fit(input, time, prime, includeInput = false) {
+      const model = this.snapshot(input, time), segments = layoutArm(model.terms.map((t) => ({ id: t.id, value: t.value, meta: t }))), active = this.active(model, prime);
+      const points = [[0, 0], ...segments.map((s) => s.to)];
+      const anchor = segments.find((s) => s.items[0].meta === active)?.from;
+      if (anchor && active) {
+        const r = active.magnitude;
+        points.push([anchor[0] - r, anchor[1] - r], [anchor[0] + r, anchor[1] + r]);
+      }
+      if (includeInput) points.push([input.sigma, input.tau]);
+      const lo = [Math.min(...points.map((z) => z[0])), Math.min(...points.map((z) => z[1]))], hi = [Math.max(...points.map((z) => z[0])), Math.max(...points.map((z) => z[1]))];
+      return { centre: [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2], extent: Math.max((hi[0] - lo[0]) / 4, (hi[1] - lo[1]) / 2, 0.01) * 1.2 };
+    }
+    draw(ctx, frame) {
+      const { input, time, selectedPrime, progress, centre, extent } = frame, model = this.snapshot(input, time);
+      const segments = layoutArm(model.terms.map((t) => ({ id: t.id, value: t.value, meta: t }))), active = this.active(model, selectedPrime);
+      this.activeQ = active?.source.q || 0;
+      const expanded = new Set(this.extra);
+      for (const term of [...model.terms.slice(0, 3), ...model.terms.slice(-2)]) expanded.add(term.id);
+      for (const term of model.terms) if (term.source.p === selectedPrime) expanded.add(term.id);
+      if (active) expanded.add(active.id);
+      const visible = frame.compact ? foldArm(segments, expanded) : segments, unit = 125 / extent;
+      const project = (z) => [300 + unit * (z[0] - centre[0]), 150 - unit * (z[1] - centre[1])];
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 20, 600, 260);
+      ctx.clip();
+      ctx.strokeStyle = "#8da798";
+      ctx.globalAlpha = 0.2;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(...project([0, 0]));
+      for (const segment of segments) ctx.lineTo(...project(segment.to));
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      const anchor = segments.find((s) => s.items[0].meta === active)?.from;
+      if (active && anchor) {
+        const at = project(anchor), radius = unit * active.magnitude;
+        ctx.strokeStyle = frame.colour(active.source.p);
+        ctx.globalAlpha = 0.25;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(at[0], at[1], radius, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+      const drawn = drawArm(ctx, visible, progress, { project, colour: (item) => item.meta.source.q === this.activeQ || item.meta.source.p === selectedPrime ? frame.highlightColour(item.meta.source.p) : frame.colour(item.meta.source.p), highlighted: (item) => item.meta.source.q === this.activeQ });
+      this.hits = drawn.hits;
+      const tip = project(drawn.tip);
+      ctx.fillStyle = "#e9be67";
+      ctx.beginPath();
+      ctx.arc(tip[0], tip[1], 4, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.font = "12px ui-monospace";
+      ctx.fillText(progress < 0.999 ? "partial L" : "L", tip[0] + 9, tip[1] - 9);
+      if (active) {
+        const segment = segments.find((s) => s.items[0].meta === active);
+        const at = project(segment.to);
+        ctx.fillStyle = frame.highlightColour(active.source.p);
+        ctx.fillText("q=" + active.source.q, at[0] + 8, at[1] + 18);
+      }
+      ctx.restore();
+      const folded = visible.filter((s) => s.items.length > 1).reduce((a, s) => a + s.items.length, 0);
+      return { model, active, folded, replaying: progress < 0.999, tip: drawn.tip };
+    }
+  }
+  const cutoff = 2.5, gaussianTerms = 8;
+  function quadrature(order) {
+    const nodes = [];
+    for (let i = 1; i <= order; i++) {
+      let z = Math.cos(Math.PI * (i - 0.25) / (order + 0.5)), derivative = 0;
+      for (let step = 0; step < 30; step++) {
+        let previous2 = 1, current2 = z;
+        for (let k = 2; k <= order; k++) {
+          const next2 = ((2 * k - 1) * z * current2 - (k - 1) * previous2) / k;
+          previous2 = current2;
+          current2 = next2;
+        }
+        derivative = order * (z * current2 - previous2) / (z * z - 1);
+        const next = z - current2 / derivative;
+        if (Math.abs(next - z) < 2e-16) {
+          z = next;
+          break;
+        }
+        z = next;
+      }
+      let previous = 1, current = z;
+      for (let k = 2; k <= order; k++) {
+        const next = ((2 * k - 1) * z * current - (k - 1) * previous) / k;
+        previous = current;
+        current = next;
+      }
+      derivative = order * (z * current - previous) / (z * z - 1);
+      const u = cutoff * (1 + z) / 2, weight = cutoff / ((1 - z * z) * derivative * derivative), x = Math.exp(2 * u);
+      let kernel = 0;
+      for (let n = 1; n <= gaussianTerms; n++) {
+        const a = Math.PI * n * n * x;
+        kernel += (8 * a * a - 12 * a) * Math.exp(u / 2 - a);
+      }
+      nodes.push({ u, weight, amplitude: weight * kernel / 2 });
+    }
+    return nodes.sort((a, b) => a.u - b.u);
+  }
+  const fine = quadrature(96), coarse = quadrature(64);
+  function vectors(input, nodes) {
+    return nodes.flatMap((node, index) => {
+      const phase = input.tau * node.u, c = Math.cos(phase), s = Math.sin(phase), delta = (input.sigma - 0.5) * node.u;
+      return [1, -1].map((direction) => {
+        const magnitude = node.amplitude * Math.exp(direction * delta);
+        return {
+          id: `xi:${index}:${direction}`,
+          magnitude,
+          phase: direction * phase,
+          source: { kind: "quadrature", index, u: node.u, weight: node.weight, direction },
+          value: [magnitude * c, direction * magnitude * s]
+        };
+      });
+    });
+  }
+  function xiArm(input) {
+    if (!Number.isFinite(input.sigma) || input.sigma < 0.2 || input.sigma > 3 || !Number.isFinite(input.tau) || Math.abs(input.tau) > 15)
+      throw new RangeError("The ξ arm is validated for 0.2 ≤ σ ≤ 3 and |τ| ≤ 15.");
+    const terms = vectors(input, fine), endpoint = sumComplex(terms.map((t) => t.value)), comparison = sumComplex(vectors(input, coarse).map((t) => t.value));
+    const absoluteMass = terms.reduce((sum, t) => sum + t.magnitude, 0), roundoffEstimate = 32 * Number.EPSILON * absoluteMass;
+    const quadratureEstimate = Math.hypot(endpoint[0] - comparison[0], endpoint[1] - comparison[1]);
+    const a = 1.25 + Math.abs(input.sigma - 0.5) / 2, X = Math.exp(2 * cutoff), n = gaussianTerms + 1;
+    const integralTail = 4 * Math.PI ** 2 * Math.exp(-Math.PI * X) * X ** a / ((Math.PI - a / X) * (1 - 16 * Math.exp(-3 * Math.PI * X)));
+    const kernelTail = 4 * Math.PI ** 2 * n ** 4 * Math.exp(-Math.PI * n * n) / ((Math.PI * n * n - a) * (1 - ((n + 1) / n) ** 4 * Math.exp(-Math.PI * (2 * n + 1))));
+    return {
+      input: { ...input },
+      terms,
+      endpoint,
+      absoluteMass,
+      quadratureEstimate,
+      roundoffEstimate,
+      omittedBound: integralTail + kernelTail,
+      errorEstimate: quadratureEstimate + roundoffEstimate + integralTail + kernelTail,
+      cutoff,
+      pairs: fine.length
+    };
+  }
+  const colour = (direction) => direction === 1 ? "#68d9c4" : "#edab71";
+  class XiArmScene {
+    key = "";
+    model = null;
+    hits = [];
+    hover = -1;
+    pinned = -1;
+    extra = /* @__PURE__ */ new Set();
+    activeIndex = -1;
+    snapshot(input) {
+      const key = [input.sigma, input.tau].join("/");
+      if (key !== this.key) {
+        this.model = xiArm(input);
+        this.key = key;
+      }
+      return this.model;
+    }
+    clear() {
+      this.hover = -1;
+      this.pinned = -1;
+      this.extra.clear();
+    }
+    invalidate() {
+      this.hits = [];
+    }
+    active(model) {
+      if (this.hover >= 0) return this.hover;
+      if (this.pinned >= 0) return this.pinned;
+      return model.terms.filter((t) => t.source.direction === 1).reduce((a, b) => Math.abs(a.source.u - 0.3) < Math.abs(b.source.u - 0.3) ? a : b).source.index;
+    }
+    pick(point, pin = false) {
+      let nearest, best = 9;
+      for (const hit of this.hits) {
+        if (Math.hypot(hit.to[0] - hit.from[0], hit.to[1] - hit.from[1]) < 2) continue;
+        const d = segmentDistance(point, hit.from, hit.to);
+        if (d < best) {
+          best = d;
+          nearest = hit;
+        }
+      }
+      this.hover = nearest?.segment.items.length === 1 ? nearest.segment.items[0].meta.source.index : -1;
+      if (pin && this.hover >= 0) this.pinned = this.hover;
+      if (pin && nearest && this.hover < 0) {
+        const pairs = [...new Set(nearest.segment.items.map((item) => item.meta.source.index))];
+        for (const index of pairs.slice(0, 2)) this.extra.add(index);
+      }
+      return this.hover;
+    }
+    fit(input, target, includeInput = false) {
+      const model = this.snapshot(input), segments = layoutArm(model.terms.map((t) => ({ id: t.id, value: t.value, meta: t }))), active = this.active(model);
+      const points = [[0, 0], target, ...segments.map((s) => s.to)];
+      for (const segment of segments) if (segment.items[0].meta.source.index === active) {
+        const r = segment.items[0].meta.magnitude, a = segment.from;
+        points.push([a[0] - r, a[1] - r], [a[0] + r, a[1] + r]);
+      }
+      if (includeInput) points.push([input.sigma, input.tau]);
+      const lo = [Math.min(...points.map((z) => z[0])), Math.min(...points.map((z) => z[1]))], hi = [Math.max(...points.map((z) => z[0])), Math.max(...points.map((z) => z[1]))];
+      return { centre: [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2], extent: Math.max((hi[0] - lo[0]) / 4, (hi[1] - lo[1]) / 2, 1e-12) * 1.2 };
+    }
+    draw(ctx, frame) {
+      const { input, target, progress, centre, extent } = frame, model = this.snapshot(input);
+      const segments = layoutArm(model.terms.map((t) => ({ id: t.id, value: t.value, meta: t }))), active = this.active(model);
+      this.activeIndex = active;
+      const expanded = /* @__PURE__ */ new Set();
+      for (const term of model.terms) if (Math.abs(term.source.index - active) <= 1 || this.extra.has(term.source.index)) expanded.add(term.id);
+      const visible = frame.compact ? foldArm(segments, expanded) : segments, unit = 125 / extent;
+      const project = (z) => [300 + unit * (z[0] - centre[0]), 150 - unit * (z[1] - centre[1])];
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 20, 600, 260);
+      ctx.clip();
+      ctx.strokeStyle = "#91afbe";
+      ctx.globalAlpha = 0.24;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(...project([0, 0]));
+      for (const segment of segments) ctx.lineTo(...project(segment.to));
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      for (const segment of segments) if (segment.items[0].meta.source.index === active) {
+        const term = segment.items[0].meta, at = project(segment.from);
+        ctx.strokeStyle = colour(term.source.direction);
+        ctx.globalAlpha = 0.4;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(at[0], at[1], unit * term.magnitude, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+      const drawn = drawArm(ctx, visible, progress, { project, colour: (item) => colour(item.meta.source.direction), highlighted: (item) => item.meta.source.index === active });
+      this.hits = drawn.hits;
+      const tip = project(drawn.tip), goal = project(target);
+      ctx.fillStyle = "#a9d8f2";
+      ctx.beginPath();
+      ctx.arc(tip[0], tip[1], 3, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = "#e9be67";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(goal[0], goal[1], 6, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.font = "12px ui-monospace";
+      ctx.fillStyle = "#e9be67";
+      ctx.fillText("ξ", goal[0] + 10, goal[1] - 10);
+      if (progress < 0.999) {
+        ctx.fillStyle = "#a9d8f2";
+        ctx.fillText("partial", tip[0] + 8, tip[1] + 17);
+      }
+      ctx.restore();
+      return { model, active: model.terms.filter((t) => t.source.index === active), foldedPairs: visible.filter((s) => s.items.length > 1).reduce((a, s) => a + s.items.length / 2, 0), tip: drawn.tip };
+    }
+  }
+  function drawComplexPlane(ctx, centre, extent) {
+    const unit = 125 / extent, X = (re) => 300 + unit * (re - centre[0]), Y = (im) => 150 - unit * (im - centre[1]);
+    const tick = (v, step) => {
+      const digits = Math.max(0, Math.ceil(-Math.log10(step)) + 1);
+      return Math.abs(v) < 1e7 && digits <= 12 ? v.toFixed(digits) : v.toPrecision(5);
+    };
+    ctx.save();
+    ctx.font = "12px ui-monospace";
+    ctx.lineWidth = 1;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 20, 600, 260);
+    ctx.clip();
+    const left = Math.max(0, X(0)), right = Math.min(600, X(1));
+    if (right > left) {
+      ctx.fillStyle = "#b18cd015";
+      ctx.fillRect(left, 20, right - left, 260);
+    }
+    ctx.strokeStyle = "#71897b38";
+    for (let i = -2; i <= 2; i++) {
+      ctx.beginPath();
+      ctx.moveTo(300 + i * 125, 20);
+      ctx.lineTo(300 + i * 125, 280);
+      ctx.moveTo(0, 150 - i * 62.5);
+      ctx.lineTo(600, 150 - i * 62.5);
+      ctx.stroke();
+    }
+    for (const re of [0, 0.5, 1]) {
+      const x = X(re);
+      if (x < 0 || x > 600) continue;
+      ctx.strokeStyle = re === 0.5 ? "#c79de4a0" : "#c79de466";
+      ctx.setLineDash(re === 0.5 ? [5, 5] : []);
+      ctx.beginPath();
+      ctx.moveTo(x, 20);
+      ctx.lineTo(x, 280);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.strokeStyle = "#bfd0c7b0";
+    ctx.lineWidth = 1.5;
+    const x0 = X(0), y0 = Y(0);
+    if (x0 >= 0 && x0 <= 600) {
+      ctx.beginPath();
+      ctx.moveTo(x0, 20);
+      ctx.lineTo(x0, 280);
+      ctx.stroke();
+    }
+    if (y0 >= 20 && y0 <= 280) {
+      ctx.beginPath();
+      ctx.moveTo(0, y0);
+      ctx.lineTo(600, y0);
+      ctx.stroke();
+    }
+    if (x0 >= 0 && x0 <= 600 && y0 >= 20 && y0 <= 280) {
+      ctx.fillStyle = "#d7e4dc";
+      ctx.fillText("0", Math.min(586, x0 + 5), Math.min(275, y0 + 15));
+    }
+    ctx.restore();
+    ctx.fillStyle = "#acbdb2";
+    for (let i = -2; i <= 2; i++) {
+      ctx.fillText(tick(centre[0] + i * extent, extent), Math.min(500, Math.max(3, 303 + i * 125)), 296);
+      if (i < 2) ctx.fillText(tick(centre[1] + i * extent / 2, extent / 2), 4, 146 - i * 62.5);
+    }
+    ctx.fillStyle = "#c7d6cd";
+    ctx.fillText("Im(z) ↑", 4, 14);
+    ctx.fillText("Re(z) →", 535, 14);
+    ctx.fillStyle = "#c79de4";
+    ctx.textAlign = "center";
+    const stripVisible = right > left;
+    ctx.fillText(stripVisible ? "critical strip · input s" : X(1) < 0 ? "← input critical strip off view" : "input critical strip off view →", 300, 14);
+    for (const re of [0.5, 1]) {
+      const x = X(re);
+      if (x > 48 && x < 550) ctx.fillText(re === 0.5 ? "σ=½" : "σ=1", x, 34);
+    }
+    ctx.textAlign = "left";
+    if (x0 < 0 || x0 > 600 || y0 < 20 || y0 > 280) {
+      const horizontal = x0 < 0 ? "←" : x0 > 600 ? "→" : "", vertical = y0 < 20 ? "↑" : y0 > 280 ? "↓" : "";
+      ctx.fillStyle = "#acbdb2";
+      ctx.fillText("0 " + horizontal + vertical + " off view", 8, 272);
+    }
+    ctx.restore();
+  }
+  function createIntegralWorker() {
+    return new WorkerWrapper();
+  }
+  exports.LogArmScene = LogArmScene;
+  exports.XiArmScene = XiArmScene;
+  exports.createIntegralWorker = createIntegralWorker;
+  exports.drawComplexPlane = drawComplexPlane;
+  exports.foldArm = foldArm;
+  exports.layoutArm = layoutArm;
+  exports.logArmAt = logArmAt;
+  exports.logEuler = logEuler;
+  exports.paneAt = paneAt;
+  exports.primePowersThrough = primePowersThrough;
+  exports.riemannGamma = riemannGamma;
+  exports.riemannIntegrate = riemannIntegrate;
+  exports.viewDomain = viewDomain;
+  exports.xiArm = xiArm;
+  Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+  return exports;
+})({});
+
+const {riemannGamma,riemannIntegrate}=ClockMath;
+// Riemann views occupy the existing plot. They never retune s or move the clock.
+let paperMode='euler',paperData=null,paperWorker=null,paperKey='',paperChanged=0,paperRequested='',paperProgress=0,paperProgressAim=1,paperPlaying=false,paperRewinding=false,paperLast=performance.now(),paperFitPending=false,paperFitInput=false;
+const paperCache=new Map();
+const logArmScene=new ClockMath.LogArmScene();let logArmReadout=null;
+const xiArmScene=new ClockMath.XiArmScene();let xiArmReadout=null;
+const xiInputValid=()=>SIGMA>=.2&&SIGMA<=3&&Math.abs(TAUV)<=15;
+const paperSelector={value:'euler',onchange:null};
+const paperViews={
+ euler:{label:'Sum & product',title:'Sum & product → ζ',description:'Blue sum, prime-coloured product and gold ζ curve. Both infinite expressions converge for σ > 1.'},
+ log:{label:'Prime powers',title:'Prime powers → log ζ',description:'Each prime-power pane supplies one coloured vector q^(−s)/k. This is the finite logarithmic sum.'},
+ xiarm:{label:'ξ rotations',title:'Paired rotations → ξ',description:'Opposite rotations reconstruct ξ from integral samples. These pairs are independent of the prime panes.'},
+ term:{label:'One term',title:'One integral → Γ(s)n⁻ˢ',description:'Accumulate one exponential kernel. The clock supplies n; the gold ring is the independent target.'},
+ finite:{label:'Finite sum',title:'Finite integral → Γ(s)Sₙ(s)',description:'Integrate the first N exponential kernels, with N from the clock.'},
+ infinite:{label:'Infinite sum',title:'Infinite integral → Γ(s)ζ(s)',description:'Integrate 1/(eˣ−1) with its complex weight. This integral requires σ > 1.'},
+ theta:{label:'ξ symmetry',title:'Theta integral → ξ',description:'The two theta weights exchange under s ↔ 1−s. The gold ring is the independent ξ target.'}
+};
+const paperNavigation=document.createElement('nav');paperNavigation.id='paperViews';paperNavigation.setAttribute('aria-label','Complex constructions');
+for(const [label,modes] of [['Build',['euler','log','xiarm']],['Integrate',['term','finite','infinite','theta']]]){
+ const row=document.createElement('div');row.className='paper-view-row';row.setAttribute('role','group');row.setAttribute('aria-label',label);const name=document.createElement('span');name.textContent=label;row.append(name);
+ for(const mode of modes){const button=document.createElement('button');button.type='button';button.dataset.view=mode;button.textContent=paperViews[mode].label;button.title=paperViews[mode].description;button.setAttribute('aria-pressed',String(mode==='euler'));button.onclick=()=>{paperSelector.value=mode;paperSelector.onchange();};row.append(button);}
+ paperNavigation.append(row);
+}
+$('productBubble').querySelector('.bubble-head b').textContent='Complex explorer';
+$('productBubble').querySelector('.bubble-head').after(paperNavigation);
+const paperViewTitle=document.createElement('div');paperViewTitle.id='paperViewTitle';paperViewTitle.setAttribute('aria-live','polite');paperNavigation.after(paperViewTitle);
+const paperGuideEquation=document.createElement('p');paperGuideEquation.id='paperGuideEquation';planeNotes.querySelector('.bubble-head').after(paperGuideEquation);
+function updatePaperNavigation(){
+ paperViewTitle.replaceChildren(document.createTextNode(paperViews[paperMode].title));if(typeof viewHelpButton!=='undefined')paperViewTitle.append(viewHelpButton);paperViewTitle.title=paperViews[paperMode].description;
+ for(const button of paperNavigation.querySelectorAll('button'))button.setAttribute('aria-pressed',String(button.dataset.view===paperMode));
+ plane.setAttribute('aria-label',paperViews[paperMode].title+'. Shared complex ruler: purple input s and critical strip; paths show output values.');
+ if($('paperExplanation'))$('paperExplanation').textContent=paperViews[paperMode].description;
+}
+updatePaperNavigation();
+const paperEquation=document.createElement('div');paperEquation.id='paperEquation';paperEquation.textContent='Σ n⁻ˢ = Π (1 − p⁻ˢ)⁻¹ = ζ(s), for σ > 1';$('productGraph').before(paperEquation);
+const paperControls=document.createElement('div');paperControls.id='paperControls';paperControls.innerHTML='<button id="paperTrace">Trace integral</button><input id="paperScrub" type="range" min="0" max="1" step=".0001" value="1" aria-label="Integral accumulation progress">';$('exploreOptions').append(paperControls);
+$('paperTrace').textContent='Trace';$('paperTrace').title='Replay the integral or arm; in Euler view, open One term';$('exploreMore').before($('paperTrace'));paperControls.insertAdjacentHTML('afterbegin','<label for="paperScrub">Integral progress</label>');
+const paperExplanation=document.createElement('p');paperExplanation.id='paperExplanation';paperExplanation.textContent=paperViews.euler.description;$('exploreOptions').append(paperExplanation);
+const foldOption=document.createElement('label');foldOption.id='foldArmOption';foldOption.innerHTML='<input id="foldArmTerms" type="checkbox"> Fold unselected vectors (Prime powers / ξ rotations)';$('exploreOptions').append(foldOption);
+const paperFormulas={
+ xiarm:'ξ(s) ≈ Σⱼ Aⱼ[e<sup>(σ−½)uⱼ+iτuⱼ</sup> + e<sup>−(σ−½)uⱼ−iτuⱼ</sup>]',
+ log:'log ζ(s) = Σₚ Σₖ≥₁ (p<sup>k</sup>)<sup>−s</sup>/k · σ > 1',
+ euler:'Σ n<sup>−s</sup> = Π (1 − p<sup>−s</sup>)<sup>−1</sup> = ζ(s), for σ > 1',
+ term:'∫₀<sup>∞</sup> e<sup>−nx</sup>x<sup>s−1</sup> dx = Γ(s)n<sup>−s</sup> · σ > 0',
+ finite:'∫₀<sup>∞</sup> (Σ<sub>k=1</sub><sup>N</sup> e<sup>−kx</sup>)x<sup>s−1</sup> dx = Γ(s)S<sub>N</sub>(s) · σ > 0',
+ infinite:'∫₀<sup>∞</sup> x<sup>s−1</sup>/(e<sup>x</sup> − 1) dx = Γ(s)ζ(s) · σ > 1',
+ theta:'ξ(s) = ½ + ½s(s−1) ∫₁<sup>∞</sup> ψ(x)[x<sup>s/2−1</sup> + x<sup>−(s+1)/2</sup>] dx'
+};
+paperEquation.textContent=paperViews.euler.description;paperGuideEquation.innerHTML=paperFormulas.euler;
+function paperTarget(mode,sigma,tau,n){const gamma=riemannGamma(sigma,tau);if(mode==='term')return mul(gamma,power(n,sigma,tau));if(mode==='finite')return mul(gamma,continuumSum(n,sigma,tau).z);if(mode==='infinite')return mul(gamma,zeta(sigma,tau));if(Math.hypot(sigma-1,tau)<1e-10)return [.5,0];const pref=scale(mul([sigma,tau],[sigma-1,tau]),.5),piWeight=power(Math.PI,sigma/2,tau/2);return mul(mul(pref,riemannGamma(sigma/2,tau/2)),mul(piWeight,zeta(sigma,tau)));}
+function paperComplex(z){return z.every(Number.isFinite)?z[0].toPrecision(5)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toPrecision(5)+'i':'outside numeric range';}
+paperSelector.onchange=()=>{paperMode=paperSelector.value;updatePaperNavigation();paperEquation.textContent=paperViews[paperMode].description;paperGuideEquation.innerHTML=paperFormulas[paperMode];paperData=null;paperProgress=0;paperProgressAim=0;paperPlaying=!['euler','log','xiarm'].includes(paperMode);if(['log','xiarm'].includes(paperMode))paperProgress=paperProgressAim=1;paperRewinding=false;paperFitPending=false;paperRequested='';paperWorker?.terminate();paperWorker=null;productHitPoints=[];};
+$('paperTrace').onclick=()=>{if(paperMode==='euler'){paperSelector.value='term';paperSelector.onchange();}else{paperProgressAim=0;paperPlaying=false;paperRewinding=true;}$('exploreOptions').hidePopover();};
+$('paperScrub').oninput=e=>{paperPlaying=false;paperRewinding=false;paperProgressAim=+e.target.value;};
+function requestPaper(){if(['log','xiarm'].includes(paperMode))return;const n=Math.max(1,Math.floor(t)),key=[paperMode,sigmaAim,tauAim,paperMode==='term'||paperMode==='finite'?n:0].join('/'),now=performance.now();if(key!==paperKey){paperKey=key;paperChanged=now;paperRequested='';paperWorker?.terminate();paperWorker=null;}if(key===paperRequested||now-paperChanged<50)return;paperRequested=key;
+ if(Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit||(paperMode==='infinite'&&sigmaAim<=1)){paperData={key,...riemannIntegrate({mode:paperMode,sigma:sigmaAim,tau:tauAim,n})};return;}
+ if(paperCache.has(key)){paperData=paperCache.get(key);if(paperFitPending)fitPaper();return;}
+ try{paperWorker=ClockMath.createIntegralWorker();}catch(e){paperData={key,valid:false,reason:'Integral worker unavailable in this browser.'};return;}const worker=paperWorker;
+ worker.onmessage=e=>{if(worker!==paperWorker||e.data.key!==paperKey)return;paperData=e.data;paperCache.set(key,paperData);if(paperCache.size>8)paperCache.delete(paperCache.keys().next().value);worker.terminate();paperWorker=null;if(paperFitPending)fitPaper();};
+ worker.onerror=()=>{if(worker!==paperWorker)return;paperData={key,valid:false,reason:'Integral calculation failed.'};worker.terminate();paperWorker=null;};worker.postMessage({key,mode:paperMode,sigma:sigmaAim,tau:tauAim,n});
+}
+function fitPaper(includeInput=paperFitInput){if(paperMode==='xiarm'){if(sigmaAim<.2||sigmaAim>3||Math.abs(tauAim)>15)return;const input={sigma:sigmaAim,tau:tauAim},view=xiArmScene.fit(input,paperTarget('theta',sigmaAim,tauAim,1),includeInput);setGraphView(view.centre,view.extent);return;}if(paperMode==='log'){const view=logArmScene.fit({sigma:sigmaAim,tau:tauAim},t,selectedPrime,includeInput);setGraphView(view.centre,view.extent);return;}paperFitInput=includeInput;if(!paperData?.valid||paperData.key!==paperKey){paperFitPending=true;return;}paperFitPending=false;const d=paperData.rows,lo=[Infinity,Infinity],hi=[-Infinity,-Infinity];for(let i=0;i<d.length;i+=4)for(let k=0;k<2;k++){lo[k]=Math.min(lo[k],d[i+1+k]);hi[k]=Math.max(hi[k],d[i+1+k]);}const target=paperData.target??=paperTarget(paperMode,paperData.sigma,paperData.tau,paperData.n);for(let k=0;k<2;k++){lo[k]=Math.min(lo[k],target[k]);hi[k]=Math.max(hi[k],target[k]);}if(includeInput)for(let k=0;k<2;k++){const value=k?tauAim:sigmaAim;lo[k]=Math.min(lo[k],value);hi[k]=Math.max(hi[k],value);}setGraphView(lo.map((v,k)=>(v+hi[k])/2),Math.max((hi[0]-lo[0])/4,(hi[1]-lo[1])/2,1e-14)*1.18);}
+const normalFit=$('fitLocus').onclick;$('fitLocus').onclick=()=>{if(paperMode==='euler')normalFit();else{requestPaper();fitPaper(false);}};
+const normalFitTogether=$('fitTogether').onclick;$('fitTogether').onclick=()=>{if(paperMode==='euler')normalFitTogether();else{requestPaper();fitPaper(true);}};
+for(const event of ['pointerdown','wheel'])plane.addEventListener(event,()=>paperFitPending=false,{capture:true,passive:true});
+function tickPaperProgress(dt,ease,canPlay){if(canPlay&&paperRewinding&&paperProgress<.002){paperRewinding=false;paperPlaying=true;}if(canPlay&&paperPlaying){paperProgressAim=Math.min(1,paperProgressAim+dt/7);if(paperProgressAim===1)paperPlaying=false;}paperProgress+=(paperProgressAim-paperProgress)*ease;if(document.activeElement!==$('paperScrub'))$('paperScrub').value=paperProgress;}
+const normalProductGraph=drawProductGraph;
+drawProductGraph=function(){if(paperMode==='euler'){normalProductGraph();return;}if(!$('productBubble').matches(':popover-open'))return;
+ requestPaper();const now=performance.now(),dt=Math.min(.05,(now-paperLast)/1000),ease=1-Math.exp(-dt*12);paperLast=now;graphLastMs=now;graphCentre=graphCentre.map((v,k)=>v+(graphCentreAim[k]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
+ const ctx=plane.getContext('2d'),extent=10**graphLogExtent,u=125/extent,X=z=>300+u*(z[0]-graphCentre[0]),Y=z=>150-u*(z[1]-graphCentre[1]);ctx.clearRect(0,0,600,300);ClockMath.drawComplexPlane(ctx,graphCentre,extent);productHitPoints=[];
+ if(paperMode==='log'){
+  tickPaperProgress(dt,ease,true);
+  logArmReadout=logArmScene.draw(ctx,{input:{sigma:SIGMA,tau:TAUV},time:t,selectedPrime,progress:paperProgress,centre:graphCentre,extent,compact:$('foldArmTerms').checked,colour:factorColour,highlightColour:primeHighlight});
+  const r=logArmReadout,a=r.active;
+  $('productDetails').textContent='Pane-grown L = '+paperComplex(r.model.endpoint)+'. Completed cutoff sum = '+paperComplex(r.model.completedCutoffEndpoint)+'.'+(a?' q='+a.source.q+' contributes '+paperComplex(a.fullValue)+' when fully grown.':'');
+  $('productStatus').textContent=(SIGMA>1?'As the cutoff grows, the logarithmic sum converges to log ζ. ':'σ ≤ 1: finite terms only; convergence to log ζ is not claimed. ')+'exp(L) is not the finite Euler product: the prime-power cutoff omits higher powers. The circle is the active vector’s full radius. All vectors are shown by default. Options can fold unselected terms into dashed sums; click a dashed group to expand.';
+  $('productExtent').textContent='±'+extent.toPrecision(2);return;
+ }
+ if(paperMode==='xiarm'){drawXiArm(ctx,extent,dt,ease);return;}
+ const current=paperData?.key===paperKey,settled=current&&paperData.valid&&Math.abs(SIGMA-paperData.sigma)<1e-4&&Math.abs(TAUV-paperData.tau)<1e-4;
+ if(current&&!paperData.valid){ctx.fillStyle='#dcb884';ctx.font='14px ui-sans-serif';const lines=Math.abs(tauAim)>ClockMath.viewDomain(paperMode).tauLimit?['This view resolves |τ| ≤ '+ClockMath.viewDomain(paperMode).tauLimit+'.','The Euler explorer still supports |τ| ≤ 1000.']:paperMode==='infinite'&&sigmaAim<=1?['The integral fails at its lower endpoint.','For σ ≤ 1, choose Finite sum or Symmetry.']:[paperData.reason,'Try another input or return to Euler.'];lines.forEach((line,i)=>ctx.fillText(line,65,130+i*25));$('productDetails').textContent=paperData.reason;$('productStatus').textContent='No integral endpoint was calculated.';return;}
+ if(!paperData?.valid){$('productDetails').textContent='Computing the integral independently…';$('productStatus').textContent='';return;}
+ const d=paperData.rows;tickPaperProgress(dt,ease,settled);
+ const stopLength=paperProgress*paperData.length;let stop=0;while(stop+4<d.length&&d[stop+7]<stopLength)stop+=4;
+ const next=Math.min(stop+4,d.length-4),den=d[next+3]-d[stop+3],f=den>0?Math.max(0,Math.min(1,(stopLength-d[stop+3])/den)):1,point=[d[stop+1]+f*(d[next+1]-d[stop+1]),d[stop+2]+f*(d[next+2]-d[stop+2])],xValue=d[stop]+f*(d[next]-d[stop]);
+ ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();ctx.globalAlpha=settled?1:.2;ctx.strokeStyle='#87bff23a';ctx.lineWidth=1.4;ctx.beginPath();for(let i=0;i<d.length;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.stroke();ctx.strokeStyle='#87bff2';ctx.lineWidth=2.6;ctx.beginPath();for(let i=0;i<=stop;i+=4){const z=[d[i+1],d[i+2]];if(i)ctx.lineTo(X(z),Y(z));else ctx.moveTo(X(z),Y(z));}ctx.lineTo(X(point),Y(point));ctx.stroke();ctx.fillStyle='#9bcff8';ctx.beginPath();ctx.arc(X(point),Y(point),4,0,7);ctx.fill();
+ const target=paperData.target??=paperTarget(paperMode,paperData.sigma,paperData.tau,paperData.n);ctx.strokeStyle='#e9be67';ctx.lineWidth=2;ctx.beginPath();ctx.arc(X(target),Y(target),6,0,7);ctx.stroke();ctx.restore();
+ $('productDetails').textContent='Integral endpoint '+paperComplex(paperData.endpoint)+'; independent target '+paperComplex(target)+'.';
+ $('productStatus').textContent='Endpoint gap '+abs(sub(paperData.endpoint,target)).toExponential(2)+' · numerical estimate '+(paperData.estimatedQuadratureError+paperData.estimatedRoundoffError).toExponential(1)+' · omitted-tail bound '+paperData.omittedBound.toExponential(1)+'.';
+ $('productExtent').textContent='±'+extent.toPrecision(2);paperData.displayX=xValue;
+};
+const paperGuide=updateGuide;updateGuide=function(){paperGuide();if(paperMode==='euler')return;if(paperMode==='log'){updateLogArmGuide();return;}if(paperMode==='xiarm'){updateXiArmGuide();return;}const current=paperData?.key===paperKey,n=Math.floor(t),description=paperMode==='term'?'n = '+n+' · one clock term':paperMode==='finite'?'N = '+n+' · finite kernel':paperMode==='infinite'?'Infinite kernel · σ > 1 required':'ψ(x) = Σₙ≥1 exp(−πn²x) · ξ(s) = ξ(1−s)';
+ $('planeHint').textContent=description+' · Fit curve to inspect';$('liveCurveState').textContent=current&&paperData.valid?'Blue: accumulated integral · gold ring: independent target':'Integral view · '+(current?paperData.reason:'updating for this input…');
+ $('locusStatus').textContent=current&&paperData.valid?'x = '+(paperData.displayX||0).toPrecision(3)+(paperData.omittedBound>1e-7?' · lower endpoint unresolved':''):'No convergence is claimed outside the stated domain.';
+};
+const changePaper=paperSelector.onchange;paperSelector.onchange=()=>{changePaper();$('paperControls').querySelector('label').textContent=['log','xiarm'].includes(paperMode)?'Arm progress':'Integral progress';if(paperMode==='euler'){$('planeHint').textContent='Drag the purple s to change the input. Drag empty space to pan. Scroll to zoom.';locusRequested='';$('locusStatus').textContent='Preparing ζ curve…';}};
+planeNotes.insertAdjacentHTML('beforeend','<p>Riemann views: One term integrates e⁻ⁿˣxˢ⁻¹, with n from the clock. Finite sum integrates the first N exponential kernels; both require σ > 0. Infinite sum replaces those kernels by 1/(eˣ−1) and requires σ > 1. The blue path is calculated by quadrature, independently of the gold gamma/zeta target. A finite lower/upper cutoff is used; Guide reports a bound for the omitted tails and an estimated quadrature error. Near σ = 1 from above, the lower endpoint may remain unresolved.</p><p>Symmetry uses Riemann’s transformed theta integral: ξ(s)=½+½s(s−1)∫₁∞ψ(x)[x^(s/2−1)+x^(−(s+1)/2)]dx. Here ψ is the Gaussian sum Σexp(−πn²x), not the prime-count ψ. Its two powers exchange under s↦1−s. On σ=½ they are conjugates, so the accumulated path is real: ξ(½+iτ)=½−(τ²+¼)∫₁∞ψ(x)x^(−3/4)cos(½τ log x)dx. This is the cosine integral on page 3 of the translation; Riemann calls this function ξ(t), while the view uses the modern ξ(s) notation. This implements the resulting identity; the contour and theta-transformation arguments that establish it are not yet animated. Γ is the gamma function: Riemann writes Γ(s) as Π(s−1). For positive integers m, Γ(m)=(m−1)!.</p><p>One-term, finite-sum and infinite-sum integrals currently resolve |τ|≤15; ξ symmetry resolves |τ|≤35. They do not narrow the main Euler/zeta explorer. The trace advances through the actual sampled path and reports its current x; its playback speed is chosen for visibility rather than a uniform x speed. Fit curve uses the same fixed ruler after fitting; changing s does not silently rescale.</p>');
+
+function updateLogArmGuide(){
+ const r=logArmReadout,a=r?.active;
+ $('planeHint').textContent=a?'Pane '+a.source.q+(a.source.k>1?' = '+a.source.p+'^'+a.source.k:'')+' · J +'+(a.source.k===1?'1':'1/'+a.source.k)+' · '+Math.round(a.growth*100)+'% grown':'Advance to beat 2, then watch its pane grow.';
+ $('liveCurveState').textContent=(paperProgress<.999?'Replaying arm · ':'')+'Gold tip: finite L · circle: active term'+(r?.folded?' · '+r.folded+' folded':' · all terms');
+ $('locusStatus').textContent=SIGMA>1?'σ > 1 · log ζ limit':'σ ≤ 1 · finite only';
+}
+plane.addEventListener('pointermove',e=>{if(planeDrag)return;if(paperMode==='log')previewPrime(logArmScene.pick(planePixel(e)));if(paperMode==='xiarm')xiArmScene.pick(planePixel(e));});
+plane.addEventListener('pointerleave',()=>{if(paperMode==='log'){logArmScene.pick([-100,-100]);previewPrime(0);}if(paperMode==='xiarm')xiArmScene.pick([-100,-100]);});
+const beforeLogPointerUp=plane.onpointerup;
+plane.onpointerup=e=>{const pick=['log','xiarm'].includes(paperMode)&&planeDrag&&!planeDrag.input&&!planeDrag.moved;beforeLogPointerUp(e);if(pick&&paperMode==='xiarm')xiArmScene.pick(planePixel(e),true);if(pick&&paperMode==='log'){const p=logArmScene.pick(planePixel(e),true);if(p)linkPrime(p);}};
+$('clearLink').addEventListener('click',()=>logArmScene.clear());
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){logArmScene.clear();xiArmScene.clear();}});
+planeNotes.insertAdjacentHTML('beforeend','<p>The prime-power arm shows L=Σ g_q(T)q^(−s)/k, for panes q=p^k. A pane begins at T=q and grows through T=q+1; g follows that growth from 0 to 1. This is a reveal of the finite logarithmic sum, not an area claim. The J weight 1/k is additional to q^(−σ). The phase is −τ log q, so clock playback grows arriving vectors; changing τ rotates them. The active circle shows the full vector length q^(−σ)/k. Trace and the progress slider replay the displayed construction without moving the clock. All terms are drawn by default. Optional folded terms retain their aggregate value; the faint path shows their intermediate sums. Replay follows the displayed vectors, including aggregates, rather than pretending an aggregate is one prime power. Hover a coloured vector to highlight its prime family; click to pin its pane, or click a dashed aggregate to expand four terms. The branch of log ζ is the one defined by the Euler series for σ>1; no principal-log target or continuation is substituted.</p>');
+
+function drawXiArm(ctx,extent,dt,ease){
+ if(!xiInputValid()){
+  xiArmReadout=null;xiArmScene.invalidate();ctx.fillStyle='#dcb884';ctx.font='14px ui-sans-serif';
+  ctx.fillText('The ξ arm resolves 0.2 ≤ σ ≤ 3, |τ| ≤ 15.',55,130);ctx.fillText('Move s into this window, or return to Euler.',55,155);
+  $('productDetails').textContent='No paired endpoint is shown outside the validated window.';$('productStatus').textContent='The Euler explorer retains its wider τ range.';return;
+ }
+ tickPaperProgress(dt,ease,true);
+ const target=paperTarget('theta',SIGMA,TAUV,1);
+ xiArmReadout=xiArmScene.draw(ctx,{input:{sigma:SIGMA,tau:TAUV},target,progress:paperProgress,centre:graphCentre,extent,compact:$('foldArmTerms').checked});
+ const r=xiArmReadout,a=r.active,m=r.model;
+ $('productDetails').textContent='Paired endpoint '+paperComplex(m.endpoint)+'; independent ξ target '+paperComplex(target)+'. Active radii '+a[0].magnitude.toPrecision(4)+' and '+a[1].magnitude.toPrecision(4)+'.';
+ $('productStatus').textContent='Endpoint gap '+abs(sub(m.endpoint,target)).toExponential(2)+' · estimated numerical error '+m.errorEstimate.toExponential(1)+' · omitted-tail bound '+m.omittedBound.toExponential(1)+'. 96 quadrature pairs; u ≤ 2.5. Error estimates are not certified bounds. All pairs are shown by default; folding is optional.';
+ $('productExtent').textContent='±'+extent.toPrecision(2);
+}
+function updateXiArmGuide(){
+ const r=xiArmReadout,a=r?.active[0];
+ $('planeHint').textContent=a?'u = '+a.source.u.toFixed(3)+' · angles ±'+(TAUV*a.source.u).toFixed(3)+' rad · '+(Math.abs(SIGMA-.5)<1e-8?'equal radii':'radius ratio '+Math.exp(2*(SIGMA-.5)*a.source.u).toPrecision(3)):'ξ arm · validated for 0.2 ≤ σ ≤ 3, |τ| ≤ 15';
+ $('liveCurveState').textContent=r?(paperProgress<.999?'Replay · ':'')+'Teal +τu · amber −τu · gold ring ξ'+(r.foldedPairs?' · '+r.foldedPairs+' pairs folded':' · all '+r.model.pairs+' pairs'):'Move s into the validated window to see the pairs.';
+ $('locusStatus').textContent=r?'Quadrature pairs · clock-independent':'Outside ξ arm range';
+}
+planeNotes.insertAdjacentHTML('beforeend','<p>The ξ paired arm rewrites the theta integral as ξ(s)=∫₀∞K(u)cosh((s−½)u)du, where K(u)=Σₙ≥1[8π²n⁴exp(9u/2)−12πn²exp(5u/2)]exp(−πn²exp(2u)). At each quadrature node, A=wK(u)/2 supplies two vectors with lengths A exp(±(σ−½)u) and angles ±τu. Teal turns with +τu; amber turns with −τu. At σ=½ the lengths agree and the imaginary parts cancel pair by pair. Circles mark the two active radii, attached tip to tail. Hover a vector to inspect a pair; click to pin, Escape to clear. All pairs are drawn by default. If folding is enabled in Options, only whole pairs are folded; their net contribution remains visible as a dashed segment and the faint path retains each intermediate vector. Trace replays the displayed vectors, including folded aggregates.</p><p>These nodes sample an integral: they are not primes, prime powers, or zeros. Changing the clock does not change their weights or phases. The gold ξ target comes from the separate gamma/zeta evaluator, not from adjusting the arm endpoint. The positive kernel is a rearrangement of the theta representation; the steps deriving that kernel and a clock-mounted reveal are still to come. The 96-node calculation is compared with 64 nodes and includes a floating-point error estimate; those are estimates, while the omitted integral and Gaussian tails have bounds. Near a zero, cancellation makes relative error unhelpful: inspect absolute error. The phase convention follows the <a href="https://arxiv.org/html/1904.12438#S1" target="_blank" rel="noopener">classical Fourier representation</a>, rescaled from H₀(z)=ξ(½+iz/2)/8 by u↦u/2.</p>');
+
+planeNotes.querySelector('.bubble-head').insertAdjacentHTML('afterend','<p class="coordinate-note">Every view uses the same complex ruler: solid axes cross at zero. Purple marks the input s, the critical strip 0 &lt; Re(s) &lt; 1 and its dashed centre σ=½. Curves and vector endpoints are output values on that shared ruler; their position inside the purple band is not a claim about where their input lies. Fit input &amp; outputs in Options brings s into view. Prime powers builds log ζ; ξ rotations is the counter-rotating integral construction.</p>');
+
+// View-specific explanations and slider domains share the evaluator's limits.
+var viewHelpButton=document.createElement('button');viewHelpButton.id='explainView';viewHelpButton.textContent='Explain view';viewHelpButton.setAttribute('popovertarget','viewHelp');
+const viewHelp=document.createElement('section');viewHelp.id='viewHelp';viewHelp.className='bubble';viewHelp.setAttribute('popover','auto');stage.append(viewHelp);
+const viewStories={
+ euler:[
+  'Two ways to build the same number',
+  'The blue chain adds one term for every integer. The coloured chain multiplies one factor for every prime. Their endpoints approach the gold ζ value as the clock advances, provided σ is greater than 1.',
+  'The gold curve is a different object: it traces ζ as τ varies at fixed σ. Each point on it is a complete output, not another term of the blue sum.',
+  'Change the beat to add terms. Change σ to alter their sizes and τ to turn them. Below σ=1 you can still inspect finite paths, but they no longer supply the convergent infinite sum and product.'
+ ],
+ log:[
+  'Turn prime factors into an additive chain',
+  'Each prime-power pane supplies one arrow. The pane 4=2² contributes half of 4^(−s); 8=2³ contributes a third of 8^(−s). Colour identifies the base prime.',
+  'The tip is a finite approximation to log ζ, not ζ itself. Taking a logarithm turns multiplication into addition; the extra 1/k weights come from expanding each prime factor.',
+  'Step the clock to watch a pane and its arrow grow together. Hover an arrow to link its prime family. The infinite logarithmic sum converges when σ>1; below that, this view displays finite terms only.'
+ ],
+ xiarm:[
+  'Build ξ from opposite rotations',
+  'Each teal arrow has an amber partner. Changing τ rotates them in opposite directions. At σ=½ their lengths match, so each pair cancels vertically.',
+  'These pairs sample the theta integral; they are not prime panes. Together they reconstruct ξ, a symmetrized version of ζ with the pole removed. The gold ring is calculated separately as a check.',
+  'Hover a pair, then vary σ to unbalance its lengths. Vary τ near 14.134725 to watch the complete chain close near the first zero. Clock time does not change these integral samples.'
+ ],
+ term:[
+  'Replace one sum term with an integral',
+  'Instead of drawing the single arrow n^(−s), accumulate a continuous stream of tiny contributions. The clock supplies n. Trace shows that accumulation as the integration variable x increases.',
+  'The blue endpoint is Γ(s) times n^(−s). Gamma is the scaling factor introduced by this integral identity, so the endpoint is not the original sum term by itself.',
+  'Change the beat to choose n, then replay with Trace. This real-axis integral requires σ>0. Its current numerical window is |τ|≤15.'
+ ],
+ finite:[
+  'Integrate a finite collection of terms',
+  'Combine the first N exponential kernels, then accumulate their complex weights into one blue path. The clock supplies N; Trace advances through x, not through the clock beats.',
+  'The endpoint is Γ(s) times the finite sum of n^(−s). The gold ring comes from evaluating that finite sum and Gamma independently.',
+  'Compare with One term, then increase the beat. This integral still works in the critical strip because it contains only finitely many kernels. It requires σ>0; the current numerical window is |τ|≤15.'
+ ],
+ infinite:[
+  'Let all the exponential kernels join in',
+  'The infinite geometric sum of the kernels becomes 1/(eˣ−1). The blue path accumulates it with the same complex weight used in the preceding integral views.',
+  'The endpoint is Γ(s)ζ(s), not ζ(s) alone. The gold ring is an independent check. Clock time has no effect because the kernel already includes every integer.',
+  'Move σ towards 1 from the right to see the lower endpoint become difficult. At σ≤1 this integral actually diverges; this is a mathematical boundary. The |τ|≤15 boundary is only a numerical limit.'
+ ],
+ theta:[
+  'Use symmetry to reach beyond the Euler domain',
+  'Riemann reorganizes a Gaussian sum into two matching weights. The blue path starts at ½ and adds their integral from x=1 to infinity. Its endpoint is ξ, checked by the gold ring.',
+  'Exchanging s and 1−s swaps the two weights. On σ=½ they are conjugates, so their imaginary parts cancel and the accumulated path stays on the real axis. This is the integral behind ξ rotations.',
+  'ξ itself is defined throughout the complex plane. This view now resolves |τ|≤35, within the shared σ controls 0.2–3. At high τ, large cancellations leave tiny answers; extending farther needs better precision checks, not merely a wider slider.'
+ ]
+};
+function refreshViewHelp(){
+ const [title,shows,meaning,tryIt]=viewStories[paperMode];
+ viewHelp.innerHTML='<div class="bubble-head"><b>'+title+'</b><button popovertarget="viewHelp" popovertargetaction="hide" aria-label="Close view explanation">×</button></div><p>'+shows+'</p><p>'+meaning+'</p><p><strong>Try it.</strong> '+tryIt+'</p><div class="view-equation">'+paperFormulas[paperMode]+'</div><p class="domain-key">Slider colours: green = supported; amber = finite terms only; hatched = divergent integral or outside the numerical window. The σ limits 0.2–3 belong to the shared clock controls.</p><button id="useViewRange">Use this view’s τ range</button>';
+ $('useViewRange').onclick=()=>{const limit=ClockMath.viewDomain(paperMode).tauLimit;$('tauLow').value=-limit;$('tauHigh').value=limit;$('tauHigh').onchange();updateDomainSliders();};
+}
+viewHelpButton.addEventListener('click',refreshViewHelp);paperViewTitle.append(viewHelpButton);
+for(const [id,axis] of [['sigmaDial','sigma'],['tauScrub','tau']]){
+ const input=$(id);input.classList.add('domain-range');const caption=document.createElement('output');caption.id=axis+'Domain';caption.className='domain-caption';caption.setAttribute('aria-live','polite');input.closest('.axis-control').append(caption);input.setAttribute('aria-describedby',caption.id);
+}
+let domainKey='';
+function updateDomainSliders(){
+ const d=ClockMath.viewDomain(paperMode),lo=+$('tauScrub').min,hi=+$('tauScrub').max,key=[paperMode,lo,hi,sigmaAim>1,Math.abs(tauAim)>d.tauLimit].join('/');if(key===domainKey)return;domainKey=key;
+ const green='#609d87',amber='#b3904b',invalid='#665869';
+ const percent=(v,a,b)=>Math.max(0,Math.min(100,100*(v-a)/(b-a)));
+ const sigma=$('sigmaDial'),threshold=percent(1,+sigma.min,+sigma.max),left=d.boundaryKind==='finite only'?amber:invalid;
+ const hatch='repeating-linear-gradient(135deg,#665869 0 3px,#382e40 3px 6px)';sigma.style.background=d.sigmaBoundary===null?green:d.boundaryKind==='finite only'?'linear-gradient(to right,'+left+' '+threshold+'%,'+green+' '+threshold+'%)':'linear-gradient(to right,transparent '+threshold+'%,'+green+' '+threshold+'%),'+hatch;
+ const a=percent(-d.tauLimit,lo,hi),b=percent(d.tauLimit,lo,hi);
+ $('tauScrub').style.background='linear-gradient(to right,transparent '+a+'%,'+green+' '+a+'%,'+green+' '+b+'%,transparent '+b+'%),'+hatch;
+ const sigmaText=d.boundaryKind==='finite only'?'σ ≤ 1: finite only · σ > 1: convergent':d.boundaryKind==='diverges'?'σ ≤ 1: integral diverges · σ > 1: supported':'σ 0.2–3: supported · shared clock range';
+ const tauText='|τ| ≤ '+d.tauLimit+(d.tauLimit===1000?' · explorer range':' · numerical window')+(Math.abs(tauAim)>d.tauLimit?' · input outside':'');
+ $('sigmaDomain').textContent=sigmaText;$('tauDomain').textContent=tauText;
+ sigma.title=sigmaText;$('tauScrub').title=tauText+'; displayed slider '+lo+' to '+hi;
+ $('sigmaExact').setAttribute('aria-describedby','sigmaDomain');$('tauExact').setAttribute('aria-describedby','tauDomain');
+ $('sigmaExact').classList.toggle('outside-domain',paperMode==='infinite'&&sigmaAim<=1);$('tauExact').classList.toggle('outside-domain',Math.abs(tauAim)>d.tauLimit);
+}
+const domainGuide=updateGuide;updateGuide=function(){domainGuide();updateDomainSliders();};
+const explainChange=paperSelector.onchange;paperSelector.onchange=()=>{explainChange();refreshViewHelp();updateDomainSliders();};
+refreshViewHelp();updateDomainSliders();
 
 </script>
 </body>

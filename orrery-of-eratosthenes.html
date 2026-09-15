@@ -336,7 +336,13 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
 #clockApp.redesigned #transportCorner .transport button{font:14px var(--mono);padding:7px 10px}
 #clockApp.redesigned #transportCorner .transport #play{min-width:74px!important}
 #clockApp.redesigned #transportCorner .scrubber{grid-column:1/-1;grid-row:2;width:100%;font:12px var(--mono);padding:0;background:none}
-#clockApp.redesigned #clockObserve{font-size:13px}
+#clockApp.redesigned #clockObserve,#clockApp.redesigned #sReadout{font-size:13px}
+#clockApp.redesigned #sReadout{font-variant-numeric:tabular-nums;color:#c9b489}
+#clockApp.redesigned .option-heading{font:13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#93aa9c;margin:18px 0 6px;border-bottom:1px solid #8ca79433;padding-bottom:5px}
+#clockApp.redesigned #traceWindow,#clockApp.redesigned .product-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px}
+#clockApp.redesigned .product-tools input[type=range]{flex:1;min-width:120px}
+#clockApp.redesigned .inspector-page label.field input[type=number]{width:78px;flex:0 0 auto}
+#clockApp.redesigned .inspector-page label.field input[type=range]{width:auto;flex:1;min-width:110px}
 #clockApp.redesigned #originalProof{position:fixed;z-index:6;width:var(--tape-span,380px);max-width:none;margin:0;transform:translate(-50%,-50%);pointer-events:none!important}
 #clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt,#clockApp.redesigned .proof .product-dots{pointer-events:auto}
 #clockApp.redesigned #tapeDomain{font:12px/1.5 var(--mono);text-align:center;color:#9eb6a7;margin:0;min-height:18px}
@@ -348,6 +354,11 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
 #clockApp.redesigned .proof #strip{top:calc(var(--tape-thick,64px)/2 - 12px)}
 #clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font:13px/24px var(--mono)}
 #clockApp.redesigned .proof .fx{cursor:pointer}
+#clockApp.redesigned .tape-op{display:inline-block;width:46px;text-align:center;vertical-align:middle;color:#cdd8cf}
+#clockApp.redesigned #sumOp{position:absolute;right:0;top:50%;transform:translateY(-50%);width:46px;z-index:2}
+#clockApp.redesigned .tape-op b{font:19px/1 var(--serif);font-weight:400;display:block}
+#clockApp.redesigned .tape-op small{font:10px/1.2 var(--mono);color:#9eb6a7;display:block;white-space:nowrap}
+#clockApp.redesigned .tape-op i{font-style:normal;font-variant-numeric:tabular-nums;color:var(--brass)}
 #clockApp.redesigned .term-ink,#clockApp.redesigned .factor-ink{text-decoration:none!important}
 #clockApp.redesigned .proof #pf{top:50%}
 
@@ -2192,7 +2203,7 @@ const hint=document.createElement('p');hint.id='planeHint';hint.textContent='Dra
 let placing=false,planeDrag=null,trailCache={key:'',rows:[],ms:0};
 $('placeInput').onclick=()=>{placing=!placing;$('placeInput').setAttribute('aria-pressed',String(placing));plane.style.cursor=placing?'crosshair':'grab';};
 function tauWindow(){return [+$('tauLow').value,+$('tauHigh').value];}
-for(const id of ['tauLow','tauHigh'])$(id).onchange=()=>{let [a,b]=tauWindow();if(!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -35||b>35){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};
+for(const id of ['tauLow','tauHigh'])$(id).onchange=()=>{let [a,b]=tauWindow();if(!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -35||b>35){$('tauLow').value=-35;$('tauHigh').value=35;return;}trailCache.key='';};
 $('tauScrub').oninput=()=>tune(sigmaAim,+$('tauScrub').value);
 function planePixel(e){const b=graphPlotRect(plane);return [(e.clientX-b.left)*600/b.width,(e.clientY-b.top)*300/b.height];}
 function planeValue(q){const u=125/10**graphLogExtent;return [graphCentre[0]+(q[0]-300)/u,graphCentre[1]-(q[1]-150)/u];}
@@ -2245,12 +2256,15 @@ $('tauExact').min=$('tauDial').min=-1000;$('tauExact').max=$('tauDial').max=1000
 $('tauExact').onkeydown=e=>{if(!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.altKey?.000001:e.shiftKey?.01:.0001;const value=Math.max(-1000,Math.min(1000,tauAim+(e.key==='ArrowUp'?step:-step)));$('tauExact').value=Number(value.toFixed(12));$('tauExact').oninput();};
 const rawTune=tune;tune=function(sigma,tau){rawTune(Math.max(.2,Math.min(3,sigma)),Math.max(-1000,Math.min(1000,tau)));};
 tunePoint=function(q){const z=planeValue(q);tune($('lockSigma').checked?sigmaAim:z[0],z[1]);};
-for(const id of ['tauLow','tauHigh']){$(id).min=-1000;$(id).max=1000;$(id).onchange=()=>{const [a,b]=tauWindow();if($(id).value===''||!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -1000||b>1000){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};}
-$('tauHigh').value=60;$('tauHigh').onchange();
+// The sampled interval is its own quantity: it no longer retunes the input
+// slider, which is why that slider could not reach negative tau.
+for(const id of ['tauLow','tauHigh']){$(id).min=-1000;$(id).max=1000;$(id).onchange=()=>{const [a,b]=tauWindow();if($(id).value===''||!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -1000||b>1000){$('tauLow').value=-60;$('tauHigh').value=60;return;}trailCache.key='';};}
+$('tauLow').value=-60;$('tauHigh').value=60;$('tauHigh').onchange();
+$('tauScrub').min=-35;$('tauScrub').max=35;$('tauScrub').step=.001;
 $('tauLoci').checked=false;planeNotes.append($('tauLoci').parentElement);
 $('planeActions').insertAdjacentHTML('beforeend','<label><input id="zetaLocus" type="checkbox" checked> ζ curve</label>');
 const locusTools=document.createElement('div');locusTools.id='locusTools';locusTools.innerHTML='<button id="fitLocus">Fit ζ curve</button><label>τ span <select id="locusSpan" aria-label="Zeta curve tau span"><option value="60">60</option><option value="100">100</option><option value="500">500</option><option value="1000">1000</option></select></label><output id="locusStatus" aria-live="polite">Preparing ζ curve…</output>';$('planeHint').before(locusTools);
-$('locusSpan').onchange=()=>{const width=+$('locusSpan').value,a=Math.min(+$('tauLow').value,1000-width);$('tauLow').value=a;$('tauHigh').value=a+width;$('tauHigh').onchange();};
+$('locusSpan').onchange=()=>{const width=+$('locusSpan').value,a=Math.max(-1000,Math.min(1000-width,tauAim-width/2));$('tauLow').value=+a.toFixed(4);$('tauHigh').value=+(a+width).toFixed(4);$('tauHigh').onchange();};
 $('planeHint').textContent='Drag s · pan space · wheel to zoom · gold curve follows τ · brighter near current τ';
 planeNotes.insertAdjacentHTML('beforeend','<p>The gold curve is ζ(σ+iτ) itself, computed independently of the clock beat. Bright gold follows the current τ; dim gold is its −τ reflection when ghosts are enabled. Fit ζ curve frames the output alone, so a large input height does not squeeze the loops. τ spans up to 1000 in either direction are supported. Change the window endpoints to isolate a tangle.</p><p>Curve points stream from a background worker as they are computed; completed curves are cached for six recent σ/window combinations. Sampling uses steps no larger than 0.04 with extra subdivision for curvature. At extreme zoom a polyline still has finite resolution; narrow the τ window and inspect it. The pole at s=1 breaks the curve. The critical line has no singularity there at nonzero τ; its many visits near zero create the loops.</p>');
 for(const p of planeNotes.querySelectorAll('p'))p.innerHTML=p.innerHTML.replace('|τ| ≤ 35','|τ| ≤ 1000');
@@ -3100,6 +3114,16 @@ var ClockMath = (function(exports) {
     {
       const rhs = el("originalProof").querySelector(".rhs"), zeta = rhs.querySelector(".zeta-symbol");
       rhs.prepend(zeta);
+      const pi = document.createElement("span");
+      pi.className = "tape-op";
+      pi.id = "productOp";
+      pi.innerHTML = '<span class="factor-ink"><b>∏</b><small>p ≤ <i id="opProductN">1</i></small></span>';
+      zeta.after(pi);
+      const sigma = document.createElement("span");
+      sigma.className = "tape-op";
+      sigma.id = "sumOp";
+      sigma.innerHTML = '<span class="factor-ink"><b>∑</b><small>m ≥ <i id="opSumN">1</i></small></span>';
+      el("tape").append(sigma);
     }
     const panels = /* @__PURE__ */ new Map();
     let openClock = "", openRiemann = "";
@@ -3214,6 +3238,14 @@ var ClockMath = (function(exports) {
     observe.textContent = "Observe";
     observe.onclick = () => open("observeBubble");
     el("clockTransport").append(observe);
+    const sPanel = createPanel("inputPanel", "Input s", `<p class="small-note">Every term is weighted by 1/n<sup>s</sup>. The clock shows the terms; s decides how heavily each one counts.</p><label class="field">σ · real part<input id="clockSigma" type="range" min="0.2" max="3" step="0.001" value="2"><input id="clockSigmaExact" type="number" min="0.2" max="3" step="any" value="2"></label><label class="field">τ · height<input id="clockTau" type="range" min="-35" max="35" step="0.001" value="0"><input id="clockTauExact" type="number" min="-1000" max="1000" step="any" value="0"></label><p class="small-note" id="axisNote">On the real axis the weights are ordinary fractions. Move τ off zero and each term also turns, which is where the curve starts to matter.</p><button id="openExplorer">Watch it in the Riemann explorer</button>`);
+    const sChip = document.createElement("button");
+    sChip.id = "sReadout";
+    sChip.className = "text-button";
+    sChip.onclick = () => open(sPanel.id);
+    el("clockTransport").append(sChip);
+    for (const [id, key] of [["clockSigma", "sigma"], ["clockSigmaExact", "sigma"], ["clockTau", "tau"], ["clockTauExact", "tau"]]) el(id).addEventListener("input", () => actions.setting(key, el(id).value));
+    el("openExplorer").onclick = () => setLayout("both");
     el("snapChoice").onchange = () => {
       const value = el("snapChoice").value;
       actions.setting("snap", value);
@@ -3280,9 +3312,21 @@ var ClockMath = (function(exports) {
     sigmaRow.id = "sigmaControl";
     tauRow.id = "tauControl";
     graphWrap.append(sigmaRow, tauRow);
+    sigmaRow.title = "Input s · real part";
+    tauRow.title = "Input s · height";
     el("paperViewTitle").hidden = true;
     el("paperEquation").hidden = true;
     el("planeHint").hidden = true;
+    const section = (title, node) => {
+      const h = document.createElement("h3");
+      h.className = "option-heading";
+      h.textContent = title;
+      node.before(h);
+      node.hidden = false;
+    };
+    el("exploreOptions").append(el("traceWindow"), el("productRange").closest(".product-tools"));
+    section("ζ curve · τ sampled", el("traceWindow"));
+    section("View range · output camera", el("productRange").closest(".product-tools"));
     el("exploreDock").append(el("exploreToolbar"));
     el("exploreToolbar").querySelector('[popovertarget="planeNotes"]')?.remove();
     el("explainView").textContent = "Inspect";
@@ -3354,7 +3398,7 @@ var ClockMath = (function(exports) {
     resize.observe(el("clockSurface"));
     resize.observe(graphWrap);
     setLayout("clock");
-    let lastMode = "", lastTime = -1, lastSound;
+    let lastMode = "", lastTime = -1, lastSound, lastS = "", offAxis = false;
     return { setLayout, update() {
       const state = actions.read();
       if (lastSound !== state.sound) {
@@ -3377,6 +3421,17 @@ var ClockMath = (function(exports) {
         fine2.max = String(Math.min(5e3, state.time + 10));
         fine2.value = String(state.time);
         lastTime = state.time;
+      }
+      const text = "s = " + state.sigma.toFixed(2) + (state.tau < 0 ? " − " : " + ") + Math.abs(state.tau).toFixed(2) + "i";
+      if (text !== lastS) {
+        lastS = text;
+        sChip.textContent = text;
+        for (const [id, value] of [["clockSigma", state.sigma], ["clockSigmaExact", state.sigma], ["clockTau", state.tau], ["clockTauExact", state.tau]]) if (document.activeElement !== el(id)) el(id).value = String(+value.toFixed(6));
+        el("axisNote").textContent = Math.abs(state.tau) < 1e-9 ? "On the real axis the weights are ordinary fractions. Move τ off zero and each term also turns, which is where the curve starts to matter." : "Off the real axis every term turns as well as shrinks. The explorer draws where those turns land.";
+      }
+      if (!offAxis && Math.abs(state.tau) > 1e-9) {
+        offAxis = true;
+        if (layout === "clock") setLayout("both");
       }
     }, open };
   }
@@ -3700,7 +3755,7 @@ const workspace=ClockMath.mountWorkspace({
  seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
  setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;soundOn=true;$('sound').setAttribute('aria-pressed','true');
 for(const event of ['pointerdown','keydown'])addEventListener(event,function open(){removeEventListener(event,open);if(soundOn)unlock();},{once:true});
-resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
+resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='sigma'){const v=+value;if(Number.isFinite(v))tune(v,tauAim);}else if(key==='tau'){const v=+value;if(Number.isFinite(v))tune(sigmaAim,v);}else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
 });
 function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:hsl('+hueOf(p).toFixed(1)+' 68% 62%)"></i>').join('');}
 updateSpectrum();
@@ -3713,7 +3768,7 @@ paperFormulas.term='∫₀<sup>∞</sup> e<sup>−nx</sup>x<sup>s−1</sup> dx =
 $('jIntro').insertAdjacentHTML('beforebegin','<p>On the optional J radius, one count unit is R/t: length = R·J(t)/t. Credits jump by 1/k at pᵏ. This measures a weighted count, not log(q).</p>');
 const inspectRadius=document.createElement('button');inspectRadius.textContent='Show J radius';inspectRadius.onclick=()=>{jRadiusOn=!jRadiusOn;$('jRadiusToggle').checked=jRadiusOn;inspectRadius.textContent=jRadiusOn?'Hide J radius':'Show J radius';};$('jBubble').append(inspectRadius);
 const redesignedGuide=updateGuide;
-updateGuide=function(){redesignedGuide();workspace.update();drawJRadius();dockTape();const n=Math.floor(t);if(!isPrime(n)&&n>1)$('fac').textContent=factoredName(n);};
+updateGuide=function(){redesignedGuide();workspace.update();drawJRadius();dockTape();const beat=Math.floor(t);if($('opProductN').textContent!==String(beat)){$('opProductN').textContent=String(beat);$('opSumN').textContent=String(beat);}const n=Math.floor(t);if(!isPrime(n)&&n>1)$('fac').textContent=factoredName(n);};
 // Capture global keyboard shortcuts only outside controls and the graph.
 document.addEventListener('keydown',e=>{if(e.target.closest('input,select,textarea,button,summary,#productGraph,[role=separator]'))e.stopPropagation();},true);
 resizeWorkspace();

@@ -17,12 +17,15 @@ $('tauExact').min=$('tauDial').min=-1000;$('tauExact').max=$('tauDial').max=1000
 $('tauExact').onkeydown=e=>{if(!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.altKey?.000001:e.shiftKey?.01:.0001;const value=Math.max(-1000,Math.min(1000,tauAim+(e.key==='ArrowUp'?step:-step)));$('tauExact').value=Number(value.toFixed(12));$('tauExact').oninput();};
 const rawTune=tune;tune=function(sigma,tau){rawTune(Math.max(.2,Math.min(3,sigma)),Math.max(-1000,Math.min(1000,tau)));};
 tunePoint=function(q){const z=planeValue(q);tune($('lockSigma').checked?sigmaAim:z[0],z[1]);};
-for(const id of ['tauLow','tauHigh']){$(id).min=-1000;$(id).max=1000;$(id).onchange=()=>{const [a,b]=tauWindow();if($(id).value===''||!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -1000||b>1000){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};}
-$('tauHigh').value=60;$('tauHigh').onchange();
+// The sampled interval is its own quantity: it no longer retunes the input
+// slider, which is why that slider could not reach negative tau.
+for(const id of ['tauLow','tauHigh']){$(id).min=-1000;$(id).max=1000;$(id).onchange=()=>{const [a,b]=tauWindow();if($(id).value===''||!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -1000||b>1000){$('tauLow').value=-60;$('tauHigh').value=60;return;}trailCache.key='';};}
+$('tauLow').value=-60;$('tauHigh').value=60;$('tauHigh').onchange();
+$('tauScrub').min=-35;$('tauScrub').max=35;$('tauScrub').step=.001;
 $('tauLoci').checked=false;planeNotes.append($('tauLoci').parentElement);
 $('planeActions').insertAdjacentHTML('beforeend','<label><input id="zetaLocus" type="checkbox" checked> ζ curve</label>');
 const locusTools=document.createElement('div');locusTools.id='locusTools';locusTools.innerHTML='<button id="fitLocus">Fit ζ curve</button><label>τ span <select id="locusSpan" aria-label="Zeta curve tau span"><option value="60">60</option><option value="100">100</option><option value="500">500</option><option value="1000">1000</option></select></label><output id="locusStatus" aria-live="polite">Preparing ζ curve…</output>';$('planeHint').before(locusTools);
-$('locusSpan').onchange=()=>{const width=+$('locusSpan').value,a=Math.min(+$('tauLow').value,1000-width);$('tauLow').value=a;$('tauHigh').value=a+width;$('tauHigh').onchange();};
+$('locusSpan').onchange=()=>{const width=+$('locusSpan').value,a=Math.max(-1000,Math.min(1000-width,tauAim-width/2));$('tauLow').value=+a.toFixed(4);$('tauHigh').value=+(a+width).toFixed(4);$('tauHigh').onchange();};
 $('planeHint').textContent='Drag s · pan space · wheel to zoom · gold curve follows τ · brighter near current τ';
 planeNotes.insertAdjacentHTML('beforeend','<p>The gold curve is ζ(σ+iτ) itself, computed independently of the clock beat. Bright gold follows the current τ; dim gold is its −τ reflection when ghosts are enabled. Fit ζ curve frames the output alone, so a large input height does not squeeze the loops. τ spans up to 1000 in either direction are supported. Change the window endpoints to isolate a tangle.</p><p>Curve points stream from a background worker as they are computed; completed curves are cached for six recent σ/window combinations. Sampling uses steps no larger than 0.04 with extra subdivision for curvature. At extreme zoom a polyline still has finite resolution; narrow the τ window and inspect it. The pole at s=1 breaks the curve. The critical line has no singularity there at nonzero τ; its many visits near zero create the loops.</p>');
 for(const p of planeNotes.querySelectorAll('p'))p.innerHTML=p.innerHTML.replace('|τ| ≤ 35','|τ| ≤ 1000');

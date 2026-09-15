@@ -160,9 +160,9 @@ every factorization to a human observer.
 - [x] Preserve equal real/imaginary units for any graph aspect ratio.
 - [x] Use the plot surface as the main input interaction. Keep sigma horizontal
   and tau vertical at its edges, with compact, readable exact-value fields.
-- [ ] Distinguish three quantities: current s, the tau interval sampled for the
+- [x] Distinguish three quantities: current s, the tau interval sampled for the
   zeta curve, and the output camera range. They must not share an ambiguous Range control.
-- [ ] Make the current tau interval readily editable, with optional fine steps.
+- [x] Make the current tau interval readily editable, with optional fine steps.
   Keep sigma unlocked by default and retain direct input placement/pan affordances.
 - [x] Keep one concise legend: construction, reference function, input marker,
   and ghost. Essential convergence/numerical-window status stays visible.
@@ -258,37 +258,37 @@ Added after the first review rounds. Phase 6 is deferred until these land.
 
 **Opening state**
 
-- [ ] Default one second per beat, sound on, prime pitch 1n Hz. The slow build
+- [x] Default one second per beat, sound on, prime pitch 1n Hz. The slow build
   is the intended first impression; keep it.
 
 **The tape's product side**
 
-- [ ] Order factors with small p nearest the equals sign, so a new prime arrives
+- [x] Order factors with small p nearest the equals sign, so a new prime arrives
   by building up from the terms beneath it into a new maximum height.
-- [ ] Stack, reading down to the equals sign: at least two newest terms, the
+- [x] Stack, reading down to the equals sign: at least two newest terms, the
   ellipsis, the present factors of n, three most recently touched primes
   (usually 2, 3, 5), then zeta(s) immediately above the equals sign.
-- [ ] Hold the recently touched primes in a queue so the p=2 term stops being
+- [x] Hold the recently touched primes in a queue so the p=2 term stops being
   swapped out every beat.
-- [ ] Move zeta(s) off the top of the column to its place beside the product.
+- [x] Move zeta(s) off the top of the column to its place beside the product.
 
 **Reading the equation**
 
-- [ ] Write the actual sum and product formulas on either side of the equals
+- [x] Write the actual sum and product formulas on either side of the equals
   sign, with live n and s rather than a bare list of terms.
-- [ ] Place the sigma and the pi as the operators that sort arriving terms into
+- [x] Place the sigma and the pi as the operators that sort arriving terms into
   their prime factors and pile them into the product.
 - [ ] TODO: animate that sorting. The symbols should be seen doing the work,
   not captioning it.
-- [ ] Remove the "Euler's sieve, infinite sum/product" caption; the formulas
+- [x] Remove the "Euler's sieve, infinite sum/product" caption; the formulas
   carry this once they are written out.
 
 **Panels**
 
-- [ ] Split Sound & light into a sound panel and a light panel.
-- [ ] Spectrum belongs in the light panel, with far more control over it: the
+- [x] Split Sound & light into a sound panel and a light panel.
+- [x] Spectrum belongs in the light panel, with far more control over it: the
   point is to observe different contrasts, not to pick from three presets.
-- [ ] The options panels still rearrange the space too much. In Both the clock
+- [x] The options panels still rearrange the space too much. In Both the clock
   column gets narrow enough to trip the phone rules, which turns the drawer
   into a bottom half-screen sheet.
 - [ ] Clock appearance reads like it belongs to the Riemann explorer. Revisit
@@ -303,7 +303,7 @@ Added after the first review rounds. Phase 6 is deferred until these land.
 
 **s off the real axis**
 
-- [ ] Vary s without opening the Riemann explorer, or let varying s be the
+- [x] Vary s without opening the Riemann explorer, or let varying s be the
   thing that opens it. Exploring off the real axis is where the rabbit hole
   starts, and it should be presented as a door, not a setting.
 

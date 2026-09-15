@@ -9,7 +9,7 @@ const hint=document.createElement('p');hint.id='planeHint';hint.textContent='Dra
 let placing=false,planeDrag=null,trailCache={key:'',rows:[],ms:0};
 $('placeInput').onclick=()=>{placing=!placing;$('placeInput').setAttribute('aria-pressed',String(placing));plane.style.cursor=placing?'crosshair':'grab';};
 function tauWindow(){return [+$('tauLow').value,+$('tauHigh').value];}
-for(const id of ['tauLow','tauHigh'])$(id).onchange=()=>{let [a,b]=tauWindow();if(!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -35||b>35){$('tauLow').value=$('tauScrub').min;$('tauHigh').value=$('tauScrub').max;return;}$('tauScrub').min=a;$('tauScrub').max=b;trailCache.key='';};
+for(const id of ['tauLow','tauHigh'])$(id).onchange=()=>{let [a,b]=tauWindow();if(!Number.isFinite(a)||!Number.isFinite(b)||a>=b||a< -35||b>35){$('tauLow').value=-35;$('tauHigh').value=35;return;}trailCache.key='';};
 $('tauScrub').oninput=()=>tune(sigmaAim,+$('tauScrub').value);
 function planePixel(e){const b=graphPlotRect(plane);return [(e.clientX-b.left)*600/b.width,(e.clientY-b.top)*300/b.height];}
 function planeValue(q){const u=125/10**graphLogExtent;return [graphCentre[0]+(q[0]-300)/u,graphCentre[1]-(q[1]-150)/u];}

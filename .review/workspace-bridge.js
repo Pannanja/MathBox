@@ -1,7 +1,17 @@
 // Bridge the typed presentation shell to the established continuous instrument.
-let snapMode='integer',pitchMultiplier=20,displayDepth=.42,weightBrightness=false,lightMode='filter',allPaneLabels=false,jRadiusOn=false;
+let snapMode='integer',pitchMultiplier=1,displayDepth=.42,weightBrightness=false,lightMode='filter',allPaneLabels=false,jRadiusOn=false;
 // The beat and the primes keep independent levels; the beat opens quiet and low.
 function mixLevel(bus,value){if(bus)bus.gain.setTargetAtTime(value,ctx.currentTime,.03);}
+// One hue mapping with its shape exposed: the family, how sharply it falls with
+// p, how far it stretches around the wheel, and where the wheel starts.
+let spectrumMode='pitch',spectrumExp=1,spectrumSpread=1,spectrumRotate=0;
+hueOf=function(p){
+ let h;
+ if(spectrumMode==='pitch'){const l=Math.log2(p)*spectrumSpread;h=360*(l-Math.floor(l));}
+ else{const lam=380+640/Math.pow(p,spectrumExp);h=270*(700-Math.min(700,lam))/320*spectrumSpread;}
+ return ((h+spectrumRotate)%360+360)%360;
+};
+function respectSpectrum(){PR.recolor();updateSpectrum();labelAlphas.clear();}
 let workspaceLayout='clock';const graphBounds={top:0,bottom:300,height:300};
 function matchedBeat(value,direction=0){
  if(snapMode==='free')return Math.max(1,Math.min(limit,value));
@@ -63,9 +73,11 @@ dockTape=function(){
 const workspace=ClockMath.mountWorkspace({
  read:()=>({time:t,target:clockTween?.to??t,mode:paperMode,sound:soundOn,selected:selectedPrime,sigma:SIGMA,tau:TAUV,j:jValue(t)}),
  seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
- setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;resizeWorkspace();}else if(key==='spectrum'){SPECTRUM=+value;PR.recolor();updateSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
+ setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;soundOn=true;$('sound').setAttribute('aria-pressed','true');
+for(const event of ['pointerdown','keydown'])addEventListener(event,function open(){removeEventListener(event,open);if(soundOn)unlock();},{once:true});
+resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
 });
-function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19].map(p=>'<i title="'+p+'" style="background:'+factorColour(p)+'"></i>').join('');}
+function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:hsl('+hueOf(p).toFixed(1)+' 68% 62%)"></i>').join('');}
 updateSpectrum();
 $('scrub').max=limit;$('reach').value=limit;$('scrubEnd').textContent=limit;
 $('sigmaControl').querySelector('label').textContent='σ';$('tauControl').querySelector('label').textContent='τ';

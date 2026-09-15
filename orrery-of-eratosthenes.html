@@ -392,12 +392,14 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
 #clockApp.redesigned .inspector-page .small-note{font-size:12px}
 #clockApp.redesigned .inspector-page button{font-size:14px}
 #clockApp.redesigned .view-equation{font:17px/1.8 'Cambria Math',Georgia,serif;background:#0b1511;padding:12px;overflow-wrap:anywhere}
-#clockApp.redesigned #spectrumPreview{display:flex;gap:4px}#spectrumPreview i{flex:1;height:8px;border-radius:4px}
+#clockApp.redesigned #spectrumPreview{display:flex;gap:4px}#spectrumPreview i{flex:1;height:14px;border-radius:3px}
+#clockApp.redesigned #spectrumPreview{gap:2px;margin:2px 0 6px}
+#clockApp.redesigned .inspector-page output{font:12px var(--mono);color:var(--dim);font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
 #clockApp.redesigned #psiExplanation{font-size:13px}
 #clockApp.redesigned #viewHelp .view-equation{font-size:17px}
 
-@media(min-width:760px){#clockApp.redesigned #clockInspector{position:absolute;left:0;top:70px;bottom:auto;width:274px;max-height:calc(100% - 92px);border:1px solid #8ca79433;border-radius:0 12px 12px 0;border-left:0;box-shadow:14px 0 34px -18px #000a;background:#101d17f2;backdrop-filter:blur(3px)}}
-@media(max-width:800px){#workspaceShell{padding:0 8px;grid-template-columns:minmax(0,1fr) 8px 0!important}#workspaceShell[data-layout=both],#workspaceShell[data-layout=explorer]{grid-template-columns:0 8px minmax(0,1fr)!important}#workspaceShell[data-layout=both] #clockWorkspace{visibility:hidden}.redesigned .workspace-title{height:58px;min-height:58px;padding:0 80px 0 8px}.redesigned .workspace-title h1{font-size:22px}#clockApp.redesigned #clockTransport{padding:8px 0;gap:4px}#clockApp.redesigned #transportCorner{gap:6px}#clockApp.redesigned #fac{font-size:13px}#clockApp.redesigned #clockObserve{position:absolute;right:4px;bottom:3px}#clockApp.redesigned #transportCorner .scrubber{padding-right:65px}#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font-size:12px}#clockApp.redesigned #clockTransport .transport button{padding:6px 8px}#clockApp.redesigned #clockSurface{min-height:80px}#clockApp.redesigned #productBubble.explorer-surface{padding:0 0 8px}#workspaceSwitch button{padding:7px 10px}#clockApp.redesigned #clockInspector{max-height:50%}}
+#clockApp.redesigned #clockInspector{position:absolute;left:0;top:70px;bottom:auto;width:min(274px,calc(100% - 22px));max-height:calc(100% - 88px);border:1px solid #8ca79433;border-radius:0 12px 12px 0;border-left:0;box-shadow:14px 0 34px -18px #000a;background:#101d17f2;backdrop-filter:blur(3px)}
+@media(max-width:800px){#workspaceShell{padding:0 8px;grid-template-columns:minmax(0,1fr) 8px 0!important}#workspaceShell[data-layout=both],#workspaceShell[data-layout=explorer]{grid-template-columns:0 8px minmax(0,1fr)!important}#workspaceShell[data-layout=both] #clockWorkspace{visibility:hidden}.redesigned .workspace-title{height:58px;min-height:58px;padding:0 80px 0 8px}.redesigned .workspace-title h1{font-size:22px}#clockApp.redesigned #clockTransport{padding:8px 0;gap:4px}#clockApp.redesigned #transportCorner{gap:6px}#clockApp.redesigned #fac{font-size:13px}#clockApp.redesigned #clockObserve{position:absolute;right:4px;bottom:3px}#clockApp.redesigned #transportCorner .scrubber{padding-right:65px}#clockApp.redesigned .proof .fx,#clockApp.redesigned .proof .tt{font-size:12px}#clockApp.redesigned #clockTransport .transport button{padding:6px 8px}#clockApp.redesigned #clockSurface{min-height:80px}#clockApp.redesigned #productBubble.explorer-surface{padding:0 0 8px}#workspaceSwitch button{padding:7px 10px}#clockApp.redesigned #clockInspector{max-height:calc(100% - 74px)}}
 @media(max-height:540px){.redesigned .workspace-title{height:45px;min-height:45px}.redesigned .workspace-title h1{font-size:20px}#workspaceShell{grid-template-rows:minmax(0,1fr) 44px}#clockApp.redesigned #clockTransport{min-height:84px}#clockApp.redesigned #tapeDomain{display:none}#clockApp.redesigned #clockSurface{min-height:60px}#clockApp.redesigned #graphSurface{min-height:90px}#clockApp.redesigned #locusStatus{display:none}#clockApp.redesigned #constructionChooser>summary{padding:3px 10px}#clockApp.redesigned .inspector{max-height:58%}}
 @media(prefers-reduced-motion:reduce){.redesigned *{scroll-behavior:auto!important}}
 
@@ -596,7 +598,9 @@ const PR=(()=>{
  const strip=$('strip'),pf=$('pf'),tape=$('tape'),slot=76;
  const terms=new Map(),factors=new Map(),primes=Array.from({length:5000},(_,i)=>i+2).filter(isPrime);
  const dots=document.createElement('span');dots.className='product-dots';dots.textContent='…';pf.appendChild(dots);
- let lastTime=0,lastN=1;
+ // Primes keep a recency queue so the small anchors stop being swapped out
+ // every beat; slots run from the equals sign outward, small p first.
+ let lastTime=0,lastN=1,touched=[];
  function render(tt){
   const now=performance.now(),dt=lastTime?Math.min(.05,(now-lastTime)/1000):0;lastTime=now;
   const ease=1-Math.exp(-dt*16),n=Math.floor(tt),width=parseFloat(getComputedStyle(tape).width),visible=Math.ceil(width/slot)+2;
@@ -606,10 +610,22 @@ const PR=(()=>{
   // factors. The remainder stays accumulated in the ellipsis.
   const available=Math.max(48,pf.parentElement.parentElement.clientWidth-44);
   const upright=typeof reflectionMix!=='undefined'&&reflectionMix>.5;
-  const shown=active.slice();if(linked&&!shown.includes(linked))shown.push(linked);
-  const capacity=Math.max(shown.length,Math.min(5,Math.floor(available/(upright?32:68))));
-  for(let i=born.length-1;i>=0&&shown.length<capacity;i--)if(!shown.includes(born[i]))shown.push(born[i]);
-  shown.sort((a,b)=>b-a);
+  if(n!==lastN)for(const p of active){const at=touched.indexOf(p);if(at>=0)touched.splice(at,1);touched.unshift(p);}
+  const room=Math.max(3,Math.min(9,Math.floor(available/(upright?32:68))));
+  const ascending=(a,b)=>a-b;
+  const anchors=touched.filter(p=>p<=n).slice(0,3).sort(ascending);
+  const present=active.filter(p=>!anchors.includes(p)).sort(ascending);
+  const newest=[];for(let i=born.length-1;i>=0&&newest.length<2;i--){const p=born[i];if(!anchors.includes(p)&&!present.includes(p))newest.push(p);}
+  newest.sort(ascending);
+  if(linked&&![...anchors,...present,...newest].includes(linked))present.push(linked),present.sort(ascending);
+  // Nearest the equals sign: the stable anchors, then what is dividing n now,
+  // then the ellipsis for everything folded away, then the frontier.
+  const order=[...anchors,...present];
+  const hiddenCount=born.length-order.length-newest.length;
+  const gapAt=hiddenCount>0?order.length:-1;if(gapAt>=0)order.push(null);
+  order.push(...newest);
+  while(order.length>room){const drop=order.findIndex(v=>v!==null&&newest.indexOf(v)<0&&active.indexOf(v)<0);if(drop<0)break;order.splice(drop,1);}
+  const shown=order.filter(v=>v!==null);
   for(let k=Math.max(1,n-1);k<=n+visible;k++)if(!terms.has(k)){
    const el=document.createElement('span');el.className='tt';el.dataset.n=k;el.dataset.factorization=factorize(k).join('×');el.style.width=slot+'px';el.style.left=(-k*slot)+'px';el.title=k+' = '+(factorize(k).join(' × ')||'1');el.innerHTML='<span class="term-ink">'+(k===1?'1':'+ 1/'+k+'<sup>s</sup>')+'</span>';strip.appendChild(el);terms.set(k,el);
   }
@@ -618,17 +634,21 @@ const PR=(()=>{
    el.classList.toggle('dead',born.some(p=>p<k&&k%p===0));el.style.color=factorColour(k);el.style.opacity=Math.max(0,Math.min(1,1-(tt-k))).toFixed(4);
   }
   strip.style.transform='translateX('+(tt*slot+width-slot/2).toFixed(4)+'px)';
-  const hidden=born.length-shown.length,space=available-(hidden?20:0);
-  const columns=shown.length>3&&space<225&&!upright?Math.ceil(shown.length/2):Math.max(1,shown.length),cell=Math.min(upright?32:76,space/columns);
-  const total=(shown.length?columns*cell:0)+(hidden?20:0);$('factorWindow').style.width=total+'px';
-  dots.style.left=Math.max(0,total-20)+'px';dots.style.opacity=hidden?'1':'0';dots.dataset.hiddenCount=hidden;dots.title=hidden+' accumulated prime factors are folded here';
+  const hidden=Math.max(0,born.length-shown.length),slots=Math.max(1,order.length);
+  const cell=Math.min(upright?32:76,available/slots),total=slots*cell;
+  $('factorWindow').style.width=total+'px';
+  const gapIndex=order.indexOf(null);
+  dots.style.left=(gapIndex<0?total:gapIndex*cell)+'px';dots.style.width=cell+'px';
+  dots.style.opacity=gapIndex<0?'0':'1';dots.dataset.hiddenCount=hidden;dots.title=hidden+' accumulated prime factors are folded here';
   for(const p of shown)if(!factors.has(p)){
-   const el=document.createElement('span');el.className='fx';el.dataset.p=p;el.innerHTML='<span class="factor-ink">(1−1/'+p+'<sup>s</sup>)</span>';el.style.color=factorColour(p);pf.appendChild(el);factors.set(p,{el,x:p>lastN?0:total-20,y:0,alpha:0});
+   const el=document.createElement('span');el.className='fx';el.dataset.p=p;el.innerHTML='<span class="factor-ink">(1−1/'+p+'<sup>s</sup>)</span>';el.style.color=factorColour(p);pf.appendChild(el);
+   // A new prime rises into place from the slot beneath it, never from the far end.
+   factors.set(p,{el,x:Math.max(0,(order.indexOf(p)-1)*cell),y:0,alpha:0});
   }
   const phase=tt-n,pulse=.3+.7*Math.pow(1-phase,2);
   for(const [p,f] of factors){
-   const index=shown.indexOf(p),wanted=index>=0,birth=Math.max(0,Math.min(1,tt-p));
-   const x=wanted?(index%columns)*cell:total-20,rows=Math.ceil(shown.length/columns),y=wanted?(Math.floor(index/columns)-(rows-1)/2)*25:0;
+   const index=order.indexOf(p),wanted=index>=0,birth=Math.max(0,Math.min(1,tt-p));
+   const x=wanted?index*cell:Math.max(0,(gapIndex<0?total:gapIndex*cell)),y=0;
    f.x+=(x-f.x)*ease;f.y+=(y-f.y)*ease;f.alpha+=((wanted?1:0)-f.alpha)*ease;
    const natural=f.el.firstChild.offsetWidth||65,fontScale=upright?1:Math.min(1,Math.max(.72,(cell-3)/natural));
    f.el.style.left=f.x+'px';f.el.style.top=f.y+'px';f.el.style.width=cell+'px';f.el.style.opacity=(f.alpha*birth).toFixed(4);f.el.style.setProperty('--ink-scale',fontScale);
@@ -636,7 +656,7 @@ const PR=(()=>{
    if(!wanted&&f.alpha<.002){f.el.remove();factors.delete(p);}
   }
   $('equals').style.color=factorColour(n);$('equals').style.textShadow='0 0 '+(9*pulse)+'px '+factorColour(n);
-  $('tapeDomain').textContent=SIGMA>1?'Euler’s sieve · infinite sum/product: Re(s) > 1':'Finite terms · the ordinary infinite sum/product does not converge here';lastN=n;
+  $('tapeDomain').textContent=SIGMA>1?'':'Finite terms · the infinite sum and product do not converge here';lastN=n;
  }
  function reset(){for(const el of terms.values())el.remove();terms.clear();for(const f of factors.values())f.el.remove();factors.clear();lastN=1;}
  return {update:render,reset,tick:()=>{},recolor:()=>{factorColourCache.clear();render(t);}};
@@ -1336,7 +1356,7 @@ $('spin').addEventListener('click', e => {
 function setVol(v){ if (master) master.gain.setTargetAtTime(soundOn ? v / 100 * 0.9 : 0, ctx.currentTime, 0.05); }
 
 const CTL = [
-  { id:'speed', label:'Speed', unit:' (per sec)', min:0.3, max:8, step:0.1, val:0.8, dec:1,
+  { id:'speed', label:'Speed', unit:' (per sec)', min:0.3, max:8, step:0.1, val:1, dec:1,
     tip:'Numbers counted per second.' },
   { id:'octaves', label:'Pitch range', unit:' (octaves)', min:2, max:8, step:0.1, val:8, dec:1,
     tip:'How many octaves separate prime 2 from prime 512. At 8 the pitch is exactly proportional to the prime, so the intervals are true whole-number ratios. Lower is kinder on the ear but the ratios stop being exact.' },
@@ -3053,6 +3073,8 @@ var ClockMath = (function(exports) {
     gear: "M12 8.9a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2ZM20.80 10.13L20.80 13.87L17.92 14.15L17.71 14.66L19.55 16.90L16.90 19.55L14.66 17.71L14.15 17.92L13.87 20.80L10.13 20.80L9.85 17.92L9.34 17.71L7.10 19.55L4.45 16.90L6.29 14.66L6.08 14.15L3.20 13.87L3.20 10.13L6.08 9.85L6.29 9.34L4.45 7.10L7.10 4.45L9.34 6.29L9.85 6.08L10.13 3.20L13.87 3.20L14.15 6.08L14.66 6.29L16.90 4.45L19.55 7.10L17.71 9.34L17.92 9.85Z",
     layers: "m12 3 8.5 4.5L12 12 3.5 7.5zM4.5 12 12 16l7.5-4M4.5 16.5 12 20.5l7.5-4",
     levels: "M5 5v5m0 4v5m7-14v9m0 4v1m7-14v3m0 4v7M2.6 12h4.8M9.6 16h4.8M16.6 9h4.8",
+    // A prism splitting one ray: the spectrum and the light it paints with.
+    prism: "M12 4 20.5 18.5h-17ZM1.5 12h5m11.5 1.6 4.5-2.4m-4.5 4.4h4.8m-4.8 2.2 4.5 2.4",
     close: "m6 6 12 12M6 18 18 6"
   };
   const icon = (name) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[name] || paths.gear}"/></svg>`;
@@ -3064,7 +3086,7 @@ var ClockMath = (function(exports) {
     shell.id = "workspaceShell";
     shell.dataset.layout = "clock";
     shell.innerHTML = `<section id="clockWorkspace" class="workspace" aria-label="Clock of Primes">
- <header class="workspace-title"><h1>Clock of Primes</h1><div class="workspace-actions"><span id="soundSlot"></span><button id="levelsButton" class="icon-button" title="Sound & light" aria-label="Sound and light levels">${icon("levels")}</button><button id="appearanceButton" class="icon-button" title="Clock appearance" aria-label="Clock appearance">${icon("layers")}</button></div></header>
+ <header class="workspace-title"><h1>Clock of Primes</h1><div class="workspace-actions"><span id="soundSlot"></span><button id="levelsButton" class="icon-button" title="Sound" aria-label="Sound levels">${icon("levels")}</button><button id="lightButton" class="icon-button" title="Light & spectrum" aria-label="Light and spectrum">${icon("prism")}</button><button id="appearanceButton" class="icon-button" title="Clock appearance" aria-label="Clock appearance">${icon("layers")}</button></div></header>
  <div id="clockSurface"></div><footer id="clockTransport"></footer>
  <aside id="clockInspector" class="inspector" hidden></aside></section>
  <div id="workspaceDivider" role="separator" tabindex="0" aria-label="Resize clock and explorer" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div>
@@ -3075,6 +3097,10 @@ var ClockMath = (function(exports) {
     el("clockTransport").append(el("transportCorner"));
     el("clockWorkspace").insertBefore(el("tapeDomain"), el("clockTransport"));
     el("clockWorkspace").insertBefore(el("fac"), el("clockTransport"));
+    {
+      const rhs = el("originalProof").querySelector(".rhs"), zeta = rhs.querySelector(".zeta-symbol");
+      rhs.prepend(zeta);
+    }
     const panels = /* @__PURE__ */ new Map();
     let openClock = "", openRiemann = "";
     const close = (owner) => {
@@ -3143,13 +3169,13 @@ var ClockMath = (function(exports) {
     sound.innerHTML = icon("sound");
     sound.setAttribute("aria-label", "Enable sound");
     el("levelsButton").onclick = () => open("soundPanel");
+    el("lightButton").onclick = () => open("lightPanel");
     el("appearanceButton").onclick = () => open("viewBubble");
     el("riemannHelp").onclick = () => el("explainView").click();
     el("viewBubble").querySelector(".bubble-head b").textContent = "Clock appearance";
     el("spec").hidden = true;
     const custom = document.createElement("div");
-    custom.innerHTML = `<label class="field">Spectrum<select id="spectrumChoice"><option value="0">Pitch · log₂ p</option><option value="2">Spectrum · 1/p</option><option value="1">Spectrum · 1/p²</option></select></label><div id="spectrumPreview" aria-label="Prime colour preview"></div>
- <label class="field">Pane light<select id="lightChoice"><option value="off">Off · bare sieve</option><option value="filter" selected>Filtering glass</option><option value="light">Accumulating light</option></select></label><label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
+    custom.innerHTML = `<label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
     el("viewBubble").append(custom);
     const bind = (pairs) => {
       for (const [id, key] of pairs) el(id).addEventListener("input", () => {
@@ -3157,7 +3183,7 @@ var ClockMath = (function(exports) {
         actions.setting(key, field.type === "checkbox" ? field.checked : field.value);
       });
     };
-    bind([["spectrumChoice", "spectrum"], ["lightChoice", "light"], ["allPaneLabels", "labels"], ["jRadiusToggle", "jRadius"]]);
+    bind([["allPaneLabels", "labels"], ["jRadiusToggle", "jRadius"]]);
     el("inspectJ").onclick = () => open("jBubble");
     const createPanel = (id, title, html) => {
       const p = document.createElement("section");
@@ -3208,7 +3234,13 @@ var ClockMath = (function(exports) {
       if (e.key === "Enter") travel(e.shiftKey);
     };
     el("fineClock").oninput = () => actions.setting("fine", el("fineClock").value);
-    createPanel("soundPanel", "Sound & light", `<div id="volumeControl"></div><label class="field">Primes<input id="primeVolume" type="range" min="0" max="100" step="1" value="100"></label><label class="field">Beat<input id="beatVolume" type="range" min="0" max="100" step="1" value="16"></label><label class="field">Beat pitch · Hz<input id="beatPitch" type="range" min="90" max="900" step="5" value="320"></label><label class="field">Prime pitch · Hz per number<input id="pitchMultiplier" type="range" min="1" max="20" step="0.1" value="20"><output id="pitchReadout">20n Hz</output></label><p class="small-note">At 1n Hz the earliest primes may be inaudible. Ratios stay proportional, and fast winding skips the backlog of notes.</p><label class="field">Pane brightness<input id="colourDepth" type="range" min="0.1" max="1.2" step="0.01" value="0.42"></label><label class="check"><input id="weightBrightness" type="checkbox"> Link pane brightness to σ</label><p class="small-note">Brightness is a display mapping. ξ does not control it.</p>`);
+    createPanel("soundPanel", "Sound", `<div id="volumeControl"></div><label class="field">Primes<input id="primeVolume" type="range" min="0" max="100" step="1" value="100"></label><label class="field">Beat<input id="beatVolume" type="range" min="0" max="100" step="1" value="16"></label><label class="field">Beat pitch · Hz<input id="beatPitch" type="range" min="90" max="900" step="5" value="320"></label><label class="field">Prime pitch · Hz per number<input id="pitchMultiplier" type="range" min="1" max="20" step="0.1" value="1"><output id="pitchReadout">1n Hz</output></label><p class="small-note">At 1n Hz the earliest primes are below hearing and arrive as the count grows. Ratios stay proportional, and fast winding skips the backlog of notes.</p>`);
+    createPanel("lightPanel", "Light & spectrum", `<label class="field">Hue from<select id="spectrumChoice"><option value="pitch">Pitch · log₂ p</option><option value="wave">Wavelength · 1/pᵏ</option></select></label><div id="spectrumPreview" aria-label="Prime colour preview"></div>
+ <label class="field">Exponent k<input id="spectrumExp" type="range" min="0.3" max="3" step="0.05" value="1"><output id="spectrumExpOut">1.00</output></label>
+ <label class="field">Spread<input id="spectrumSpread" type="range" min="0.2" max="4" step="0.05" value="1"><output id="spectrumSpreadOut">1.00</output></label>
+ <label class="field">Rotate<input id="spectrumRotate" type="range" min="0" max="359" step="1" value="0"><output id="spectrumRotateOut">0°</output></label>
+ <p class="small-note">Pitch repeats the wheel once per octave, so near primes contrast strongly and distant ones collide. Wavelength runs once from red to violet, so contrast concentrates in the small primes. Spread stretches either mapping; rotate turns the whole wheel.</p>
+ <label class="field">Pane light<select id="lightChoice"><option value="off">Off · bare sieve</option><option value="filter" selected>Filtering glass</option><option value="light">Accumulating light</option></select></label><label class="field">Pane brightness<input id="colourDepth" type="range" min="0.1" max="1.2" step="0.01" value="0.42"></label><label class="check"><input id="weightBrightness" type="checkbox"> Link pane brightness to σ</label><p class="small-note">Colour is a display mapping. ξ does not control brightness, and no finite palette separates every factorization.</p>`);
     const volume = document.createElement("label");
     volume.className = "field";
     volume.textContent = "Overall";
@@ -3219,7 +3251,10 @@ var ClockMath = (function(exports) {
       el("pitchReadout").textContent = value + "n Hz";
       actions.setting("pitch", value);
     };
-    bind([["primeVolume", "primeVolume"], ["beatVolume", "beatVolume"], ["beatPitch", "beatPitch"], ["colourDepth", "depth"], ["weightBrightness", "weightBrightness"]]);
+    bind([["primeVolume", "primeVolume"], ["beatVolume", "beatVolume"], ["beatPitch", "beatPitch"], ["colourDepth", "depth"], ["weightBrightness", "weightBrightness"], ["spectrumChoice", "spectrum"], ["lightChoice", "light"], ["spectrumExp", "spectrumExp"], ["spectrumSpread", "spectrumSpread"], ["spectrumRotate", "spectrumRotate"]]);
+    for (const [id, suffix] of [["spectrumExp", ""], ["spectrumSpread", ""], ["spectrumRotate", "°"]]) el(id).addEventListener("input", () => {
+      el(id + "Out").textContent = (suffix ? Math.round(+el(id).value) : (+el(id).value).toFixed(2)) + suffix;
+    });
     const chooser = document.createElement("details");
     chooser.id = "constructionChooser";
     const summary = document.createElement("summary");
@@ -3589,9 +3624,19 @@ const explainChange=paperSelector.onchange;paperSelector.onchange=()=>{explainCh
 refreshViewHelp();updateDomainSliders();
 
 // Bridge the typed presentation shell to the established continuous instrument.
-let snapMode='integer',pitchMultiplier=20,displayDepth=.42,weightBrightness=false,lightMode='filter',allPaneLabels=false,jRadiusOn=false;
+let snapMode='integer',pitchMultiplier=1,displayDepth=.42,weightBrightness=false,lightMode='filter',allPaneLabels=false,jRadiusOn=false;
 // The beat and the primes keep independent levels; the beat opens quiet and low.
 function mixLevel(bus,value){if(bus)bus.gain.setTargetAtTime(value,ctx.currentTime,.03);}
+// One hue mapping with its shape exposed: the family, how sharply it falls with
+// p, how far it stretches around the wheel, and where the wheel starts.
+let spectrumMode='pitch',spectrumExp=1,spectrumSpread=1,spectrumRotate=0;
+hueOf=function(p){
+ let h;
+ if(spectrumMode==='pitch'){const l=Math.log2(p)*spectrumSpread;h=360*(l-Math.floor(l));}
+ else{const lam=380+640/Math.pow(p,spectrumExp);h=270*(700-Math.min(700,lam))/320*spectrumSpread;}
+ return ((h+spectrumRotate)%360+360)%360;
+};
+function respectSpectrum(){PR.recolor();updateSpectrum();labelAlphas.clear();}
 let workspaceLayout='clock';const graphBounds={top:0,bottom:300,height:300};
 function matchedBeat(value,direction=0){
  if(snapMode==='free')return Math.max(1,Math.min(limit,value));
@@ -3653,9 +3698,11 @@ dockTape=function(){
 const workspace=ClockMath.mountWorkspace({
  read:()=>({time:t,target:clockTween?.to??t,mode:paperMode,sound:soundOn,selected:selectedPrime,sigma:SIGMA,tau:TAUV,j:jValue(t)}),
  seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
- setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;resizeWorkspace();}else if(key==='spectrum'){SPECTRUM=+value;PR.recolor();updateSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
+ setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;soundOn=true;$('sound').setAttribute('aria-pressed','true');
+for(const event of ['pointerdown','keydown'])addEventListener(event,function open(){removeEventListener(event,open);if(soundOn)unlock();},{once:true});
+resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
 });
-function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19].map(p=>'<i title="'+p+'" style="background:'+factorColour(p)+'"></i>').join('');}
+function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:hsl('+hueOf(p).toFixed(1)+' 68% 62%)"></i>').join('');}
 updateSpectrum();
 $('scrub').max=limit;$('reach').value=limit;$('scrubEnd').textContent=limit;
 $('sigmaControl').querySelector('label').textContent='σ';$('tauControl').querySelector('label').textContent='τ';

@@ -965,7 +965,7 @@ $('spin').addEventListener('click', e => {
 function setVol(v){ if (master) master.gain.setTargetAtTime(soundOn ? v / 100 * 0.9 : 0, ctx.currentTime, 0.05); }
 
 const CTL = [
-  { id:'speed', label:'Speed', unit:' (per sec)', min:0.3, max:8, step:0.1, val:0.8, dec:1,
+  { id:'speed', label:'Speed', unit:' (per sec)', min:0.3, max:8, step:0.1, val:1, dec:1,
     tip:'Numbers counted per second.' },
   { id:'octaves', label:'Pitch range', unit:' (octaves)', min:2, max:8, step:0.1, val:8, dec:1,
     tip:'How many octaves separate prime 2 from prime 512. At 8 the pitch is exactly proportional to the prime, so the intervals are true whole-number ratios. Lower is kinder on the ear but the ratios stop being exact.' },

@@ -109,39 +109,40 @@ duplicate control and handler.
 
 ### 1. Establish the shell and visual system — medium effort
 
-- [ ] Introduce shared typography, spacing, colour, icon, focus, and surface tokens.
-- [ ] Implement Clock / Both / Explorer compositions and the accessible divider.
-- [ ] Scope Clock of Primes to the clock; rename the second workspace Riemann explorer.
-- [ ] Start with the explorer closed and the clock centered.
-- [ ] Give the graph the majority of its workspace: target at least 65% of the
+- [x] Introduce shared typography, spacing, colour, icon, focus, and surface tokens.
+- [x] Implement Clock / Both / Explorer compositions and the accessible divider.
+- [x] Scope Clock of Primes to the clock; rename the second workspace Riemann explorer.
+- [x] Start with the explorer closed and the clock centered.
+- [x] Give the graph the majority of its workspace: target at least 65% of the
   available height in the normal desktop explorer, controls closed.
-- [ ] Move menus to their owning workspace and remove global corner collisions.
-- [ ] Preserve clock, s, selection, and graph camera through every layout transition.
+- [x] Move menus to their owning workspace and remove global corner collisions.
+- [x] Preserve clock, s, selection, and graph camera through every layout transition.
 
 Review this shell at desktop, laptop, phone, and short landscape sizes before
 reintroducing all secondary controls. This is the first implementation milestone.
 
 ### 2. Rebuild controls around intent — medium effort
 
-- [ ] Keep Start, back one, play/pause, forward one together. Gear is adjacent.
-- [ ] Gear contains seek snapping: off, integers, primes, twin-prime centers;
+- [x] ~~Keep Start~~, back one, play/pause, forward one together. Gear is adjacent.
+  Superseded: Start was removed as redundant beside the scrubber.
+- [x] Gear contains seek snapping: off, integers, primes, twin-prime centers;
   play speed; fine adjustment; and direct Go to number.
-- [ ] Treat snapping as selecting a destination. Move continuously to it with
+- [x] Treat snapping as selecting a destination. Move continuously to it with
   uncapped seek speed and a short ease-out. Start retains its authorized instant reset.
-- [ ] Keep back/forward one as exactly one beat, regardless of snap setting.
+- [x] Keep back/forward one as exactly one beat, regardless of snap setting.
   In the gear, previous/next matching target can visit primes or twin centers.
-- [ ] For twins, use centers m with m−1 and m+1 prime. Centers after (3,5) are
+- [x] For twins, use centers m with m−1 and m+1 prime. Centers after (3,5) are
   multiples of six; retain the exceptional pair (3,5), centered at 4, explicitly.
-- [ ] Replace repeated timeline-end dragging with a window that follows travel,
+- [~] Replace repeated timeline-end dragging with a window that follows travel,
   a broad-range overview, and direct entry. Show the supported maximum and reject
   invalid entries clearly. Do not claim an unbounded clock.
-- [ ] Expose pitch multiplier f(n)=a·n Hz, default a=20 and minimum a=1, beside
+- [x] Expose pitch multiplier f(n)=a·n Hz, default a=20 and minimum a=1, beside
   volume in the sound disclosure. Speaker toggles mute; sound starts muted.
   Keep proportional tuning exact; label any retained pitch compression separately.
-- [ ] Expose the existing hue mappings with preview swatches and readable names;
+- [x] Expose the existing hue mappings with preview swatches and readable names;
   add a perceptually balanced option if it improves family discrimination.
-- [ ] Consolidate graph framing, camera reset, ghost −τ, curve domain, and layers.
-- [ ] Fix Trace: replay the current construction only, or clearly mark it
+- [~] Consolidate graph framing, camera reset, ghost −τ, curve domain, and layers.
+- [x] Fix Trace: replay the current construction only, or clearly mark it
   unavailable. Never silently switch constructions.
 
 Sound acceptance includes low multipliers, upper-frequency filtering, and
@@ -152,20 +153,20 @@ every factorization to a human observer.
 
 ### 3. Make the graph a usable instrument — medium/high effort
 
-- [ ] Make canvas backing stores follow CSS size and device pixel ratio.
+- [x] Make canvas backing stores follow CSS size and device pixel ratio.
   Update cached curve rasters as well as the main canvas.
-- [ ] Separate screen coordinates from complex coordinates, removing the
+- [x] Separate screen coordinates from complex coordinates, removing the
   fixed 600×300 layout assumptions and matching pointer hit tests to rendering.
-- [ ] Preserve equal real/imaginary units for any graph aspect ratio.
-- [ ] Use the plot surface as the main input interaction. Keep sigma horizontal
+- [x] Preserve equal real/imaginary units for any graph aspect ratio.
+- [x] Use the plot surface as the main input interaction. Keep sigma horizontal
   and tau vertical at its edges, with compact, readable exact-value fields.
 - [ ] Distinguish three quantities: current s, the tau interval sampled for the
   zeta curve, and the output camera range. They must not share an ambiguous Range control.
 - [ ] Make the current tau interval readily editable, with optional fine steps.
   Keep sigma unlocked by default and retain direct input placement/pan affordances.
-- [ ] Keep one concise legend: construction, reference function, input marker,
+- [x] Keep one concise legend: construction, reference function, input marker,
   and ghost. Essential convergence/numerical-window status stays visible.
-- [ ] Preserve streaming and cached numerical values through resizing; label
+- [x] Preserve streaming and cached numerical values through resizing; label
   stale previews with their source sigma and maintain breaks at singularities.
 
 Pixel density and numerical sampling are separate problems. A crisp canvas
@@ -174,22 +175,22 @@ error and cancellation of superseded jobs, without making input wait for a full 
 
 ### 4. Refine clock geometry and animation — high effort
 
-- [ ] Give the beam a fine luminous core and controlled glow. Replace broad,
+- [x] Give the beam a fine luminous core and controlled glow. Replace broad,
   square visual edges and harsh colour changes with restrained transitions.
-- [ ] Keep the unit marker unmistakable: a small bright body, restrained trail,
+- [x] Keep the unit marker unmistakable: a small bright body, restrained trail,
   and a beat pulse derived from clock phase so replay and rewind agree.
-- [ ] Reveal the beam from origin to R during the first observed cycle, proposed
+- [x] Reveal the beam from origin to R during the first observed cycle, proposed
   t=1→2. This is a drawing reveal, not a change to R or the unit term's value.
   If a quantitative sum layer is enabled, the full unit length remains identifiable.
-- [ ] Keep geometric event times exact while easing decorative light around
+- [x] Keep geometric event times exact while easing decorative light around
   them. Do not delay absorption or blur which factors divide the current number.
-- [ ] Reduce screen-space pane thickness, improve edge rendering, and restrain
+- [x] Reduce screen-space pane thickness, improve edge rendering, and restrain
   glass opacity. Do not enlarge a high-prime arc's true angular span merely to
   accommodate rounded caps; separate visual strokes from measured boundaries.
-- [ ] Replace axis-sign label offsets with continuous angular placement.
-- [ ] Format powers as p^k, with numeric value in inspection; compress the beat
+- [x] Replace axis-sign label offsets with continuous angular placement.
+- [x] Format powers as p^k, with numeric value in inspection; compress the beat
   factorization similarly, e.g. 500 = 2² × 5³.
-- [ ] Manage label density: prioritize active, selected, and newborn panes;
+- [x] Manage label density: prioritize active, selected, and newborn panes;
   optional All labels. Fade competing labels smoothly instead of making them jump.
 - [ ] Distinguish the panel arc from any filled sector used for measurement.
   Styling must not imply that stroke thickness measures an arithmetic weight.
@@ -200,20 +201,22 @@ glow/trails while preserving the mathematical continuity of stepping.
 
 ### 5. Rebuild the tape around continuity — high effort
 
-- [ ] Use a wider horizontal rail that responds to the clock workspace width.
+- [x] ~~Use a wider horizontal rail~~ that responds to the clock workspace width.
+  Superseded: the rail was flattened below the clock and that broke the dock.
+  The tape is rotated onto the meeting ray, as before the shell.
   Prototype its connection to the reflected clock before committing the layout.
-- [ ] Keep the equals sign's relationship to the meeting ray explicit. If the
+- [x] Keep the equals sign's relationship to the meeting ray explicit. If the
   rail cannot dock directly without collision, use a short visible connector;
   never detach the timing into a decorative unrelated ticker.
-- [ ] Preserve each term's continuous journey into absorption at the beat.
-- [ ] Keep low-prime product factors in stable slots, an ellipsis in the middle,
+- [x] Preserve each term's continuous journey into absorption at the beat.
+- [x] Keep low-prime product factors in stable slots, an ellipsis in the middle,
   and a changing window of recent/relevant factors after it. Fill spare room
   with additional factors. Reserve selected/active slots before optional neighbors.
-- [ ] Animate factors entering/leaving the ellipsis without crossing or shuffling
+- [x] Animate factors entering/leaving the ellipsis without crossing or shuffling
   the persistent low-prime anchors. Active factors glow in their own colours.
-- [ ] Remove strike-through. Use colour emphasis/attenuation for factor state,
+- [x] Remove strike-through. Use colour emphasis/attenuation for factor state,
   with accessible inspection text distinguishing processed terms.
-- [ ] Show more sum terms when space permits; constrain text by legibility,
+- [x] Show more sum terms when space permits; constrain text by legibility,
   not by a fixed tiny term count.
 
 Notation decision: the unweighted clock view can show arithmetic identities
@@ -249,6 +252,66 @@ Do not invent a pane-area interpretation of J's 1/k to make the connection
 look closer. Shared source identity and synchronized highlighting are already
 useful and honest connections.
 
+### 7. Read the equation, and open the door off the real axis — medium/high effort
+
+Added after the first review rounds. Phase 6 is deferred until these land.
+
+**Opening state**
+
+- [ ] Default one second per beat, sound on, prime pitch 1n Hz. The slow build
+  is the intended first impression; keep it.
+
+**The tape's product side**
+
+- [ ] Order factors with small p nearest the equals sign, so a new prime arrives
+  by building up from the terms beneath it into a new maximum height.
+- [ ] Stack, reading down to the equals sign: at least two newest terms, the
+  ellipsis, the present factors of n, three most recently touched primes
+  (usually 2, 3, 5), then zeta(s) immediately above the equals sign.
+- [ ] Hold the recently touched primes in a queue so the p=2 term stops being
+  swapped out every beat.
+- [ ] Move zeta(s) off the top of the column to its place beside the product.
+
+**Reading the equation**
+
+- [ ] Write the actual sum and product formulas on either side of the equals
+  sign, with live n and s rather than a bare list of terms.
+- [ ] Place the sigma and the pi as the operators that sort arriving terms into
+  their prime factors and pile them into the product.
+- [ ] TODO: animate that sorting. The symbols should be seen doing the work,
+  not captioning it.
+- [ ] Remove the "Euler's sieve, infinite sum/product" caption; the formulas
+  carry this once they are written out.
+
+**Panels**
+
+- [ ] Split Sound & light into a sound panel and a light panel.
+- [ ] Spectrum belongs in the light panel, with far more control over it: the
+  point is to observe different contrasts, not to pick from three presets.
+- [ ] The options panels still rearrange the space too much. In Both the clock
+  column gets narrow enough to trip the phone rules, which turns the drawer
+  into a bottom half-screen sheet.
+- [ ] Clock appearance reads like it belongs to the Riemann explorer. Revisit
+  which workspace owns it.
+
+**Separate sum as a first-class transition**
+
+- [ ] The separate-sum geometry is a genuine transition between the clock's
+  unit circle and the complex plane, and it is currently buried in a menu.
+  Make it a fundamental move in the Riemann explorer's graph rather than an
+  appearance toggle.
+
+**s off the real axis**
+
+- [ ] Vary s without opening the Riemann explorer, or let varying s be the
+  thing that opens it. Exploring off the real axis is where the rabbit hole
+  starts, and it should be presented as a door, not a setting.
+
+**Known defect**
+
+- [ ] The tail spiral is drawn in one frame and then rotated as the term
+  evolves. It should develop as the term evolves.
+
 ## Technical approach and checkpoints
 
 Continue in TypeScript with the existing numerical modules and workers. No
@@ -266,7 +329,7 @@ Keep mathematical state separate from layout, preferences, and camera state.
 Numerical modules should not depend on hidden inputs. Add the shell bridge
 incrementally rather than rewriting all math and presentation in one change.
 
-Implementation order: 1 → 2 → 3 → 4 → 5 → 6. The inspector's container belongs
+Implementation order: 1 → 2 → 3 → 4 → 5 → 7 → 6. Phase 6 is deferred. The inspector's container belongs
 in phase 1; its explanatory content migration comes in phase 6. Inventory
 legacy control ownership before removing anything in phase 2. No delegation is
 required for this plan.

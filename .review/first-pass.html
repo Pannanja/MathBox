@@ -97,6 +97,8 @@ function hueRGB(h) {
 }
 
 let ctx = null, master = null;
+// The beat and the primes carry different information, so they mix separately.
+let beatBus = null, primeBus = null, beatLevel = 0.16, primeLevel = 1, beatHz = 320;
 const activeVoices = new Set();
 function trackVoice(voice){activeVoices.add(voice);voice.onended=()=>activeVoices.delete(voice);}
 function clearVoices(){for(const voice of activeVoices){try{voice.stop();}catch{}}activeVoices.clear();}
@@ -110,6 +112,8 @@ function unlock() {
   master = ctx.createGain();
   master.gain.value = (+$('vol').value / 100) * 0.9;
   master.connect(ctx.destination);
+  beatBus = ctx.createGain(); beatBus.gain.value = beatLevel; beatBus.connect(master);
+  primeBus = ctx.createGain(); primeBus.gain.value = primeLevel; primeBus.connect(master);
   const b = ctx.createBufferSource();
   b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
   ctx.resume();
@@ -130,7 +134,7 @@ function strike(p, hold, amp) {
   g.gain.setValueAtTime(0, t0);
   g.gain.linearRampToValueAtTime(amp, t0 + 0.008);
   g.gain.exponentialRampToValueAtTime(0.0001, t0 + hold);
-  o.connect(g); g.connect(master);
+  o.connect(g); g.connect(primeBus || master);
   o.start(t0); o.stop(t0 + hold + 0.08);
 }
 function remember(p) {
@@ -144,18 +148,18 @@ function remember(p) {
   g.gain.setValueAtTime(0.0001, t0);
   g.gain.exponentialRampToValueAtTime(lvl, t0 + 0.4);
   g.gain.exponentialRampToValueAtTime(0.00005, t0 + MEMLEN);
-  o.connect(g); g.connect(master);
+  o.connect(g); g.connect(primeBus || master);
   o.start(t0); o.stop(t0 + MEMLEN + 0.2);
 }
 function tick() {
   if (!ctx) return;
   const t0 = ctx.currentTime;
   const o = ctx.createOscillator(), g = ctx.createGain(); trackVoice(o);
-  o.type = 'square'; o.frequency.value = 1900;
+  o.type = 'triangle'; o.frequency.value = beatHz;
   g.gain.setValueAtTime(0.010, t0);
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.04);
-  o.connect(g); g.connect(master);
-  o.start(t0); o.stop(t0 + 0.06);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+  o.connect(g); g.connect(beatBus || master);
+  o.start(t0); o.stop(t0 + 0.07);
 }
 
 

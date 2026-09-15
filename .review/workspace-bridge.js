@@ -1,5 +1,7 @@
 // Bridge the typed presentation shell to the established continuous instrument.
 let snapMode='integer',pitchMultiplier=20,displayDepth=.42,weightBrightness=false,lightMode='filter',allPaneLabels=false,jRadiusOn=false;
+// The beat and the primes keep independent levels; the beat opens quiet and low.
+function mixLevel(bus,value){if(bus)bus.gain.setTargetAtTime(value,ctx.currentTime,.03);}
 let workspaceLayout='clock';const graphBounds={top:0,bottom:300,height:300};
 // The tape is a horizontal rail in every composition, reflected clock included.
 window.tapeUpright=false;
@@ -37,11 +39,32 @@ function resizeWorkspace(){
  locusRasterKey='';backdropState.key='';
 }
 graphPlotRect=function(canvas){const b=canvas.getBoundingClientRect(),unit=b.width/600;return {left:b.left,top:b.top-graphBounds.top*unit,width:b.width,height:300*unit};};
-dockTape=function(){};
+// Dock the rail to the meeting ray. The equals sign sits under the point where
+// the beam leaves the rim, joined by the rim's own tangent, so a term is absorbed
+// at the instant the beat crosses the beam.
+dockTape=function(){
+ const proof=$('originalProof'),work=proof&&proof.querySelector('.work'),path=$('clockConnectorPath');
+ if(!work||!path)return;
+ const frame=$('cv').getBoundingClientRect(),box=proof.getBoundingClientRect(),host=$('clockWorkspace').getBoundingClientRect();
+ if(frame.width<2||box.width<2||workspaceLayout==='explorer'){path.removeAttribute('d');return;}
+ const u=(1-Math.cos(Math.PI*reflectionMix))/2,r=R/W*frame.width;
+ const exitX=frame.left+frame.width/2+u*r,exitY=frame.top+frame.height/2-(1-u)*r;
+ // Dock exactly where the rail is wide enough; otherwise reserve room for the
+ // product and let the connector show the offset instead of hiding it.
+ // Dock the equals sign under the beam only while the product still has room to
+ // read. Otherwise keep the balanced split and let the connector carry the offset.
+ const lead=exitX-box.left-16,room=box.width-lead;
+ if(lead>48&&room>=260)work.style.setProperty('--tape-lead',lead+'px');
+ else work.style.removeProperty('--tape-lead');
+ const eq=$('equals').getBoundingClientRect(),x=eq.left+eq.width/2-host.left,top=eq.top-host.top-2;
+ const ray=exitX-host.left,turn=top-Math.min(18,Math.max(6,Math.abs(x-ray)));
+ path.setAttribute('d','M'+ray+' '+(exitY-host.top)+'V'+turn+'H'+x+'V'+top);
+ path.setAttribute('stroke',factorColour(Math.floor(t)));
+};
 const workspace=ClockMath.mountWorkspace({
  read:()=>({time:t,target:clockTween?.to??t,mode:paperMode,sound:soundOn,selected:selectedPrime,sigma:SIGMA,tau:TAUV,j:jValue(t)}),
  seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
- setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;resizeWorkspace();}else if(key==='spectrum'){SPECTRUM=+value;PR.recolor();updateSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light')lightMode=value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
+ setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;resizeWorkspace();}else if(key==='spectrum'){SPECTRUM=+value;PR.recolor();updateSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
 });
 function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19].map(p=>'<i title="'+p+'" style="background:'+factorColour(p)+'"></i>').join('');}
 updateSpectrum();
@@ -54,7 +77,7 @@ paperFormulas.term='∫₀<sup>∞</sup> e<sup>−nx</sup>x<sup>s−1</sup> dx =
 $('jIntro').insertAdjacentHTML('beforebegin','<p>On the optional J radius, one count unit is R/t: length = R·J(t)/t. Credits jump by 1/k at pᵏ. This measures a weighted count, not log(q).</p>');
 const inspectRadius=document.createElement('button');inspectRadius.textContent='Show J radius';inspectRadius.onclick=()=>{jRadiusOn=!jRadiusOn;$('jRadiusToggle').checked=jRadiusOn;inspectRadius.textContent=jRadiusOn?'Hide J radius':'Show J radius';};$('jBubble').append(inspectRadius);
 const redesignedGuide=updateGuide;
-updateGuide=function(){redesignedGuide();workspace.update();drawJRadius();const n=Math.floor(t);if(!isPrime(n)&&n>1)$('fac').textContent=factoredName(n);};
+updateGuide=function(){redesignedGuide();workspace.update();drawJRadius();dockTape();const n=Math.floor(t);if(!isPrime(n)&&n>1)$('fac').textContent=factoredName(n);};
 // Capture global keyboard shortcuts only outside controls and the graph.
 document.addEventListener('keydown',e=>{if(e.target.closest('input,select,textarea,button,summary,#productGraph,[role=separator]'))e.stopPropagation();},true);
 resizeWorkspace();

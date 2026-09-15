@@ -1,6 +1,8 @@
 from pathlib import Path
+import os
 root=Path(__file__).resolve().parent.parent
-f=root/'orrery-of-eratosthenes.html'
+page_output=Path(os.environ.get('CLOCK_HTML_OUTPUT',str(root / 'orrery-of-eratosthenes.html')))
+f=page_output
 p=f.read_text(encoding='utf-8')
 p=p.replace('</style>',(root/'.review/viewport.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/viewport.js').read_text(encoding='utf-8')+'\n</script>',1)
@@ -63,4 +65,10 @@ p=p.replace('</style>',(root/'.review/friendly-explorer.css').read_text(encoding
 p=p.replace('</script>',(root/'.review/friendly-explorer.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('SIGMA += (sigmaAim - SIGMA) * ease;', 'SIGMA += (sigmaAim - SIGMA) * (1-Math.exp(-dt*14));')
 p=p.replace('TAUV += (tauAim - TAUV) * ease;', 'TAUV += (tauAim - TAUV) * (1-Math.exp(-dt*14));')
+p=p.replace('</script>',(root/'.review/shifted-clock.js').read_text(encoding='utf-8')+'\n</script>',1)
+p=p.replace('</style>',(root/'.review/riemann-views.css').read_text(encoding='utf-8')+'\n</style>',1)
+p=p.replace('</script>', (root/'.build/clock-math.js').read_text(encoding='utf-8')+'\nconst {riemannGamma,riemannIntegrate}=ClockMath;\n</script>',1)
+for name in ['riemann-views.js']:
+ p=p.replace('</script>',(root/'.review'/name).read_text(encoding='utf-8')+'\n</script>',1)
+p=p.replace("$('productRange').step='any';", "$('productRange').step='any';$('productRange').min=-14;")
 f.write_text(p,encoding='utf-8')

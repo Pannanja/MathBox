@@ -1,6 +1,8 @@
 from pathlib import Path
+import os
 root=Path(__file__).resolve().parent.parent
-f=root/'orrery-of-eratosthenes.html'
+page_output=Path(os.environ.get('CLOCK_HTML_OUTPUT',str(root / 'orrery-of-eratosthenes.html')))
+f=page_output
 p=f.read_text(encoding='utf-8')
 p=p.replace('function frame(ms) {',(root/'.review/geometry.js').read_text(encoding='utf-8')+'\nfunction frame(ms) {',1)
 p=p.replace('  updateClock(dt, ms);','  updateClock(dt, ms);\n  updateGeometry(dt);',1)

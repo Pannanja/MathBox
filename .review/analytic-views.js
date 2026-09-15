@@ -42,7 +42,7 @@ $('productGraph').onpointerdown=e=>{const b=e.currentTarget.getBoundingClientRec
 const complexText=z=>z.every(Number.isFinite)?z[0].toFixed(4)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toFixed(4)+'i':'outside numeric range';
 let graphCentre=[0,0],graphCentreAim=[0,0],graphLogExtent=Math.log10(2),graphLastMs=performance.now();
 function graphTick(value,step){const digits=Math.max(0,Math.ceil(-Math.log10(step))+1);return Math.abs(value)<1e7&&digits<=12?value.toFixed(digits):value.toPrecision(6);}
-function setGraphView(centre,extent){if(!centre.every(Number.isFinite)||!Number.isFinite(extent)||extent<=0)return;graphCentreAim=[...centre];const value=Math.log10(Math.max(1e-5,extent));$('productRange').max=Math.max(3,Math.ceil(value));$('productRange').value=value;}
+function setGraphView(centre,extent){if(!centre.every(Number.isFinite)||!Number.isFinite(extent)||extent<=0)return;graphCentreAim=[...centre];const value=Math.log10(Math.max(1e-14,extent));$('productRange').max=Math.max(3,Math.ceil(value));$('productRange').value=value;}
 $('homeGraph').onclick=()=>setGraphView([0,0],2);
 $('focusZeta').onclick=()=>{if(Math.hypot(SIGMA-1,TAUV)>1e-8)setGraphView(zeta(SIGMA,TAUV),10**+$('productRange').value);};
 $('fitPaths').onclick=()=>{
@@ -57,9 +57,7 @@ function drawProductGraph(){
  const ms=performance.now(),ease=1-Math.exp(-Math.min(.05,(ms-graphLastMs)/1000)*12);graphLastMs=ms;
  graphCentre=graphCentre.map((v,i)=>v+(graphCentreAim[i]-v)*ease);graphLogExtent+=(+$('productRange').value-graphLogExtent)*ease;
  const ctx=$('productGraph').getContext('2d'),extent=10**graphLogExtent,unit=125/extent,X=z=>300+unit*(z[0]-graphCentre[0]),Y=z=>150-unit*(z[1]-graphCentre[1]);
- ctx.clearRect(0,0,600,300);ctx.font='12px ui-monospace';ctx.lineWidth=1;ctx.strokeStyle='#71897b66';ctx.fillStyle='#b0bfb6';
- for(let i=-2;i<=2;i++){const x=300+i*125,y=150-i*62.5;ctx.beginPath();ctx.moveTo(x,25);ctx.lineTo(x,275);ctx.moveTo(50,y);ctx.lineTo(550,y);ctx.stroke();ctx.fillText(graphTick(graphCentre[0]+i*extent,extent),Math.min(500,Math.max(3,x+3)),290);if(i<2)ctx.fillText(graphTick(graphCentre[1]+i*extent/2,extent/2),4,y-4);}
- ctx.fillText('Re →',550,16);ctx.fillText('Im ↑',4,16);
+ ctx.clearRect(0,0,600,300);ClockMath.drawComplexPlane(ctx,graphCentre,extent);
  const data=eulerPath(t,SIGMA,TAUV),points=data.points,idx=selectedProduct<0?points.length-1:Math.min(selectedProduct,points.length-1),selected=points[idx];productHitPoints=[];
  ctx.save();ctx.beginPath();ctx.rect(0,20,600,260);ctx.clip();
  function dot(z,col,r,label){if(!z.every(Number.isFinite))return;const x=X(z),y=Y(z);if(x<0||x>600||y<20||y>280)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();if(label)ctx.fillText(label,x+7,y-7);}

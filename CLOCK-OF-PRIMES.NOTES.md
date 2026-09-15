@@ -342,3 +342,327 @@ The curve renderer now evaluates a local 25-point ζ preview directly at the dis
 The everyday controls are now Real σ and Height τ, each with a slider and precise number field, followed by Fit curve, zoom out/in, Options and Guide. The σ lock is OFF by default. Options holds the τ window/span, mirror, curve toggle, optional placement mode, secondary fits and factor controls. Direct dragging of the purple input now works even when it is represented by the offscreen badge; this adjusts from the existing input using pointer displacement instead of jumping to the badge's clipped coordinate.
 
 Authoring: `.review/friendly-explorer.js/css`, plus the revised `.review/zeta-locus.js` and continuous input easing replacements in the full build pipeline. `.review/verify-friendly.cjs` checks default unlocked dragging with a real mouse, immediate preview feedback, options access, high-height preview cost, and five viewport sizes. Observed live feedback was ~32 ms over two animation frames, with 25-point preview costs ~0.1 ms near τ=14 and 1.6–2.3 ms near τ=1000. Machine-specific observations, not universal frame-rate guarantees. Existing zeta numerical/stream tests now access the span selector through its moved control rather than assuming it is always visible.
+
+## Withdrawn clock-to-sum experiment — 13 September 2026
+
+The beat-12 travelling-arrow demonstration was rejected as unreadable. Removed
+its added overlay, magnifier, three pane labels, transport controls and launcher
+from the page; restored the clean committed exploration view. Its numerical
+checks did not establish visual clarity. The next attempt must explain one
+relationship at a time within the existing clock and graph, without covering
+either with another panel or changing the viewing scale during the explanation.
+The σ/τ clockwork geometry task remains open.
+
+## Shifted output overlay and clock equations — 13 September 2026
+
+Added `CLOCKWORK-EQUATIONS.md`, transcribing the time, radius, angular growth,
+prime-power crossings, RGB transmission, complex weights, finite paths and
+optional radial rulers from the implementation. It explicitly distinguishes
+mechanical frequency 1/q from the complex phase rate −log(n).
+
+Options now contains “Overlay ζ − 1 on clock”, with a separate switch for the
+shifted finite sum/product paths. The overlay is off by default and uses the
+existing clock canvas, a fixed scale of R pixels per output unit and the clock's
+reflection transform. It does not change the side plot's scale, input, clock time
+or layout. Matching streamed ζ samples use an incremental raster; the current
+local preview remains live. Output 1 marks the axle and output 0 marks the
+negative-real rim. Only those two landmarks are added. Out-of-canvas curves are
+clipped without automatic rescaling.
+
+The user's proposed pole alignment needs a distinction: translating output by
+−1 centres the sum/product anchor 1, not the pole. ζ(s) is unbounded at the input
+s=1; all zeros have output 0 and therefore land at the single point w=−1. Merely
+being somewhere on the rim (|ζ−1|=1) does not imply a zero.
+
+Checks in `.review/verify-shifted-clock.cjs` passed: the 1/0 landmarks, imaginary
+axis sign, a known zero at the negative-real rim, original/reflected orientation,
+pole handling, pane/radius formulas, unchanged user state and narrow viewports.
+
+## Sum/tail investigation — 13 September 2026
+
+The reported σ=0.5, τ=1, N=500 case is mathematical divergence of the ordinary
+partial sum, not a numerical discrepancy in the checked implementation.
+Browser S_500 = 7.863704681647395 + 17.738814226146562i, while
+ζ(0.5+i) = 0.14393642707718965 − 0.7220997435316729i. Independent 50-digit
+mpmath sums over 12 cases (σ=.2,.5,1,1.3 and N=100,500,1000, τ=1) agreed within
+7.6e-14 absolute error. This does not exclude every possible rendering issue,
+but reproduces the outward excursion without the renderer.
+
+The attached integral path is I_N(X)=S_N+(X^(1−s)−N^(1−s))/(1−s). Its eye is
+C_N=S_N+N^(1−s)/(s−1), and radius around that eye is X^(1−σ)/|1−s|. At N=500,
+σ=.5, τ=1 this radius is exactly 20; the eye is approximately
+0.16624134089943432 − 0.7205752035675559i. The eye approaches ζ with endpoint
+corrections even while the uncorrected path expands. σ<1 expands, σ=1 and
+nonzero τ circles, σ>1 contracts. Winding with log X is controlled by τ.
+
+The .2 lower σ bound is a UI/validated-domain choice, not a singularity.
+Read-only probes below it agree well just to the left, but the current
+Euler–Maclaurin evaluator suffers cancellation farther into negative σ:
+absolute errors near (−4,1000) reached about 6.47, and the trivial zero at −4
+had residual about 9.1e-7. A faithful left-half-plane extension should use the
+functional equation and explicit handling of removable products/zeros, while
+finite Euler products at σ=0 have additional singularities and the glass would
+cease to be passive attenuation for σ<0. No input bounds were changed here.
+
+`SUM-TAIL-BEHAVIOUR.png` plots the actual partial sums and the tail-radius law;
+`.review/investigate-tail.cjs`, `.review/check-tail.py` and
+`.review/plot-tail-behaviour.py` record the investigation.
+
+For Riemann's paper, the existing paths and sliders can support successive
+integral contributions, but new numerical machinery is needed: complex gamma,
+adaptive quadrature and branch-aware contour integration. The first faithful
+scene is Γ(s)n^(−s)=∫exp(−nx)x^(s−1)dx, then the summed Bose kernel
+Γ(s)ζ(s)=∫x^(s−1)/(exp(x)−1)dx for Re(s)>1. His continuation proceeds through
+a contour, reflection, a theta-kernel transformation and the completed ξ
+function before the zero/prime-count work. These are not the current integral
+tail construction. A graph can illustrate these identities; it does not by
+itself supply the convergence and contour arguments.
+
+## Riemann integral views — 13 September 2026
+
+The existing plot now has a mathematical-view selector: Euler, One term, Finite
+sum, Infinite sum, and Symmetry. These are user-selected functions, not lessons
+that retune the clock. The clock's completed beat supplies n or N for the first
+two integrals. Sigma, tau, clock time, reflection and layout stay unchanged when
+selecting a view. Fit curve fits the selected integral; Fit input & outputs also
+includes s. The ruler remains fixed until a navigation action changes it.
+
+The blue path accumulates an independently evaluated real-axis integral; the
+gold ring is its gamma/zeta target. Trace smoothly rewinds and replays the path.
+Options contains its progress scrubber. Playback is parameterized by sampled
+path length for visibility, with actual x reported underneath. x is an auxiliary
+integration variable, not a newly asserted radius or sector of the clock.
+
+Implemented identities, using modern Gamma and xi notation:
+
+- One term: integral of exp(−nx)x^(s−1) = Gamma(s)n^(−s), Re(s)>0.
+- Finite sum: integral of [(1−exp(−Nx))/(exp(x)−1)]x^(s−1)
+  = Gamma(s)S_N(s), Re(s)>0. This still works inside the critical strip.
+- Infinite sum: integral of x^(s−1)/(exp(x)−1) = Gamma(s)zeta(s), Re(s)>1.
+  At or below 1 it is explicitly rejected rather than plotted as a continuation.
+- Symmetry: xi(s)=1/2+s(s−1)/2 times the integral from 1 to infinity of
+  psi(x)[x^(s/2−1)+x^(−(s+1)/2)], where psi(x)=sum exp(−pi n²x).
+  This psi is the Gaussian/theta kernel, not the prime-count psi. Its paired
+  powers exchange under s↦1−s. On the critical line the integral is real and
+  reduces to Riemann's cosine integral. Guide gives the formula and notation.
+
+Sources: [Wilkins translation, printed pages 1–3](https://www.claymath.org/wp-content/uploads/2023/04/Wilkins-translation.pdf),
+[DLMF 25.5](https://dlmf.nist.gov/25.5), and
+[DLMF 25.4](https://dlmf.nist.gov/25.4). The finite-N view is an explicit
+intermediate step derived by summing the first identity; it is not presented as
+a separate displayed equation quoted from the paper.
+
+Numerics use log-x coordinates and composite 8-point Gaussian quadrature, with
+4-point comparisons as an error estimate and compensated complex summation.
+The term view rescales x by n. Finite exponential sums use expm1 to avoid small-x
+cancellation. Positive-domain gamma uses Lanczos plus recurrence. Independent
+targets are not used to bend the integration paths or force their endpoints.
+Workers are cancelled on changed inputs and eight completed results are cached.
+
+Integral views currently support |tau|≤15 within the existing sigma range. This
+does not narrow the Euler/zeta explorer's |tau|≤1000 range. The lower integration
+cutoff is capped at log(x)=−300; near sigma=1 from above, a substantial omitted
+lower tail is flagged as unresolved. Guide reports the quadrature estimate and
+analytic bounds for the omitted integration tails, not a certified total error.
+Fit includes large cancellation loops even if the final gamma/xi value is tiny;
+explicit zoom supports extents down to 1e−14 for examining those endpoints.
+
+Validation: 322 independent 60-digit mpmath reference cases cover sigma=.2..3,
+tau=0,1,5,14,15, n/N=1,2,12,500, symmetry pairs, the first nontrivial zero and an
+unresolved near-pole case. Resolved endpoint absolute errors were at most
+2.34e−10 and consistent with cutoff bounds; gamma relative error was below
+9.4e−14. Browser checks passed for worker targets, invalid-domain feedback,
+unchanged inputs/clock, continuous replay, scrubbing, tiny-scale navigation,
+returning to Euler, and five viewport sizes. Existing input/streaming checks
+also passed (live feedback about 26 ms on this run).
+
+Still open: animating the branch-aware contour argument and theta
+transformation, robust negative-sigma/trivial-zero exploration, and identifying
+a genuine clock region for the integral. Showing the transformed identity does
+not establish those missing steps or prove the Riemann Hypothesis.
+
+
+## TypeScript foundation — 14 September 2026
+
+Added a pinned TypeScript/Vite development build and a narrow ClockMath adapter.
+The current Riemann gamma/quadrature code now lives in src/math/riemann.ts.
+Its worker imports that module directly and is bundled inline; the old runtime
+function-to-string worker construction and duplicate JS math source are retired.
+Most clock and UI code remains in the historical JavaScript assembly.
+
+Added typed contribution/worker contracts, pure pane snapshots with distinct
+term-completion/birth/growth-completion times, and the finite prime-power log ζ
+module with weights 1/k. It reports the convergence domain and finite cutoff,
+rejects nonfinite/overflowing inputs, and has no visible arm yet.
+
+Use npm run build as the canonical build, npm run dev for automatic rebuilds,
+and npm test for type checking and numerical tests. Python assembly now accepts
+an output path so intermediate stages cannot overwrite the working page. The
+completed HTML and dist/index.html remain self-contained and equivalent.
+
+Validation: strict type checking; 322 existing gamma/integral fixtures; 24 new
+60-digit log-Euler fixtures (maximum absolute error about 4e-15); pane boundaries
+and reverse snapshots; bundled worker execution offline with no HTTP requests;
+request replacement; existing integral and control tests across five viewport
+sizes. Existing live input feedback was about 30 ms, with high-τ local preview
+around 1.7 ms on this run. Development root routing and TypeScript rebuild/reload
+were exercised in Chrome. Browser harnesses still use workstation-specific paths.
+
+Next: the reusable arm renderer and a readable log-Euler scene. Clock reveal
+integration, ξ paired-vector numerics, and broader-domain continuation remain
+separate later tasks; no claims about those are implied by this migration.
+
+
+## First prime-power arm — 14 September 2026
+
+Added “Euler · prime-power arm” to the existing graph selector. The typed math
+module supplies b_q=q^(−s)/k for q=p^k. The arm uses the existing pane-growth
+interval: g_q(T)=clamp(T−q,0,1), displaying L(T,s)=Σ g_q(T)b_q(s). A term begins
+at pane birth T=q and finishes at T=q+1. This is a disclosed reveal convention;
+it is distinct from the original sum tape completing its qth term at T=q.
+
+At fixed s, established vectors stay fixed as the clock advances. Changing tau
+rotates them by −tau log q, and changing sigma changes their lengths. The readout
+connects the active pane to its J weight 1/k. The single circle shows its full
+vector magnitude q^(−sigma)/k; the growth fraction changes the vector length.
+This is the logarithmic Euler construction, not yet the xi epicycle construction.
+
+The generic renderer accumulates all contributors before folding consecutive
+groups. Dashed aggregate vectors preserve their endpoints; the faint underlying
+path retains every intermediate sum. Initially the first three, last two and
+active contributions are expanded. Selecting a prime expands its family. Clicking
+a dashed aggregate expands four more contributions. Hover previews the family;
+click pins the specific q, which receives a thicker clock-arc highlight. No new
+overlay, automatic fit, or clock/input retuning was added.
+
+Trace and the renamed Arm progress slider replay the displayed vector chain
+without moving the clock. Folded aggregates replay as aggregates and are not
+presented as individual prime powers. The default view follows pane growth with
+its complete selected approximation displayed. Gold denotes the finite arm tip,
+not a continued-zeta target. For sigma<=1, the view explicitly claims only finite
+terms. Guide distinguishes exp(L) from a finite Euler product, whose included
+primes have further powers beyond the prime-power cutoff.
+
+Tests passed: existing 346 numerical cases; pure growth/rewind and folded endpoint
+checks through N=2000; actual browser forward/back buttons with intermediate
+growth; hover/pin and exact q selection; Trace preserving inputs and time;
+aggregate expansion preserving endpoints; desktop/mobile/landscape layouts;
+returning to integral and Euler views; existing integral regression suite;
+standalone export offline.
+
+Next: review the side-graph arm for comprehension before moving it onto the clock,
+then add the independently validated xi quadrature pairs behind the same renderer.
+
+
+## Xi paired arm — 14 September 2026
+
+Added “Riemann · ξ paired arm” in the same graph, using the shared TypeScript
+arm renderer. It evaluates the positive theta kernel directly, independently of
+the gold gamma/zeta target. With δ=σ−1/2:
+
+    K(u) = Σ[n≥1] (8π²n⁴ exp(9u/2) − 12πn² exp(5u/2)) exp(−πn² exp(2u))
+    ξ(s) = ∫[0,∞] K(u) cosh((s−1/2)u) du
+    A_j = w_j K(u_j)/2
+    v_j± = A_j exp(±δu_j) exp(±iτu_j)
+
+The normalization follows the classical Fourier representation in
+[Polymath, equations 1–3](https://arxiv.org/html/1904.12438#S1): our K(u)=4Φ(u/2).
+This is a rearrangement of the theta representation, not an animated derivation
+of the theta transformation. On σ=1/2, each pair has equal radii and opposite
+imaginary parts. Off the line, the radius ratio is exp(2δu). The selected node
+stays fixed as inputs change. Two coloured circles show its head-to-tail radii.
+
+Only the active pair and its two neighbours are expanded initially. Dashed
+segments retain sums of whole folded pairs; the faint path shows all individual
+vectors. Click a group to expand two pairs. Hover previews, click pins, Escape
+clears. Trace replays displayed vectors, including aggregates. The origin is
+marked so that closure near the first zero is visible against the independent
+gold target. No input, time or scale is changed by selecting this mode.
+
+Quadrature uses 96 fixed Gauss–Legendre nodes on [0,2.5] and eight Gaussian terms,
+compared with 64 nodes. Guide reports an estimated discretization/roundoff error
+separately from a bound for the omitted integral/Gaussian tails. The estimate is
+not an interval certificate. The implementation rejects inputs outside
+0.2≤σ≤3, |τ|≤15. The main Euler explorer retains its existing range. Absolute
+rather than relative error is useful near a zero.
+
+These are integral samples, not prime powers or zeros. Clock transport leaves
+their coefficients unchanged. A clock-mounted reveal, and any synchronization
+of that reveal with pane births, are still pending; no prime-to-node identity is
+claimed. The side graph is the current inspection surface.
+
+Validation: strict TypeScript build; existing 346 numerical reference cases;
+ξ arm tested against 34 independent theta fixtures, maximum absolute error
+6.53e-16, plus conjugation/reflection symmetry, pair cancellation and exact folding.
+Chrome checks cover selection/pinning, σ radius ratio, clock independence,
+smooth replay, first-zero closure, aggregate expansion, unsupported-input
+feedback/recovery, mobile layouts and returning to the existing views.
+
+
+## Explorer orientation and full vector chains — 14 September 2026
+
+Feedback: automatic folding hid most contributions behind a faint path and a
+single dotted aggregate, and the dropdown obscured the difference between the
+logarithmic prime-power construction and ξ's paired integral vectors.
+
+Both vector views now show every contribution in colour by default. Folding is
+an unchecked option, explicitly named “Fold unselected vectors”; its aggregate
+values and click-to-expand behaviour remain available. Trace follows the complete
+chain unless folding is deliberately enabled. Hover/pinning still emphasizes the
+selected contribution without removing the other vectors.
+
+Replaced the dropdown with visible Build and Integrate button rows. Build has
+Sum & product, Prime powers, and ξ rotations; Integrate has One term, Finite sum,
+Infinite sum, and ξ symmetry. A persistent title names the output, for example
+“Prime powers → log ζ” versus “Paired rotations → ξ”. The active choice is
+highlighted; changing views preserves the input, clock time and graph ruler.
+On short screens the generic explorer heading and equation move out of the way;
+the equation remains in Guide, with all seven view choices and controls present.
+
+All views share one typed coordinate renderer. Strong axes cross at the actual
+zero, with numbered grid lines and offscreen-origin directions. A violet band
+marks the input critical strip 0<Re(s)<1, with its dashed σ=1/2 line. The label
+explicitly says “input s”: plotted paths and endpoints are outputs on the same
+ruler, not the image of the critical strip under ζ or ξ. Offscreen input labels
+now point in the correct directions and stay inside the canvas.
+
+Validation covers full chains by default, explicit folding and expansion,
+hover/pin and replay, every view's coordinate labels, state preservation while
+switching, and responsive layouts. The numerical modules are unchanged.
+
+
+## View explanations and slider domains — 14 September 2026
+
+Each construction now has an Explain view button beside its title. Its readable
+popup describes what the path accumulates, what its endpoint means, and an
+experiment to try. Equations appear after that explanation at a readable size;
+the main equation line is replaced by a short verbal description. The seven
+explanations distinguish ζ from log ζ, Gamma-weighted integrals from raw sums,
+and the theta integral from its paired-vector representation.
+
+Domain tracks use green for supported inputs, amber for the finite-only parts
+of the Euler/log-Euler constructions, and hatching for divergent/unsupported
+regions. Captions distinguish true convergence boundaries from numerical limits.
+Exact fields receive a border cue when outside a view's numerical domain.
+Changing views never changes s, the clock, or the τ window. Explain view offers
+an explicit “Use this view’s τ range” action which changes only the slider
+window. On short screens captions remain accessible through slider descriptions
+and Explain view; the colour tracks remain visible.
+
+Xi symmetry inherited the original common |τ|≤15 numerical restriction. Its
+theta quadrature already adjusts the sampling density with τ. The view now
+supports |τ|≤35 across the shared σ range 0.2–3; this is an implementation window,
+not a restriction of the entire function ξ. The positive-σ bound also belongs
+to the shared UI and independent gamma target implementation. The other integral
+views and ξ rotations keep |τ|≤15. No extension of the raw Euler domain is implied.
+The shared typed view-domain metadata supplies both integral limits and slider
+colours. Integral results now include a floating-point roundoff estimate along
+with the quadrature estimate and separate omitted-tail bound.
+
+Seventy independent 70-digit mpmath fixtures cover positive/negative heights,
+σ=0.2 through 3, and several zero neighbourhoods in the extended window. Maximum
+absolute endpoint error was 6.08e-16. These finite checks are not a certified
+uniform error bound. The theta computation took under 9 ms per tested job on
+this workstation. Numerical regressions passed; browser checks exercise all
+explanations, domain colouring, rejection/recovery and state-preserving range
+changes. Reference generation: python reference/theta-range.py.

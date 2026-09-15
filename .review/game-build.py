@@ -1,8 +1,12 @@
 from pathlib import Path
+import os
 import runpy
 root=Path(__file__).resolve().parent.parent
+page_output=Path(os.environ.get('CLOCK_HTML_OUTPUT',str(root / 'orrery-of-eratosthenes.html')))
+if not (root/'.build/clock-math.js').exists():
+ raise SystemExit('Missing TypeScript bundle. Run npm install, then npm run build.')
 runpy.run_path(str(root/'.review/revise.py'))
-p=(root/'orrery-of-eratosthenes.html').read_text(encoding='utf-8')
+p=page_output.read_text(encoding='utf-8')
 p=p.replace('The Orrery of Eratosthenes · One beat, many primes','Clock of Primes')
 p=p.replace('The Orrery of Eratosthenes','Clock of Primes').replace('One beat, many primes','One beat. One discovery.')
 p=p.replace('white body','second hand').replace('white marker','second hand').replace('White marker','Second hand')
@@ -56,6 +60,6 @@ p=p.replace('The view zooms out as the count grows.', 'The view zooms out as the
 p=p.replace('In the complex view, up is real and right is imaginary.', 'In clock orientation, up is real and right is imaginary. Reflection swaps these axes: right becomes real and up becomes imaginary; the second hand then moves counterclockwise. Labels remain upright. Reflection changes only the view, not the count or arithmetic.')
 p=p.replace("const a=raw.points[k-1],b=raw.points[k],col=k===1?'#e9e2d0':'hsl('+hueOf(factorize(k)[0]||2)+' 55% 64%)';", "const a=raw.points[k-1],b=raw.points[k],col=factorColour(k);")
 p=p.replace('The gold point uses Euler–Maclaurin with six correction terms.', 'The gold point uses Euler–Maclaurin with six correction terms. The arrow chain uses a separate fixed display scale while the clock’s radii shrink as p/count. Shared timing and factor colours link these views; a common geometric scale has not yet been constructed.')
-(root/'orrery-of-eratosthenes.html').write_text(p,encoding='utf-8')
+page_output.write_text(p,encoding='utf-8')
 runpy.run_path(str(root/'.review/integrate-story.py'))
 runpy.run_path(str(root/'.review/viewport-build.py'))

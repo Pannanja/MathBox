@@ -24,7 +24,7 @@ const unlinkedGlass=drawPrimeGlass;
 drawPrimeGlass=function(rad,n){unlinkedGlass(rad,n);if(!selectedPrime)return;g2.save();g2.strokeStyle=primeHighlight(selectedPrime);g2.fillStyle=g2.strokeStyle;
  const primeRing=rings.find(r=>r.p===selectedPrime);if(primeRing){const radius=rad(primeRing.p),span=panelSpan(primeRing.p,t);g2.globalAlpha=.28;g2.beginPath();g2.moveTo(C,C);g2.arc(C,C,radius,span.c0+span.w/2,span.c0-span.w/2+2*Math.PI);g2.closePath();g2.fill();}
  g2.globalAlpha=.9;g2.shadowColor=g2.strokeStyle;g2.shadowBlur=7;
- for(const ring of linkedRings()){const r=rad(ring.p),sp=panelSpan(ring.p,t);if(r<=0||sp.w<=0)continue;g2.lineWidth=7;g2.beginPath();g2.arc(C,C,r,sp.c0-sp.w/2,sp.c0+sp.w/2);g2.stroke();}
+ for(const ring of linkedRings()){const r=rad(ring.p),sp=panelSpan(ring.p,t);if(r<=0||sp.w<=0)continue;g2.lineWidth=typeof logArmScene!=='undefined'&&paperMode==='log'&&ring.p===logArmScene.activeQ?11:7;g2.beginPath();g2.arc(C,C,r,sp.c0-sp.w/2,sp.c0+sp.w/2);g2.stroke();}
  g2.restore();
 };
 // Hit-test the actual arc band. Reflection's intermediate transform can become

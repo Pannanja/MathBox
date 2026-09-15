@@ -1,6 +1,8 @@
 from pathlib import Path
+import os
 import re
 root=Path(__file__).resolve().parent.parent
+page_output=Path(os.environ.get('CLOCK_HTML_OUTPUT',str(root / 'orrery-of-eratosthenes.html')))
 p=(root/'.review/first-pass.html').read_text(encoding='utf-8')
 def section(text,start,end,replacement):
     a=text.index(start);b=text.index(end,a)
@@ -56,4 +58,4 @@ p=p.replace('if (stairOn && t > 1)', 'if (stairMix > .001 && t > 1)')
 p=p.replace('if (stairMix > .005 && t > 1.05)', 'if (stairMix > .005 && t > 1.000001)')
 p=p.replace('g2.save(); g2.globalAlpha = stairMix;', 'g2.save(); g2.globalAlpha = stairMix * Math.min(1, (t - 1) / .35);')
 p=p.replace("v = Math.min(c.max, Math.max(c.min, +v));", "v = Number(v);if(!Number.isFinite(v))return;v = Math.min(c.max, Math.max(c.min, v));")
-(root/'orrery-of-eratosthenes.html').write_text(p,encoding='utf-8')
+page_output.write_text(p,encoding='utf-8')

@@ -52,6 +52,10 @@ b=p.index('  const juice =',a)
 psi_drawing=p[a:b]
 p=p[:a]+p[b:]
 p=p.replace('  drawContinuum(ms,rad);','  drawContinuum(ms,rad);\n'+psi_drawing,1)
+# Either mechanism can be brought to the front of the other. The sum is drawn
+# once, before the dial or after it, and whatever is behind sits under a veil.
+p=p.replace('  beginReflection(dt);','  beginReflection(dt);\n  if(layerFront<0){drawContinuum(ms,rad);layerVeil();}',1)
+p=p.replace('  drawPrimeGlass(rad,n);\n  drawContinuum(ms,rad);','  drawPrimeGlass(rad,n);\n  if(layerFront>=0){layerVeil();drawContinuum(ms,rad);}',1)
 p=p.replace('</style>',(root/'.review/linked-regions.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/linked-regions.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);','    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);\n    if(selectedPrime && k%selectedPrime===0)lensArrow(X(a),Y(a),X(b),Y(b),factorColour(selectedPrime),5);')
@@ -61,6 +65,12 @@ p=p.replace('</style>',(root/'.review/euler-workspace.css').read_text(encoding='
 p=p.replace('</script>',(root/'.review/euler-workspace.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('const b=e.currentTarget.getBoundingClientRect(),x=(e.clientX-b.left)*600/b.width','const b=graphPlotRect(e.currentTarget),x=(e.clientX-b.left)*600/b.width')
 p=p.replace('Y(b),factorColour(selectedPrime),5','Y(b),primeHighlight(selectedPrime),5')
+# The sum's links lose their arrow tips; the chain already shows its direction.
+for call in ['lensArrow(X(a),Y(a),X(b),Y(b),"#0c1512",(k<8?7:4)+3*fresh)',
+             'lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh)',
+             'lensArrow(X(a),Y(a),X(b),Y(b),primeHighlight(selectedPrime),5)']:
+ if call not in p: raise SystemExit('Missing sum link call: '+call)
+ p=p.replace(call,call[:-1]+',false)')
 p=p.replace('</style>',(root/'.review/complex-exploration.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/complex-exploration.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('</style>',(root/'.review/zeta-locus.css').read_text(encoding='utf-8')+'\n</style>',1)

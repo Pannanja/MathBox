@@ -1,11 +1,16 @@
 // Readable ink follows the multiplicative glass recipe at a fixed display
 // depth. Repeated primes participate; ink brightness is not |n^-s|.
-const factorColourCache=new Map();
+const factorColourCache=new Map();let factorColourRecipe='';
+// A number wears the light its panes let through, on the live recipe rather
+// than a frozen copy of it, so the tape follows the light panel. A prime wears
+// its own colour instead: see primeInk, which is what its pane is painted in.
 function factorColour(n){
+ const recipe=inkRecipe();
+ if(recipe!==factorColourRecipe){factorColourRecipe=recipe;factorColourCache.clear();}
  if(n===1)return '#ede8d9';if(factorColourCache.has(n))return factorColourCache.get(n);
- let T=[1,1,1];
- for(const p of factorize(n)){const c=hueRGB(hueOf(p)),w=c.map(v=>1-v),sum=w.reduce((a,b)=>a+b,0)||1;T=T.map((v,i)=>v*Math.exp(-3*.42*Math.log(p)*w[i]/sum));}
- const ink='rgb('+T.map(v=>Math.round(90+165*Math.pow(v,1/2.2))).join(',')+')';factorColourCache.set(n,ink);return ink;
+ const T=stackedTransmission(n);
+ const ink='rgb('+T.map(v=>Math.round(90+165*Math.pow(Math.max(0,Math.min(1,v)),1/2.2))).join(',')+')';
+ factorColourCache.set(n,ink);return ink;
 }
 const PR=(()=>{
  const strip=$('strip'),pf=$('pf'),tape=$('tape'),slot=76;
@@ -54,7 +59,7 @@ const PR=(()=>{
   dots.style.left=(gapIndex<0?total:gapIndex*cell)+'px';dots.style.width=cell+'px';
   dots.style.opacity=gapIndex<0?'0':'1';dots.dataset.hiddenCount=hidden;dots.title=hidden+' accumulated prime factors are folded here';
   for(const p of shown)if(!factors.has(p)){
-   const el=document.createElement('span');el.className='fx';el.dataset.p=p;el.innerHTML='<span class="factor-ink">(1−1/'+p+'<sup>s</sup>)</span>';el.style.color=factorColour(p);pf.appendChild(el);
+   const el=document.createElement('span');el.className='fx';el.dataset.p=p;el.innerHTML='<span class="factor-ink">(1−1/'+p+'<sup>s</sup>)</span>';el.style.color=primeInk(p);pf.appendChild(el);
    // A new prime rises into place from the slot beneath it, never from the far end.
    factors.set(p,{el,x:Math.max(0,(order.indexOf(p)-1)*cell),y:0,alpha:0});
   }

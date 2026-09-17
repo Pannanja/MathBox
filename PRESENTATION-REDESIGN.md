@@ -352,6 +352,27 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   instrument at rest, or term 1 wants a special case, or the clock should
   open at beat 2.
 
+**Layers and one colour language**
+
+- [x] The sum and the panes are the same mechanism seen twice, and they were
+  welded in one order. Depth pulls either to the front; whatever is behind
+  goes under a veil, so the dial opens up and the gearing reads through it.
+- [x] The sum's links lost their arrow tips. A chain of tips is noise; the
+  chain already shows its direction.
+- [x] Two colour languages were crossed. A prime's identity colour is what its
+  pane is painted in; the light a number's panes let through is a different
+  quantity. The tape's product factors are single primes and were wearing the
+  transmission, which is close to the complement of their own pane, while the
+  explorer's product vectors wore the identity. Product factors now use
+  primeInk, the one function panes, vectors and the spectrum swatches share.
+- [x] factorColour kept a frozen copy of the filter recipe at depth 0.42, so
+  the tape ignored the light panel entirely. It now composes the live
+  paneTransmission the way the beam does, and drops its cache when the recipe
+  changes.
+- [ ] A prime's own term, 1/p^s on the strip, still reads as transmission and
+  so sits near the complement of its pane. That is the model talking, but it
+  may want the identity colour for primes too.
+
 **Known defect**
 
 - [ ] The tail spiral is drawn in one frame and then rotated as the term

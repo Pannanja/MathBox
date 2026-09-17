@@ -88,6 +88,27 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  assert.strictEqual(capped.tau,1000,'clamped at the evaluator bound: '+JSON.stringify(capped));
  assert.strictEqual(capped.on,false,'drive switched off at the bound');
  assert.ok(/stopped at 1000/.test(capped.note),capped.note);
+ // Layers: either mechanism can come forward, and the one behind is veiled.
+ await page.evaluate(()=>{const s=document.getElementById('layerFront');s.value='-1';s.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(80);
+ assert.strictEqual(await page.evaluate(()=>layerFront),-1,'panes brought forward');
+ assert.strictEqual(await page.textContent('#layerFrontOut'),'Panes in front');
+ await page.evaluate(()=>{const s=document.getElementById('layerFront');s.value='1';s.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(80);
+ assert.strictEqual(await page.textContent('#layerFrontOut'),'Sum in front');
+ // One colour language per kind of thing: a product factor is a prime, and
+ // wears the ink its pane is painted in.
+ const ink=await page.evaluate(()=>[...document.querySelectorAll('#pf .fx')].map(e=>[e.style.color,primeInk(+e.dataset.p)]));
+ assert.ok(ink.length>1,'factors on the tape');
+ const same=await page.evaluate(()=>[...document.querySelectorAll('#pf .fx')].every(e=>{
+  const probe=document.createElement('span');probe.style.color=primeInk(+e.dataset.p);
+  return probe.style.color===e.style.color;}));
+ assert.ok(same,'product factors wear their prime ink: '+JSON.stringify(ink));
+ // The tape follows the light panel rather than a frozen recipe.
+ const before6=await page.evaluate(()=>factorColour(6));
+ await page.evaluate(()=>{const s=document.getElementById('lightChoice');s.value='light';s.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(150);
+ assert.notStrictEqual(await page.evaluate(()=>factorColour(6)),before6,'tape ink follows the light panel');
  assert.deepStrictEqual(errs,[],'page errors');
  console.log('tau-drive + sum ruler: passed');
  await b.close();

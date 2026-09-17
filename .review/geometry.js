@@ -6,6 +6,16 @@ let radialAim=0,radialMix=0,separateAim=0,separateMix=0,sumClipped=false;
 // sumZoom is the observer's factor on top of it. Neither changes the terms,
 // which keep their lengths n^-sigma whatever the ruler says.
 let sumZoom=1;
+// Which of the two mechanisms is in front. Negative puts the panes over the
+// sum, positive the sum over the panes; the one behind sits under a veil so
+// the dial can be opened up and the gears read through it.
+let layerFront=0;
+function layerVeil(){
+ const a=Math.abs(layerFront)*.66;if(a<.004)return;
+ g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=a;g2.fillStyle='#0a130f';
+ g2.fillRect(0,0,W,$('cv').height);g2.restore();
+}
+function layerName(){return layerFront<-.02?'Panes in front':layerFront>.02?'Sum in front':'Level';}
 function sumUnitRadii(){return SIGMA*sumZoom;}
 function sumRulerLabel(){return 'SUM · 1 = '+sumUnitRadii().toFixed(2)+' × radius';}
 function clockRadius(q,x=t,mix=radialMix){
@@ -29,6 +39,7 @@ function updateGeometry(dt){
  const height=Math.round(W+900*separateMix);
  if($('cv').height!==height)$('cv').height=height;
  $('radialRead').textContent=radialMix<.01?'Births at the rim':radialMix>.99?'Births at the axle':'Changing ruler';
+ $('sumScaleNote').dataset.layer=layerName();
  $('separateRead').textContent=separateAim<.01?'Together':separateAim>.99?'Separate sum':'Separating';
  $('sumScaleNote').hidden=sumMix<.01;
  $('sumScaleNote').textContent='Sum ruler: one unit is '+sumUnitRadii().toFixed(2)+' radii (σ × '+sumZoom.toFixed(2)+'). '+(continueMix>.1?(SIGMA>1.001?'The coral tail coils inward.':SIGMA<.999?'The coral tail unwinds outward.':'The coral tail keeps a fixed radius.'):'A link has length n⁻σ and angle −τ log n.')+(sumClipped?' Portions extend beyond the circle; the ruler stays fixed.':'');

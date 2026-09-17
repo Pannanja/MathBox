@@ -1008,10 +1008,11 @@ function setCtl(id, v){
 
 // Every displayed position is a continuous function of t and eased tuning.
 // Only arithmetic events (births and strikes) occur at integer crossings.
-function lensArrow(x,y,X,Y,col,width=1.4) {
-  g2.strokeStyle=col;g2.lineWidth=width;
+function lensArrow(x,y,X,Y,col,width=1.4,head=true) {
+  g2.strokeStyle=col;g2.lineWidth=width;g2.lineCap=head?'butt':'round';
   g2.beginPath();g2.moveTo(x,y);g2.lineTo(X,Y);g2.stroke();
-  const d=Math.hypot(X-x,Y-y);if(d<5)return;
+  g2.lineCap='butt';
+  const d=Math.hypot(X-x,Y-y);if(d<5||!head)return;
   const a=Math.atan2(Y-y,X-x),l=Math.min(5,d*.2);
   g2.beginPath();g2.moveTo(X-l*Math.cos(a-.45),Y-l*Math.sin(a-.45));g2.lineTo(X,Y);g2.lineTo(X-l*Math.cos(a+.45),Y-l*Math.sin(a+.45));g2.stroke();
 }

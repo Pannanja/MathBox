@@ -306,21 +306,32 @@ Added after the first review rounds. Phase 6 is deferred until these land.
 - [x] Vary s without opening the Riemann explorer, or let varying s be the
   thing that opens it. Exploring off the real axis is where the rabbit hole
   starts, and it should be presented as a door, not a setting.
-- [x] Let the imaginary part of s ride the clock. A rate in tau per beat, off
-  by default, anchored where it is switched on. Because tau is a function of
-  t rather than an accumulator, stepping the clock back winds tau back with
-  it, and the pace follows the play speed for free. It stops at the end of
-  the tau slider rather than running off it.
+- [x] Let the imaginary part of s ride the clock. On by default at one tau per
+  beat, anchored where it is switched on. Because tau is a function of t
+  rather than an accumulator, stepping the clock back winds tau back with it,
+  and the pace follows the play speed for free.
+- [x] The drive runs as far as the machinery does. 35 was the fine slider's
+  edge, not a limit: locusZeta grows its truncation with |tau| and tune()
+  clamps at 1000, so the drive stops there and nowhere earlier. The tau
+  slider now follows the value as a local fine control instead of fencing it.
+- [x] With the drive on by default, the door off the real axis answers
+  deliberate input rather than the first beat; an ambient default should not
+  spend a one-shot layout change for the visitor.
 
 **The sum's own ruler**
 
-- [x] One unit of the sum was pinned at exactly one clock radius, so the sum
-  arms were framed by a length that has nothing to do with them. Give the sum
-  its own scale, from 0.1 to 2 radii per unit. Sigma still fixes each link at
-  n^-sigma; the ruler only fixes how long a unit is drawn, and the separated
-  inset labels the scale it is using.
-- [ ] The sum's window is still the dial. Zooming the ruler out is the only
-  way to fit a wandering chain; the window itself could grow into the margin.
+- [x] One unit of the sum was pinned at exactly one clock radius whatever s
+  was. One unit is now sigma radii: sigma = 1 reaches the rim, sigma = 1/2
+  half way in, so the real part of s is a length you can read against the
+  dial. An observer's factor of 0.1 to 2 rides on top. Neither changes the
+  terms, which stay n^-sigma long, and the separated inset labels the scale
+  it is using.
+- [ ] At the opening sigma = 2 a unit is two radii, so the sum's very first
+  link leaves the dial and the lens reads as empty until the ruler factor is
+  brought down. Either the window grows past R, the opening sigma changes, or
+  the lens frames itself the first time it is switched on.
+- [ ] The sum's window is still the dial. The ruler factor is the only way to
+  fit a wandering chain; the window itself could grow into the margin.
 
 **Known defect**
 

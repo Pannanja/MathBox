@@ -14,18 +14,19 @@ hueOf=function(p){
 function respectSpectrum(){PR.recolor();updateSpectrum();labelAlphas.clear();}
 // tau can ride the clock. The rate is tau per beat and the drive is a function
 // of t, not an accumulator, so stepping back winds tau back with the count.
-let tauDriveOn=false,tauRate=.25,tauOrigin={t:1,tau:0};
+let tauDriveOn=true,tauRate=1,tauOrigin={t:1,tau:0};
 const driveRest='τ then rides the clock: it advances while you play, at the pace you set, and winds back when you step back. σ is untouched, so nothing changes length — every term only turns.';
 function anchorTau(){tauOrigin={t:t,tau:tauAim};}
 function driveTau(){
  if(!tauDriveOn)return;
- const slider=$('clockTau');if(!slider)return;
- const lo=+slider.min,hi=+slider.max;
+ // The bound is the evaluator's, not a slider's: locusZeta grows its truncation
+ // with |tau| and tune() already clamps there, so the drive runs the same range.
+ const lo=-1000,hi=1000;
  const want=tauOrigin.tau+tauRate*(t-tauOrigin.t),held=Math.max(lo,Math.min(hi,want));
  if(Math.abs(held-tauAim)>1e-9){tauAim=held;$('tauDial').value=held;}
  if(Math.abs(want-held)>1e-9){
   tauDriveOn=false;$('tauDriveOn').checked=false;anchorTau();
-  $('driveNote').textContent='τ stopped at '+held.toFixed(0)+', the end of the τ slider. Switch it back on to carry on from here.';
+  $('driveNote').textContent='τ stopped at '+held.toFixed(0)+', where the ζ evaluator stops being trusted. Switch it back on to carry on from here.';
  }
 }
 function driveText(){return 'τ is riding the clock at '+(tauRate>0?'+':'')+tauRate.toFixed(2)+' per beat. Play or step, and every term turns while its length holds.';}

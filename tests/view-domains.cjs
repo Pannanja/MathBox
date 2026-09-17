@@ -8,6 +8,9 @@ const pickView=(page,mode)=>page.evaluate(m=>{const c=document.getElementById('c
  await page.goto('file:///'+path.resolve('orrery-of-eratosthenes.html').replaceAll('\\','/'));
   // Both workspaces open on demand; browser checks show clock and explorer together.
   await page.evaluate(()=>document.querySelector('#workspaceSwitch [data-layout=both]')?.click());await page.waitForTimeout(150);
+  // These checks hold s still while the clock moves, so they switch off the
+  // default drive that turns tau with the beat, through its own control.
+  await page.evaluate(()=>{const c=document.getElementById('tauDriveOn');c.checked=false;c.dispatchEvent(new Event('input',{bubbles:true}));});
  await page.evaluate(()=>{tune(.5,30);advanceClock(12,performance.now());});
  const state=await page.evaluate(()=>[sigmaAim,tauAim,t]);
  for(const mode of ['euler','log','xiarm','term','finite','infinite','theta']){

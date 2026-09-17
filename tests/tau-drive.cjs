@@ -9,18 +9,19 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  await page.evaluate(()=>document.getElementById('sReadout').click());
  await page.waitForTimeout(150);
  assert.ok(await page.isVisible('#tauDriveOn'),'drive checkbox visible');
+ // The drive is on out of the box, at one per beat.
+ assert.strictEqual(await page.isChecked('#tauDriveOn'),true,'drive on by default');
+ assert.strictEqual(await page.evaluate(()=>tauRate),1,'one per beat by default');
  const before=await page.evaluate(()=>({t,tau:tauAim}));
- await page.check('#tauDriveOn');
- await page.waitForTimeout(100);
  // Step the clock forward five beats and read tau.
  for(let i=0;i<5;i++){await page.evaluate(()=>stepClock(1));await page.waitForTimeout(650);}
  const mid=await page.evaluate(()=>({t,tau:tauAim,rate:tauRate,origin:tauOrigin}));
  assert.ok(Math.abs(mid.tau-(before.tau+mid.rate*(mid.t-before.t)))<1e-6,'tau tracks t: '+JSON.stringify(mid));
- assert.ok(mid.tau>0.5,'tau actually moved: '+mid.tau);
+ assert.ok(mid.tau>4,'tau actually moved: '+mid.tau);
  // Step back: tau must wind back with the count.
  for(let i=0;i<3;i++){await page.evaluate(()=>stepClock(-1));await page.waitForTimeout(650);}
  const back=await page.evaluate(()=>({t,tau:tauAim}));
- assert.ok(back.tau<mid.tau-0.5,'tau wound back: '+JSON.stringify([mid,back]));
+ assert.ok(back.tau<mid.tau-2,'tau wound back: '+JSON.stringify([mid,back]));
  assert.ok(Math.abs(back.tau-(before.tau+mid.rate*(back.t-before.t)))<1e-6,'tau still a function of t');
  // Rate change re-anchors rather than rewriting history.
  await page.fill('#tauRate','-1');await page.dispatchEvent('#tauRate','input');
@@ -35,17 +36,32 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  await page.fill('#sumZoom','0.4');await page.dispatchEvent('#sumZoom','input');
  await page.waitForTimeout(80);
  assert.strictEqual(await page.evaluate(()=>sumZoom),0.4,'sumZoom applied');
- assert.strictEqual(await page.evaluate(()=>sumRulerLabel()),'SUM · 1 = 0.40 × radius');
- assert.strictEqual(await page.textContent('#sumZoomOut'),'0.40 radii');
+ // One unit is sigma radii times the observer's factor; sigma is still 2 here.
+ assert.strictEqual(await page.evaluate(()=>+sumUnitRadii().toFixed(4)),0.8,'sigma feeds the ruler');
+ assert.strictEqual(await page.evaluate(()=>sumRulerLabel()),'SUM · 1 = 0.80 × radius');
+ await page.evaluate(()=>{const s=document.getElementById('clockSigmaExact');s.value='0.5';s.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(500);
+ await page.evaluate(()=>{const z=document.getElementById('sumZoom');z.value='1';z.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(400);
+ const half=await page.evaluate(()=>+sumUnitRadii().toFixed(3));
+ assert.ok(Math.abs(half-0.5)<0.02,'Re(s)=1/2 draws one unit at half the radius: '+half);
  // Drive stops at the slider bound rather than running off.
- await page.evaluate(()=>{document.getElementById('clockTauExact').value='34.5';document.getElementById('clockTauExact').dispatchEvent(new Event('input',{bubbles:true}));});
- await page.evaluate(()=>{tauRate=2;tauDriveOn=true;anchorTau();});
- await page.evaluate(()=>advanceClock(t+5,performance.now()));
- await page.waitForTimeout(80);
+ // 35 was a slider's edge, not the machinery's. The drive runs past it.
+ await page.evaluate(()=>{tauDriveOn=true;tauRate=4;tauOrigin={t:t,tau:0};tauAim=0;});
+ await page.evaluate(()=>advanceClock(t+60,performance.now()));
+ await page.waitForTimeout(400);
+ const far=await page.evaluate(()=>({tau:tauAim,on:tauDriveOn,zeta:zeta(2,tauAim)}));
+ assert.ok(far.tau>200,'tau ran well past 35: '+far.tau);
+ assert.strictEqual(far.on,true,'still driving');
+ assert.ok(far.zeta.every(Number.isFinite),'zeta still evaluates up there: '+JSON.stringify(far.zeta));
+ // It does stop where the evaluator's clamp does.
+ await page.evaluate(()=>{tauOrigin={t:t,tau:990};tauAim=990;});
+ await page.evaluate(()=>advanceClock(t+20,performance.now()));
+ await page.waitForTimeout(150);
  const capped=await page.evaluate(()=>({tau:tauAim,on:tauDriveOn,note:document.getElementById('driveNote').textContent}));
- assert.strictEqual(capped.tau,35,'clamped to slider max: '+JSON.stringify(capped));
+ assert.strictEqual(capped.tau,1000,'clamped at the evaluator bound: '+JSON.stringify(capped));
  assert.strictEqual(capped.on,false,'drive switched off at the bound');
- assert.ok(/stopped at 35/.test(capped.note),capped.note);
+ assert.ok(/stopped at 1000/.test(capped.note),capped.note);
  assert.deepStrictEqual(errs,[],'page errors');
  console.log('tau-drive + sum ruler: passed');
  await b.close();

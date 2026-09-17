@@ -1,10 +1,13 @@
 // Adapted from orrery-story.html: a live logarithmic ruler and the integral
 // tail. The beat remains the only counting clock; these are view transforms.
 let radialAim=0,radialMix=0,separateAim=0,separateMix=0,sumClipped=false;
-// The sum's ruler opened at one unit = one radius. It is a display scale, not
-// a claim about the clock: the terms keep their lengths n^-sigma either way.
+// One unit of the sum is sigma radii: sigma = 1 is the rim, sigma = 1/2 is half
+// way in, so the real part of s is a length you can read against the dial.
+// sumZoom is the observer's factor on top of it. Neither changes the terms,
+// which keep their lengths n^-sigma whatever the ruler says.
 let sumZoom=1;
-function sumRulerLabel(){return 'SUM · 1 = '+(Math.abs(sumZoom-1)<.005?'radius':sumZoom.toFixed(2)+' × radius');}
+function sumUnitRadii(){return SIGMA*sumZoom;}
+function sumRulerLabel(){return 'SUM · 1 = '+sumUnitRadii().toFixed(2)+' × radius';}
 function clockRadius(q,x=t,mix=radialMix){
  const original=(1-spacingMix)*R*q/x+spacingMix*R*Math.log(Math.max(2,q))/Math.log(Math.max(x,2.0001));
  // Below beat 3 the log range is degenerate. Open it continuously over 2..3.
@@ -26,7 +29,7 @@ function updateGeometry(dt){
  $('radialRead').textContent=radialMix<.01?'Births at the rim':radialMix>.99?'Births at the axle':'Changing ruler';
  $('separateRead').textContent=separateAim<.01?'Together':separateAim>.99?'Separate sum':'Separating';
  $('sumScaleNote').hidden=sumMix<.01;
- $('sumScaleNote').textContent='Sum ruler: one unit is '+(Math.abs(sumZoom-1)<.005?'the circle’s radius':sumZoom.toFixed(2)+' radii')+'. '+(continueMix>.1?(SIGMA>1.001?'The coral tail coils inward.':SIGMA<.999?'The coral tail unwinds outward.':'The coral tail keeps a fixed radius.'):'A link has length n⁻σ and angle −τ log n.')+(sumClipped?' Portions extend beyond the circle; the ruler stays fixed.':'');
+ $('sumScaleNote').textContent='Sum ruler: one unit is '+sumUnitRadii().toFixed(2)+' radii (σ × '+sumZoom.toFixed(2)+'). '+(continueMix>.1?(SIGMA>1.001?'The coral tail coils inward.':SIGMA<.999?'The coral tail unwinds outward.':'The coral tail keeps a fixed radius.'):'A link has length n⁻σ and angle −τ log n.')+(sumClipped?' Portions extend beyond the circle; the ruler stays fixed.':'');
 }
 const geometry=document.createElement('details');geometry.className='geometry';
 geometry.innerHTML=`<summary>Geometry <span>Ruler · separate sum</span></summary>

@@ -11,6 +11,9 @@ const pickView=(page,mode)=>page.evaluate(m=>{const c=document.getElementById('c
   await page.goto('http://127.0.0.1:5173/');await page.waitForFunction(()=>typeof ClockMath!=='undefined');
   // Both workspaces open on demand; browser checks show clock and explorer together.
   await page.evaluate(()=>document.querySelector('#workspaceSwitch [data-layout=both]')?.click());await page.waitForTimeout(150);
+  // These checks hold s still while the clock moves, so they switch off the
+  // default drive that turns tau with the beat, through its own control.
+  await page.evaluate(()=>{const c=document.getElementById('tauDriveOn');c.checked=false;c.dispatchEvent(new Event('input',{bubbles:true}));});
   assert.match(page.url(),/orrery-of-eratosthenes.html/);
   const before=fs.statSync('orrery-of-eratosthenes.html').mtimeMs;
   const reload=page.waitForEvent('load',{timeout:15000});

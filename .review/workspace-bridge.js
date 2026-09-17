@@ -12,6 +12,27 @@ hueOf=function(p){
  return ((h+spectrumRotate)%360+360)%360;
 };
 function respectSpectrum(){PR.recolor();updateSpectrum();labelAlphas.clear();}
+// tau can ride the clock. The rate is tau per beat and the drive is a function
+// of t, not an accumulator, so stepping back winds tau back with the count.
+let tauDriveOn=false,tauRate=.25,tauOrigin={t:1,tau:0};
+const driveRest='τ then rides the clock: it advances while you play, at the pace you set, and winds back when you step back. σ is untouched, so nothing changes length — every term only turns.';
+function anchorTau(){tauOrigin={t:t,tau:tauAim};}
+function driveTau(){
+ if(!tauDriveOn)return;
+ const slider=$('clockTau');if(!slider)return;
+ const lo=+slider.min,hi=+slider.max;
+ const want=tauOrigin.tau+tauRate*(t-tauOrigin.t),held=Math.max(lo,Math.min(hi,want));
+ if(Math.abs(held-tauAim)>1e-9){tauAim=held;$('tauDial').value=held;}
+ if(Math.abs(want-held)>1e-9){
+  tauDriveOn=false;$('tauDriveOn').checked=false;anchorTau();
+  $('driveNote').textContent='τ stopped at '+held.toFixed(0)+', the end of the τ slider. Switch it back on to carry on from here.';
+ }
+}
+function driveText(){return 'τ is riding the clock at '+(tauRate>0?'+':'')+tauRate.toFixed(2)+' per beat. Play or step, and every term turns while its length holds.';}
+const priorTune=tune;
+tune=function(sigma,tau){priorTune(sigma,tau);anchorTau();};
+const priorAdvance=advanceClock;
+advanceClock=function(next,ms){priorAdvance(next,ms);driveTau();};
 let workspaceLayout='clock';const graphBounds={top:0,bottom:300,height:300};
 function matchedBeat(value,direction=0){
  if(snapMode==='free')return Math.max(1,Math.min(limit,value));
@@ -75,7 +96,7 @@ const workspace=ClockMath.mountWorkspace({
  seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
  setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;soundOn=true;$('sound').setAttribute('aria-pressed','true');
 for(const event of ['pointerdown','keydown'])addEventListener(event,function open(){removeEventListener(event,open);if(soundOn)unlock();},{once:true});
-resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='sigma'){const v=+value;if(Number.isFinite(v))tune(v,tauAim);}else if(key==='tau'){const v=+value;if(Number.isFinite(v))tune(sigmaAim,v);}else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
+resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='sigma'){const v=+value;if(Number.isFinite(v))tune(v,tauAim);}else if(key==='tau'){const v=+value;if(Number.isFinite(v))tune(sigmaAim,v);}else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;else if(key==='sumZoom')sumZoom=+value;else if(key==='tauRate'){tauRate=+value;anchorTau();if(tauDriveOn)$('driveNote').textContent=driveText();}else if(key==='tauDrive'){tauDriveOn=!!value;spinning=false;$('spin').className='';anchorTau();$('driveNote').textContent=tauDriveOn?driveText():driveRest;}}
 });
 function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:hsl('+hueOf(p).toFixed(1)+' 68% 62%)"></i>').join('');}
 updateSpectrum();

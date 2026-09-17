@@ -306,6 +306,21 @@ Added after the first review rounds. Phase 6 is deferred until these land.
 - [x] Vary s without opening the Riemann explorer, or let varying s be the
   thing that opens it. Exploring off the real axis is where the rabbit hole
   starts, and it should be presented as a door, not a setting.
+- [x] Let the imaginary part of s ride the clock. A rate in tau per beat, off
+  by default, anchored where it is switched on. Because tau is a function of
+  t rather than an accumulator, stepping the clock back winds tau back with
+  it, and the pace follows the play speed for free. It stops at the end of
+  the tau slider rather than running off it.
+
+**The sum's own ruler**
+
+- [x] One unit of the sum was pinned at exactly one clock radius, so the sum
+  arms were framed by a length that has nothing to do with them. Give the sum
+  its own scale, from 0.1 to 2 radii per unit. Sigma still fixes each link at
+  n^-sigma; the ruler only fixes how long a unit is drawn, and the separated
+  inset labels the scale it is using.
+- [ ] The sum's window is still the dial. Zooming the ruler out is the only
+  way to fit a wandering chain; the window itself could grow into the margin.
 
 **Known defect**
 

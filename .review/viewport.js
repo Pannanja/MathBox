@@ -20,7 +20,7 @@ const stage=document.createElement('main');stage.id='clockApp';stage.innerHTML=`
   <div id="layerButtons" class="button-row"></div><div id="orientationButtons" class="button-row"></div>
   <label for="radialDial">Clock ruler <output id="rulerLabel">Original</output></label><div id="rulerSlot"></div>
   <label for="separateDial">Separate sum <output id="separationLabel">Together</output></label><div id="splitSlot"></div>
-  <p class="muted">One sum unit = one radius. Separation moves the sum into an inset with its own unit circle. Lessons never change these settings.</p>
+  <p class="muted">The sum ruler opens at one unit = one radius; it is a display scale you can change. Separation moves the sum into an inset with its own unit circle. Lessons never change these settings.</p>
  </section>
  <section id="tuneBubble" class="bubble tune-bubble" popover="manual" aria-label="Complex weights and clock pace">
   <div class="bubble-head"><b>Weights &amp; pace</b><button popovertarget="tuneBubble" popovertargetaction="hide" aria-label="Close tuning">×</button></div>

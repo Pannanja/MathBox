@@ -14,7 +14,9 @@ p=p.replace('const u=trip.elapsed/trip.duration, blend=u*u*(3-2*u);','const u=tr
 # Draw the sum after the glass beam, so aligned vectors are visible at tau=0.
 p=p.replace('  drawContinuum(ms, rad);','')
 p=p.replace('  drawPrimeGlass(rad,n);','  drawPrimeGlass(rad,n);\n  drawContinuum(ms,rad);')
-p=p.replace('  const unit=R*.50,sy=C+900*separateMix,X=z=>C+unit*z[1],Y=z=>sy-unit*z[0];', '  const sumR=R*(1-.68*separateMix),unit=sumR,sx=C+R*.58*separateMix,sy=C+R*.58*separateMix,X=z=>sx+unit*z[1],Y=z=>sy-unit*z[0];')
+# The window the sum is drawn in and the ruler it is drawn with are separate:
+# sumR frames the view, sumZoom sets how many pixels one unit is worth.
+p=p.replace('  const unit=R*.50,sy=C+900*separateMix,X=z=>C+unit*z[1],Y=z=>sy-unit*z[0];', '  const sumR=R*(1-.68*separateMix),unit=sumR*sumZoom,sx=C+R*.58*separateMix,sy=C+R*.58*separateMix,X=z=>sx+unit*z[1],Y=z=>sy-unit*z[0];')
 p=p.replace('g2.transform(ra,rb,rb,ra,C*(1-ra)-rb*sy,sy*(1-ra)-rb*C);','g2.transform(ra,rb,rb,ra,sx*(1-ra)-rb*sy,sy*(1-ra)-rb*sx);')
 p=p.replace('g2.arc(C,sy,R,0,7)','g2.arc(sx,sy,sumR+8,0,7)')
 p=p.replace("g2.strokeStyle='#87998f';g2.lineWidth=1;g2.stroke();", "g2.strokeStyle='#87998f';g2.lineWidth=1;g2.beginPath();g2.arc(sx,sy,sumR,0,7);g2.stroke();")
@@ -22,7 +24,7 @@ p=p.replace('g2.arc(C,sy,R-3,0,2*Math.PI)','g2.arc(sx,sy,sumR+8,0,2*Math.PI)')
 p=p.replace('abs(z)*unit>R-3','abs(z)*unit>sumR+8').replace('abs(add(raw.z,z))*unit>R-3','abs(add(raw.z,z))*unit>sumR+8')
 p=p.replace('g2.moveTo(C-R,sy);g2.lineTo(C+R,sy);g2.moveTo(C,sy-R);g2.lineTo(C,sy+R);','g2.moveTo(sx-sumR,sy);g2.lineTo(sx+sumR,sy);g2.moveTo(sx,sy-sumR);g2.lineTo(sx,sy+sumR);')
 p=p.replace('    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?1.7:1)+3*fresh);','    lensArrow(X(a),Y(a),X(b),Y(b),"#0c1512",(k<8?7:4)+3*fresh);\n    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);')
-p=p.replace("g2.fillText('SUM · SAME BEAT, ITS OWN RULER',C,sy-R+28);", "g2.fillText('SUM · 1 = radius',sx,sy-sumR-12);")
+p=p.replace("g2.fillText('SUM · SAME BEAT, ITS OWN RULER',C,sy-R+28);", "g2.fillText(sumRulerLabel(),sx,sy-sumR-12);")
 p=p.replace('const bx=C-unit/2,by=sy+R-30;', 'const bx=sx-unit/2,by=sy+sumR-18;')
 p=p.replace("g2.fillText('1',C,by-10)","g2.fillText('1',sx,by-10)")
 # Unused old slogan must not remain even in the hidden shell.

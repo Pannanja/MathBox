@@ -1,6 +1,6 @@
 import { build } from 'vite';
 import { execFileSync } from 'node:child_process';
-import { mkdir, copyFile, rename } from 'node:fs/promises';
+import { mkdir, copyFile, rename, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -13,6 +13,15 @@ export async function buildPage() {
   const assembled=path.join(root,'.build/page.html');
   execFileSync(process.env.PYTHON || 'python',['.review/game-build.py'],{
     cwd:root,stdio:'inherit',env:{...process.env,CLOCK_HTML_OUTPUT:assembled},
+  });
+  // The page is assembled by string patching, so a misplaced brace survives every
+  // earlier step. Parse the inline script before anything is published.
+  const html=await readFile(assembled,'utf8');
+  const blocks=[...html.matchAll(/<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/g)];
+  if(!blocks.length) throw new Error('Assembled page has no inline script.');
+  blocks.forEach((block,i)=>{
+    try{new Function(block[1]);}
+    catch(error){throw new Error('Inline script block '+i+' does not parse: '+error.message);}
   });
   await mkdir(path.join(root,'dist'),{recursive:true});
   await copyFile(assembled,path.join(root,'dist/index.next.html'));

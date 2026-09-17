@@ -872,6 +872,10 @@ function drawPrimeGlass(rad,n){
 // Adapted from orrery-story.html: a live logarithmic ruler and the integral
 // tail. The beat remains the only counting clock; these are view transforms.
 let radialAim=0,radialMix=0,separateAim=0,separateMix=0,sumClipped=false;
+// The sum's ruler opened at one unit = one radius. It is a display scale, not
+// a claim about the clock: the terms keep their lengths n^-sigma either way.
+let sumZoom=1;
+function sumRulerLabel(){return 'SUM · 1 = '+(Math.abs(sumZoom-1)<.005?'radius':sumZoom.toFixed(2)+' × radius');}
 function clockRadius(q,x=t,mix=radialMix){
  const original=(1-spacingMix)*R*q/x+spacingMix*R*Math.log(Math.max(2,q))/Math.log(Math.max(x,2.0001));
  // Below beat 3 the log range is degenerate. Open it continuously over 2..3.
@@ -893,7 +897,7 @@ function updateGeometry(dt){
  $('radialRead').textContent=radialMix<.01?'Births at the rim':radialMix>.99?'Births at the axle':'Changing ruler';
  $('separateRead').textContent=separateAim<.01?'Together':separateAim>.99?'Separate sum':'Separating';
  $('sumScaleNote').hidden=sumMix<.01;
- $('sumScaleNote').textContent='Sum ruler: one unit is half the circle’s radius. '+(continueMix>.1?(SIGMA>1.001?'The coral tail coils inward.':SIGMA<.999?'The coral tail unwinds outward.':'The coral tail keeps a fixed radius.'):'A link has length n⁻σ and angle −τ log n.')+(sumClipped?' Portions extend beyond the circle; the ruler stays fixed.':'');
+ $('sumScaleNote').textContent='Sum ruler: one unit is '+(Math.abs(sumZoom-1)<.005?'the circle’s radius':sumZoom.toFixed(2)+' radii')+'. '+(continueMix>.1?(SIGMA>1.001?'The coral tail coils inward.':SIGMA<.999?'The coral tail unwinds outward.':'The coral tail keeps a fixed radius.'):'A link has length n⁻σ and angle −τ log n.')+(sumClipped?' Portions extend beyond the circle; the ruler stays fixed.':'');
 }
 const geometry=document.createElement('details');geometry.className='geometry';
 geometry.innerHTML=`<summary>Geometry <span>Ruler · separate sum</span></summary>
@@ -1445,7 +1449,7 @@ function drawContinuum(ms,rad) {
     return;
   }
   const raw=continuumSum(t,SIGMA,TAUV),pole=Math.hypot(SIGMA-1,TAUV)<.002;
-  const sumR=R*(1-.68*separateMix),unit=sumR,sx=C+R*.58*separateMix,sy=C+R*.58*separateMix,X=z=>sx+unit*z[1],Y=z=>sy-unit*z[0];
+  const sumR=R*(1-.68*separateMix),unit=sumR*sumZoom,sx=C+R*.58*separateMix,sy=C+R*.58*separateMix,X=z=>sx+unit*z[1],Y=z=>sy-unit*z[0];
   g2.save();g2.setTransform(1,0,0,1,0,0);
   const rc=Math.cos(Math.PI*reflectionMix),ra=(1+rc)/2,rb=-(1-rc)/2;
   g2.transform(ra,rb,rb,ra,sx*(1-ra)-rb*sy,sy*(1-ra)-rb*sx);
@@ -1488,7 +1492,7 @@ function drawContinuum(ms,rad) {
   g2.restore();
   g2.save();g2.setTransform(1,0,0,1,0,0);g2.globalAlpha=sumMix*separateMix;
   g2.fillStyle='#a0afa5';g2.font='21px ui-monospace,monospace';g2.textAlign='center';
-  g2.fillText('SUM · 1 = radius',sx,sy-sumR-12);
+  g2.fillText(sumRulerLabel(),sx,sy-sumR-12);
   const bx=sx-unit/2,by=sy+sumR-18;
   g2.strokeStyle='#e9e2d0';g2.lineWidth=1.5;g2.beginPath();g2.moveTo(bx,by);g2.lineTo(bx+unit,by);g2.moveTo(bx,by-6);g2.lineTo(bx,by+6);g2.moveTo(bx+unit,by-6);g2.lineTo(bx+unit,by+6);g2.stroke();
   g2.fillText('1',sx,by-10);g2.restore();
@@ -1819,7 +1823,7 @@ const stage=document.createElement('main');stage.id='clockApp';stage.innerHTML=`
   <div id="layerButtons" class="button-row"></div><div id="orientationButtons" class="button-row"></div>
   <label for="radialDial">Clock ruler <output id="rulerLabel">Original</output></label><div id="rulerSlot"></div>
   <label for="separateDial">Separate sum <output id="separationLabel">Together</output></label><div id="splitSlot"></div>
-  <p class="muted">One sum unit = one radius. Separation moves the sum into an inset with its own unit circle. Lessons never change these settings.</p>
+  <p class="muted">The sum ruler opens at one unit = one radius; it is a display scale you can change. Separation moves the sum into an inset with its own unit circle. Lessons never change these settings.</p>
  </section>
  <section id="tuneBubble" class="bubble tune-bubble" popover="manual" aria-label="Complex weights and clock pace">
   <div class="bubble-head"><b>Weights &amp; pace</b><button popovertarget="tuneBubble" popovertargetaction="hide" aria-label="Close tuning">×</button></div>
@@ -3199,7 +3203,7 @@ var ClockMath = (function(exports) {
     el("viewBubble").querySelector(".bubble-head b").textContent = "Clock appearance";
     el("spec").hidden = true;
     const custom = document.createElement("div");
-    custom.innerHTML = `<label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
+    custom.innerHTML = `<label class="field">Sum ruler · one unit<input id="sumZoom" type="range" min="0.1" max="2" step="0.01" value="1"><output id="sumZoomOut">1 radius</output></label><p class="small-note">σ fixes each link at n<sup>−σ</sup>; the ruler fixes how long a unit is drawn. Shrink it to keep a wandering chain inside the dial, or stretch it to read the first few terms.</p><label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
     el("viewBubble").append(custom);
     const bind = (pairs) => {
       for (const [id, key] of pairs) el(id).addEventListener("input", () => {
@@ -3207,7 +3211,11 @@ var ClockMath = (function(exports) {
         actions.setting(key, field.type === "checkbox" ? field.checked : field.value);
       });
     };
-    bind([["allPaneLabels", "labels"], ["jRadiusToggle", "jRadius"]]);
+    bind([["allPaneLabels", "labels"], ["jRadiusToggle", "jRadius"], ["sumZoom", "sumZoom"]]);
+    el("sumZoom").addEventListener("input", () => {
+      const v = +el("sumZoom").value;
+      el("sumZoomOut").textContent = v === 1 ? "1 radius" : v.toFixed(2) + " radii";
+    });
     el("inspectJ").onclick = () => open("jBubble");
     const createPanel = (id, title, html) => {
       const p = document.createElement("section");
@@ -3238,13 +3246,18 @@ var ClockMath = (function(exports) {
     observe.textContent = "Observe";
     observe.onclick = () => open("observeBubble");
     el("clockTransport").append(observe);
-    const sPanel = createPanel("inputPanel", "Input s", `<p class="small-note">Every term is weighted by 1/n<sup>s</sup>. The clock shows the terms; s decides how heavily each one counts.</p><label class="field">σ · real part<input id="clockSigma" type="range" min="0.2" max="3" step="0.001" value="2"><input id="clockSigmaExact" type="number" min="0.2" max="3" step="any" value="2"></label><label class="field">τ · height<input id="clockTau" type="range" min="-35" max="35" step="0.001" value="0"><input id="clockTauExact" type="number" min="-1000" max="1000" step="any" value="0"></label><p class="small-note" id="axisNote">On the real axis the weights are ordinary fractions. Move τ off zero and each term also turns, which is where the curve starts to matter.</p><button id="openExplorer">Watch it in the Riemann explorer</button>`);
+    const sPanel = createPanel("inputPanel", "Input s", `<p class="small-note">Every term is weighted by 1/n<sup>s</sup>. The clock shows the terms; s decides how heavily each one counts.</p><label class="field">σ · real part<input id="clockSigma" type="range" min="0.2" max="3" step="0.001" value="2"><input id="clockSigmaExact" type="number" min="0.2" max="3" step="any" value="2"></label><label class="field">τ · height<input id="clockTau" type="range" min="-35" max="35" step="0.001" value="0"><input id="clockTauExact" type="number" min="-1000" max="1000" step="any" value="0"></label><p class="small-note" id="axisNote">On the real axis the weights are ordinary fractions. Move τ off zero and each term also turns, which is where the curve starts to matter.</p><label class="check"><input id="tauDriveOn" type="checkbox"> Turn τ with the beat</label><label class="field">τ per beat<input id="tauRate" type="range" min="-2" max="2" step="0.01" value="0.25"><output id="tauRateOut">+0.25</output></label><p class="small-note" id="driveNote">τ then rides the clock: it advances while you play, at the pace you set, and winds back when you step back. σ is untouched, so nothing changes length — every term only turns.</p><button id="openExplorer">Watch it in the Riemann explorer</button>`);
     const sChip = document.createElement("button");
     sChip.id = "sReadout";
     sChip.className = "text-button";
     sChip.onclick = () => open(sPanel.id);
     el("clockTransport").append(sChip);
     for (const [id, key] of [["clockSigma", "sigma"], ["clockSigmaExact", "sigma"], ["clockTau", "tau"], ["clockTauExact", "tau"]]) el(id).addEventListener("input", () => actions.setting(key, el(id).value));
+    bind([["tauDriveOn", "tauDrive"], ["tauRate", "tauRate"]]);
+    el("tauRate").addEventListener("input", () => {
+      const v = +el("tauRate").value;
+      el("tauRateOut").textContent = (v > 0 ? "+" : "") + v.toFixed(2);
+    });
     el("openExplorer").onclick = () => setLayout("both");
     el("snapChoice").onchange = () => {
       const value = el("snapChoice").value;
@@ -3692,6 +3705,27 @@ hueOf=function(p){
  return ((h+spectrumRotate)%360+360)%360;
 };
 function respectSpectrum(){PR.recolor();updateSpectrum();labelAlphas.clear();}
+// tau can ride the clock. The rate is tau per beat and the drive is a function
+// of t, not an accumulator, so stepping back winds tau back with the count.
+let tauDriveOn=false,tauRate=.25,tauOrigin={t:1,tau:0};
+const driveRest='τ then rides the clock: it advances while you play, at the pace you set, and winds back when you step back. σ is untouched, so nothing changes length — every term only turns.';
+function anchorTau(){tauOrigin={t:t,tau:tauAim};}
+function driveTau(){
+ if(!tauDriveOn)return;
+ const slider=$('clockTau');if(!slider)return;
+ const lo=+slider.min,hi=+slider.max;
+ const want=tauOrigin.tau+tauRate*(t-tauOrigin.t),held=Math.max(lo,Math.min(hi,want));
+ if(Math.abs(held-tauAim)>1e-9){tauAim=held;$('tauDial').value=held;}
+ if(Math.abs(want-held)>1e-9){
+  tauDriveOn=false;$('tauDriveOn').checked=false;anchorTau();
+  $('driveNote').textContent='τ stopped at '+held.toFixed(0)+', the end of the τ slider. Switch it back on to carry on from here.';
+ }
+}
+function driveText(){return 'τ is riding the clock at '+(tauRate>0?'+':'')+tauRate.toFixed(2)+' per beat. Play or step, and every term turns while its length holds.';}
+const priorTune=tune;
+tune=function(sigma,tau){priorTune(sigma,tau);anchorTau();};
+const priorAdvance=advanceClock;
+advanceClock=function(next,ms){priorAdvance(next,ms);driveTau();};
 let workspaceLayout='clock';const graphBounds={top:0,bottom:300,height:300};
 function matchedBeat(value,direction=0){
  if(snapMode==='free')return Math.max(1,Math.min(limit,value));
@@ -3755,7 +3789,7 @@ const workspace=ClockMath.mountWorkspace({
  seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
  setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;soundOn=true;$('sound').setAttribute('aria-pressed','true');
 for(const event of ['pointerdown','keydown'])addEventListener(event,function open(){removeEventListener(event,open);if(soundOn)unlock();},{once:true});
-resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='sigma'){const v=+value;if(Number.isFinite(v))tune(v,tauAim);}else if(key==='tau'){const v=+value;if(Number.isFinite(v))tune(sigmaAim,v);}else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;}
+resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth')displayDepth=+value;else if(key==='weightBrightness')weightBrightness=value;else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='sigma'){const v=+value;if(Number.isFinite(v))tune(v,tauAim);}else if(key==='tau'){const v=+value;if(Number.isFinite(v))tune(sigmaAim,v);}else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;else if(key==='sumZoom')sumZoom=+value;else if(key==='tauRate'){tauRate=+value;anchorTau();if(tauDriveOn)$('driveNote').textContent=driveText();}else if(key==='tauDrive'){tauDriveOn=!!value;spinning=false;$('spin').className='';anchorTau();$('driveNote').textContent=tauDriveOn?driveText():driveRest;}}
 });
 function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:hsl('+hueOf(p).toFixed(1)+' 68% 62%)"></i>').join('');}
 updateSpectrum();

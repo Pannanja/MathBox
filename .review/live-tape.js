@@ -51,7 +51,12 @@ const PR=(()=>{
    if(k<n-1||k>n+visible){el.remove();terms.delete(k);continue;}
    el.classList.toggle('dead',born.some(p=>p<k&&k%p===0));el.style.color=factorColour(k);el.style.opacity=Math.max(0,Math.min(1,1-(tt-k))).toFixed(4);
   }
-  strip.style.transform='translateX('+(tt*slot+width-slot/2).toFixed(4)+'px)';
+  // Terms leave through the sum operator, so the strip stops short of it by the
+  // operator's width plus the slot the fade needs. A term is opaque a slot and
+  // a half clear of the sigma and has faded out by the time it reaches it,
+  // rather than sliding across it at full strength.
+  const sumGlyph=$('sumOp'),opRoom=(sumGlyph?sumGlyph.offsetWidth:0)+slot+24;
+  strip.style.transform='translateX('+(tt*slot+width-opRoom-slot/2).toFixed(4)+'px)';
   const hidden=Math.max(0,born.length-shown.length),slots=Math.max(1,order.length);
   const cell=Math.min(upright?32:76,available/slots),total=slots*cell;
   $('factorWindow').style.width=total+'px';

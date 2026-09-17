@@ -329,10 +329,11 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   dial. An observer's factor of 0.1 to 2 rides on top. Neither changes the
   terms, which stay n^-sigma long, and the separated inset labels the scale
   it is using.
-- [ ] At the opening sigma = 2 a unit is two radii, so the sum's very first
-  link leaves the dial and the lens reads as empty until the ruler factor is
-  brought down. Either the window grows past R, the opening sigma changes, or
-  the lens frames itself the first time it is switched on.
+- [x] At the old opening sigma = 2 a unit was two radii, so the sum's first
+  link left the dial and the lens read as empty. Opening on sigma = 1/2 fixed
+  it: a unit is half a radius there and the chain sits inside the dial. It
+  returns for anyone who drives sigma back above 1, where the ruler factor is
+  the only recourse.
 - [ ] The sum's window is still the dial. The ruler factor is the only way to
   fit a wandering chain; the window itself could grow into the margin.
 
@@ -373,10 +374,45 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   so sits near the complement of its pane. That is the model talking, but it
   may want the identity colour for primes too.
 
+**The tape's exit**
+
+- [x] Sum terms slid across the sum operator at full strength on their way out.
+  The strip now stops short of the operator by its width plus the slot the
+  fade needs, so a term is opaque a slot and a half clear of the sigma and has
+  faded before it reaches it.
+- [ ] A zeta tracer for the clock view. Now that tau rides the beat, the gold
+  reference point sweeps the zeta curve as the clock runs; draw its trail on
+  the dial's own ruler so the curve is discovered by playing the clock rather
+  than by opening the explorer. Existing pieces to reuse: the reference dot in
+  drawContinuum, the trailRaw/trailCorrected trails behind the Tail lens, and
+  shifted-clock.js, which already paints a zeta locus in clock coordinates.
+
 **Known defect**
 
 - [ ] The tail spiral is drawn in one frame and then rotated as the term
   evolves. It should develop as the term evolves.
+
+### 8. Alternate themes — far horizon, after everything else settles
+
+The mechanism is one thing and its costume is another. Once the instrument is
+finished, the same beat, the same panes and the same arms could be dressed as
+other rotating systems, each of which teaches a different intuition about
+periods sharing a centre.
+
+- [ ] Planets in a solar system. Periods as orbits; a prime is a year nobody
+  else shares.
+- [ ] Cogs in an elegant clock. The closest to what the piece already is, and
+  the one that most wants real escapement and gear teeth.
+- [ ] Eddies in a whirlpool. Continuous rather than discrete; the sum's chain
+  as a streamline.
+- [ ] Stars in a galaxy. Differential rotation, so the outer arcs genuinely
+  lag rather than merely being drawn smaller.
+- [ ] Ducks in a bathtub drain. The joke that keeps the rest honest: if the
+  mathematics survives the ducks, the costume really is separable.
+- [ ] Prerequisite, and the real work: the drawing code has to take its
+  palette, its shapes and its labels from a theme rather than from literals
+  scattered through the frame. primeInk and the light recipe are the first
+  two pieces of that.
 
 ## Technical approach and checkpoints
 
@@ -395,7 +431,7 @@ Keep mathematical state separate from layout, preferences, and camera state.
 Numerical modules should not depend on hidden inputs. Add the shell bridge
 incrementally rather than rewriting all math and presentation in one change.
 
-Implementation order: 1 → 2 → 3 → 4 → 5 → 7 → 6. Phase 6 is deferred. The inspector's container belongs
+Implementation order: 1 → 2 → 3 → 4 → 5 → 7 → 6 → 8. Phase 6 is deferred; phase 8 waits on everything else. The inspector's container belongs
 in phase 1; its explanatory content migration comes in phase 6. Inventory
 legacy control ownership before removing anything in phase 2. No delegation is
 required for this plan.

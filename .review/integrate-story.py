@@ -25,9 +25,9 @@ p=p[:a]+'''  const unit=R*.50,sy=C+900*separateMix,X=z=>C+unit*z[1],Y=z=>sy-unit
   sumClipped=raw.points.some(z=>abs(z)*unit>R-3);
 '''+p[b:]
 p=p.replace('g2.moveTo(C-R,C);g2.lineTo(C+R,C);g2.moveTo(C,C-R);g2.lineTo(C,C+R);','g2.moveTo(C-R,sy);g2.lineTo(C+R,sy);g2.moveTo(C,sy-R);g2.lineTo(C,sy+R);')
-p=p.replace("lensArrow(X(a),Y(a),X(b),Y(b),col,k<8?1.7:1);", "const fresh=k===Math.floor(t)?Math.pow(1-(t%1),2):0;\n    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?1.7:1)+3*fresh);")
+p=p.replace("lensArrow(X(a),Y(a),X(b),Y(b),col,k<8?1.7:1);", "const fresh=k===Math.floor(t)-1?Math.pow(1-(t%1),2):0;\n    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?1.7:1)+3*fresh);")
 p=p.replace("    lensArrow(X(raw.z),Y(raw.z),X(corrected),Y(corrected),'#ef947c',2.1);", '''    const span=Math.min(3.2,2*Math.PI*2.2/Math.max(Math.abs(TAUV),.45));
-    const path=integralTail(SIGMA,TAUV,t,span);
+    const path=integralTail(SIGMA,TAUV,sumFrontier(),span);
     sumClipped=sumClipped||path.some(z=>abs(add(raw.z,z))*unit>R-3);
     g2.strokeStyle='#ef947c';g2.lineWidth=2.1;g2.beginPath();
     path.forEach((v,i)=>{const z=add(raw.z,v);i?g2.lineTo(X(z),Y(z)):g2.moveTo(X(z),Y(z));});g2.stroke();''')

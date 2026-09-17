@@ -48,7 +48,7 @@
    <div class="transportRow"><button id="markA">Set A</button><label for="loopA">A <input id="loopA" type="number" min="1" max="4999.99" step=".01" value="12"></label><button id="markB">Set B</button><label for="loopB">B <input id="loopB" type="number" min="1.01" max="5000" step=".01" value="20"></label><button id="loop" aria-pressed="false">Loop A–B</button><button id="replay">Replay A</button></div><p id="loopMessage">Replay starts at A. Loop repeats the interval A–B.</p><div id="status">Sound is off. Space plays or pauses.</div>
   </div><div><h2>Combine visual layers</h2><p>Chapters restore a focused view. Here you can combine the original instrument’s layers.</p><div class="lenses">
    <button id="logr" title="Spread small rings logarithmically; this changes the displayed lengths and speeds.">Spread small rings</button><button id="spec">Prime-power glass</button><button id="cols">Pitch colours</button><button id="riem">Cardioids</button><button id="spin">Spin weights</button><button id="bear">Bearings</button><button id="prod" title="Finite sieve density over a complete residue cycle, not the instantaneous uncovered sky.">Sieve-density spiral</button><button id="stair">Prime-power ledger</button><button id="weights">Weights</button><button id="sumLens">Sum</button><button id="continueLens">Continue</button><button id="zeroVisit">First zero</button>
-   </div><div class="tuning"><label for="sigmaDial">Shrink σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value="2"><output id="sigmaRead">2.00</output></label><label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label><label for="zeroDial">Zero pairs <input id="zeroDial" type="range" min="1" max="30" step="1" value="1"><output id="zeroRead">1</output></label></div>
+   </div><div class="tuning"><label for="sigmaDial">Shrink σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value=".5"><output id="sigmaRead">0.50</output></label><label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label><label for="zeroDial">Zero pairs <input id="zeroDial" type="range" min="1" max="30" step="1" value="1"><output id="zeroRead">1</output></label></div>
    <details><summary>Euler’s sieve tape</summary><p>Each born prime removes its multiples from the remaining series. The infinite sum and product agree for Re(s) &gt; 1.</p><div class="proof" id="originalProof"><div class="iden">ζ(s) = Σ<sub>n≥1</sub> n<sup>−s</sup> = ∏<sub>p prime</sub> (1 − p<sup>−s</sup>)<sup>−1</sup></div><div class="work"><span id="tape"><span id="strip"></span></span><span>=</span><span class="rhs"><span id="pf"></span> ζ(s)</span></div></div></details>
   </div></div>
  </details>
@@ -319,8 +319,8 @@ function colourOfN(nn) {
   const g = x => Math.round(255 * Math.pow(x, 0.55));
   return 'rgb(' + g(c[0]) + ',' + g(c[1]) + ',' + g(c[2]) + ')';
 }
-let SIGMA = 2, TAUV = 0;
-let sigmaAim = 2, tauAim = 0, weightAim = 0, sumAim = 0, continueAim = 0;
+let SIGMA = .5, TAUV = 0;
+let sigmaAim = .5, tauAim = 0, weightAim = 0, sumAim = 1, continueAim = 0;
 let weightMix = 0, sumMix = 0, continueMix = 0, stairMix = 0, zeroCount = 8;
 let loopOn = false, loopStart = 12, loopEnd = 20, introduced = new Set([0]);
 let viewIndex = 0, freeMode = false, focusMix = 0, focusAim = 0, glassMix = 0, spacingMix = 0;
@@ -1016,9 +1016,12 @@ function lensArrow(x,y,X,Y,col,width=1.4) {
   g2.beginPath();g2.moveTo(X-l*Math.cos(a-.45),Y-l*Math.sin(a-.45));g2.lineTo(X,Y);g2.lineTo(X-l*Math.cos(a+.45),Y-l*Math.sin(a+.45));g2.stroke();
 }
 function continuumSum(x,sigma,tau) {
+  // Term n is printed across [n, n+1], the same lap on which the beam prints
+  // pane n. At beat n the chain holds every term below n and starts n, so the
+  // arms and the panes are never a beat apart.
   const n=Math.floor(x),fr=x-n;let z=[0,0],points=[[0,0]];
-  for(let k=1;k<=n;k++){z=add(z,power(k,sigma,tau));points.push(z);}
-  if(fr>0){z=add(z,scale(power(n+1,sigma,tau),fr));points.push(z);}
+  for(let k=1;k<n;k++){z=add(z,power(k,sigma,tau));points.push(z);}
+  if(fr>0){z=add(z,scale(power(n,sigma,tau),fr));points.push(z);}
   return {z,points};
 }
 function drawContinuum(ms,rad) {
@@ -1057,7 +1060,7 @@ function drawContinuum(ms,rad) {
   const key=SIGMA.toFixed(9)+','+TAUV.toFixed(9);
   if(!pole&&key!==referenceKey){reference=zeta(SIGMA,TAUV,96);referenceKey=key;}
   if(continueMix>.005&&!pole){
-    const corrected=add(raw.z,tail(SIGMA,TAUV,t));
+    const corrected=add(raw.z,tail(SIGMA,TAUV,sumFrontier()));
     g2.globalAlpha=sumMix*continueMix;
     lensArrow(X(raw.z),Y(raw.z),X(corrected),Y(corrected),'#ef947c',2.1);
     g2.fillStyle='#ef947c';g2.beginPath();g2.arc(X(corrected),Y(corrected),4,0,7);g2.fill();

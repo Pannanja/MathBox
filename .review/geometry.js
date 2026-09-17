@@ -15,6 +15,8 @@ function clockRadius(q,x=t,mix=radialMix){
  const outward=R*Math.max(0,Math.min(1,Math.log(Math.max(x,2.0001)/q)/Math.log(Math.max(x,2.0001)/2)));
  return original+(outward-original)*mix*ready;
 }
+// Terms print across [n, n+1], so at time t the chain has reached t - 1.
+function sumFrontier(){return Math.max(1,t-1);}
 function integralTail(sigma,tau,x,span,steps=240){
  const a=power(x,sigma-1,tau),out=[];
  for(let i=0;i<=steps;i++)out.push(div(sub(a,power(x*Math.exp(span*i/steps),sigma-1,tau)),[sigma-1,tau]));

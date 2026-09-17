@@ -11,7 +11,33 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  assert.ok(await page.isVisible('#tauDriveOn'),'drive checkbox visible');
  // The drive is on out of the box, at one per beat.
  assert.strictEqual(await page.isChecked('#tauDriveOn'),true,'drive on by default');
- assert.strictEqual(await page.evaluate(()=>tauRate),1,'one per beat by default');
+ assert.strictEqual(await page.evaluate(()=>tauRate),-1,'minus one per beat by default');
+ assert.strictEqual(await page.evaluate(()=>+sigmaAim.toFixed(3)),.5,'opens on the critical line real part');
+ assert.strictEqual(await page.evaluate(()=>sumAim),1,'sum lens lit by default');
+ // The explorer is never opened for the visitor.
+ await page.evaluate(()=>{const f=document.getElementById('clockTauExact');f.value='7';f.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(250);
+ assert.strictEqual(await page.evaluate(()=>document.getElementById('workspaceShell').dataset.layout),'clock','layout left alone');
+ // The rate field and its slider are one control.
+ await page.evaluate(()=>{const f=document.getElementById('tauRateExact');f.value='-2.5';f.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(80);
+ assert.strictEqual(await page.evaluate(()=>tauRate),-2.5,'numeric rate applied');
+ assert.strictEqual(await page.inputValue('#tauRate'),'-2.5','slider followed the field');
+ await page.evaluate(()=>{const f=document.getElementById('tauRate');f.value='1';f.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(80);
+ assert.strictEqual(await page.inputValue('#tauRateExact'),'1','field followed the slider');
+ // A term prints across the same lap as its pane, so neither leads the other.
+ await page.evaluate(()=>{tauDriveOn=false;tune(2,0);jumpClock(2.5);});
+ await page.waitForTimeout(250);
+ const lap=await page.evaluate(()=>({links:continuumSum(t,SIGMA,TAUV).points.length-1,pane:+Math.min(1,Math.max(0,t-2)).toFixed(2),factors:eulerPath(t,SIGMA,TAUV).points.length-1,arriving:!!eulerPath(t,SIGMA,TAUV).arriving}));
+ assert.deepStrictEqual(lap,{links:2,pane:.5,factors:0,arriving:true},'half a term and half a pane: '+JSON.stringify(lap));
+ await page.evaluate(()=>jumpClock(3));await page.waitForTimeout(250);
+ const done=await page.evaluate(()=>({links:continuumSum(t,SIGMA,TAUV).points.length-1,pane:+Math.min(1,Math.max(0,t-2)).toFixed(2),factors:eulerPath(t,SIGMA,TAUV).points.length-1}));
+ assert.deepStrictEqual(done,{links:2,pane:1,factors:1},'term 2, pane 2 and factor 2 all land together: '+JSON.stringify(done));
+ // Back to a driven clock, through the control, at a positive rate.
+ await page.evaluate(()=>{tune(2,0);const c=document.getElementById('tauDriveOn');c.checked=true;c.dispatchEvent(new Event('input',{bubbles:true}));
+  const r=document.getElementById('tauRateExact');r.value='1';r.dispatchEvent(new Event('input',{bubbles:true}));});
+ await page.waitForTimeout(200);
  const before=await page.evaluate(()=>({t,tau:tauAim}));
  // Step the clock forward five beats and read tau.
  for(let i=0;i<5;i++){await page.evaluate(()=>stepClock(1));await page.waitForTimeout(650);}
@@ -24,12 +50,12 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  assert.ok(back.tau<mid.tau-2,'tau wound back: '+JSON.stringify([mid,back]));
  assert.ok(Math.abs(back.tau-(before.tau+mid.rate*(back.t-before.t)))<1e-6,'tau still a function of t');
  // Rate change re-anchors rather than rewriting history.
- await page.fill('#tauRate','-1');await page.dispatchEvent('#tauRate','input');
+ await page.fill('#tauRate','-3');await page.dispatchEvent('#tauRate','input');
  const anchored=await page.evaluate(()=>({tau:tauAim,rate:tauRate,origin:tauOrigin,t}));
- assert.strictEqual(anchored.rate,-1);
+ assert.strictEqual(anchored.rate,-3);
  assert.ok(Math.abs(anchored.origin.tau-anchored.tau)<1e-9&&Math.abs(anchored.origin.t-anchored.t)<1e-9,'re-anchored');
  // Sigma untouched by the drive.
- const sig=await page.evaluate(()=>sigmaAim);assert.strictEqual(sig,2,'sigma untouched');
+ const sig=await page.evaluate(()=>sigmaAim);assert.strictEqual(sig,2,'sigma untouched by the drive');
  // Sum ruler zoom reaches the drawing.
  await page.evaluate(()=>document.getElementById('appearanceButton').click());
  await page.waitForTimeout(150);

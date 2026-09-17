@@ -46,7 +46,10 @@ const paperFormulas={
  theta:'ξ(s) = ½ + ½s(s−1) ∫₁<sup>∞</sup> ψ(x)[x<sup>s/2−1</sup> + x<sup>−(s+1)/2</sup>] dx'
 };
 paperEquation.textContent=paperViews.euler.description;paperGuideEquation.innerHTML=paperFormulas.euler;
-function paperTarget(mode,sigma,tau,n){const gamma=riemannGamma(sigma,tau);if(mode==='term')return mul(gamma,power(n,sigma,tau));if(mode==='finite')return mul(gamma,continuumSum(n,sigma,tau).z);if(mode==='infinite')return mul(gamma,zeta(sigma,tau));if(Math.hypot(sigma-1,tau)<1e-10)return [.5,0];const pref=scale(mul([sigma,tau],[sigma-1,tau]),.5),piWeight=power(Math.PI,sigma/2,tau/2);return mul(mul(pref,riemannGamma(sigma/2,tau/2)),mul(piWeight,zeta(sigma,tau)));}
+// The finite view's target is the exact partial sum through N, which is a
+// cutoff rather than a printing schedule: continuumSum follows the clock's
+// pane-paced reveal and is a term behind it by design.
+function paperTarget(mode,sigma,tau,n){const gamma=riemannGamma(sigma,tau);if(mode==='term')return mul(gamma,power(n,sigma,tau));if(mode==='finite')return mul(gamma,partial(sigma,tau,n).z);if(mode==='infinite')return mul(gamma,zeta(sigma,tau));if(Math.hypot(sigma-1,tau)<1e-10)return [.5,0];const pref=scale(mul([sigma,tau],[sigma-1,tau]),.5),piWeight=power(Math.PI,sigma/2,tau/2);return mul(mul(pref,riemannGamma(sigma/2,tau/2)),mul(piWeight,zeta(sigma,tau)));}
 function paperComplex(z){return z.every(Number.isFinite)?z[0].toPrecision(5)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toPrecision(5)+'i':'outside numeric range';}
 paperSelector.onchange=()=>{paperMode=paperSelector.value;updatePaperNavigation();paperEquation.textContent=paperViews[paperMode].description;paperGuideEquation.innerHTML=paperFormulas[paperMode];paperData=null;paperProgress=0;paperProgressAim=0;paperPlaying=!['euler','log','xiarm'].includes(paperMode);if(['log','xiarm'].includes(paperMode))paperProgress=paperProgressAim=1;paperRewinding=false;paperFitPending=false;paperRequested='';paperWorker?.terminate();paperWorker=null;productHitPoints=[];};
 $('paperTrace').onclick=()=>{if(paperMode==='euler')return;paperProgressAim=0;paperPlaying=false;paperRewinding=true;$('exploreOptions').hidePopover();};

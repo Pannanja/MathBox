@@ -41,8 +41,13 @@
 #clockApp.redesigned #transportCorner .transport button{font:14px var(--mono);padding:7px 10px}
 #clockApp.redesigned #transportCorner .transport #play{min-width:74px!important}
 #clockApp.redesigned #transportCorner .scrubber{grid-column:1/-1;grid-row:2;width:100%;font:12px var(--mono);padding:0;background:none}
-#clockApp.redesigned #clockObserve,#clockApp.redesigned #sReadout{font-size:13px}
-#clockApp.redesigned #sReadout{font-variant-numeric:tabular-nums;color:#c9b489}
+#clockApp.redesigned #clockObserve{font-size:13px}
+/* The input for s is a control with a face, not a caption parked in the row. */
+#clockApp.redesigned #sReadout{display:inline-flex;align-items:baseline;gap:9px;padding:6px 15px;border-radius:999px;border-color:#7895846b;background:#12221a;color:var(--brass);font-size:14px;font-variant-numeric:tabular-nums}
+#clockApp.redesigned #sReadout .s-name{font:italic 17px/1 var(--serif);color:var(--dim)}
+#clockApp.redesigned #sReadout:hover{background:#1a2c22;border-color:#e0bd7666}
+#clockApp.redesigned #sReadout[aria-expanded=true]{border-color:var(--brass);background:#e0bd7614}
+#clockApp.redesigned #sReadout[aria-expanded=true] .s-name{color:var(--brass)}
 #clockApp.redesigned .option-heading{font:13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#93aa9c;margin:18px 0 6px;border-bottom:1px solid #8ca79433;padding-bottom:5px}
 #clockApp.redesigned #traceWindow,#clockApp.redesigned .product-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px}
 #clockApp.redesigned .product-tools input[type=range]{flex:1;min-width:120px}

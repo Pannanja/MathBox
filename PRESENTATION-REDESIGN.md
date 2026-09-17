@@ -314,9 +314,12 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   edge, not a limit: locusZeta grows its truncation with |tau| and tune()
   clamps at 1000, so the drive stops there and nowhere earlier. The tau
   slider now follows the value as a local fine control instead of fencing it.
-- [x] With the drive on by default, the door off the real axis answers
-  deliberate input rather than the first beat; an ambient default should not
-  spend a one-shot layout change for the visitor.
+- [x] Nothing opens the Riemann explorer on the visitor's behalf. The door is
+  the switch at the foot of the page and the button in the s panel.
+- [x] The opening state is the critical line's real part, tau turning at one
+  per beat in the negative direction, and the sum lens already lit.
+- [x] The rate takes a number as well as a slider, and the input for s reads
+  as a control with a face rather than a caption parked beside the transport.
 
 **The sum's own ruler**
 
@@ -332,6 +335,22 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   the lens frames itself the first time it is switched on.
 - [ ] The sum's window is still the dial. The ruler factor is the only way to
   fit a wandering chain; the window itself could grow into the margin.
+
+**One arrival rule**
+
+- [x] The sum's terms ran a beat ahead of the panes: at beat 2 two links were
+  already drawn while pane 2 was on its first frame. Panes grow across
+  [q, q+1], src/math/log-arm.ts says so in as many words, and the sector
+  caption already called a prime "growing" until p+1; continuumSum and
+  eulerPath were the two holdouts that completed a term at q. They now print
+  across the same lap, so a term, its pane and its Euler factor land
+  together. paperTarget's finite view asked continuumSum for an exact partial
+  sum, which is a cutoff rather than a printing schedule, and now asks
+  partial() for it.
+- [ ] A consequence of the rule: at beat 1 nothing has been printed, so the
+  sum lens opens empty and fills over the first lap. Either that is the
+  instrument at rest, or term 1 wants a special case, or the clock should
+  open at beat 2.
 
 **Known defect**
 

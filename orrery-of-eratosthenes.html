@@ -336,8 +336,13 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
 #clockApp.redesigned #transportCorner .transport button{font:14px var(--mono);padding:7px 10px}
 #clockApp.redesigned #transportCorner .transport #play{min-width:74px!important}
 #clockApp.redesigned #transportCorner .scrubber{grid-column:1/-1;grid-row:2;width:100%;font:12px var(--mono);padding:0;background:none}
-#clockApp.redesigned #clockObserve,#clockApp.redesigned #sReadout{font-size:13px}
-#clockApp.redesigned #sReadout{font-variant-numeric:tabular-nums;color:#c9b489}
+#clockApp.redesigned #clockObserve{font-size:13px}
+/* The input for s is a control with a face, not a caption parked in the row. */
+#clockApp.redesigned #sReadout{display:inline-flex;align-items:baseline;gap:9px;padding:6px 15px;border-radius:999px;border-color:#7895846b;background:#12221a;color:var(--brass);font-size:14px;font-variant-numeric:tabular-nums}
+#clockApp.redesigned #sReadout .s-name{font:italic 17px/1 var(--serif);color:var(--dim)}
+#clockApp.redesigned #sReadout:hover{background:#1a2c22;border-color:#e0bd7666}
+#clockApp.redesigned #sReadout[aria-expanded=true]{border-color:var(--brass);background:#e0bd7614}
+#clockApp.redesigned #sReadout[aria-expanded=true] .s-name{color:var(--brass)}
 #clockApp.redesigned .option-heading{font:13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#93aa9c;margin:18px 0 6px;border-bottom:1px solid #8ca79433;padding-bottom:5px}
 #clockApp.redesigned #traceWindow,#clockApp.redesigned .product-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px}
 #clockApp.redesigned .product-tools input[type=range]{flex:1;min-width:120px}
@@ -447,7 +452,7 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
    <div class="transportRow" hidden><button id="markA">Set A</button><label for="loopA">A <input id="loopA" type="number" min="1" max="4999.99" step=".01" value="12"></label><button id="markB">Set B</button><label for="loopB">B <input id="loopB" type="number" min="1.01" max="5000" step=".01" value="20"></label><button id="loop" aria-pressed="false">Loop A–B</button><button id="replay">Replay A</button></div><p id="loopMessage" hidden>Replay starts at A. Loop repeats the interval A–B.</p><div id="status">Sound is off. Space plays or pauses.</div>
   </div><div class="experimental-controls" hidden><h2>Combine visual layers</h2><p>Chapters restore a focused view. Here you can combine the original instrument’s layers.</p><div class="lenses">
    <button id="logr" title="Spread small rings logarithmically; this changes the displayed lengths and speeds.">Spread small rings</button><button id="spec">Prime-power glass</button><button id="cols">Pitch colours</button><button id="riem">Cardioids</button><button id="spin">Spin weights</button><button id="bear">Bearings</button><button id="prod" title="Finite sieve density over a complete residue cycle, not the instantaneous uncovered sky.">Sieve-density spiral</button><button id="stair">Prime-power ledger</button><button id="weights">Weights</button><button id="sumLens">Sum</button><button id="continueLens">Continue</button><button id="zeroVisit">First zero</button>
-   </div><div class="tuning"><label for="sigmaDial">Shrink σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value="2"><output id="sigmaRead">2.00</output></label><label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label><label for="zeroDial">Zero pairs <input id="zeroDial" type="range" min="1" max="30" step="1" value="1"><output id="zeroRead">1</output></label></div>
+   </div><div class="tuning"><label for="sigmaDial">Shrink σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value=".5"><output id="sigmaRead">0.50</output></label><label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label><label for="zeroDial">Zero pairs <input id="zeroDial" type="range" min="1" max="30" step="1" value="1"><output id="zeroRead">1</output></label></div>
 
   </div></div>
  </details>
@@ -718,8 +723,8 @@ function colourOfN(nn) {
   const g = x => Math.round(255 * Math.pow(x, 0.55));
   return 'rgb(' + g(c[0]) + ',' + g(c[1]) + ',' + g(c[2]) + ')';
 }
-let SIGMA = 2, TAUV = 0;
-let sigmaAim = 2, tauAim = 0, weightAim = 0, sumAim = 0, continueAim = 0;
+let SIGMA = .5, TAUV = 0;
+let sigmaAim = .5, tauAim = 0, weightAim = 0, sumAim = 1, continueAim = 0;
 let weightMix = 0, sumMix = 0, continueMix = 0, stairMix = 0, zeroCount = 8;
 let loopOn = false, loopStart = 12, loopEnd = 20, introduced = new Set([0]);
 let viewIndex = 0, freeMode = false, focusMix = 0, focusAim = 0, glassMix = 0, spacingMix = 0;
@@ -886,6 +891,8 @@ function clockRadius(q,x=t,mix=radialMix){
  const outward=R*Math.max(0,Math.min(1,Math.log(Math.max(x,2.0001)/q)/Math.log(Math.max(x,2.0001)/2)));
  return original+(outward-original)*mix*ready;
 }
+// Terms print across [n, n+1], so at time t the chain has reached t - 1.
+function sumFrontier(){return Math.max(1,t-1);}
 function integralTail(sigma,tau,x,span,steps=240){
  const a=power(x,sigma-1,tau),out=[];
  for(let i=0;i<=steps;i++)out.push(div(sub(a,power(x*Math.exp(span*i/steps),sigma-1,tau)),[sigma-1,tau]));
@@ -1426,9 +1433,12 @@ function lensArrow(x,y,X,Y,col,width=1.4) {
   g2.beginPath();g2.moveTo(X-l*Math.cos(a-.45),Y-l*Math.sin(a-.45));g2.lineTo(X,Y);g2.lineTo(X-l*Math.cos(a+.45),Y-l*Math.sin(a+.45));g2.stroke();
 }
 function continuumSum(x,sigma,tau) {
+  // Term n is printed across [n, n+1], the same lap on which the beam prints
+  // pane n. At beat n the chain holds every term below n and starts n, so the
+  // arms and the panes are never a beat apart.
   const n=Math.floor(x),fr=x-n;let z=[0,0],points=[[0,0]];
-  for(let k=1;k<=n;k++){z=add(z,power(k,sigma,tau));points.push(z);}
-  if(fr>0){z=add(z,scale(power(n+1,sigma,tau),fr));points.push(z);}
+  for(let k=1;k<n;k++){z=add(z,power(k,sigma,tau));points.push(z);}
+  if(fr>0){z=add(z,scale(power(n,sigma,tau),fr));points.push(z);}
   return {z,points};
 }
 function drawContinuum(ms,rad) {
@@ -1467,7 +1477,7 @@ function drawContinuum(ms,rad) {
   g2.globalAlpha=sumMix*.7;
   for(let k=1;k<raw.points.length;k++){
     const a=raw.points[k-1],b=raw.points[k],col=factorColour(k);
-    const fresh=k===Math.floor(t)?Math.pow(1-(t%1),2):0;
+    const fresh=k===Math.floor(t)-1?Math.pow(1-(t%1),2):0;
     lensArrow(X(a),Y(a),X(b),Y(b),"#0c1512",(k<8?7:4)+3*fresh);
     lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);
     if(selectedPrime && k%selectedPrime===0)lensArrow(X(a),Y(a),X(b),Y(b),primeHighlight(selectedPrime),5);
@@ -1476,10 +1486,10 @@ function drawContinuum(ms,rad) {
   const key=SIGMA.toFixed(9)+','+TAUV.toFixed(9);
   if(!pole&&key!==referenceKey){reference=zeta(SIGMA,TAUV,96);referenceKey=key;}
   if(continueMix>.005&&!pole){
-    const corrected=add(raw.z,tail(SIGMA,TAUV,t));
+    const corrected=add(raw.z,tail(SIGMA,TAUV,sumFrontier()));
     g2.globalAlpha=sumMix*continueMix;
     const span=Math.min(3.2,2*Math.PI*2.2/Math.max(Math.abs(TAUV),.45));
-    const path=integralTail(SIGMA,TAUV,t,span);
+    const path=integralTail(SIGMA,TAUV,sumFrontier(),span);
     sumClipped=sumClipped||path.some(z=>abs(add(raw.z,z))*unit>sumR+8);
     g2.strokeStyle='#ef947c';g2.lineWidth=2.1;g2.beginPath();
     path.forEach((v,i)=>{const z=add(raw.z,v);i?g2.lineTo(X(z),Y(z)):g2.moveTo(X(z),Y(z));});g2.stroke();
@@ -2080,10 +2090,12 @@ $('productRange').step='any';$('productRange').min=-14;
 const analyticPrimes=[];for(let p=2;p<=5001;p++)if(isPrime(p))analyticPrimes.push(p);
 function eulerPath(x,sigma,tau){
  let z=[1,0];const points=[{p:1,z:[1,0],factor:[1,0]}];
- for(const p of analyticPrimes){if(p>x)break;const factor=div([1,0],sub([1,0],power(p,sigma,tau)));z=mul(z,factor);points.push({p,z:[...z],factor});}
- const next=Math.floor(x)+1,fr=x-Math.floor(x);
+ // A prime's factor is taken over the same lap its pane is printed, so it is
+ // complete at x = p + 1 rather than at x = p, matching the clock.
+ for(const p of analyticPrimes){if(p+1>x)break;const factor=div([1,0],sub([1,0],power(p,sigma,tau)));z=mul(z,factor);points.push({p,z:[...z],factor});}
+ const printing=Math.floor(x),fr=x-printing;
  let arriving=null;
- if(fr>0&&isPrime(next)){const f=div([1,0],sub([1,0],power(next,sigma,tau))),r=Math.pow(abs(f),fr),a=Math.atan2(f[1],f[0])*fr;arriving=mul(z,[r*Math.cos(a),r*Math.sin(a)]);}
+ if(fr>0&&isPrime(printing)){const f=div([1,0],sub([1,0],power(printing,sigma,tau))),r=Math.pow(abs(f),fr),a=Math.atan2(f[1],f[0])*fr;arriving=mul(z,[r*Math.cos(a),r*Math.sin(a)]);}
  return {points,z,arriving};
 }
 let selectedProduct=-1,productHitPoints=[];
@@ -3206,7 +3218,7 @@ var ClockMath = (function(exports) {
     el("viewBubble").querySelector(".bubble-head b").textContent = "Clock appearance";
     el("spec").hidden = true;
     const custom = document.createElement("div");
-    custom.innerHTML = `<label class="field">Sum ruler · one unit<input id="sumZoom" type="range" min="0.1" max="2" step="0.01" value="1"><output id="sumZoomOut">σ × 1.00</output></label><p class="small-note">One unit is σ radii: at σ = 1 it reaches the rim, at σ = ½ half way in, so the real part of s is a length you can read against the dial. The factor above is yours on top of that. Neither changes the terms, which stay n<sup>−σ</sup> long.</p><label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
+    custom.innerHTML = `<label class="field">Sum ruler · one unit<input id="sumZoom" type="range" min="0.1" max="2" step="0.01" value="1"><output id="sumZoomOut">σ × 1.00 = 0.50 radii</output></label><p class="small-note">One unit is σ radii: at σ = 1 it reaches the rim, at σ = ½ half way in, so the real part of s is a length you can read against the dial. The factor above is yours on top of that. Neither changes the terms, which stay n<sup>−σ</sup> long.</p><label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
     el("viewBubble").append(custom);
     const bind = (pairs) => {
       for (const [id, key] of pairs) el(id).addEventListener("input", () => {
@@ -3215,7 +3227,7 @@ var ClockMath = (function(exports) {
       });
     };
     bind([["allPaneLabels", "labels"], ["jRadiusToggle", "jRadius"], ["sumZoom", "sumZoom"]]);
-    let rulerSigma = 2;
+    let rulerSigma = 0.5;
     const showRuler = () => {
       const v = +el("sumZoom").value;
       el("sumZoomOut").textContent = "σ × " + v.toFixed(2) + " = " + (rulerSigma * v).toFixed(2) + " radii";
@@ -3252,24 +3264,22 @@ var ClockMath = (function(exports) {
     observe.textContent = "Observe";
     observe.onclick = () => open("observeBubble");
     el("clockTransport").append(observe);
-    const sPanel = createPanel("inputPanel", "Input s", `<p class="small-note">Every term is weighted by 1/n<sup>s</sup>. The clock shows the terms; s decides how heavily each one counts.</p><label class="field">σ · real part<input id="clockSigma" type="range" min="0.2" max="3" step="0.001" value="2"><input id="clockSigmaExact" type="number" min="0.2" max="3" step="any" value="2"></label><label class="field">τ · height<input id="clockTau" type="range" min="-35" max="35" step="0.001" value="0"><input id="clockTauExact" type="number" min="-1000" max="1000" step="any" value="0"></label><p class="small-note" id="axisNote">On the real axis the weights are ordinary fractions. Move τ off zero and each term also turns, which is where the curve starts to matter.</p><label class="check"><input id="tauDriveOn" type="checkbox" checked> Turn τ with the beat</label><label class="field">τ per beat<input id="tauRate" type="range" min="-4" max="4" step="0.01" value="1"><output id="tauRateOut">+1.00</output></label><p class="small-note" id="driveNote">τ is riding the clock at +1.00 per beat. Play or step, and every term turns while its length holds.</p><button id="openExplorer">Watch it in the Riemann explorer</button>`);
+    const sPanel = createPanel("inputPanel", "Input s", `<p class="small-note">Every term is weighted by 1/n<sup>s</sup>. The clock shows the terms; s decides how heavily each one counts.</p><label class="field">σ · real part<input id="clockSigma" type="range" min="0.2" max="3" step="0.001" value="0.5"><input id="clockSigmaExact" type="number" min="0.2" max="3" step="any" value="0.5"></label><label class="field">τ · height<input id="clockTau" type="range" min="-35" max="35" step="0.001" value="0"><input id="clockTauExact" type="number" min="-1000" max="1000" step="any" value="0"></label><p class="small-note" id="axisNote">On the real axis the weights are ordinary fractions. Move τ off zero and each term also turns, which is where the curve starts to matter.</p><label class="check"><input id="tauDriveOn" type="checkbox" checked> Turn τ with the beat</label><label class="field">τ per beat<input id="tauRate" type="range" min="-4" max="4" step="0.01" value="-1"><input id="tauRateExact" type="number" min="-100" max="100" step="any" value="-1"></label><p class="small-note" id="driveNote">τ is riding the clock at −1.00 per beat. Play or step, and every term turns while its length holds.</p><button id="openExplorer">Watch it in the Riemann explorer</button>`);
     const sChip = document.createElement("button");
     sChip.id = "sReadout";
-    sChip.className = "text-button";
+    sChip.title = "Input s";
+    sChip.setAttribute("aria-expanded", "false");
+    sChip.innerHTML = '<span class="s-name">s</span><span class="s-value">= 0.50 + 0.00i</span>';
+    const sValue = sChip.querySelector(".s-value");
     sChip.onclick = () => open(sPanel.id);
     el("clockTransport").append(sChip);
-    for (const [id, key] of [["clockSigma", "sigma"], ["clockSigmaExact", "sigma"], ["clockTau", "tau"], ["clockTauExact", "tau"]]) el(id).addEventListener("input", () => {
-      actions.setting(key, el(id).value);
-      if (key === "tau" && !offAxis && Math.abs(Number(el(id).value)) > 1e-9) {
-        offAxis = true;
-        if (layout === "clock") setLayout("both");
-      }
-    });
-    bind([["tauDriveOn", "tauDrive"], ["tauRate", "tauRate"]]);
-    el("tauRate").addEventListener("input", () => {
-      const v = +el("tauRate").value;
-      el("tauRateOut").textContent = (v > 0 ? "+" : "") + v.toFixed(2);
-    });
+    for (const [id, key] of [["clockSigma", "sigma"], ["clockSigmaExact", "sigma"], ["clockTau", "tau"], ["clockTauExact", "tau"]]) el(id).addEventListener("input", () => actions.setting(key, el(id).value));
+    bind([["tauDriveOn", "tauDrive"], ["tauRate", "tauRate"], ["tauRateExact", "tauRate"]]);
+    for (const [from, to] of [["tauRate", "tauRateExact"], ["tauRateExact", "tauRate"]])
+      el(from).addEventListener("input", () => {
+        const v = el(from).value;
+        if (document.activeElement !== el(to)) el(to).value = v;
+      });
     el("openExplorer").onclick = () => setLayout("both");
     el("snapChoice").onchange = () => {
       const value = el("snapChoice").value;
@@ -3423,7 +3433,7 @@ var ClockMath = (function(exports) {
     resize.observe(el("clockSurface"));
     resize.observe(graphWrap);
     setLayout("clock");
-    let lastMode = "", lastTime = -1, lastSound, lastS = "", offAxis = false;
+    let lastMode = "", lastTime = -1, lastSound, lastS = "";
     return { setLayout, update() {
       const state = actions.read();
       if (lastSound !== state.sound) {
@@ -3457,10 +3467,11 @@ var ClockMath = (function(exports) {
         rulerSigma = state.sigma;
         showRuler();
       }
-      const text = "s = " + state.sigma.toFixed(2) + (state.tau < 0 ? " − " : " + ") + Math.abs(state.tau).toFixed(2) + "i";
+      sChip.setAttribute("aria-expanded", String(el("inputPanel").dataset.open === "true"));
+      const text = "= " + state.sigma.toFixed(2) + (state.tau < 0 ? " − " : " + ") + Math.abs(state.tau).toFixed(2) + "i";
       if (text !== lastS) {
         lastS = text;
-        sChip.textContent = text;
+        sValue.textContent = text;
         for (const [id, value] of [["clockSigma", state.sigma], ["clockSigmaExact", state.sigma], ["clockTau", state.tau], ["clockTauExact", state.tau]]) if (document.activeElement !== el(id)) el(id).value = String(+value.toFixed(6));
         el("axisNote").textContent = Math.abs(state.tau) < 1e-9 ? "On the real axis the weights are ordinary fractions. Move τ off zero and each term also turns, which is where the curve starts to matter." : "Off the real axis every term turns as well as shrinks. The explorer draws where those turns land.";
       }
@@ -3542,7 +3553,10 @@ const paperFormulas={
  theta:'ξ(s) = ½ + ½s(s−1) ∫₁<sup>∞</sup> ψ(x)[x<sup>s/2−1</sup> + x<sup>−(s+1)/2</sup>] dx'
 };
 paperEquation.textContent=paperViews.euler.description;paperGuideEquation.innerHTML=paperFormulas.euler;
-function paperTarget(mode,sigma,tau,n){const gamma=riemannGamma(sigma,tau);if(mode==='term')return mul(gamma,power(n,sigma,tau));if(mode==='finite')return mul(gamma,continuumSum(n,sigma,tau).z);if(mode==='infinite')return mul(gamma,zeta(sigma,tau));if(Math.hypot(sigma-1,tau)<1e-10)return [.5,0];const pref=scale(mul([sigma,tau],[sigma-1,tau]),.5),piWeight=power(Math.PI,sigma/2,tau/2);return mul(mul(pref,riemannGamma(sigma/2,tau/2)),mul(piWeight,zeta(sigma,tau)));}
+// The finite view's target is the exact partial sum through N, which is a
+// cutoff rather than a printing schedule: continuumSum follows the clock's
+// pane-paced reveal and is a term behind it by design.
+function paperTarget(mode,sigma,tau,n){const gamma=riemannGamma(sigma,tau);if(mode==='term')return mul(gamma,power(n,sigma,tau));if(mode==='finite')return mul(gamma,partial(sigma,tau,n).z);if(mode==='infinite')return mul(gamma,zeta(sigma,tau));if(Math.hypot(sigma-1,tau)<1e-10)return [.5,0];const pref=scale(mul([sigma,tau],[sigma-1,tau]),.5),piWeight=power(Math.PI,sigma/2,tau/2);return mul(mul(pref,riemannGamma(sigma/2,tau/2)),mul(piWeight,zeta(sigma,tau)));}
 function paperComplex(z){return z.every(Number.isFinite)?z[0].toPrecision(5)+(z[1]<0?' − ':' + ')+Math.abs(z[1]).toPrecision(5)+'i':'outside numeric range';}
 paperSelector.onchange=()=>{paperMode=paperSelector.value;updatePaperNavigation();paperEquation.textContent=paperViews[paperMode].description;paperGuideEquation.innerHTML=paperFormulas[paperMode];paperData=null;paperProgress=0;paperProgressAim=0;paperPlaying=!['euler','log','xiarm'].includes(paperMode);if(['log','xiarm'].includes(paperMode))paperProgress=paperProgressAim=1;paperRewinding=false;paperFitPending=false;paperRequested='';paperWorker?.terminate();paperWorker=null;productHitPoints=[];};
 $('paperTrace').onclick=()=>{if(paperMode==='euler')return;paperProgressAim=0;paperPlaying=false;paperRewinding=true;$('exploreOptions').hidePopover();};
@@ -3725,7 +3739,7 @@ hueOf=function(p){
 function respectSpectrum(){PR.recolor();updateSpectrum();labelAlphas.clear();}
 // tau can ride the clock. The rate is tau per beat and the drive is a function
 // of t, not an accumulator, so stepping back winds tau back with the count.
-let tauDriveOn=true,tauRate=1,tauOrigin={t:1,tau:0};
+let tauDriveOn=true,tauRate=-1,tauOrigin={t:1,tau:0};
 const driveRest='τ then rides the clock: it advances while you play, at the pace you set, and winds back when you step back. σ is untouched, so nothing changes length — every term only turns.';
 function anchorTau(){tauOrigin={t:t,tau:tauAim};}
 function driveTau(){
@@ -3740,7 +3754,7 @@ function driveTau(){
   $('driveNote').textContent='τ stopped at '+held.toFixed(0)+', where the ζ evaluator stops being trusted. Switch it back on to carry on from here.';
  }
 }
-function driveText(){return 'τ is riding the clock at '+(tauRate>0?'+':'')+tauRate.toFixed(2)+' per beat. Play or step, and every term turns while its length holds.';}
+function driveText(){return 'τ is riding the clock at '+(tauRate>0?'+':'−')+Math.abs(tauRate).toFixed(2)+' per beat. Play or step, and every term turns while its length holds.';}
 const priorTune=tune;
 tune=function(sigma,tau){priorTune(sigma,tau);anchorTau();};
 const priorAdvance=advanceClock;
@@ -3812,6 +3826,7 @@ resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum(
 });
 function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:hsl('+hueOf(p).toFixed(1)+' 68% 62%)"></i>').join('');}
 updateSpectrum();
+tune(.5,0);anchorTau();sumAim=1;syncLenses();
 $('scrub').max=limit;$('reach').value=limit;$('scrubEnd').textContent=limit;
 $('sigmaControl').querySelector('label').textContent='σ';$('tauControl').querySelector('label').textContent='τ';
 // Formula details retain denominator notation, with the active input stated.

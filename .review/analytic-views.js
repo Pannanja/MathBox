@@ -29,10 +29,12 @@ $('productRange').step='any';
 const analyticPrimes=[];for(let p=2;p<=5001;p++)if(isPrime(p))analyticPrimes.push(p);
 function eulerPath(x,sigma,tau){
  let z=[1,0];const points=[{p:1,z:[1,0],factor:[1,0]}];
- for(const p of analyticPrimes){if(p>x)break;const factor=div([1,0],sub([1,0],power(p,sigma,tau)));z=mul(z,factor);points.push({p,z:[...z],factor});}
- const next=Math.floor(x)+1,fr=x-Math.floor(x);
+ // A prime's factor is taken over the same lap its pane is printed, so it is
+ // complete at x = p + 1 rather than at x = p, matching the clock.
+ for(const p of analyticPrimes){if(p+1>x)break;const factor=div([1,0],sub([1,0],power(p,sigma,tau)));z=mul(z,factor);points.push({p,z:[...z],factor});}
+ const printing=Math.floor(x),fr=x-printing;
  let arriving=null;
- if(fr>0&&isPrime(next)){const f=div([1,0],sub([1,0],power(next,sigma,tau))),r=Math.pow(abs(f),fr),a=Math.atan2(f[1],f[0])*fr;arriving=mul(z,[r*Math.cos(a),r*Math.sin(a)]);}
+ if(fr>0&&isPrime(printing)){const f=div([1,0],sub([1,0],power(printing,sigma,tau))),r=Math.pow(abs(f),fr),a=Math.atan2(f[1],f[0])*fr;arriving=mul(z,[r*Math.cos(a),r*Math.sin(a)]);}
  return {points,z,arriving};
 }
 let selectedProduct=-1,productHitPoints=[];

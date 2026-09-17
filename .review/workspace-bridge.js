@@ -14,7 +14,7 @@ hueOf=function(p){
 function respectSpectrum(){PR.recolor();updateSpectrum();labelAlphas.clear();}
 // tau can ride the clock. The rate is tau per beat and the drive is a function
 // of t, not an accumulator, so stepping back winds tau back with the count.
-let tauDriveOn=true,tauRate=1,tauOrigin={t:1,tau:0};
+let tauDriveOn=true,tauRate=-1,tauOrigin={t:1,tau:0};
 const driveRest='τ then rides the clock: it advances while you play, at the pace you set, and winds back when you step back. σ is untouched, so nothing changes length — every term only turns.';
 function anchorTau(){tauOrigin={t:t,tau:tauAim};}
 function driveTau(){
@@ -29,7 +29,7 @@ function driveTau(){
   $('driveNote').textContent='τ stopped at '+held.toFixed(0)+', where the ζ evaluator stops being trusted. Switch it back on to carry on from here.';
  }
 }
-function driveText(){return 'τ is riding the clock at '+(tauRate>0?'+':'')+tauRate.toFixed(2)+' per beat. Play or step, and every term turns while its length holds.';}
+function driveText(){return 'τ is riding the clock at '+(tauRate>0?'+':'−')+Math.abs(tauRate).toFixed(2)+' per beat. Play or step, and every term turns while its length holds.';}
 const priorTune=tune;
 tune=function(sigma,tau){priorTune(sigma,tau);anchorTau();};
 const priorAdvance=advanceClock;
@@ -101,6 +101,7 @@ resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum(
 });
 function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:hsl('+hueOf(p).toFixed(1)+' 68% 62%)"></i>').join('');}
 updateSpectrum();
+tune(.5,0);anchorTau();sumAim=1;syncLenses();
 $('scrub').max=limit;$('reach').value=limit;$('scrubEnd').textContent=limit;
 $('sigmaControl').querySelector('label').textContent='σ';$('tauControl').querySelector('label').textContent='τ';
 // Formula details retain denominator notation, with the active input stated.

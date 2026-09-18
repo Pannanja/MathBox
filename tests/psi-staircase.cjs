@@ -55,7 +55,8 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  // Before two, smooth(x) is still running away, so the trend and the chain stay
  // off and the reading falls back on what was counted.
  await page.evaluate(()=>jumpClock(1.6));await page.waitForTimeout(700);
- assert.strictEqual(await page.evaluate(()=>psiPredicted),0,'no formula below two');
+ assert.strictEqual(await page.evaluate(()=>Number.isFinite(psiPredicted)),false,'no formula below two');
+ assert.ok((await page.textContent('#reading')).includes('the formula waits'),'and the reading says so');
  await page.evaluate(()=>jumpClock(60.5));await page.waitForTimeout(900);
 
  // The formula, summed over every zero found, against what the clock counted.

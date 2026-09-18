@@ -105,7 +105,7 @@ function drawPsiStair(){
   g2.strokeStyle='rgba(111,174,155,.45)';g2.lineWidth=1;g2.setLineDash([4,5]);
   g2.beginPath();g2.moveTo(cx,cy);g2.lineTo(C+rAt(t,psiPredicted)*ux,C+rAt(t,psiPredicted)*uy);g2.stroke();g2.setLineDash([]);
   tick(psiPredicted,'rgba(111,174,155,.95)',1.8,17);
- }else psiPredicted=psiAt(t);
+ }else psiPredicted=NaN;
  tick(psiAt(t),'rgba(201,165,92,.95)',2.6,23);
  g2.restore();
 }
@@ -113,5 +113,5 @@ $('layerButtons').insertAdjacentHTML('beforeend','<button id="psiStair" aria-pre
 $('psiStair').onclick=()=>{psiStairAim=psiStairAim?0:1;$('psiStair').className=psiStairAim?'on':'';$('psiStair').setAttribute('aria-pressed',psiStairAim?'true':'false');};
 const psiStairGuide=updateGuide;
 updateGuide=function(){psiStairGuide();
- if(psiStairMix>.01)$('reading').textContent='\u03c8('+t.toFixed(2)+') = '+psiAt(t).toFixed(3)+' counted \u00b7 '+psiPredicted.toFixed(3)+' from '+Math.round(zeroCount)+' zeros \u00b7 '+zeroSearchNote;
+ if(psiStairMix>.01)$('reading').textContent='\u03c8('+t.toFixed(2)+') = '+psiAt(t).toFixed(3)+' counted \u00b7 '+(Number.isFinite(psiPredicted)?psiPredicted.toFixed(3)+' from '+Math.round(zeroCount)+' zeros':'the formula waits for x > 2')+' \u00b7 '+zeroSearchNote;
 };

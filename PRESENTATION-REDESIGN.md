@@ -420,6 +420,32 @@ Added after the first review rounds. Phase 6 is deferred until these land.
 - [ ] Build the staircase as tau climbs the critical strip, adding each zero as
   the drive passes its height, so the terms arrive by travelling rather than by
   a dial. Deliberately not the default.
+- [ ] Anchor the chain at its far end. The epicycles currently hang from the
+  trend and wander off the radius, so the reading is "the chain starts on the
+  stair and drifts"; it should be "the chain arrives at the step". Translate
+  the whole tangle by its own net vector so the last extension lands on the
+  step, with the chain reaching back from there. A rigid translation, so the
+  shape and every length stay exactly what they were.
+- [ ] A magnified view of the mechanism, which is what the departure slider was
+  standing in for. The staircase itself stays true, on the clock's own radius,
+  and the magnification becomes its own view rather than a distortion of the
+  main one.
+
+**What this piece is for**
+
+The audience is someone who is not a mathematician and wants a vague working
+sense of Riemann's machinery. The epicyclic mechanism is the thing that
+delivers that: it visibly reconstructs a prime count out of nothing but a list
+of heights, and anything competing with it for attention costs more than it
+adds. That is the standard the removals below are judged against, and it is why
+the explorer goes.
+
+One gap is accepted rather than regretted. The epicycles show the explicit
+formula, not the functional equation. The -log(2*pi) and the -1/2 log(1 - x^-2)
+terms come from it, and the rho/rho-bar pairing is why the chain is real, but
+nothing on the dial displays the s to 1-s symmetry, so nothing says why the
+zeros lie where they do. For this audience that question can stay unanswered as
+long as the machinery visibly works.
 
 ### 8. Alternate themes — far horizon, after everything else settles
 
@@ -497,6 +523,32 @@ behind a door.
 - [ ] Fold phase 3's graph work into whatever the overlay needs. It is all
   done and all about the explorer's canvas; most of it does not survive a move
   onto the dial, and what does is the complex-plane ruler rather than the panel.
+
+### 9b. Clear the dial — done
+
+Judged against what the piece is for: anything competing with the epicyclic
+mechanism for attention costs more than it adds.
+
+- [x] The sum ruler restated sigma. One unit is sigma radii and always was; the
+  observer's factor on top of it was a second way to say the same thing.
+- [x] The psi departure dial is gone and the staircase is drawn true, on the
+  clock's own radius. The magnified view of the mechanism replaces it, as its
+  own view rather than a distortion of this one. stairScale is kept at zero as
+  the seam that view will open.
+- [x] J radius and Inspect J removed, with the drawing and the bridge's j
+  field. Three phase 6 items close with them. jValue survives in j-ledger.js
+  for phase 9 to rule on.
+- [x] The Prime count button, the last view of psi before the staircase, and
+  with it stairOn, stairMix, the residual drawing on the noon axis, its
+  numbered-axis patch in viewport-build.py, its fade patches in revise.py and
+  its caption in analytic-views.js.
+- [x] Prime-power panes are off by default and have their own toggle. They used
+  to appear as a side effect of the ledger or the glass; the retired ledger's
+  own mix variable became the toggle's, so the gate did not have to be rebuilt.
+- [x] Separate sum keeps its machinery and loses its control, held for
+  magnifying regions of the dial.
+- [x] The tape's domain note. Deliberate loss, recorded: it was the only place
+  the page said the sum and product do not converge below sigma = 1.
 
 ### 10. Harden the clockwork — medium effort
 

@@ -19,8 +19,8 @@ const stage=document.createElement('main');stage.id='clockApp';stage.innerHTML=`
   <div class="bubble-head"><b>Your view</b><button popovertarget="viewBubble" popovertargetaction="hide" aria-label="Close view controls">×</button></div>
   <div id="layerButtons" class="button-row"></div><div id="orientationButtons" class="button-row"></div>
   <label for="radialDial">Clock ruler <output id="rulerLabel">Original</output></label><div id="rulerSlot"></div>
-  <label for="separateDial">Separate sum <output id="separationLabel">Together</output></label><div id="splitSlot"></div>
-  <p class="muted">The sum ruler opens at one unit = one radius; it is a display scale you can change. Separation moves the sum into an inset with its own unit circle. Lessons never change these settings.</p>
+  <label for="separateDial" hidden>Separate sum <output id="separationLabel">Together</output></label><div id="splitSlot" hidden></div>
+  <p class="muted">One unit of the sum is σ radii, so the real part of s is a length read against the dial. Lessons never change these settings.</p>
  </section>
  <section id="tuneBubble" class="bubble tune-bubble" popover="manual" aria-label="Complex weights and clock pace">
   <div class="bubble-head"><b>Weights &amp; pace</b><button popovertarget="tuneBubble" popovertargetaction="hide" aria-label="Close tuning">×</button></div>
@@ -42,10 +42,10 @@ const transport=document.querySelector('.transport');$('transportCorner').append
 for(const id of ['reset','previousBeat','play','stepBeat'])transport.appendChild($(id));
 $('previousBeat').textContent='← 1';$('stepBeat').textContent='1 →';$('reset').textContent='Start';
 $('transportCorner').appendChild(document.querySelector('.scrubber'));
-for(const [id,host] of [['spec','layerButtons'],['sumLens','layerButtons'],['continueLens','layerButtons'],['stair','layerButtons'],['zeroVisit','zeroShortcut'],['zeroDial','zerosSlot'],['reflect','orientationButtons'],['sound','orientationButtons'],['radialDial','rulerSlot'],['separateDial','splitSlot'],['sigmaDial','sigmaSlot'],['tauDial','tauSlot'],['speed','speedSlot'],['frontier','frontierSlot'],['reach','reachSlot']])relocate(id,host);
+for(const [id,host] of [['spec','layerButtons'],['sumLens','layerButtons'],['continueLens','layerButtons'],['powerPanes','layerButtons'],['zeroVisit','zeroShortcut'],['zeroDial','zerosSlot'],['reflect','orientationButtons'],['sound','orientationButtons'],['radialDial','rulerSlot'],['separateDial','splitSlot'],['sigmaDial','sigmaSlot'],['tauDial','tauSlot'],['speed','speedSlot'],['frontier','frontierSlot'],['reach','reachSlot']])relocate(id,host);
 $('spec').textContent='Glass';$('sumLens').textContent='Sum';$('continueLens').textContent='Tail';
 for(const id of ['sigmaDial','tauDial','zeroDial','speed']){const label=$('tuneBubble').querySelector('label[for="'+id+'"]'),slot=label.nextElementSibling,group=document.createElement('div');group.className='tune-control';label.before(group);group.append(label,slot);}
-$('stair').textContent='Prime count';$('zeroVisit').textContent='Tune to first zero';
+$('powerPanes').textContent='Prime powers';$('zeroVisit').textContent='Tune to first zero';
 $('zeroVisit').onclick=()=>{tune(.5,heights[0]);};
 $('reflect').textContent='Reflect axes';
 $('reflect').onclick=()=>{reflectionAim=1-reflectionAim;$('reflect').setAttribute('aria-pressed',String(!!reflectionAim));};
@@ -115,5 +115,5 @@ stepClock=function(direction){const from=clockTween&&clockTween.kind==='step'?cl
 moveClock=function(value,after=null){const to=Math.max(1,Math.min(limit,Number(value)));if(!Number.isFinite(to))return;stopAt=null;window.__run=false;clearVoices();clockTween={from:t,to,elapsed:0,duration:.5,after};$('play').textContent='Pause';};
 seekFrontier=function(value){moveClock(value);if(clockTween){clockTween.kind='scrub';clockTween.duration=.28;}};
 // No layers, layout or tuning is changed by visiting a destination.
-weightAim=0;sumAim=0;continueAim=0;focusAim=0;stairOn=false;specMode=1;
+weightAim=0;sumAim=0;continueAim=0;focusAim=0;powerPanesOn=false;specMode=1;
 syncLenses();updateGuide();updateStory();

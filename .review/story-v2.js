@@ -19,7 +19,7 @@ function chooseView(index){
  prediction=null;answered=false;
  // Keep the continuous state intact. Only targets change, using the same easing
  // as the instrument. No seek, reset, tape rebuild, or scene substitution.
- weightAim=0;sumAim=stop.sum||0;continueAim=stop.cont||0;focusAim=stop.focus;stairOn=!!stop.stair;
+ weightAim=0;sumAim=stop.sum||0;continueAim=stop.cont||0;focusAim=stop.focus;powerPanesOn=false;psiStairAim=stop.stair?1:psiStairAim;
  tune(stop.sigma,stop.tau);syncLenses();
  $('chapterLabel').textContent=(viewIndex<3?'Follow the construction':'Beyond the sieve')+' / '+String(viewIndex+1).padStart(2,'0');
  $('viewline').textContent=stop.title;$('storyText').innerHTML=stop.text;

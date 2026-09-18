@@ -79,10 +79,7 @@ function drawProductGraph(){
  const outside=[...rawSum.points,...points.map(p=>p.z),target].some(z=>!z.every(Number.isFinite)||X(z)<0||X(z)>600||Y(z)<20||Y(z)>280);
  $('productStatus').textContent=(SIGMA>1?'σ > 1: both converge to gold ζ. ':'σ ≤ 1: finite products only; no continued-ζ convergence promised. ')+(pole?'ζ has a pole. ':'Product error '+error.toPrecision(3)+'. ')+'Blue: full sum. Coloured: product; dashed: arrival.'+(outside?' Outside view · Fit to include paths.':' Ruler stays fixed until you change it.');
 }
-$('viewBubble').insertAdjacentHTML('beforeend','<p id="psiExplanation">Prime count plots (ψ − smooth)/√x on the numbered axis. Gold: ledger residual; green: finite zero-pair approximation. ψ jumps by log p at pᵏ; between jumps the subtracted trend keeps moving. Smooth = x − log(2π) − ½ log(1 − x⁻²). At a jump the zero formula targets the midpoint.</p>');
 const analyticGuide=updateGuide;
 updateGuide=function(){analyticGuide();$('complexDot').style.left=(SIGMA-.2)/2.8*100+'%';$('complexDot').style.bottom=(TAUV+35)/70*100+'%';drawProductGraph();
  for(const [id,value] of [['sigmaExact',sigmaAim],['tauExact',tauAim]])if(document.activeElement!==$(id))$(id).value=Number(value.toFixed(12));
- $('stair').title='ψ = '+psiSum.toFixed(4)+'; graph: (ψ − smooth)/√x';
- $('psiExplanation').hidden=stairMix<.005;
 };

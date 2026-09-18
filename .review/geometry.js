@@ -49,8 +49,8 @@ geometry.innerHTML=`<summary>Geometry <span>Ruler · separate sum</span></summar
  <label for="radialDial">Clock ruler <output id="radialRead">Births at the rim</output></label>
  <input id="radialDial" type="range" min="0" max="1" step=".01" value="0">
  <p>Slide from the original clock to a log ruler: new arcs begin at the axle and drift outward. Equal steps along a prime-power ladder become equal radial gaps. The periods stay the same.</p>
- <label for="separateDial">Separate the sum <output id="separateRead">Together</output></label>
- <input id="separateDial" type="range" min="0" max="1" step=".01" value="0">
+ <label for="separateDial" hidden>Separate the sum <output id="separateRead">Together</output></label>
+ <input id="separateDial" type="range" min="0" max="1" step=".01" value="0" hidden>
  <p>In Toward zeta, move the sum onto its own ruler. The same terms arrive on the same beat, wearing the same factor colours. These settings stay yours when you change chapters.</p>`;
 document.querySelector('.view-controls').after(geometry);
 const scaleNote=document.createElement('p');scaleNote.id='sumScaleNote';scaleNote.className='scale-note';scaleNote.hidden=true;geometry.before(scaleNote);

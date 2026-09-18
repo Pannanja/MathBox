@@ -25,15 +25,12 @@ const STAIR_TURN=.92,STAIR_IN=.10,STAIR_OUT=.70,STAIR_GAIN=.45,STAIR_STEPS=720;
 // climbs out of the origin, so the stair reads as a climb and the arm writing
 // it stands at the outside.
 //
-// stairScale lifts the departure from the trend, and only the departure. At 0
-// nothing is lifted and the picture is true, which leaves the whole zero chain
-// a few pixels wide, since psi is of order x and its correction only of order
-// sqrt(x). At 1 the departure is carried as a fraction of the radius it sits
-// on: .45 of it per unit of (psi - smooth)/sqrt(x). That keeps a riser and an
-// epicycle the same size at any count, and it cannot reach the origin, because
-// the residual never leaves the band it is divided into.
-let stairScale=1,psiStairAim=0,psiStairMix=0,psiPredicted=0;
-function stairRulerName(){return stairScale<.02?'departure true, on the clock radius':stairScale>.98?'departure lifted to .45 radius per (ψ − smooth)/√x':'departure lifted '+stairScale.toFixed(2);}
+// The departure from the trend is drawn true, on the same radius as the trend.
+// That leaves the zero chain a few pixels wide, since psi is of order x and its
+// correction only of order sqrt(x); magnifying the mechanism is its own view,
+// not a distortion of this one. stairScale is kept as the seam that view will
+// open, and is zero here.
+let stairScale=0,psiStairAim=0,psiStairMix=0,psiPredicted=0;
 const psiEvents=[];
 for(let p=2;p<=limit;p++){if(!isPrime(p))continue;for(let q=p;q<=limit;q*=p)psiEvents.push({q,p,rise:Math.log(p)});}
 psiEvents.sort((a,b)=>a.q-b.q);
@@ -107,5 +104,5 @@ $('layerButtons').insertAdjacentHTML('beforeend','<button id="psiStair" aria-pre
 $('psiStair').onclick=()=>{psiStairAim=psiStairAim?0:1;$('psiStair').className=psiStairAim?'on':'';$('psiStair').setAttribute('aria-pressed',psiStairAim?'true':'false');};
 const psiStairGuide=updateGuide;
 updateGuide=function(){psiStairGuide();
- if(psiStairMix>.01)$('reading').textContent='\u03c8('+t.toFixed(2)+') = '+psiAt(t).toFixed(3)+' counted \u00b7 '+psiPredicted.toFixed(3)+' from '+Math.round(zeroCount)+' zeros \u00b7 '+stairRulerName()+' \u00b7 '+zeroSearchNote;
+ if(psiStairMix>.01)$('reading').textContent='\u03c8('+t.toFixed(2)+') = '+psiAt(t).toFixed(3)+' counted \u00b7 '+psiPredicted.toFixed(3)+' from '+Math.round(zeroCount)+' zeros \u00b7 '+zeroSearchNote;
 };

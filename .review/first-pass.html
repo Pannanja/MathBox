@@ -47,7 +47,7 @@
    <div class="transportRow"><label for="frontier">Counting time <input id="frontier" type="number" min="1" max="5000" step=".01" value="3.35"></label><label for="reach">Slider ends at <input id="reach" type="number" min="2" max="5000" value="40"></label></div>
    <div class="transportRow"><button id="markA">Set A</button><label for="loopA">A <input id="loopA" type="number" min="1" max="4999.99" step=".01" value="12"></label><button id="markB">Set B</button><label for="loopB">B <input id="loopB" type="number" min="1.01" max="5000" step=".01" value="20"></label><button id="loop" aria-pressed="false">Loop A–B</button><button id="replay">Replay A</button></div><p id="loopMessage">Replay starts at A. Loop repeats the interval A–B.</p><div id="status">Sound is off. Space plays or pauses.</div>
   </div><div><h2>Combine visual layers</h2><p>Chapters restore a focused view. Here you can combine the original instrument’s layers.</p><div class="lenses">
-   <button id="logr" title="Spread small rings logarithmically; this changes the displayed lengths and speeds.">Spread small rings</button><button id="spec">Prime-power glass</button><button id="cols">Pitch colours</button><button id="riem">Cardioids</button><button id="spin">Spin weights</button><button id="bear">Bearings</button><button id="prod" title="Finite sieve density over a complete residue cycle, not the instantaneous uncovered sky.">Sieve-density spiral</button><button id="stair">Prime-power ledger</button><button id="weights">Weights</button><button id="sumLens">Sum</button><button id="continueLens">Continue</button><button id="zeroVisit">First zero</button>
+   <button id="logr" title="Spread small rings logarithmically; this changes the displayed lengths and speeds.">Spread small rings</button><button id="spec">Prime-power glass</button><button id="cols">Pitch colours</button><button id="riem">Cardioids</button><button id="spin">Spin weights</button><button id="bear">Bearings</button><button id="prod" title="Finite sieve density over a complete residue cycle, not the instantaneous uncovered sky.">Sieve-density spiral</button><button id="powerPanes">Prime-power panes</button><button id="weights">Weights</button><button id="sumLens">Sum</button><button id="continueLens">Continue</button><button id="zeroVisit">First zero</button>
    </div><div class="tuning"><label for="sigmaDial">Shrink σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value=".5"><output id="sigmaRead">0.50</output></label><label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label><label for="zeroDial">Zero pairs <input id="zeroDial" type="range" min="1" max="30" step="1" value="1"><output id="zeroRead">1</output></label></div>
    <details><summary>Euler’s sieve tape</summary><p>Each born prime removes its multiples from the remaining series. The infinite sum and product agree for Re(s) &gt; 1.</p><div class="proof" id="originalProof"><div class="iden">ζ(s) = Σ<sub>n≥1</sub> n<sup>−s</sup> = ∏<sub>p prime</sub> (1 − p<sup>−s</sup>)<sup>−1</sup></div><div class="work"><span id="tape"><span id="strip"></span></span><span>=</span><span class="rhs"><span id="pf"></span> ζ(s)</span></div></div></details>
   </div></div>
@@ -321,7 +321,7 @@ function colourOfN(nn) {
 }
 let SIGMA = .5, TAUV = 0;
 let sigmaAim = .5, tauAim = 0, weightAim = 0, sumAim = 1, continueAim = 0;
-let weightMix = 0, sumMix = 0, continueMix = 0, stairMix = 0, zeroCount = 8;
+let weightMix = 0, sumMix = 0, continueMix = 0, powerPaneMix = 0, zeroCount = 8;
 let loopOn = false, loopStart = 12, loopEnd = 20, introduced = new Set([0]);
 let viewIndex = 0, freeMode = false, focusMix = 0, focusAim = 0, glassMix = 0, spacingMix = 0;
 let reference = [0,0], referenceKey = '', trailRaw = [], trailCorrected = [], trailClock = 0;
@@ -467,7 +467,7 @@ function frame(ms) {
   weightMix += (weightAim - weightMix) * ease;
   sumMix += (sumAim - sumMix) * ease;
   continueMix += (continueAim - continueMix) * ease;
-  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;
+  powerPaneMix += ((powerPanesOn ? 1 : 0) - powerPaneMix) * ease;
   zeroCount += (+$('zeroDial').value - zeroCount) * ease;
   $('sigmaRead').textContent = SIGMA.toFixed(2);
   $('tauRead').textContent = TAUV.toFixed(2);
@@ -612,8 +612,8 @@ function frame(ms) {
   rings.forEach(ring => {
     const p = ring.p, r = rad(p);
     if (ring.echo) {
-      if (!spectrum && weightMix < .005 && stairMix < .005) return;
-      g2.save();g2.globalAlpha = Math.max(glassMix, weightMix, stairMix);
+      if (powerPaneMix < .005) return;
+      g2.save();g2.globalAlpha = powerPaneMix;
       const hb = hueOf(ring.base).toFixed(1);
       const spE = panelSpan(p, t);
       g2.strokeStyle = 'hsla(' + hb + ', 55%, 58%, 0.20)';
@@ -796,70 +796,6 @@ function frame(ms) {
     g2.save();g2.globalAlpha = focusMix;g2.fillStyle = '#0C1512';
     g2.fillRect(0,0,W,W);g2.restore();
   }
-  // The explicit formula applies at x > 1; the correction is singular as x
-  // approaches 1. Finite zero chains are approximate, including near jumps.
-  if (stairMix > .005 && t > 1.05) {
-    g2.save(); g2.globalAlpha = stairMix;
-    // Deviation of the machine's own ledger from the smooth trend, normalised
-    // by sqrt(t). Zero is the centre; the noon diameter is the signed axis.
-    const S = R * 0.92, rt = Math.sqrt(t);
-    const dN = (psiSum - t + 1.8378770664 + 0.5 * Math.log(1 - 1 / (t * t))) / rt;
-    const yOf = d => C - S * d;
-
-    // one turn of the leading vector = one ring falling from rim to this circle
-    g2.strokeStyle = 'rgba(201,165,92,0.30)'; g2.lineWidth = 1;
-    g2.setLineDash([2, 7]);
-    const syncRadius = (1 - spacingMix) * R * PSI.syncR + spacingMix * R * Math.max(0, 1 - 2 * Math.PI / (PSI.g1 * lnt));
-    g2.beginPath(); g2.arc(C, C, syncRadius, 0, 7); g2.stroke();
-    g2.setLineDash([]);
-
-    g2.strokeStyle = 'rgba(135,153,143,0.28)'; g2.lineWidth = 1;
-    g2.setLineDash([3, 6]);
-    g2.beginPath(); g2.moveTo(C, C - R); g2.lineTo(C, C + R); g2.stroke();
-    g2.setLineDash([]);
-    g2.strokeStyle = 'rgba(135,153,143,0.5)'; g2.lineWidth = 1.4;
-    g2.beginPath(); g2.moveTo(C - 13, C); g2.lineTo(C + 13, C); g2.stroke();
-
-    let cx = C, cy = C, sum = 0;
-    for (let i = 0; i < Math.ceil(zeroCount); i++) {
-      const fade = Math.min(1, zeroCount - i);
-      const v = PSI.vec(t, i).map(c => c * fade);
-      const nx = cx + S * v[1], ny = cy - S * v[0];
-      const len = S * Math.hypot(v[0], v[1]);
-      if (len > 1.4) {
-        g2.strokeStyle = i === 0 ? 'rgba(201,165,92,0.28)' : 'rgba(111,174,155,0.16)';
-        g2.lineWidth = 1;
-        g2.beginPath(); g2.arc(cx, cy, len, 0, 7); g2.stroke();
-      }
-      g2.strokeStyle = i === 0 ? 'rgba(201,165,92,0.9)'
-                               : 'rgba(111,174,155,' + (0.85 - 0.5 * i / PSI.nz).toFixed(3) + ')';
-      g2.lineWidth = i === 0 ? 2.2 : 1.3;
-      g2.beginPath(); g2.moveTo(cx, cy); g2.lineTo(nx, ny); g2.stroke();
-      cx = nx; cy = ny; sum += v[0];
-    }
-    g2.fillStyle = 'rgba(111,174,155,0.95)';
-    g2.beginPath(); g2.arc(cx, cy, 4, 0, 7); g2.fill();
-
-    const yE = yOf(sum);
-    g2.strokeStyle = 'rgba(111,174,155,0.45)'; g2.lineWidth = 1;
-    g2.setLineDash([4, 5]);
-    g2.beginPath(); g2.moveTo(cx, cy); g2.lineTo(C, yE); g2.stroke();
-    g2.setLineDash([]);
-    g2.strokeStyle = 'rgba(111,174,155,0.95)'; g2.lineWidth = 1.6;
-    g2.beginPath(); g2.moveTo(C - 15, yE); g2.lineTo(C + 15, yE); g2.stroke();
-
-    const yN = yOf(dN);
-    g2.strokeStyle = 'rgba(201,165,92,0.95)'; g2.lineWidth = 2.4;
-    g2.beginPath(); g2.moveTo(C - 22, yN); g2.lineTo(C + 22, yN); g2.stroke();
-    g2.strokeStyle = 'rgba(196,69,59,0.55)'; g2.lineWidth = 1;
-    g2.beginPath(); g2.moveTo(C, yN); g2.lineTo(C, yE); g2.stroke();
-    g2.font = '600 15px ui-monospace, monospace';
-    g2.textAlign = 'left'; g2.textBaseline = 'middle';
-    g2.fillStyle = 'rgba(201,165,92,0.95)';
-    g2.fillText('\u03c8 = ' + psiSum.toFixed(2), C + 27, yN);
-    g2.restore();
-  }
-
   drawContinuum(ms, rad);
 
   const juice = Math.exp(-12*fr);
@@ -933,15 +869,15 @@ $('cols').addEventListener('click', e => {
   e.target.className = SPECTRUM ? 'on' : '';
   PR.recolor();
 });
-let bearMode = 0, bearings = [], bearPrevT = 1, stairOn = false, prodOn = false, piCount = 0, psiSum = 0;
+let bearMode = 0, bearings = [], bearPrevT = 1, powerPanesOn = false, prodOn = false, piCount = 0, psiSum = 0;
 $('prod').addEventListener('click', e => {
   prodOn = !prodOn;
   e.target.className = prodOn ? 'on' : '';
 });
-$('stair').addEventListener('click', e => {
-  stairOn = !stairOn;
+$('powerPanes').addEventListener('click', e => {
+  powerPanesOn = !powerPanesOn;
   // Independent lens: preserve the other overlays and tuning.
-  e.target.className = stairOn ? 'on' : '';
+  e.target.className = powerPanesOn ? 'on' : '';
 });
 $('bear').addEventListener('click', e => {
   bearMode = (bearMode + 1) % 3;
@@ -1040,8 +976,7 @@ function drawContinuum(ms,rad) {
     });g2.restore();
   }
   if(sumMix<.005){
-    if(stairMix>.01)$('reading').textContent='ψ(x) from ring births · '+$('zeroDial').value+' zero pairs · first frequency 14.134725 in log x';
-    else if(weightMix>.01)$('reading').textContent='s = '+SIGMA.toFixed(3)+' + '+TAUV.toFixed(3)+'i · lengths q⁻σ · turns −τ log q';
+    if(weightMix>.01)$('reading').textContent='s = '+SIGMA.toFixed(3)+' + '+TAUV.toFixed(3)+'i · lengths q⁻σ · turns −τ log q';
     else $('reading').textContent='One lap of the white marker, one integer.';
     return;
   }
@@ -1114,8 +1049,8 @@ function chooseView(index){
  viewIndex=Math.max(0,Math.min(journey.length-1,index));const stop=journey[viewIndex];
  if(viewIndex>2){beyondOpen=true;document.body.classList.add('beyond');more.hidden=true;}
  stopAt=null;prediction=null;answered=false;loopOn=false;$('loop').className='';$('loop').setAttribute('aria-pressed','false');
- specMode=0;riemann=false;bearMode=0;prodOn=false;stairOn=!!stop.stair;logRad=false;
- for(const id of ['spec','riem','bear','prod','stair','logr'])$(id).className=id==='stair'&&stairOn?'on':'';
+ specMode=0;riemann=false;bearMode=0;prodOn=false;powerPanesOn=false;psiStairAim=stop.stair?1:psiStairAim;logRad=false;
+ for(const id of ['spec','riem','bear','prod','powerPanes','logr'])$(id).className='';
  weightAim=stop.weight||0;sumAim=stop.sum||0;continueAim=stop.cont||0;focusAim=stop.focus;
  tune(stop.sigma||2,stop.tau||0);syncLenses();
  // Pause on a representative scene, even when a chapter is revisited.

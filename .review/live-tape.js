@@ -79,7 +79,7 @@ const PR=(()=>{
    if(!wanted&&f.alpha<.002){f.el.remove();factors.delete(p);}
   }
   $('equals').style.color=factorColour(n);$('equals').style.textShadow='0 0 '+(9*pulse)+'px '+factorColour(n);
-  $('tapeDomain').textContent=SIGMA>1?'':'Finite terms · the infinite sum and product do not converge here';lastN=n;
+  lastN=n;
  }
  function reset(){for(const el of terms.values())el.remove();terms.clear();for(const f of factors.values())f.el.remove();factors.clear();lastN=1;}
  return {update:render,reset,tick:()=>{},recolor:()=>{factorColourCache.clear();render(t);}};

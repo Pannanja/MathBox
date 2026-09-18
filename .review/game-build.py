@@ -35,8 +35,8 @@ p=p.replace("tx.fillStyle = 'hsl(' + hueOf(ring.base || p).toFixed(1) + ', 100%,
 p=p.replace("gl.drawImage(lightC, 0, 0);gl.globalCompositeOperation = 'multiply';\n    gl.drawImage(transC, 0, 0);gl.globalCompositeOperation = 'source-over';", "gl.drawImage(transC, 0, 0);gl.globalCompositeOperation = 'destination-in';\n    gl.drawImage(lightC, 0, 0);gl.globalCompositeOperation = 'source-over';")
 a=p.index('    if (ring.echo) {',p.index("g2.strokeStyle = 'rgba(80,90,102,0.30)'"));b=p.index("    const col = 'hsl('",a)
 p=p[:a]+'''    if (ring.echo) {
-      if(glassMix<.001&&stairMix<.001)return;
-      g2.save();g2.globalAlpha=Math.max(glassMix,stairMix);
+      if(powerPaneMix<.001)return;
+      g2.save();g2.globalAlpha=powerPaneMix;
       const sp=panelSpan(p,t),w=Math.max(.65,Math.min(1.7,r*Math.PI/p*.28));
       g2.strokeStyle='hsla('+hueOf(ring.base)+' 55% 60% / .25)';g2.lineWidth=1;g2.beginPath();g2.arc(C,C,r,0,7);g2.stroke();
       g2.fillStyle='hsl('+hueOf(ring.base)+' 68% 62%)';band(r-w,r+w,sp.c0-sp.w/2,sp.c0+sp.w/2);

@@ -33,25 +33,6 @@ p=p.replace("g2.fillText('1',C,by-10)","g2.fillText(bar<unit-.5?(bar/unit).toFix
 p=p.replace('<small>One beat. One discovery.</small>','')
 p=p.replace('</style>',(root/'.review/analytic-views.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/analytic-views.js').read_text(encoding='utf-8')+'\n</script>',1)
-# Give the prime-count residual a fixed, numbered coordinate system.
-a=p.index('    // one turn of the leading vector =')
-b=p.index('    let cx = C, cy = C, sum = 0;',a)
-p=p[:a]+'''    g2.strokeStyle='#87998f88';g2.fillStyle='#b2c6ba';
-    g2.lineWidth=1;g2.font='13px ui-monospace';g2.textAlign='left';
-    g2.beginPath();g2.moveTo(C,C-S);g2.lineTo(C,C+S);g2.stroke();
-    for(let d=-1;d<=1.001;d+=.25){
-      const y=yOf(d);g2.beginPath();g2.moveTo(C-7,y);g2.lineTo(C+7,y);g2.stroke();
-      g2.fillText(d.toFixed(2),C+10,y-9);
-    }
-    g2.fillText('(ψ − smooth) / √x',C-120,C+S+24);
-''' + p[b:]
-p=p.replace("g2.fillText('\\u03c8 = ' + psiSum.toFixed(2), C + 27, yN);", "g2.fillText('residual = ' + dN.toFixed(3), C + 65, yN);")
-# Keep the coordinate ruler legible over the glass panes.
-a=p.index('  if (stairMix > .005 && t > 1.000001) {')
-b=p.index('  const juice =',a)
-psi_drawing=p[a:b]
-p=p[:a]+p[b:]
-p=p.replace('  drawContinuum(ms,rad);','  drawContinuum(ms,rad);\n'+psi_drawing,1)
 # Either mechanism can be brought to the front of the other. The sum is drawn
 # once, before the dial or after it, and whatever is behind sits under a veil.
 p=p.replace('  beginReflection(dt);','  beginReflection(dt);\n  if(layerFront<0){drawContinuum(ms,rad);layerVeil();}',1)
@@ -80,8 +61,8 @@ p=p.replace('</script>',(root/'.review/zeta-locus.js').read_text(encoding='utf-8
 p=p.replace('</script>',(root/'.review/psi-zeros.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('</style>',(root/'.review/psi-staircase.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/psi-staircase.js').read_text(encoding='utf-8')+'\n</script>',1)
-if '  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;' not in p: raise SystemExit('Missing stair mix line')
-p=p.replace('  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;','  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;\n  psiStairMix += ((psiStairAim ? 1 : 0) - psiStairMix) * ease;',1)
+if '  powerPaneMix += ((powerPanesOn ? 1 : 0) - powerPaneMix) * ease;' not in p: raise SystemExit('Missing pane mix line')
+p=p.replace('  powerPaneMix += ((powerPanesOn ? 1 : 0) - powerPaneMix) * ease;','  powerPaneMix += ((powerPanesOn ? 1 : 0) - powerPaneMix) * ease;\n  psiStairMix += ((psiStairAim ? 1 : 0) - psiStairMix) * ease;',1)
 p=p.replace('</style>',(root/'.review/friendly-explorer.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/friendly-explorer.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('SIGMA += (sigmaAim - SIGMA) * ease;', 'SIGMA += (sigmaAim - SIGMA) * (1-Math.exp(-dt*14));')

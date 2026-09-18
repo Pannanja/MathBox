@@ -12,7 +12,7 @@ def section(text,start,end,replacement):
 p=re.sub(r'   <details><summary>Euler’s sieve tape</summary>.*?</details>', '', p, count=1)
 live='''<div class="proof" id="originalProof" aria-label="Live Euler sieve: terms enter the equals sign on each beat">
     <div class="work"><span id="tape"><span id="strip"></span></span><span class="eq" id="equals">=</span><span class="rhs"><span id="factorWindow"><span id="pf"></span></span><span class="zeta-symbol">ζ(s)</span></span></div>
-    <div id="tapeDomain"></div><div class="equation-thread" aria-hidden="true"></div>
+    <div class="equation-thread" aria-hidden="true"></div>
    </div>'''
 p=p.replace('   <div class="frame">', '   '+live+'\n   <div class="frame">',1)
 css='''
@@ -52,10 +52,5 @@ p=section(p,'function seekFrontier(', 'function readLoop(){', 'function seekFron
 p=p.replace('seekFrontier(3.35);','')
 p=p.replace("    tip:'How strongly each lens filters. Drives both the sky and the colour the number wears. Only used with coloured glass.'", "    tip:'How strongly each lens filters. Drives both the sky and the colour the number wears. Only used with coloured glass.'")
 p=p.replace('    host.appendChild(wrap);', "    if(c.id==='spread'||c.id==='octaves')wrap.hidden=true;\n    host.appendChild(wrap);")
-# Coherent fades for analytic overlays: the ledger remains drawn until its fade
-# finishes, rather than disappearing as soon as its target boolean changes.
-p=p.replace('if (stairOn && t > 1)', 'if (stairMix > .001 && t > 1)')
-p=p.replace('if (stairMix > .005 && t > 1.05)', 'if (stairMix > .005 && t > 1.000001)')
-p=p.replace('g2.save(); g2.globalAlpha = stairMix;', 'g2.save(); g2.globalAlpha = stairMix * Math.min(1, (t - 1) / .35);')
 p=p.replace("v = Math.min(c.max, Math.max(c.min, +v));", "v = Number(v);if(!Number.isFinite(v))return;v = Math.min(c.max, Math.max(c.min, v));")
 page_output.write_text(p,encoding='utf-8')

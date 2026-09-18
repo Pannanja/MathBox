@@ -13,7 +13,7 @@ const levelTray=document.createElement('div');levelTray.className='level-tray';l
 const route=$('route');route.innerHTML='';
 for(const [id,label,action] of [['puzzleMode','Six beats',()=>openLesson(lesson)],['twinMode','Twin primes',()=>openTwins()],['eulerMode','Euler’s product',()=>openMath(2)],['zetaMode','Toward zeta',()=>openMath(3)]]){const b=document.createElement('button');b.id=id;b.textContent=label;b.onclick=action;route.appendChild(b);}
 function markMode(id){for(const b of route.children){if(b.id===id)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');}}
-function coreTargets(){weightAim=sumAim=continueAim=focusAim=0;stairOn=false;tune(2,0);specMode=lesson>=4||unlocked>=4||gameMode==='twins'?1:0;syncLenses();}
+function coreTargets(){weightAim=sumAim=continueAim=focusAim=0;powerPanesOn=false;tune(2,0);specMode=lesson>=4||unlocked>=4||gameMode==='twins'?1:0;syncLenses();}
 function openLesson(n,travel=true){
  gameMode='puzzles';lesson=Math.max(1,Math.min(6,unlocked,n));viewIndex=0;prediction=null;puzzleAttempt=null;coreTargets();markMode('puzzleMode');
  if(travel&&Math.abs(t-lesson)>1e-9)moveClock(lesson);

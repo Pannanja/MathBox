@@ -431,7 +431,7 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
   <section class="instrument" aria-label="The continuous prime clock">
    <div class="proof" id="originalProof" aria-label="Live Euler sieve: terms enter the equals sign on each beat">
     <div class="work"><span id="tape"><span id="strip"></span></span><span class="eq" id="equals">=</span><span class="rhs"><span id="factorWindow"><span id="pf"></span></span><span class="zeta-symbol">ζ(s)</span></span></div>
-    <div id="tapeDomain"></div><div class="equation-thread" aria-hidden="true"></div>
+    <div class="equation-thread" aria-hidden="true"></div>
    </div>
    <div class="frame"><span class="canvas-tag" id="canvasTag">THE COUNTING CLOCK</span><canvas id="cv" width="920" height="920" role="img" aria-label="A second hand circles the rim once per beat. Prime panels turn more slowly and meet the red line at their multiples.">Your browser needs canvas to show the prime clock. The live beat description below describes its arithmetic.</canvas></div>
    <div class="beatRead"><span class="label">BEAT</span><span id="now">1</span><span id="fac"></span></div>
@@ -453,7 +453,7 @@ input.domain-range::-moz-range-thumb{width:13px;height:13px;border-radius:50%;ba
    <div class="transportRow"><label for="frontier">Counting time <input id="frontier" type="number" min="1" max="5000" step=".01" value="1"></label><label for="reach">Slider ends at <input id="reach" type="number" min="2" max="5000" value="40"></label></div>
    <div class="transportRow" hidden><button id="markA">Set A</button><label for="loopA">A <input id="loopA" type="number" min="1" max="4999.99" step=".01" value="12"></label><button id="markB">Set B</button><label for="loopB">B <input id="loopB" type="number" min="1.01" max="5000" step=".01" value="20"></label><button id="loop" aria-pressed="false">Loop A–B</button><button id="replay">Replay A</button></div><p id="loopMessage" hidden>Replay starts at A. Loop repeats the interval A–B.</p><div id="status">Sound is off. Space plays or pauses.</div>
   </div><div class="experimental-controls" hidden><h2>Combine visual layers</h2><p>Chapters restore a focused view. Here you can combine the original instrument’s layers.</p><div class="lenses">
-   <button id="logr" title="Spread small rings logarithmically; this changes the displayed lengths and speeds.">Spread small rings</button><button id="spec">Prime-power glass</button><button id="cols">Pitch colours</button><button id="riem">Cardioids</button><button id="spin">Spin weights</button><button id="bear">Bearings</button><button id="prod" title="Finite sieve density over a complete residue cycle, not the instantaneous uncovered sky.">Sieve-density spiral</button><button id="stair">Prime-power ledger</button><button id="weights">Weights</button><button id="sumLens">Sum</button><button id="continueLens">Continue</button><button id="zeroVisit">First zero</button>
+   <button id="logr" title="Spread small rings logarithmically; this changes the displayed lengths and speeds.">Spread small rings</button><button id="spec">Prime-power glass</button><button id="cols">Pitch colours</button><button id="riem">Cardioids</button><button id="spin">Spin weights</button><button id="bear">Bearings</button><button id="prod" title="Finite sieve density over a complete residue cycle, not the instantaneous uncovered sky.">Sieve-density spiral</button><button id="powerPanes">Prime-power panes</button><button id="weights">Weights</button><button id="sumLens">Sum</button><button id="continueLens">Continue</button><button id="zeroVisit">First zero</button>
    </div><div class="tuning"><label for="sigmaDial">Shrink σ <input id="sigmaDial" type="range" min=".2" max="3" step=".01" value=".5"><output id="sigmaRead">0.50</output></label><label for="tauDial">Turn τ <input id="tauDial" type="range" min="0" max="35" step="any" value="0"><output id="tauRead">0.00</output></label><label for="zeroDial">Zero pairs <input id="zeroDial" type="range" min="1" max="30" step="1" value="1"><output id="zeroRead">1</output></label></div>
 
   </div></div>
@@ -684,7 +684,7 @@ const PR=(()=>{
    if(!wanted&&f.alpha<.002){f.el.remove();factors.delete(p);}
   }
   $('equals').style.color=factorColour(n);$('equals').style.textShadow='0 0 '+(9*pulse)+'px '+factorColour(n);
-  $('tapeDomain').textContent=SIGMA>1?'':'Finite terms · the infinite sum and product do not converge here';lastN=n;
+  lastN=n;
  }
  function reset(){for(const el of terms.values())el.remove();terms.clear();for(const f of factors.values())f.el.remove();factors.clear();lastN=1;}
  return {update:render,reset,tick:()=>{},recolor:()=>{factorColourCache.clear();render(t);}};
@@ -737,7 +737,7 @@ function colourOfN(nn) {
 }
 let SIGMA = .5, TAUV = 0;
 let sigmaAim = .5, tauAim = 0, weightAim = 0, sumAim = 1, continueAim = 0;
-let weightMix = 0, sumMix = 0, continueMix = 0, stairMix = 0, zeroCount = 8;
+let weightMix = 0, sumMix = 0, continueMix = 0, powerPaneMix = 0, zeroCount = 8;
 let loopOn = false, loopStart = 12, loopEnd = 20, introduced = new Set([0]);
 let viewIndex = 0, freeMode = false, focusMix = 0, focusAim = 0, glassMix = 0, spacingMix = 0;
 let reference = [0,0], referenceKey = '', trailRaw = [], trailCorrected = [], trailClock = 0;
@@ -951,8 +951,8 @@ geometry.innerHTML=`<summary>Geometry <span>Ruler · separate sum</span></summar
  <label for="radialDial">Clock ruler <output id="radialRead">Births at the rim</output></label>
  <input id="radialDial" type="range" min="0" max="1" step=".01" value="0">
  <p>Slide from the original clock to a log ruler: new arcs begin at the axle and drift outward. Equal steps along a prime-power ladder become equal radial gaps. The periods stay the same.</p>
- <label for="separateDial">Separate the sum <output id="separateRead">Together</output></label>
- <input id="separateDial" type="range" min="0" max="1" step=".01" value="0">
+ <label for="separateDial" hidden>Separate the sum <output id="separateRead">Together</output></label>
+ <input id="separateDial" type="range" min="0" max="1" step=".01" value="0" hidden>
  <p>In Toward zeta, move the sum onto its own ruler. The same terms arrive on the same beat, wearing the same factor colours. These settings stay yours when you change chapters.</p>`;
 document.querySelector('.view-controls').after(geometry);
 const scaleNote=document.createElement('p');scaleNote.id='sumScaleNote';scaleNote.className='scale-note';scaleNote.hidden=true;geometry.before(scaleNote);
@@ -978,7 +978,7 @@ function frame(ms) {
   weightMix += (weightAim - weightMix) * ease;
   sumMix += (sumAim - sumMix) * ease;
   continueMix += (continueAim - continueMix) * ease;
-  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;
+  powerPaneMix += ((powerPanesOn ? 1 : 0) - powerPaneMix) * ease;
   psiStairMix += ((psiStairAim ? 1 : 0) - psiStairMix) * ease;
   zeroCount += (+$('zeroDial').value - zeroCount) * ease;
   $('sigmaRead').textContent = SIGMA.toFixed(2);
@@ -1083,8 +1083,8 @@ function frame(ms) {
   rings.forEach(ring => {
     const p = ring.p, r = rad(p);
     if (ring.echo) {
-      if(glassMix<.001&&stairMix<.001)return;
-      g2.save();g2.globalAlpha=Math.max(glassMix,stairMix);
+      if(powerPaneMix<.001)return;
+      g2.save();g2.globalAlpha=powerPaneMix;
       const sp=panelSpan(p,t),w=Math.max(.65,Math.min(1.7,r*Math.PI/p*.28));
       g2.strokeStyle='hsla('+hueOf(ring.base)+' 55% 60% / .25)';g2.lineWidth=1;g2.beginPath();g2.arc(C,C,r,0,7);g2.stroke();
       g2.fillStyle='hsl('+hueOf(ring.base)+' 68% 62%)';band(r-w,r+w,sp.c0-sp.w/2,sp.c0+sp.w/2);
@@ -1259,8 +1259,8 @@ function frame(ms) {
     g2.save();g2.globalAlpha = focusMix*(1-separateMix);g2.fillStyle = '#0C1512';
     g2.fillRect(0,0,W,W);g2.restore();
   }
-  // The explicit formula applies at x > 1; the correction is singular as x
-  // approaches 1. Finite zero chains are approximate, including near jumps.
+
+
   const juice = Math.exp(-12*fr);
   g2.globalAlpha = (0.10 + 0.22 * juice) * (1 - focusMix) * (1 - glassMix);
   g2.strokeStyle = 'rgb(' + LASER + ')';
@@ -1284,65 +1284,6 @@ function frame(ms) {
   drawPrimeGlass(rad,n);
   drawPsiStair();
   if(layerFront>=0){layerVeil();drawContinuum(ms,rad);}
-  if (stairMix > .005 && t > 1.000001) {
-    g2.save(); g2.globalAlpha = stairMix * Math.min(1, (t - 1) / .35);
-    // Deviation of the machine's own ledger from the smooth trend, normalised
-    // by sqrt(t). Zero is the centre; the noon diameter is the signed axis.
-    const S = R * 0.92, rt = Math.sqrt(t);
-    const dN = (psiSum - t + 1.8378770664 + 0.5 * Math.log(1 - 1 / (t * t))) / rt;
-    const yOf = d => C - S * d;
-
-    g2.strokeStyle='#87998f88';g2.fillStyle='#b2c6ba';
-    g2.lineWidth=1;g2.font='13px ui-monospace';g2.textAlign='left';
-    g2.beginPath();g2.moveTo(C,C-S);g2.lineTo(C,C+S);g2.stroke();
-    for(let d=-1;d<=1.001;d+=.25){
-      const y=yOf(d);g2.beginPath();g2.moveTo(C-7,y);g2.lineTo(C+7,y);g2.stroke();
-      g2.fillText(d.toFixed(2),C+10,y-9);
-    }
-    g2.fillText('(ψ − smooth) / √x',C-120,C+S+24);
-    let cx = C, cy = C, sum = 0;
-    for (let i = 0; i < Math.ceil(zeroCount); i++) {
-      const fade = Math.min(1, zeroCount - i);
-      const v = PSI.vec(t, i).map(c => c * fade);
-      const nx = cx + S * v[1], ny = cy - S * v[0];
-      const len = S * Math.hypot(v[0], v[1]);
-      if (len > 1.4) {
-        g2.strokeStyle = i === 0 ? 'rgba(201,165,92,0.28)' : 'rgba(111,174,155,0.16)';
-        g2.lineWidth = 1;
-        g2.beginPath(); g2.arc(cx, cy, len, 0, 7); g2.stroke();
-      }
-      g2.strokeStyle = i === 0 ? 'rgba(201,165,92,0.9)'
-                               : 'rgba(111,174,155,' + (0.85 - 0.5 * i / PSI.nz).toFixed(3) + ')';
-      g2.lineWidth = i === 0 ? 2.2 : 1.3;
-      g2.beginPath(); g2.moveTo(cx, cy); g2.lineTo(nx, ny); g2.stroke();
-      cx = nx; cy = ny; sum += v[0];
-    }
-    g2.fillStyle = 'rgba(111,174,155,0.95)';
-    g2.beginPath(); g2.arc(cx, cy, 4, 0, 7); g2.fill();
-
-    const yE = yOf(sum);
-    g2.strokeStyle = 'rgba(111,174,155,0.45)'; g2.lineWidth = 1;
-    g2.setLineDash([4, 5]);
-    g2.beginPath(); g2.moveTo(cx, cy); g2.lineTo(C, yE); g2.stroke();
-    g2.setLineDash([]);
-    g2.strokeStyle = 'rgba(111,174,155,0.95)'; g2.lineWidth = 1.6;
-    g2.beginPath(); g2.moveTo(C - 15, yE); g2.lineTo(C + 15, yE); g2.stroke();
-
-    const yN = yOf(dN);
-    g2.strokeStyle = 'rgba(201,165,92,0.95)'; g2.lineWidth = 2.4;
-    g2.beginPath(); g2.moveTo(C - 22, yN); g2.lineTo(C + 22, yN); g2.stroke();
-    g2.strokeStyle = 'rgba(196,69,59,0.55)'; g2.lineWidth = 1;
-    g2.beginPath(); g2.moveTo(C, yN); g2.lineTo(C, yE); g2.stroke();
-    g2.font = '600 15px ui-monospace, monospace';
-    g2.textAlign = 'left'; g2.textBaseline = 'middle';
-    g2.fillStyle = 'rgba(201,165,92,0.95)';
-    g2.fillText('residual = ' + dN.toFixed(3), C + 65, yN);
-    g2.restore();
-  }
-
-
-
-
   if (riemann) drawWaves(t, n, fr, rad);
 
   const ua = TOP + 2 * Math.PI * fr;
@@ -1389,15 +1330,15 @@ $('cols').addEventListener('click', e => {
   e.target.className = SPECTRUM ? 'on' : '';
   PR.recolor();
 });
-let bearMode = 0, bearings = [], bearPrevT = 1, stairOn = false, prodOn = false, piCount = 0, psiSum = 0;
+let bearMode = 0, bearings = [], bearPrevT = 1, powerPanesOn = false, prodOn = false, piCount = 0, psiSum = 0;
 $('prod').addEventListener('click', e => {
   prodOn = !prodOn;
   e.target.className = prodOn ? 'on' : '';
 });
-$('stair').addEventListener('click', e => {
-  stairOn = !stairOn;
+$('powerPanes').addEventListener('click', e => {
+  powerPanesOn = !powerPanesOn;
   // Independent lens: preserve the other overlays and tuning.
-  e.target.className = stairOn ? 'on' : '';
+  e.target.className = powerPanesOn ? 'on' : '';
 });
 $('bear').addEventListener('click', e => {
   bearMode = (bearMode + 1) % 3;
@@ -1497,8 +1438,7 @@ function drawContinuum(ms,rad) {
     });g2.restore();
   }
   if(sumMix<.005){
-    if(stairMix>.01)$('reading').textContent='ψ(x) from ring births · '+$('zeroDial').value+' zero pairs · first frequency 14.134725 in log x';
-    else if(weightMix>.01)$('reading').textContent='s = '+SIGMA.toFixed(3)+' + '+TAUV.toFixed(3)+'i · lengths q⁻σ · turns −τ log q';
+    if(weightMix>.01)$('reading').textContent='s = '+SIGMA.toFixed(3)+' + '+TAUV.toFixed(3)+'i · lengths q⁻σ · turns −τ log q';
     else $('reading').textContent='One lap of the second hand, one integer.';
     return;
   }
@@ -1647,7 +1587,7 @@ function chooseView(index){
  prediction=null;answered=false;
  // Keep the continuous state intact. Only targets change, using the same easing
  // as the instrument. No seek, reset, tape rebuild, or scene substitution.
- weightAim=0;sumAim=stop.sum||0;continueAim=stop.cont||0;focusAim=stop.focus;stairOn=!!stop.stair;
+ weightAim=0;sumAim=stop.sum||0;continueAim=stop.cont||0;focusAim=stop.focus;powerPanesOn=false;psiStairAim=stop.stair?1:psiStairAim;
  tune(stop.sigma,stop.tau);syncLenses();
  $('chapterLabel').textContent=(viewIndex<3?'Follow the construction':'Beyond the sieve')+' / '+String(viewIndex+1).padStart(2,'0');
  $('viewline').textContent=stop.title;$('storyText').innerHTML=stop.text;
@@ -1744,7 +1684,7 @@ const levelTray=document.createElement('div');levelTray.className='level-tray';l
 const route=$('route');route.innerHTML='';
 for(const [id,label,action] of [['puzzleMode','Six beats',()=>openLesson(lesson)],['twinMode','Twin primes',()=>openTwins()],['eulerMode','Euler’s product',()=>openMath(2)],['zetaMode','Toward zeta',()=>openMath(3)]]){const b=document.createElement('button');b.id=id;b.textContent=label;b.onclick=action;route.appendChild(b);}
 function markMode(id){for(const b of route.children){if(b.id===id)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');}}
-function coreTargets(){weightAim=sumAim=continueAim=focusAim=0;stairOn=false;tune(2,0);specMode=lesson>=4||unlocked>=4||gameMode==='twins'?1:0;syncLenses();}
+function coreTargets(){weightAim=sumAim=continueAim=focusAim=0;powerPanesOn=false;tune(2,0);specMode=lesson>=4||unlocked>=4||gameMode==='twins'?1:0;syncLenses();}
 function openLesson(n,travel=true){
  gameMode='puzzles';lesson=Math.max(1,Math.min(6,unlocked,n));viewIndex=0;prediction=null;puzzleAttempt=null;coreTargets();markMode('puzzleMode');
  if(travel&&Math.abs(t-lesson)>1e-9)moveClock(lesson);
@@ -1876,8 +1816,8 @@ const stage=document.createElement('main');stage.id='clockApp';stage.innerHTML=`
   <div class="bubble-head"><b>Your view</b><button popovertarget="viewBubble" popovertargetaction="hide" aria-label="Close view controls">×</button></div>
   <div id="layerButtons" class="button-row"></div><div id="orientationButtons" class="button-row"></div>
   <label for="radialDial">Clock ruler <output id="rulerLabel">Original</output></label><div id="rulerSlot"></div>
-  <label for="separateDial">Separate sum <output id="separationLabel">Together</output></label><div id="splitSlot"></div>
-  <p class="muted">The sum ruler opens at one unit = one radius; it is a display scale you can change. Separation moves the sum into an inset with its own unit circle. Lessons never change these settings.</p>
+  <label for="separateDial" hidden>Separate sum <output id="separationLabel">Together</output></label><div id="splitSlot" hidden></div>
+  <p class="muted">One unit of the sum is σ radii, so the real part of s is a length read against the dial. Lessons never change these settings.</p>
  </section>
  <section id="tuneBubble" class="bubble tune-bubble" popover="manual" aria-label="Complex weights and clock pace">
   <div class="bubble-head"><b>Weights &amp; pace</b><button popovertarget="tuneBubble" popovertargetaction="hide" aria-label="Close tuning">×</button></div>
@@ -1899,10 +1839,10 @@ const transport=document.querySelector('.transport');$('transportCorner').append
 for(const id of ['reset','previousBeat','play','stepBeat'])transport.appendChild($(id));
 $('previousBeat').textContent='← 1';$('stepBeat').textContent='1 →';$('reset').textContent='Start';
 $('transportCorner').appendChild(document.querySelector('.scrubber'));
-for(const [id,host] of [['spec','layerButtons'],['sumLens','layerButtons'],['continueLens','layerButtons'],['stair','layerButtons'],['zeroVisit','zeroShortcut'],['zeroDial','zerosSlot'],['reflect','orientationButtons'],['sound','orientationButtons'],['radialDial','rulerSlot'],['separateDial','splitSlot'],['sigmaDial','sigmaSlot'],['tauDial','tauSlot'],['speed','speedSlot'],['frontier','frontierSlot'],['reach','reachSlot']])relocate(id,host);
+for(const [id,host] of [['spec','layerButtons'],['sumLens','layerButtons'],['continueLens','layerButtons'],['powerPanes','layerButtons'],['zeroVisit','zeroShortcut'],['zeroDial','zerosSlot'],['reflect','orientationButtons'],['sound','orientationButtons'],['radialDial','rulerSlot'],['separateDial','splitSlot'],['sigmaDial','sigmaSlot'],['tauDial','tauSlot'],['speed','speedSlot'],['frontier','frontierSlot'],['reach','reachSlot']])relocate(id,host);
 $('spec').textContent='Glass';$('sumLens').textContent='Sum';$('continueLens').textContent='Tail';
 for(const id of ['sigmaDial','tauDial','zeroDial','speed']){const label=$('tuneBubble').querySelector('label[for="'+id+'"]'),slot=label.nextElementSibling,group=document.createElement('div');group.className='tune-control';label.before(group);group.append(label,slot);}
-$('stair').textContent='Prime count';$('zeroVisit').textContent='Tune to first zero';
+$('powerPanes').textContent='Prime powers';$('zeroVisit').textContent='Tune to first zero';
 $('zeroVisit').onclick=()=>{tune(.5,heights[0]);};
 $('reflect').textContent='Reflect axes';
 $('reflect').onclick=()=>{reflectionAim=1-reflectionAim;$('reflect').setAttribute('aria-pressed',String(!!reflectionAim));};
@@ -1972,7 +1912,7 @@ stepClock=function(direction){const from=clockTween&&clockTween.kind==='step'?cl
 moveClock=function(value,after=null){const to=Math.max(1,Math.min(limit,Number(value)));if(!Number.isFinite(to))return;stopAt=null;window.__run=false;clearVoices();clockTween={from:t,to,elapsed:0,duration:.5,after};$('play').textContent='Pause';};
 seekFrontier=function(value){moveClock(value);if(clockTween){clockTween.kind='scrub';clockTween.duration=.28;}};
 // No layers, layout or tuning is changed by visiting a destination.
-weightAim=0;sumAim=0;continueAim=0;focusAim=0;stairOn=false;specMode=1;
+weightAim=0;sumAim=0;continueAim=0;focusAim=0;powerPanesOn=false;specMode=1;
 syncLenses();updateGuide();updateStory();
 
 // J is right-continuous here: the complete credit is booked at a birth.
@@ -2181,12 +2121,9 @@ function drawProductGraph(){
  const outside=[...rawSum.points,...points.map(p=>p.z),target].some(z=>!z.every(Number.isFinite)||X(z)<0||X(z)>600||Y(z)<20||Y(z)>280);
  $('productStatus').textContent=(SIGMA>1?'σ > 1: both converge to gold ζ. ':'σ ≤ 1: finite products only; no continued-ζ convergence promised. ')+(pole?'ζ has a pole. ':'Product error '+error.toPrecision(3)+'. ')+'Blue: full sum. Coloured: product; dashed: arrival.'+(outside?' Outside view · Fit to include paths.':' Ruler stays fixed until you change it.');
 }
-$('viewBubble').insertAdjacentHTML('beforeend','<p id="psiExplanation">Prime count plots (ψ − smooth)/√x on the numbered axis. Gold: ledger residual; green: finite zero-pair approximation. ψ jumps by log p at pᵏ; between jumps the subtracted trend keeps moving. Smooth = x − log(2π) − ½ log(1 − x⁻²). At a jump the zero formula targets the midpoint.</p>');
 const analyticGuide=updateGuide;
 updateGuide=function(){analyticGuide();$('complexDot').style.left=(SIGMA-.2)/2.8*100+'%';$('complexDot').style.bottom=(TAUV+35)/70*100+'%';drawProductGraph();
  for(const [id,value] of [['sigmaExact',sigmaAim],['tauExact',tauAim]])if(document.activeElement!==$(id))$(id).value=Number(value.toFixed(12));
- $('stair').title='ψ = '+psiSum.toFixed(4)+'; graph: (ψ − smooth)/√x';
- $('psiExplanation').hidden=stairMix<.005;
 };
 
 // A prime-family selection connects exact divisibility, not approximate area.
@@ -2484,15 +2421,12 @@ const STAIR_TURN=.92,STAIR_IN=.10,STAIR_OUT=.70,STAIR_GAIN=.45,STAIR_STEPS=720;
 // climbs out of the origin, so the stair reads as a climb and the arm writing
 // it stands at the outside.
 //
-// stairScale lifts the departure from the trend, and only the departure. At 0
-// nothing is lifted and the picture is true, which leaves the whole zero chain
-// a few pixels wide, since psi is of order x and its correction only of order
-// sqrt(x). At 1 the departure is carried as a fraction of the radius it sits
-// on: .45 of it per unit of (psi - smooth)/sqrt(x). That keeps a riser and an
-// epicycle the same size at any count, and it cannot reach the origin, because
-// the residual never leaves the band it is divided into.
-let stairScale=1,psiStairAim=0,psiStairMix=0,psiPredicted=0;
-function stairRulerName(){return stairScale<.02?'departure true, on the clock radius':stairScale>.98?'departure lifted to .45 radius per (ψ − smooth)/√x':'departure lifted '+stairScale.toFixed(2);}
+// The departure from the trend is drawn true, on the same radius as the trend.
+// That leaves the zero chain a few pixels wide, since psi is of order x and its
+// correction only of order sqrt(x); magnifying the mechanism is its own view,
+// not a distortion of this one. stairScale is kept as the seam that view will
+// open, and is zero here.
+let stairScale=0,psiStairAim=0,psiStairMix=0,psiPredicted=0;
 const psiEvents=[];
 for(let p=2;p<=limit;p++){if(!isPrime(p))continue;for(let q=p;q<=limit;q*=p)psiEvents.push({q,p,rise:Math.log(p)});}
 psiEvents.sort((a,b)=>a.q-b.q);
@@ -2566,7 +2500,7 @@ $('layerButtons').insertAdjacentHTML('beforeend','<button id="psiStair" aria-pre
 $('psiStair').onclick=()=>{psiStairAim=psiStairAim?0:1;$('psiStair').className=psiStairAim?'on':'';$('psiStair').setAttribute('aria-pressed',psiStairAim?'true':'false');};
 const psiStairGuide=updateGuide;
 updateGuide=function(){psiStairGuide();
- if(psiStairMix>.01)$('reading').textContent='\u03c8('+t.toFixed(2)+') = '+psiAt(t).toFixed(3)+' counted \u00b7 '+psiPredicted.toFixed(3)+' from '+Math.round(zeroCount)+' zeros \u00b7 '+stairRulerName()+' \u00b7 '+zeroSearchNote;
+ if(psiStairMix>.01)$('reading').textContent='\u03c8('+t.toFixed(2)+') = '+psiAt(t).toFixed(3)+' counted \u00b7 '+psiPredicted.toFixed(3)+' from '+Math.round(zeroCount)+' zeros \u00b7 '+zeroSearchNote;
 };
 
 // One everyday control surface; optional comparisons and factor tools are secondary.
@@ -3351,7 +3285,6 @@ var ClockMath = (function(exports) {
     app.append(shell);
     el("clockSurface").append(clockStage, el("originalProof"));
     el("clockTransport").append(el("transportCorner"));
-    el("clockWorkspace").insertBefore(el("tapeDomain"), el("clockTransport"));
     el("clockWorkspace").insertBefore(el("fac"), el("clockTransport"));
     {
       const rhs = el("originalProof").querySelector(".rhs"), zeta = rhs.querySelector(".zeta-symbol");
@@ -3418,7 +3351,7 @@ var ClockMath = (function(exports) {
         return node.dataset.open === "true";
       };
     };
-    for (const id of ["viewBubble", "tuneBubble", "observeBubble", "jBubble", "bridgeBubble"]) register(el(id), "clock");
+    for (const id of ["viewBubble", "tuneBubble", "observeBubble", "bridgeBubble"]) register(el(id), "clock");
     for (const id of ["exploreOptions", "planeNotes", "viewHelp"]) register(el(id), "riemann");
     if (product.matches(":popover-open")) product.hidePopover();
     product.removeAttribute("popover");
@@ -3441,7 +3374,7 @@ var ClockMath = (function(exports) {
     el("viewBubble").querySelector(".bubble-head b").textContent = "Clock appearance";
     el("spec").hidden = true;
     const custom = document.createElement("div");
-    custom.innerHTML = `<label class="field">Depth<input id="layerFront" type="range" min="-1" max="1" step="0.01" value="0"><output id="layerFrontOut">Level</output></label><p class="small-note">The panes are the gearing and the sum is what it drives. Pull either one to the front and the other falls behind a veil, so the dial can be opened up and read through.</p><label class="field">Sum ruler · one unit<input id="sumZoom" type="range" min="0.1" max="2" step="0.01" value="1"><output id="sumZoomOut">σ × 1.00 = 0.50 radii</output></label><p class="small-note">One unit is σ radii: at σ = 1 it reaches the rim, at σ = ½ half way in, so the real part of s is a length you can read against the dial. The factor above is yours on top of that. Neither changes the terms, which stay n<sup>−σ</sup> long.</p><label class="field">ψ departure<input id="stairScale" type="range" min="0" max="1" step="0.01" value="1"><output id="stairScaleOut">magnified</output></label><p class="small-note">The trend rides the clock’s own radius, so the stair climbs out of the origin and the arm writing it stands at the rim. This sets how the departure from that trend is measured. At the right it is carried as (ψ − smooth)/√x, where a riser and a zero’s epicycle are the same size. At the left it is drawn true, on the same radius as the trend — and the whole zero chain shrinks to a few pixels, because ψ is of order x and its correction only of order √x.</p><label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label><label class="check"><input id="jRadiusToggle" type="checkbox"> J radius · weighted prime count</label><button id="inspectJ">Inspect J</button>`;
+    custom.innerHTML = `<label class="field">Depth<input id="layerFront" type="range" min="-1" max="1" step="0.01" value="0"><output id="layerFrontOut">Level</output></label><p class="small-note">The panes are the gearing and the sum is what it drives. Pull either one to the front and the other falls behind a veil, so the dial can be opened up and read through.</p><label class="check"><input id="allPaneLabels" type="checkbox"> All pane labels</label>`;
     el("viewBubble").append(custom);
     const bind = (pairs) => {
       for (const [id, key] of pairs) el(id).addEventListener("input", () => {
@@ -3449,23 +3382,11 @@ var ClockMath = (function(exports) {
         actions.setting(key, field.type === "checkbox" ? field.checked : field.value);
       });
     };
-    bind([["allPaneLabels", "labels"], ["jRadiusToggle", "jRadius"], ["sumZoom", "sumZoom"], ["layerFront", "layerFront"], ["stairScale", "stairScale"]]);
-    el("stairScale").addEventListener("input", () => {
-      const v = +el("stairScale").value;
-      el("stairScaleOut").textContent = v < 0.02 ? "true" : v > 0.98 ? "magnified" : "blend " + v.toFixed(2);
-    });
+    bind([["allPaneLabels", "labels"], ["layerFront", "layerFront"]]);
     el("layerFront").addEventListener("input", () => {
       const v = +el("layerFront").value;
       el("layerFrontOut").textContent = v < -0.02 ? "Panes in front" : v > 0.02 ? "Sum in front" : "Level";
     });
-    let rulerSigma = 0.5;
-    const showRuler = () => {
-      const v = +el("sumZoom").value;
-      el("sumZoomOut").textContent = "σ × " + v.toFixed(2) + " = " + (rulerSigma * v).toFixed(2) + " radii";
-    };
-    el("sumZoom").addEventListener("input", showRuler);
-    showRuler();
-    el("inspectJ").onclick = () => open("jBubble");
     const createPanel = (id, title, html) => {
       const p = document.createElement("section");
       p.id = id;
@@ -3693,10 +3614,6 @@ var ClockMath = (function(exports) {
         const low = Math.max(-1e3, Math.min(960, state.tau - 20));
         tauSlider.min = String(low);
         tauSlider.max = String(low + 40);
-      }
-      if (Math.abs(rulerSigma - state.sigma) > 4e-3) {
-        rulerSigma = state.sigma;
-        showRuler();
       }
       sChip.setAttribute("aria-expanded", String(el("inputPanel").dataset.open === "true"));
       const text = "= " + state.sigma.toFixed(2) + (state.tau < 0 ? " − " : " + ") + Math.abs(state.tau).toFixed(2) + "i";
@@ -3956,7 +3873,7 @@ refreshViewHelp();updateDomainSliders();
 
 // Bridge the typed presentation shell to the established continuous instrument.
 // displayDepth, weightBrightness and lightMode are declared with the glass.
-let snapMode='integer',pitchMultiplier=1,allPaneLabels=false,jRadiusOn=false;
+let snapMode='integer',pitchMultiplier=1,allPaneLabels=false;
 // The beat and the primes keep independent levels; the beat opens quiet and low.
 function mixLevel(bus,value){if(bus)bus.gain.setTargetAtTime(value,ctx.currentTime,.03);}
 // One hue mapping with its shape exposed: the family, how sharply it falls with
@@ -4019,7 +3936,6 @@ function drawPaneLabel(q,r,a){
  g2.save();g2.globalAlpha*=alpha;g2.font=(selected?'600 ':'')+'17px system-ui,sans-serif';g2.textAlign='center';g2.textBaseline='middle';g2.fillText(text,x,y);g2.restore();
 }
 function beamReveal(){return Math.max(0,Math.min(1,t-1));}
-function drawJRadius(){if(!jRadiusOn)return;const j=jValue(t),ratio=j/t,angle=Math.PI*.72,dx=Math.cos(angle),dy=Math.sin(angle);g2.save();g2.setTransform(1,0,0,1,0,0);g2.strokeStyle='#a8c7b666';g2.lineWidth=1;g2.setLineDash([3,6]);g2.beginPath();g2.moveTo(C,C);g2.lineTo(C+R*dx,C+R*dy);g2.stroke();g2.setLineDash([]);g2.strokeStyle='#a8c7b6';g2.lineWidth=2;g2.beginPath();g2.moveTo(C,C);g2.lineTo(C+R*ratio*dx,C+R*ratio*dy);g2.stroke();g2.fillStyle='#bad8c7';g2.beginPath();g2.arc(C+R*ratio*dx,C+R*ratio*dy,4,0,7);g2.fill();g2.font='16px system-ui';g2.textAlign='center';g2.fillText('J = '+j.toFixed(2),C+R*.75*dx,C+R*.75*dy+24);g2.restore();}
 function resizeWorkspace(){
  const surface=$('clockSurface');if(!surface)return;const b=surface.getBoundingClientRect();
  // Reserve a gutter for the docked tape's upright ink and slide the clock off
@@ -4050,11 +3966,11 @@ dockTape=function(){
  work.style.setProperty('--counter-turn',angle+'deg');
 };
 const workspace=ClockMath.mountWorkspace({
- read:()=>({time:t,target:clockTween?.to??t,mode:paperMode,sound:soundOn,selected:selectedPrime,sigma:SIGMA,tau:TAUV,j:jValue(t)}),
+ read:()=>({time:t,target:clockTween?.to??t,mode:paperMode,sound:soundOn,selected:selectedPrime,sigma:SIGMA,tau:TAUV}),
  seek:value=>seekFrontier(value),jump:jumpClock,resize:resizeWorkspace,
  setting(key,value){if(key==='snap')snapMode=value;else if(key==='fine')moveClock(+value);else if(key==='pitch')pitchMultiplier=+value;else if(key==='layout'){workspaceLayout=value;soundOn=true;$('sound').setAttribute('aria-pressed','true');
 for(const event of ['pointerdown','keydown'])addEventListener(event,function open(){removeEventListener(event,open);if(soundOn)unlock();},{once:true});
-resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth'){displayDepth=+value;PR.recolor();}else if(key==='weightBrightness'){weightBrightness=value;PR.recolor();}else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;PR.recolor();}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='sigma'){const v=+value;if(Number.isFinite(v))tune(v,tauAim);}else if(key==='tau'){const v=+value;if(Number.isFinite(v))tune(sigmaAim,v);}else if(key==='labels')allPaneLabels=value;else if(key==='jRadius')jRadiusOn=value;else if(key==='sumZoom')sumZoom=+value;else if(key==='layerFront')layerFront=+value;else if(key==='stairScale')stairScale=+value;else if(key==='tauRate'){tauRate=+value;anchorTau();if(tauDriveOn)$('driveNote').textContent=driveText();}else if(key==='tauDrive'){tauDriveOn=!!value;spinning=false;$('spin').className='';anchorTau();$('driveNote').textContent=tauDriveOn?driveText():driveRest;}}
+resizeWorkspace();}else if(key==='spectrum'){spectrumMode=value;respectSpectrum();}else if(key==='spectrumExp'){spectrumExp=+value;respectSpectrum();}else if(key==='spectrumSpread'){spectrumSpread=+value;respectSpectrum();}else if(key==='spectrumRotate'){spectrumRotate=+value;respectSpectrum();}else if(key==='depth'){displayDepth=+value;PR.recolor();}else if(key==='weightBrightness'){weightBrightness=value;PR.recolor();}else if(key==='light'){specMode=value==='off'?0:1;if(value!=='off')lightMode=value;PR.recolor();}else if(key==='primeVolume'){primeLevel=+value/100;mixLevel(primeBus,primeLevel);}else if(key==='beatVolume'){beatLevel=+value/100;mixLevel(beatBus,beatLevel);}else if(key==='beatPitch')beatHz=+value;else if(key==='sigma'){const v=+value;if(Number.isFinite(v))tune(v,tauAim);}else if(key==='tau'){const v=+value;if(Number.isFinite(v))tune(sigmaAim,v);}else if(key==='labels')allPaneLabels=value;else if(key==='layerFront')layerFront=+value;else if(key==='tauRate'){tauRate=+value;anchorTau();if(tauDriveOn)$('driveNote').textContent=driveText();}else if(key==='tauDrive'){tauDriveOn=!!value;spinning=false;$('spin').className='';anchorTau();$('driveNote').textContent=tauDriveOn?driveText():driveRest;}}
 });
 function updateSpectrum(){$('spectrumPreview').innerHTML=[2,3,5,7,11,13,17,19,23,29,31,37].map(p=>'<i title="'+p+'" style="background:'+primeInk(p)+'"></i>').join('');}
 updateSpectrum();
@@ -4065,10 +3981,8 @@ $('sigmaControl').querySelector('label').textContent='σ';$('tauControl').queryS
 paperFormulas.euler='Σ 1/n<sup>s</sup> = ∏ 1/(1 − 1/p<sup>s</sup>) = ζ(s), for σ > 1';
 paperFormulas.log='log ζ(s) = Σₚ Σₖ≥₁ 1/[k(p<sup>k</sup>)<sup>s</sup>] · σ > 1';
 paperFormulas.term='∫₀<sup>∞</sup> e<sup>−nx</sup>x<sup>s−1</sup> dx = Γ(s)/n<sup>s</sup> · σ > 0';
-$('jIntro').insertAdjacentHTML('beforebegin','<p>On the optional J radius, one count unit is R/t: length = R·J(t)/t. Credits jump by 1/k at pᵏ. This measures a weighted count, not log(q).</p>');
-const inspectRadius=document.createElement('button');inspectRadius.textContent='Show J radius';inspectRadius.onclick=()=>{jRadiusOn=!jRadiusOn;$('jRadiusToggle').checked=jRadiusOn;inspectRadius.textContent=jRadiusOn?'Hide J radius':'Show J radius';};$('jBubble').append(inspectRadius);
 const redesignedGuide=updateGuide;
-updateGuide=function(){redesignedGuide();workspace.update();drawJRadius();dockTape();const beat=Math.floor(t);if($('opProductN').textContent!==String(beat)){$('opProductN').textContent=String(beat);$('opSumN').textContent=String(beat);}const n=Math.floor(t);if(!isPrime(n)&&n>1)$('fac').textContent=factoredName(n);};
+updateGuide=function(){redesignedGuide();workspace.update();dockTape();const beat=Math.floor(t);if($('opProductN').textContent!==String(beat)){$('opProductN').textContent=String(beat);$('opSumN').textContent=String(beat);}const n=Math.floor(t);if(!isPrime(n)&&n>1)$('fac').textContent=factoredName(n);};
 // Capture global keyboard shortcuts only outside controls and the graph.
 document.addEventListener('keydown',e=>{if(e.target.closest('input,select,textarea,button,summary,#productGraph,[role=separator]'))e.stopPropagation();},true);
 resizeWorkspace();

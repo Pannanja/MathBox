@@ -56,19 +56,12 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  assert.ok(Math.abs(anchored.origin.tau-anchored.tau)<1e-9&&Math.abs(anchored.origin.t-anchored.t)<1e-9,'re-anchored');
  // Sigma untouched by the drive.
  const sig=await page.evaluate(()=>sigmaAim);assert.strictEqual(sig,2,'sigma untouched by the drive');
- // Sum ruler zoom reaches the drawing.
- await page.evaluate(()=>document.getElementById('appearanceButton').click());
- await page.waitForTimeout(150);
- await page.fill('#sumZoom','0.4');await page.dispatchEvent('#sumZoom','input');
- await page.waitForTimeout(80);
- assert.strictEqual(await page.evaluate(()=>sumZoom),0.4,'sumZoom applied');
- // One unit is sigma radii times the observer's factor; sigma is still 2 here.
- assert.strictEqual(await page.evaluate(()=>+sumUnitRadii().toFixed(4)),0.8,'sigma feeds the ruler');
- assert.strictEqual(await page.evaluate(()=>sumRulerLabel()),'SUM · 1 = 0.80 × radius');
+ // The sum's ruler is sigma itself; the observer's factor on top of it was
+ // a second way to say the same thing and has been removed.
+ assert.strictEqual(await page.evaluate(()=>document.getElementById('sumZoom')),null,'no ruler control');
+ assert.strictEqual(await page.evaluate(()=>+sumUnitRadii().toFixed(4)),2,'one unit is sigma radii');
  await page.evaluate(()=>{const s=document.getElementById('clockSigmaExact');s.value='0.5';s.dispatchEvent(new Event('input',{bubbles:true}));});
- await page.waitForTimeout(500);
- await page.evaluate(()=>{const z=document.getElementById('sumZoom');z.value='1';z.dispatchEvent(new Event('input',{bubbles:true}));});
- await page.waitForTimeout(400);
+ await page.waitForTimeout(600);
  const half=await page.evaluate(()=>+sumUnitRadii().toFixed(3));
  assert.ok(Math.abs(half-0.5)<0.02,'Re(s)=1/2 draws one unit at half the radius: '+half);
  // Drive stops at the slider bound rather than running off.

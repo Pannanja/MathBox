@@ -52,14 +52,10 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  assert.ok(Math.abs(counted-coarse)>Math.abs(counted-predicted),'thirty zeros land further off than 649');
  assert.strictEqual(await page.evaluate(()=>zeroAuto),false,'touching the dial ends the automatic count');
 
- // The stair climbs from near the middle to the arm at the outside, and the
- // lift on its departure from the trend names itself in the reading.
- for(const [scale,name] of [[1,'departure lifted to .45 radius'],[0,'departure true, on the clock radius'],[.5,'departure lifted 0.50']]){
-  await page.evaluate(v=>{const s=document.getElementById('stairScale');s.value=String(v);s.dispatchEvent(new Event('input',{bubbles:true}));},scale);
-  await page.waitForTimeout(120);
-  assert.strictEqual(await page.evaluate(()=>stairScale),scale,'ruler set to '+scale);
-  assert.ok((await page.textContent('#reading')).includes(name),'the reading names the '+name+' ruler');
- }
+ // The staircase is drawn true. Magnifying the mechanism is its own view, so
+ // the dial that blended the two rulers is gone and the seam sits at zero.
+ assert.strictEqual(await page.evaluate(()=>document.getElementById('stairScale')),null,'no departure control');
+ assert.strictEqual(await page.evaluate(()=>stairScale),0,'the departure is drawn true');
 
  // The trend climbs: a value at the head of the stair sits far outside the same
  // value at its foot, whatever the lift.
@@ -69,6 +65,7 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
   assert.ok(outer>inner*4,'the stair climbs at lift '+scale+': '+inner.toFixed(1)+' to '+outer.toFixed(1));
   assert.ok(outer<408,'and stays inside the rim');
  }
+ await page.evaluate(()=>{stairScale=0;});
  // The lifted departure is bounded by the radius it rides, so it never reaches
  // back through the origin however small the count.
  assert.ok(await page.evaluate(()=>{for(let x=2.01;x<t;x+=.01){const d=psiResidual(psiAt(x),x);if(1+STAIR_GAIN*d<=.15)return false;}return true;}),'the departure never folds through the centre');

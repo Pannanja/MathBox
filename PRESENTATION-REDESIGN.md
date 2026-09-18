@@ -387,6 +387,45 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   drawContinuum, the trailRaw/trailCorrected trails behind the Tail lens, and
   shifted-clock.js, which already paints a zeta locus in clock coordinates.
 
+**psi as a radial staircase**
+
+- [x] The zero heights are searched for rather than tabulated. On the critical
+  line Z(t) = e^(i*theta(t))*zeta(1/2+it) is real, so its sign changes bracket
+  the zeros and bisection against locusZeta, the same evaluator the zeta curve
+  uses, places each to about 1e-14. The search runs to tau = 1000, the height
+  that evaluator is trusted to, and finds 649 zeros in about two seconds in a
+  worker, streaming them in. theta(T)/pi + 1 predicts 648.62, and printing both
+  is the search's own proof that it stepped over none. The tabulated thirty
+  remain as the seed so the ledger draws before the search returns; heights and
+  PSI.vec are replaced in place, so reconstruction() and the epicycles cannot
+  drift apart.
+- [x] A psi staircase lens on the dial. A value sits at
+  R*(0.10 + 0.60*v/count), the clock's own ruler held clear of the middle and
+  the rim, so the trend smooth(x) climbs out of the origin and the epicycle arm
+  writing psi stands at the outside. Angle carries x across 0.92 of a turn, so
+  the head stops short of its own first step. Each riser is drawn in the ink of
+  the prime that caused it; between risers the tread still drifts, because the
+  subtracted trend keeps moving while the count stands still.
+- [x] The departure from the trend has its own dial, because the two things
+  worth seeing cannot both be true at once. Drawn true, on the same radius as
+  the trend, the whole zero chain is a few pixels, since psi is of order x and
+  its correction only of order sqrt(x). Lifted, the departure is carried as
+  .45 of the radius it rides per unit of (psi - smooth)/sqrt(x) -- which keeps
+  a riser and an epicycle the same size at any count, and cannot fold back
+  through the origin. The reading names whichever is in force.
+- [ ] Thirty zeros could not show the staircase at all: a sum truncated at
+  height T blurs features of order 2*pi*x/T, which at x = 120 is seven units of
+  x against risers a unit apart. 649 lands within about 0.15 of the counted
+  value. Going further means Riemann-Siegel rather than Euler-Maclaurin, about
+  twelve terms in place of 1250 at tau = 1000 -- worth it only if the heights
+  above 1000 are wanted.
+- [ ] Build the staircase as tau climbs the critical strip, adding each zero as
+  the drive passes its height, so the terms arrive by travelling rather than by
+  a dial. Deliberately not the default.
+- [ ] The first turn is cramped: x from 2 to about 15 shares the innermost
+  radius, because a radial x axis spends its room on the outside. A log spread
+  for the stair, matching the one the rings already offer, would even it out.
+
 **Known defect**
 
 - [ ] The tail spiral is drawn in one frame and then rotated as the term
@@ -456,11 +495,9 @@ Acceptance across milestones:
 
 ## Decisions still open
 
-1. Opening interaction: recommend paused at beat 1 with Forward one emphasized;
-   automatic first-cycle playback is an alternative. Sound stays off until enabled.
-2. Horizontal tape routing needs a motion prototype in both clock-only and split
+1. Horizontal tape routing needs a motion prototype in both clock-only and split
    layouts. Preserving absorption and the meeting-axis connection outranks symmetry.
-3. Durable saved/shareable explorations would help visitors share discoveries.
+2. Durable saved/shareable explorations would help visitors share discoveries.
    Add after the interface settles, rather than introduce more launch controls now.
 
 The next deliverable is the phase-1 shell with a readable, large explorer and

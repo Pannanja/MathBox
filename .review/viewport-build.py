@@ -55,7 +55,7 @@ p=p.replace('  drawContinuum(ms,rad);','  drawContinuum(ms,rad);\n'+psi_drawing,
 # Either mechanism can be brought to the front of the other. The sum is drawn
 # once, before the dial or after it, and whatever is behind sits under a veil.
 p=p.replace('  beginReflection(dt);','  beginReflection(dt);\n  if(layerFront<0){drawContinuum(ms,rad);layerVeil();}',1)
-p=p.replace('  drawPrimeGlass(rad,n);\n  drawContinuum(ms,rad);','  drawPrimeGlass(rad,n);\n  if(layerFront>=0){layerVeil();drawContinuum(ms,rad);}',1)
+p=p.replace('  drawPrimeGlass(rad,n);\n  drawContinuum(ms,rad);','  drawPrimeGlass(rad,n);\n  drawPsiStair();\n  if(layerFront>=0){layerVeil();drawContinuum(ms,rad);}',1)
 p=p.replace('</style>',(root/'.review/linked-regions.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/linked-regions.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);','    lensArrow(X(a),Y(a),X(b),Y(b),col,(k<8?2.8:1.5)+3*fresh);\n    if(selectedPrime && k%selectedPrime===0)lensArrow(X(a),Y(a),X(b),Y(b),factorColour(selectedPrime),5);')
@@ -75,6 +75,13 @@ p=p.replace('</style>',(root/'.review/complex-exploration.css').read_text(encodi
 p=p.replace('</script>',(root/'.review/complex-exploration.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('</style>',(root/'.review/zeta-locus.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/zeta-locus.js').read_text(encoding='utf-8')+'\n</script>',1)
+# The zero heights come from a search against locusZeta, so the fragment follows
+# the evaluator that defines it, and the staircase follows the heights.
+p=p.replace('</script>',(root/'.review/psi-zeros.js').read_text(encoding='utf-8')+'\n</script>',1)
+p=p.replace('</style>',(root/'.review/psi-staircase.css').read_text(encoding='utf-8')+'\n</style>',1)
+p=p.replace('</script>',(root/'.review/psi-staircase.js').read_text(encoding='utf-8')+'\n</script>',1)
+if '  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;' not in p: raise SystemExit('Missing stair mix line')
+p=p.replace('  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;','  stairMix += ((stairOn ? 1 : 0) - stairMix) * ease;\n  psiStairMix += ((psiStairAim ? 1 : 0) - psiStairMix) * ease;',1)
 p=p.replace('</style>',(root/'.review/friendly-explorer.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/friendly-explorer.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('SIGMA += (sigmaAim - SIGMA) * ease;', 'SIGMA += (sigmaAim - SIGMA) * (1-Math.exp(-dt*14));')

@@ -291,8 +291,9 @@ Added after the first review rounds. Phase 6 is deferred until these land.
 - [x] The options panels still rearrange the space too much. In Both the clock
   column gets narrow enough to trip the phone rules, which turns the drawer
   into a bottom half-screen sheet.
-- [ ] Clock appearance reads like it belongs to the Riemann explorer. Revisit
-  which workspace owns it.
+- [x] Clock appearance read like it belonged to the Riemann explorer. Settled
+  by phase 9 rather than by moving it: there is no explorer for it to belong
+  to, and the dial owns its own appearance.
 
 **Separate sum as a first-class transition**
 
@@ -300,6 +301,7 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   unit circle and the complex plane, and it is currently buried in a menu.
   Make it a fundamental move in the Riemann explorer's graph rather than an
   appearance toggle.
+  This is now the shape of the phase 9 overlay, not a separate idea.
 
 **s off the real axis**
 
@@ -348,10 +350,7 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   together. paperTarget's finite view asked continuumSum for an exact partial
   sum, which is a cutoff rather than a printing schedule, and now asks
   partial() for it.
-- [ ] A consequence of the rule: at beat 1 nothing has been printed, so the
-  sum lens opens empty and fills over the first lap. Either that is the
-  instrument at rest, or term 1 wants a special case, or the clock should
-  open at beat 2.
+- [>] Beat 1 opens empty, a consequence of the rule. Moved to phase 10.
 
 **Layers and one colour language**
 
@@ -386,6 +385,7 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   than by opening the explorer. Existing pieces to reuse: the reference dot in
   drawContinuum, the trailRaw/trailCorrected trails behind the Tail lens, and
   shifted-clock.js, which already paints a zeta locus in clock coordinates.
+  This is the first piece of the phase 9 overlay.
 
 **psi as a radial staircase**
 
@@ -413,23 +413,13 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   .45 of the radius it rides per unit of (psi - smooth)/sqrt(x) -- which keeps
   a riser and an epicycle the same size at any count, and cannot fold back
   through the origin. The reading names whichever is in force.
-- [ ] Thirty zeros could not show the staircase at all: a sum truncated at
-  height T blurs features of order 2*pi*x/T, which at x = 120 is seven units of
-  x against risers a unit apart. 649 lands within about 0.15 of the counted
-  value. Going further means Riemann-Siegel rather than Euler-Maclaurin, about
-  twelve terms in place of 1250 at tau = 1000 -- worth it only if the heights
-  above 1000 are wanted.
+- [x] Thirty zeros could not have shown the staircase at all: a sum truncated
+  at height T blurs features of order 2*pi*x/T, which at x = 120 is seven units
+  of x against risers a unit apart. 649 lands within about 0.15 of the counted
+  value. Whether to reach past 1000 is phase 10's question, not this one's.
 - [ ] Build the staircase as tau climbs the critical strip, adding each zero as
   the drive passes its height, so the terms arrive by travelling rather than by
   a dial. Deliberately not the default.
-- [ ] The first turn is cramped: x from 2 to about 15 shares the innermost
-  radius, because a radial x axis spends its room on the outside. A log spread
-  for the stair, matching the one the rings already offer, would even it out.
-
-**Known defect**
-
-- [ ] The tail spiral is drawn in one frame and then rotated as the term
-  evolves. It should develop as the term evolves.
 
 ### 8. Alternate themes — far horizon, after everything else settles
 
@@ -453,6 +443,79 @@ periods sharing a centre.
   scattered through the frame. primeInk and the light recipe are the first
   two pieces of that.
 
+### 9. Retire the explorer, move zeta onto the dial — medium effort
+
+The explorer was scaffolding. Almost everything in it existed to assemble the
+pieces the psi staircase now uses, and with the staircase built those pieces
+have served their purpose. The remaining teaching value is the sum and the
+product converging on one value; that belongs on the dial, as an overlay, not
+behind a door.
+
+`[-]` marks work that is dropped; `[>]` marks work that moved to another phase.
+
+**Verdict on each of the seven constructions**
+
+- [ ] euler, Sum & product to zeta. **Keep, and move.** This is the one the
+  clock still needs, and the separate-sum geometry below is how it arrives.
+- [ ] log, Prime powers to log zeta. **Decide.** By the rule it is obsolete,
+  but it is the algebraic bridge between the product that is kept and the
+  staircase that is new: log zeta = sum over p, k of 1/(k p^ks), whose
+  derivative is -zeta'/zeta = sum of Lambda(n)n^-s, which is exactly why psi is
+  the right thing to count. Nothing else on the page states that step. It is
+  also the only view sharing code with linked-regions.js.
+- [-] xiarm, paired rotations to xi. Retires `src/scenes/xi-arm.ts`.
+- [-] term, one integral to Gamma(s)n^-s.
+- [-] finite, finite integral to Gamma(s)S_n(s).
+- [-] infinite, infinite integral to Gamma(s)zeta(s).
+- [-] theta, theta integral to xi. These four retire `src/math/riemann.ts`
+  and `src/workers/integral.worker.ts`, which nothing else imports.
+
+**What must survive the demolition**
+
+- [ ] `locusZeta` in zeta-locus.js is now load-bearing and must not go out with
+  the view it was written for. The zero search depends on it, it is reassigned
+  over the page's own `zeta()`, and the clock's gold reference point reads
+  through that reassignment. Lift it out of the explorer fragment before any of
+  this starts.
+- [ ] `jValue` and the J radius are already a clock overlay, not explorer work.
+  They stay, and phase 6's J items become more relevant rather than less, now
+  that psi is a headline object next to them.
+- [ ] Deliberate loss to record: xi and theta were the only place the page said
+  anything about the functional equation and s to 1-s, which is what makes the
+  critical line special. The staircase uses the zeros without ever explaining
+  why they lie where they do. That is an accepted gap, not an oversight.
+
+**The overlay**
+
+- [ ] Move the sum and product construction onto the dial, sharing the depth
+  control the sum and panes already use, so a third mechanism can be brought
+  forward rather than opened in a separate pane.
+- [ ] Retire the test surface with the views: explorer-orientation, view-domains,
+  xi-arm, xi-scene, theta-range and verify-riemann-math all exist to cover
+  constructions that are going. Cut them in the same commit as the code they
+  cover, so nothing is left asserting against a view that no longer exists.
+- [ ] Fold phase 3's graph work into whatever the overlay needs. It is all
+  done and all about the explorer's canvas; most of it does not survive a move
+  onto the dial, and what does is the complex-plane ruler rather than the panel.
+
+### 10. Harden the clockwork — medium effort
+
+With the explorer gone the piece is one instrument, and what is left is making
+that instrument correct before making it handsome. Gathered here from where
+they were scattered.
+
+- [ ] The tail spiral is drawn in one frame and then rotated as the term
+  evolves. It should develop as the term evolves. Moved from phase 7.
+- [ ] Beat 1 opens empty, a consequence of the arrival rule. Instrument at
+  rest, special-case term 1, or open at beat 2. Moved from phase 7.
+- [ ] The staircase's first turn is cramped, x from 2 to about 15 sharing the
+  innermost radius. Moved from phase 7.
+- [ ] Settle the zero count: 649 to tau = 1000 is the evaluator's limit, not a
+  chosen number. Going further means Riemann-Siegel, twelve terms in place of
+  1250. Decide whether heights above 1000 are ever wanted before writing it.
+- [ ] One pass over the drawing code for frame cost once the overlay lands.
+  649 epicycles, 720 stair samples, the panes and the sum will share a frame.
+
 ## Technical approach and checkpoints
 
 Continue in TypeScript with the existing numerical modules and workers. No
@@ -470,7 +533,7 @@ Keep mathematical state separate from layout, preferences, and camera state.
 Numerical modules should not depend on hidden inputs. Add the shell bridge
 incrementally rather than rewriting all math and presentation in one change.
 
-Implementation order: 1 → 2 → 3 → 4 → 5 → 7 → 6 → 8. Phase 6 is deferred; phase 8 waits on everything else. The inspector's container belongs
+Implementation order: 1 → 2 → 3 → 4 → 5 → 7 → 9 → 10 → 6 → 8. Phases 9 and 10 are the live work: retire the explorer, then harden what is left. Phase 6 is deferred and shrinks once the explorer is gone; phase 8 waits on everything else. The inspector's container belongs
 in phase 1; its explanatory content migration comes in phase 6. Inventory
 legacy control ownership before removing anything in phase 2. No delegation is
 required for this plan.

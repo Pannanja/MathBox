@@ -42,6 +42,22 @@ const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.htm
  assert.strictEqual(await page.getAttribute('#psiStair','aria-pressed'),'true','the button reports itself lit');
  assert.ok(await page.evaluate(()=>psiStairMix)>.9,'the lens has faded in');
 
+ // The stair grows from the first beat rather than arriving whole, and psi = 0
+ // is the origin rather than a ring some way out.
+ assert.strictEqual(await page.evaluate(()=>STAIR_IN),0,'zero sits at the centre');
+ for(const [at,want] of [[1.6,0],[2.4,Math.log(2)],[3.5,Math.log(6)]]){
+  await page.evaluate(x=>jumpClock(x),at);await page.waitForTimeout(700);
+  assert.ok(Math.abs(await page.evaluate(()=>psiAt(t))-want)<1e-9,'psi counted at '+at);
+  // The sweep spans the whole history at every count, so nothing pops into view.
+  const span=await page.evaluate(()=>{const f=x=>2*Math.PI*STAIR_TURN*(x-1)/Math.max(1e-9,t-1);return [f(1),f(t)];});
+  assert.deepStrictEqual(span.map(v=>+v.toFixed(6)),[0,+(2*Math.PI*0.92).toFixed(6)],'the stair spans its whole history at t='+at);
+ }
+ // Before two, smooth(x) is still running away, so the trend and the chain stay
+ // off and the reading falls back on what was counted.
+ await page.evaluate(()=>jumpClock(1.6));await page.waitForTimeout(700);
+ assert.strictEqual(await page.evaluate(()=>psiPredicted),0,'no formula below two');
+ await page.evaluate(()=>jumpClock(60.5));await page.waitForTimeout(900);
+
  // The formula, summed over every zero found, against what the clock counted.
  const [counted,predicted]=await page.evaluate(()=>[psiAt(t),psiPredicted]);
  assert.ok(Math.abs(counted-predicted)<.35,'649 zeros reproduce \u03c8(60.5): counted '+counted+', predicted '+predicted);

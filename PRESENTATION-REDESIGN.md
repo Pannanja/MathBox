@@ -417,9 +417,18 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   at height T blurs features of order 2*pi*x/T, which at x = 120 is seven units
   of x against risers a unit apart. 649 lands within about 0.15 of the counted
   value. Whether to reach past 1000 is phase 10's question, not this one's.
-- [ ] Build the staircase as tau climbs the critical strip, adding each zero as
-  the drive passes its height, so the terms arrive by travelling rather than by
-  a dial. Deliberately not the default.
+- [ ] A partial psi trace that gains terms as tau climbs. Draw the
+  reconstruction from the zeros below the current tau alongside the true
+  staircase, so the terms arrive by travelling up the critical strip rather
+  than by turning a dial. At tau = 20 the trace is one long wave that misses
+  every riser; by tau = 1000 it is inside a tenth of a step. That progression
+  is the argument the piece is making, and it is currently only available as a
+  number. Deliberately not the default.
+- [ ] Animate the zero hits. When the drive carries tau past a height in the
+  table, mark the moment: the new term's epicycle arriving on the chain, and
+  the trace tightening onto the stair by that much. 649 of them at one per
+  beat is a long climb, so the marking has to be cheap and quiet rather than a
+  full interruption.
 - [ ] Anchor the chain at its far end. The epicycles currently hang from the
   trend and wander off the radius, so the reading is "the chain starts on the
   stair and drifts"; it should be "the chain arrives at the step". Translate
@@ -430,6 +439,17 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   standing in for. The staircase itself stays true, on the clock's own radius,
   and the magnification becomes its own view rather than a distortion of the
   main one.
+
+- [x] The stair arrived whole at beat 2.5 and left a hole at the middle. Two
+  causes, both mine: the sweep was measured from x = 2, so there was nothing to
+  draw until two prime powers existed, and the ruler held an inner clearance of
+  a tenth of the radius. That clearance was only ever there to stop a magnified
+  departure folding back through the centre, and the departure is drawn true
+  now. The sweep starts at the first beat and psi = 0 is the origin, so the
+  stair grows out of the middle. The explicit formula's own apparatus -- the
+  trend, its band and the chain -- still waits until x = 2, because smooth(x)
+  runs away as x approaches 1; a magnified view will have to supply its own
+  inner clearance.
 
 **What this piece is for**
 

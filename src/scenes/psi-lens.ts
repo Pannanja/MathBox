@@ -8,6 +8,14 @@ export interface PsiSceneFrame {
  colour:(p:number)=>string; origin:number; radius:number;
  activePane:{radius:number;angle:number;span:number}|null;
  record?:PsiRecord|null;
+ options?:PsiOptions;
+}
+/** Tunable defaults, supplied by the page from CLOCK_CONFIG. */
+export interface PsiOptions {
+ liftMode?:'fixed'|'sqrt'|'auto';
+ lift?:number;
+ traceSpan?:number;
+ traceSteps?:number;
 }
 const exactOf=(frame:PsiSceneFrame,x:number)=>countedPsi(frame.events,x);
 export function psiScene(frame:PsiSceneFrame){
@@ -16,7 +24,11 @@ export function psiScene(frame:PsiSceneFrame){
  // The chain rides just clear of the meeting axis: high enough that no leg
  // crosses it, low enough that it still reads as hanging off that axis.
  let spread=0;for(const q of partial.points)if(Number.isFinite(q[1]))spread=Math.max(spread,Math.abs(q[1]));
- const lift=x>=2?spread+.14*Math.sqrt(x):0;
+ // How high the chain rides. 'auto' clears its own spread, which is honest but
+ // jumps about as zeros arrive; a fixed metric holds still so the eye can use
+ // the height as a reference instead of re-reading it every frame.
+ const opt=frame.options||{},base=opt.lift===undefined?1.15:opt.lift;
+ const lift=x<2?0:opt.liftMode==='fixed'?base:opt.liftMode==='sqrt'?base*Math.sqrt(x):spread+.14*Math.sqrt(x);
  // How far the drawn mechanism actually gets from the trend, so the lens can
  // frame what is there instead of a guess that leaves the chain outside.
  const centre=x>=2?psiTrend(x):0;
@@ -49,8 +61,11 @@ export function drawPsiMechanism(c:CanvasRenderingContext2D,frame:PsiSceneFrame,
  // The high-precision path: where the tip has been and is going, from every
  // searched zero. Its shadow on the axis is the reconstruction, so the steps
  // arrive from the zeros rather than from a counted ledger.
- const from=Math.max(2,s.x-TRACE_SPAN);
- const trace=psiTrace(frame.heights,s.count,from,s.x,TRACE_STEPS);
+ const opt=frame.options||{};
+ const span=opt.traceSpan===undefined?TRACE_SPAN:opt.traceSpan;
+ const steps=opt.traceSteps===undefined?TRACE_STEPS:opt.traceSteps;
+ const from=Math.max(2,s.x-span);
+ const trace=psiTrace(frame.heights,s.count,from,s.x,steps);
  // The ratchet reads every searched zero, not just the heights tau has passed.
  // The pawl only slips once the sum rings faster than the window is wide, and
  // that ringing is 2*pi*x/T: it needs hundreds of heights, not a dozen.
@@ -104,7 +119,7 @@ export function drawPsiMechanism(c:CanvasRenderingContext2D,frame:PsiSceneFrame,
  }
 
  // The meeting axis under the lifted chain, so the drop has something to land on.
- const axisFrom=at(Math.max(2,s.x-TRACE_SPAN)),axisTo=at(s.x+.6);
+ const axisFrom=at(from),axisTo=at(s.x+.6);
  c.globalAlpha=.30;c.strokeStyle='#9fb4a6';c.lineWidth=pen;c.beginPath();
  c.moveTo(axisFrom[0],axisFrom[1]);c.lineTo(axisTo[0],axisTo[1]);c.stroke();
 

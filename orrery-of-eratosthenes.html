@@ -236,6 +236,14 @@ html,body{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{p
 #clockApp.redesigned #clockSurface.psi-stacked #clockStage{bottom:var(--psi-height,270px)}
 @media(max-height:520px){#clockApp.redesigned #psiLegend{display:none}#clockApp.redesigned #psiMagnifier{gap:3px}#clockApp.redesigned .psi-tools{gap:3px}#clockApp.redesigned .psi-tools input{width:60px}#clockApp.redesigned .psi-tools label{font-size:11px}}
 #clockApp.redesigned #psiHold.on{border-color:#e0bd76;background:#e0bd761a;color:#f2dfab}
+/* The glass sits in a quadrant of the surface and floats over the dial. It no
+   longer takes a column out of the clock, so opening it stops shrinking the
+   thing being magnified. Corner comes from CLOCK_CONFIG.psiLens.corner. */
+#clockApp.redesigned #psiMagnifier[data-corner="top-right"]{top:8px;right:8px;bottom:auto;left:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="top-left"]{top:8px;left:8px;right:auto;bottom:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="bottom-right"]{bottom:8px;right:8px;top:auto;left:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="bottom-left"]{bottom:8px;left:8px;top:auto;right:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="right"]{top:50%;right:8px;bottom:auto;left:auto;transform:translateY(-50%)}
 
 #productBubble.euler-workspace [hidden]{display:none!important}
 #exploreDock{display:grid;grid-template-columns:1fr auto;gap:9px 12px;flex-shrink:0;padding:12px 0 0;border-top:1px solid #8da89a24}
@@ -1810,6 +1818,64 @@ openLesson(1,false);
 updateStory();
 requestAnimationFrame(frame);
 
+// Clock of Primes - default settings.
+//
+// Edit this file and run `npm run build`. Every value here is a DEFAULT: the
+// page's own controls still override it at runtime, and nothing here is saved
+// back. It is deliberately a plain object with no logic, so it stays readable.
+//
+// `var`, not `const`: this fragment is concatenated ahead of every other one,
+// and a var binding is reachable from the console as CLOCK_CONFIG while a
+// const at this position is not.
+var CLOCK_CONFIG = {
+
+ psiLens: {
+  // Starting magnification. The glass now frames the mechanism's own reach, so
+  // 1 means "fit what is there" rather than "no magnification".
+  zoom: 1,
+
+  // Which quadrant of the clock surface the glass sits in:
+  // 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'right'
+  corner: 'top-right',
+
+  // Float the glass over the dial instead of reserving a column for it. False
+  // restores the old behaviour, where the clock shrank to make room.
+  overlap: true,
+
+  // Largest the glass may get, in px. It still shrinks to fit small screens.
+  maxWidth: 330
+ },
+
+ psiMechanism: {
+  // Height of the epicycle chain above the meeting axis.
+  //   'fixed' - height is `lift`, in psi units, whatever x does
+  //   'sqrt'  - height is `lift` * sqrt(x), so it keeps pace with the chain,
+  //             whose own size is order sqrt(x)
+  //   'auto'  - just clear the chain's own spread; the height then jumps about
+  //             as zeros arrive, which is what a fixed metric is meant to fix
+  // 0.5 puts the chain a little above its own spread at the counts tau reaches
+  // in normal play; larger values push it clear but shrink the mechanism, since
+  // the glass frames whatever the chain occupies.
+  liftMode: 'sqrt',
+  lift: .5,
+
+  // How far back along x the tip's path is traced, and at how many samples.
+  traceSpan: .7,
+  traceSteps: 140
+ },
+
+ psiRecord: {
+  // Width of one bin of the pawl's paper, in psi units. Smaller resolves the
+  // treads more finely and costs memory: the array spans psi up to `maxPsi`.
+  binWidth: .02,
+  maxPsi: 5400,
+
+  // Most samples one frame may walk before the record gives up and starts a
+  // fresh sheet. A jump larger than this cannot be written honestly.
+  budget: 3000
+ }
+};
+
 // A persistent instrument. Destinations change only counting time and the
 // explanation; every visual control remains under the observer's control.
 const oldShell=document.querySelector('.shell');
@@ -2411,7 +2477,9 @@ applyZeros(zeroHeights);
 
 // One clock scene, inspected through a circular camera with a uniform scale.
 let psiStairAim=0,psiStairMix=0,psiPredicted=NaN,psiPassedPredicted=NaN;
-let psiZoom=1,psiLens=null,psiLensReadout=null,psiSceneFrame=null,psiSceneMatrix=null,psiHeld=null;
+const PSI_CFG=(typeof CLOCK_CONFIG==='object'&&CLOCK_CONFIG)||{};
+const PSI_LENS_CFG=PSI_CFG.psiLens||{},PSI_MECH_CFG=PSI_CFG.psiMechanism||{},PSI_REC_CFG=PSI_CFG.psiRecord||{};
+let psiZoom=PSI_LENS_CFG.zoom===undefined?1:PSI_LENS_CFG.zoom,psiLens=null,psiLensReadout=null,psiSceneFrame=null,psiSceneMatrix=null,psiHeld=null;
 // The pawl's paper. It follows the clock's own x, not the lens's held x, so
 // holding x to study one interval does not stop the record being written.
 // Built on first draw, never at load: ClockMath is assigned further down the
@@ -2429,10 +2497,10 @@ function drawPsiStair(){
  const x=psiHeld===null?t:psiHeld;
  const event=psiEvents[psiIndex(x)],active=event&&x<event.q+1?event:null,span=active?panelSpan(active.q,x):null;
  psiSceneFrame={time:x,tau:TAUV,heights:zeroHeights,events:psiEvents,colour:primeInk,origin:C,radius:R,
-  activePane:active?{radius:clockRadius(active.q),angle:span.c0,span:span.w}:null};
- if(!psiPaper)psiPaper=new ClockMath.PsiRecord();
+  activePane:active?{radius:clockRadius(active.q),angle:span.c0,span:span.w}:null,options:PSI_MECH_CFG};
+ if(!psiPaper)psiPaper=new ClockMath.PsiRecord(PSI_REC_CFG.maxPsi,PSI_REC_CFG.binWidth);
  if(zeroHeights.length!==psiPaperZeros){psiPaper.reset(t);psiPaperZeros=zeroHeights.length;}
- psiPaper.advance(t,zeroHeights);
+ psiPaper.advance(t,zeroHeights,PSI_REC_CFG.budget);
  psiSceneFrame.record=psiPaper;
  psiSceneMatrix=g2.getTransform();
  if(psiStairAim){
@@ -2450,10 +2518,11 @@ function ensurePsiLens(){
  <div class="psi-tools"><button id="psiHold" aria-pressed="false" title="Hold x still while the clock plays on">Hold x</button><label>Zoom <input id="psiZoom" aria-label="Microscope magnification" type="range" min="0.5" max="8" step="0.05" value="1"></label><button id="psiExplain" aria-expanded="false" aria-label="About the psi microscope" title="About this mechanism">?</button><button id="psiClose" aria-label="Close psi microscope">×</button></div>
  <p id="psiExplanation" hidden><span id="psiReadout"></span>This lens enlarges the marked circle on the clock. The same rotating arms and pane arcs keep their positions and proportions. Scroll over the lens to zoom.<br><br>Each zero pair is one turning arm, and the arms hang just clear of the meeting axis so they can be read while they whip through a birth. Only the <em>shadow</em> on that axis is ψ: the dashed drop and its foot are the value, never the tip. Coloured arms are the heights up to |τ|, and their colour walks from teal to orange as more are found; the dim chain behind them is every searched zero. The teal path is where the tip has just been. The count itself is not drawn — the panes are the count, and the lit pane is the one printing now. Prediction and count may differ: at a step, the infinite formula targets its midpoint. Hold x to keep one interval still while τ climbs and the arms multiply.</p>`;
  $('clockSurface').append(lens);psiLens=new ClockMath.PsiLens();
+ lens.dataset.corner=PSI_LENS_CFG.corner||'top-right';
  const tether=document.createElementNS('http://www.w3.org/2000/svg','svg');tether.id='psiTether';tether.setAttribute('aria-hidden','true');tether.innerHTML='<path fill="none" stroke="#a9c1ad55" stroke-width="1"/><circle fill="#a9c1ad08" stroke="#a9c1ad88" stroke-width="1"/>';$('clockSurface').append(tether);
  $('psiClose').onclick=()=>setPsiVisible(false);
  $('psiHold').onclick=()=>{psiHeld=psiHeld===null?t:null;$('psiHold').classList.toggle('on',psiHeld!==null);$('psiHold').setAttribute('aria-pressed',String(psiHeld!==null));};
- $('psiZoom').oninput=e=>psiZoom=+e.target.value;
+ $('psiZoom').value=psiZoom;$('psiZoom').oninput=e=>psiZoom=+e.target.value;
  $('psiDetailCanvas').addEventListener('wheel',e=>{e.preventDefault();psiZoom=Math.max(.5,Math.min(8,psiZoom*Math.exp(-e.deltaY*.001)));$('psiZoom').value=psiZoom;},{passive:false});
  $('psiExplain').onclick=()=>{const show=$('psiExplanation').hidden;$('psiExplanation').hidden=!show;$('psiExplain').setAttribute('aria-expanded',String(show));};
 }
@@ -3763,7 +3832,8 @@ var ClockMath = (function(exports) {
     const full = psiEpicycles(x, frame.heights, frame.heights.length), partial = psiEpicycles(x, frame.heights, count);
     let spread = 0;
     for (const q of partial.points) if (Number.isFinite(q[1])) spread = Math.max(spread, Math.abs(q[1]));
-    const lift = x >= 2 ? spread + 0.14 * Math.sqrt(x) : 0;
+    const opt = frame.options || {}, base = opt.lift === void 0 ? 1.15 : opt.lift;
+    const lift = x < 2 ? 0 : opt.liftMode === "fixed" ? base : opt.liftMode === "sqrt" ? base * Math.sqrt(x) : spread + 0.14 * Math.sqrt(x);
     const centre = x >= 2 ? psiTrend(x) : 0;
     const mid = (lift + spread) / 2;
     let reach = Math.abs(mid);
@@ -3803,8 +3873,11 @@ var ClockMath = (function(exports) {
     c.save();
     c.lineCap = "round";
     c.lineJoin = "round";
-    const from = Math.max(2, s.x - TRACE_SPAN);
-    const trace = psiTrace(frame.heights, s.count, from, s.x, TRACE_STEPS);
+    const opt = frame.options || {};
+    const span = opt.traceSpan === void 0 ? TRACE_SPAN : opt.traceSpan;
+    const steps = opt.traceSteps === void 0 ? TRACE_STEPS : opt.traceSteps;
+    const from = Math.max(2, s.x - span);
+    const trace = psiTrace(frame.heights, s.count, from, s.x, steps);
     const top = frame.heights.length ? frame.heights[frame.heights.length - 1] : 1;
     const wave = 2 * Math.PI * s.x / Math.max(1, top);
     const trackSteps = Math.max(24, Math.min(220, Math.ceil(8 * (s.x - from) / Math.max(1e-6, wave))));
@@ -3856,7 +3929,7 @@ var ClockMath = (function(exports) {
       }
       c.lineCap = "round";
     }
-    const axisFrom = at(Math.max(2, s.x - TRACE_SPAN)), axisTo = at(s.x + 0.6);
+    const axisFrom = at(from), axisTo = at(s.x + 0.6);
     c.globalAlpha = 0.3;
     c.strokeStyle = "#9fb4a6";
     c.lineWidth = pen;
@@ -4344,8 +4417,14 @@ function resizeWorkspace(){
  // centre by half of it, so the dial and the equation share the surface.
  const inspecting=surface.classList.contains('psi-inspecting'),stacked=inspecting&&b.width<900&&b.height>450;
  surface.classList.toggle('psi-stacked',stacked);
- const lensSize=inspecting?Math.max(110,Math.min(350,stacked?b.width-24:b.width*.34,stacked?b.height*.53-60:b.height-48)):0;
- const lensWidth=inspecting&&!stacked?lensSize+16:0,lensHeight=stacked?lensSize+60:0;
+ // The glass floats over the dial by default rather than taking a column from
+ // it: reserving width shrank the clock every time the lens was opened, which
+ // is the opposite of what a magnifier is for. Set psiLens.overlap false in
+ // config to get the old reserved column back.
+ const lensCfg=(typeof CLOCK_CONFIG==='object'&&CLOCK_CONFIG&&CLOCK_CONFIG.psiLens)||{};
+ const cap=lensCfg.maxWidth===undefined?330:lensCfg.maxWidth,floats=lensCfg.overlap!==false;
+ const lensSize=inspecting?Math.max(110,Math.min(cap,stacked?b.width-24:b.width*(floats?.42:.34),stacked?b.height*.53-60:b.height-48)):0;
+ const lensWidth=inspecting&&!stacked&&!floats?lensSize+16:0,lensHeight=stacked?lensSize+60:0;
  surface.style.setProperty('--psi-width',lensSize+'px');surface.style.setProperty('--psi-height',lensHeight+'px');
  const gutter=Math.min(132,b.width*.24),availableHeight=b.height-lensHeight,diameter=Math.max(30,Math.min(b.width-gutter-lensWidth,availableHeight)*.94);
  surface.style.setProperty('--clock-size',diameter+'px');

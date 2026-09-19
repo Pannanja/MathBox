@@ -69,8 +69,14 @@ function resizeWorkspace(){
  // centre by half of it, so the dial and the equation share the surface.
  const inspecting=surface.classList.contains('psi-inspecting'),stacked=inspecting&&b.width<900&&b.height>450;
  surface.classList.toggle('psi-stacked',stacked);
- const lensSize=inspecting?Math.max(110,Math.min(350,stacked?b.width-24:b.width*.34,stacked?b.height*.53-60:b.height-48)):0;
- const lensWidth=inspecting&&!stacked?lensSize+16:0,lensHeight=stacked?lensSize+60:0;
+ // The glass floats over the dial by default rather than taking a column from
+ // it: reserving width shrank the clock every time the lens was opened, which
+ // is the opposite of what a magnifier is for. Set psiLens.overlap false in
+ // config to get the old reserved column back.
+ const lensCfg=(typeof CLOCK_CONFIG==='object'&&CLOCK_CONFIG&&CLOCK_CONFIG.psiLens)||{};
+ const cap=lensCfg.maxWidth===undefined?330:lensCfg.maxWidth,floats=lensCfg.overlap!==false;
+ const lensSize=inspecting?Math.max(110,Math.min(cap,stacked?b.width-24:b.width*(floats?.42:.34),stacked?b.height*.53-60:b.height-48)):0;
+ const lensWidth=inspecting&&!stacked&&!floats?lensSize+16:0,lensHeight=stacked?lensSize+60:0;
  surface.style.setProperty('--psi-width',lensSize+'px');surface.style.setProperty('--psi-height',lensHeight+'px');
  const gutter=Math.min(132,b.width*.24),availableHeight=b.height-lensHeight,diameter=Math.max(30,Math.min(b.width-gutter-lensWidth,availableHeight)*.94);
  surface.style.setProperty('--clock-size',diameter+'px');

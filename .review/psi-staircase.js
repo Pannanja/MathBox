@@ -1,6 +1,8 @@
 // One clock scene, inspected through a circular camera with a uniform scale.
 let psiStairAim=0,psiStairMix=0,psiPredicted=NaN,psiPassedPredicted=NaN;
-let psiZoom=1,psiLens=null,psiLensReadout=null,psiSceneFrame=null,psiSceneMatrix=null,psiHeld=null;
+const PSI_CFG=(typeof CLOCK_CONFIG==='object'&&CLOCK_CONFIG)||{};
+const PSI_LENS_CFG=PSI_CFG.psiLens||{},PSI_MECH_CFG=PSI_CFG.psiMechanism||{},PSI_REC_CFG=PSI_CFG.psiRecord||{};
+let psiZoom=PSI_LENS_CFG.zoom===undefined?1:PSI_LENS_CFG.zoom,psiLens=null,psiLensReadout=null,psiSceneFrame=null,psiSceneMatrix=null,psiHeld=null;
 // The pawl's paper. It follows the clock's own x, not the lens's held x, so
 // holding x to study one interval does not stop the record being written.
 // Built on first draw, never at load: ClockMath is assigned further down the
@@ -18,10 +20,10 @@ function drawPsiStair(){
  const x=psiHeld===null?t:psiHeld;
  const event=psiEvents[psiIndex(x)],active=event&&x<event.q+1?event:null,span=active?panelSpan(active.q,x):null;
  psiSceneFrame={time:x,tau:TAUV,heights:zeroHeights,events:psiEvents,colour:primeInk,origin:C,radius:R,
-  activePane:active?{radius:clockRadius(active.q),angle:span.c0,span:span.w}:null};
- if(!psiPaper)psiPaper=new ClockMath.PsiRecord();
+  activePane:active?{radius:clockRadius(active.q),angle:span.c0,span:span.w}:null,options:PSI_MECH_CFG};
+ if(!psiPaper)psiPaper=new ClockMath.PsiRecord(PSI_REC_CFG.maxPsi,PSI_REC_CFG.binWidth);
  if(zeroHeights.length!==psiPaperZeros){psiPaper.reset(t);psiPaperZeros=zeroHeights.length;}
- psiPaper.advance(t,zeroHeights);
+ psiPaper.advance(t,zeroHeights,PSI_REC_CFG.budget);
  psiSceneFrame.record=psiPaper;
  psiSceneMatrix=g2.getTransform();
  if(psiStairAim){
@@ -39,10 +41,11 @@ function ensurePsiLens(){
  <div class="psi-tools"><button id="psiHold" aria-pressed="false" title="Hold x still while the clock plays on">Hold x</button><label>Zoom <input id="psiZoom" aria-label="Microscope magnification" type="range" min="0.5" max="8" step="0.05" value="1"></label><button id="psiExplain" aria-expanded="false" aria-label="About the psi microscope" title="About this mechanism">?</button><button id="psiClose" aria-label="Close psi microscope">×</button></div>
  <p id="psiExplanation" hidden><span id="psiReadout"></span>This lens enlarges the marked circle on the clock. The same rotating arms and pane arcs keep their positions and proportions. Scroll over the lens to zoom.<br><br>Each zero pair is one turning arm, and the arms hang just clear of the meeting axis so they can be read while they whip through a birth. Only the <em>shadow</em> on that axis is ψ: the dashed drop and its foot are the value, never the tip. Coloured arms are the heights up to |τ|, and their colour walks from teal to orange as more are found; the dim chain behind them is every searched zero. The teal path is where the tip has just been. The count itself is not drawn — the panes are the count, and the lit pane is the one printing now. Prediction and count may differ: at a step, the infinite formula targets its midpoint. Hold x to keep one interval still while τ climbs and the arms multiply.</p>`;
  $('clockSurface').append(lens);psiLens=new ClockMath.PsiLens();
+ lens.dataset.corner=PSI_LENS_CFG.corner||'top-right';
  const tether=document.createElementNS('http://www.w3.org/2000/svg','svg');tether.id='psiTether';tether.setAttribute('aria-hidden','true');tether.innerHTML='<path fill="none" stroke="#a9c1ad55" stroke-width="1"/><circle fill="#a9c1ad08" stroke="#a9c1ad88" stroke-width="1"/>';$('clockSurface').append(tether);
  $('psiClose').onclick=()=>setPsiVisible(false);
  $('psiHold').onclick=()=>{psiHeld=psiHeld===null?t:null;$('psiHold').classList.toggle('on',psiHeld!==null);$('psiHold').setAttribute('aria-pressed',String(psiHeld!==null));};
- $('psiZoom').oninput=e=>psiZoom=+e.target.value;
+ $('psiZoom').value=psiZoom;$('psiZoom').oninput=e=>psiZoom=+e.target.value;
  $('psiDetailCanvas').addEventListener('wheel',e=>{e.preventDefault();psiZoom=Math.max(.5,Math.min(8,psiZoom*Math.exp(-e.deltaY*.001)));$('psiZoom').value=psiZoom;},{passive:false});
  $('psiExplain').onclick=()=>{const show=$('psiExplanation').hidden;$('psiExplanation').hidden=!show;$('psiExplain').setAttribute('aria-expanded',String(show));};
 }

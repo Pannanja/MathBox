@@ -4,6 +4,9 @@ root=Path(__file__).resolve().parent.parent
 page_output=Path(os.environ.get('CLOCK_HTML_OUTPUT',str(root / 'orrery-of-eratosthenes.html')))
 f=page_output
 p=f.read_text(encoding='utf-8')
+# Defaults live in one readable file, inserted ahead of every fragment that
+# reads them. ClockMath arrives last, so config cannot depend on it.
+p=p.replace('</script>',(root/'.review/config.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('</style>',(root/'.review/viewport.css').read_text(encoding='utf-8')+'\n</style>',1)
 p=p.replace('</script>',(root/'.review/viewport.js').read_text(encoding='utf-8')+'\n</script>',1)
 p=p.replace('</style>',(root/'.review/j-ledger.css').read_text(encoding='utf-8')+'\n</style>',1)

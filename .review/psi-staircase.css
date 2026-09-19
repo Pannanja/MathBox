@@ -14,3 +14,11 @@
 #clockApp.redesigned #clockSurface.psi-stacked #clockStage{bottom:var(--psi-height,270px)}
 @media(max-height:520px){#clockApp.redesigned #psiLegend{display:none}#clockApp.redesigned #psiMagnifier{gap:3px}#clockApp.redesigned .psi-tools{gap:3px}#clockApp.redesigned .psi-tools input{width:60px}#clockApp.redesigned .psi-tools label{font-size:11px}}
 #clockApp.redesigned #psiHold.on{border-color:#e0bd76;background:#e0bd761a;color:#f2dfab}
+/* The glass sits in a quadrant of the surface and floats over the dial. It no
+   longer takes a column out of the clock, so opening it stops shrinking the
+   thing being magnified. Corner comes from CLOCK_CONFIG.psiLens.corner. */
+#clockApp.redesigned #psiMagnifier[data-corner="top-right"]{top:8px;right:8px;bottom:auto;left:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="top-left"]{top:8px;left:8px;right:auto;bottom:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="bottom-right"]{bottom:8px;right:8px;top:auto;left:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="bottom-left"]{bottom:8px;left:8px;top:auto;right:auto;transform:none}
+#clockApp.redesigned #psiMagnifier[data-corner="right"]{top:50%;right:8px;bottom:auto;left:auto;transform:translateY(-50%)}

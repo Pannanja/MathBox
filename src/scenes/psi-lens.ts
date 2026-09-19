@@ -37,11 +37,40 @@ export function drawPsiMechanism(c:CanvasRenderingContext2D,frame:PsiSceneFrame,
  // The high-precision path: where the tip has been and is going, from every
  // searched zero. Its shadow on the axis is the reconstruction, so the steps
  // arrive from the zeros rather than from a counted ledger.
- const trace=psiTrace(frame.heights,s.count,Math.max(2,s.x-TRACE_SPAN),s.x,TRACE_STEPS);
+ const from=Math.max(2,s.x-TRACE_SPAN);
+ const trace=psiTrace(frame.heights,s.count,from,s.x,TRACE_STEPS);
+ // The ratchet reads every searched zero, not just the heights tau has passed.
+ // The pawl only slips once the sum rings faster than the window is wide, and
+ // that ringing is 2*pi*x/T: it needs hundreds of heights, not a dozen.
+ // Sample it at the rate that ringing actually demands -- eight points per
+ // wavelength -- rather than a fixed count, which is 24 samples at x = 60 and
+ // was 140 before. The cost follows the detail instead of the zero count.
+ const top=frame.heights.length?frame.heights[frame.heights.length-1]:1;
+ const wave=2*Math.PI*s.x/Math.max(1,top);
+ const trackSteps=Math.max(24,Math.min(220,Math.ceil(8*(s.x-from)/Math.max(1e-6,wave))));
+ const track=psiTrace(frame.heights,frame.heights.length,from,s.x,trackSteps);
  if(trace.length>1){
   c.globalAlpha=.62;c.strokeStyle='#7fd3c0';c.lineWidth=1.4*pen;c.beginPath();
   trace.forEach((q:Complex,i:number)=>{const p=at(q[0],q[1]+lift);i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]);});
   c.stroke();
+ }
+
+ // The ratchet: the foot only marks the axis while the reconstruction is
+ // rising. Between prime powers psi is flat and the pawl sits idle; at a birth
+ // it advances hard. The ringing either side makes it slip backwards, and the
+ // slip is left undrawn rather than papered over -- a gap in the track is a
+ // real retreat, not a missing sample.
+ if(track.length>1){
+  c.lineCap='butt';
+  for(let i=1;i<track.length;i++){
+   const a=track[i-1][0],b=track[i][0];
+   if(!(b>a))continue;
+   const p=at(a),q=at(b),rate=(b-a)/((TRACE_SPAN)/TRACE_STEPS);
+   c.globalAlpha=Math.min(.95,.22+.5*rate);c.strokeStyle='#e0bd76';
+   c.lineWidth=(1.4+2.2*Math.min(1,rate))*pen;
+   c.beginPath();c.moveTo(p[0],p[1]);c.lineTo(q[0],q[1]);c.stroke();
+  }
+  c.lineCap='round';
  }
 
  // The meeting axis under the lifted chain, so the drop has something to land on.

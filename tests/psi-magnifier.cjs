@@ -29,5 +29,13 @@ const assert=require('node:assert/strict'),path=require('node:path');
  await page.evaluate(()=>jumpClock(2000.5));await page.waitForFunction(()=>psiLensReadout.x===2000.5&&Number.isFinite(psiLensReadout.full)&&psiLensReadout.count===649);
  await page.locator('#psiZoom').fill('6');await page.locator('#psiZoom').dispatchEvent('input');await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>psiZoom),6);
  await page.locator('#psiClose').click();assert.equal(await page.evaluate(()=>psiStairAim),0);assert.ok(await page.locator('#psiMagnifier').isHidden());
+ // The ratchet's gaps must be real retreats. With all 649 searched heights the
+ // sum rings every 2*pi*x/T, narrower than the window, so a birth window both
+ // advances and slips. tests/psi-math.cjs pins that a coarse sum cannot.
+ await page.evaluate(()=>jumpClock(59.2));await page.waitForTimeout(400);
+ const pawl=await page.evaluate(()=>{const w=ClockMath.psiTrace(zeroHeights,zeroHeights.length,58.6,59.4,160);
+  let up=0,down=0;for(let i=1;i<w.length;i++)(w[i][0]>w[i-1][0]?up++:down++);return {up,down,zeros:zeroHeights.length};});
+ console.log('PAWL',pawl);
+ assert.equal(pawl.zeros,649);assert.ok(pawl.up>0&&pawl.down>0,'the full sum both advances and slips across a birth');
  assert.deepEqual(errors,[]);console.log('Psi magnifier: axis closure, independent endpoint, birth weights, hold, zero crossings, rewind and responsive layouts passed.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

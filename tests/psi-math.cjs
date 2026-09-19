@@ -43,5 +43,24 @@ const span=psiTrace(heights,4,59.8,60.5,40);
 assert.equal(span.length,41);
 near(span.at(-1)[0],psiTip(60.5,heights,4)[0]);near(span.at(-1)[1],psiTip(60.5,heights,4)[1]);
 assert.equal(psiTrace(heights,4,60.5,59.8,40).length,0,'a backwards window draws nothing');
+// The ratchet only marks the axis while the reconstruction rises, so the gaps
+// in its track have to be real retreats rather than a drawing artefact. They
+// are bought with zeros: a coarse sum climbs straight through a birth, and only
+// a sum with enough heights rings hard enough to slip backwards.
+const known=[14.134725141734694,21.022039638771555,25.010857580145688,30.424876125859513,
+ 32.93506158773919,37.58617815882567,40.918719012147495,43.32707328091500,48.00515088116716,
+ 49.77383247767230,52.97032147771446,56.44624769706339,59.34704400260235,60.83177852460981,
+ 65.11254404808161,67.07981052949417,69.54640171117398,72.06715767448191,75.70469069908393,
+ 77.14484006887481];
+const rise=(list,count,from,to)=>{const w=psiTrace(list,count,from,to,160);let up=0,down=0;
+ for(let i=1;i<w.length;i++)(w[i][0]>w[i-1][0]?up++:down++);return {up,down};};
+// The ringing wavelength is 2*pi*x/T. Across a 0.8 window at x = 59 even
+// twenty heights (T = 77) ring every 4.8 units, far wider than the window, so
+// the pawl cannot slip yet. Slipping is bought with hundreds of zeros, and the
+// live page's 649 are covered in tests/psi-magnifier.cjs.
+assert.equal(rise(heights,4,58.6,59.4).down,0,'four zeros climb straight through a birth');
+assert.equal(rise(known,known.length,58.6,59.4).down,0,'twenty zeros still cannot slip');
+assert.ok(rise(known,known.length,58.6,59.4).up>0,'but they do advance');
+near(psiEpicycles(59.2,known,known.length).endpoint,psiApproximation(59.2,known,known.length));
 for(const bad of [1,1.99,NaN,Infinity]){assert.ok(Number.isNaN(psiEpicycles(bad,heights,4).endpoint));assert.ok(Number.isNaN(psiTip(bad,heights,4)[0]));}
 console.log('Psi: LCM identity, log-prime jumps, paired closure, epicyclic shadow and trace endpoints passed.');

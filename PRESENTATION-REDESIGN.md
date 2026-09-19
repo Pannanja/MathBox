@@ -393,12 +393,27 @@ The radial spiral described below is superseded by a counting ruler on the
 pane-birth ray and a separate magnifier. Explorer retirement is deferred until
 the clock view is solid, per the latest direction.
 
-- [x] Put exact log(p) credits and the zero reconstruction on the real meeting
-  axis. Keep q/t pane radii distinct from ψ(t)/t counting distances.
+- [-] Put exact log(p) credits and the zero reconstruction on the real meeting
+  axis. The counted ruler is dropped: the panes already are the count, and a
+  second ledger beside them only competes with the mechanism. Pane radii stay
+  distinct from ψ(t)/t counting distances.
 - [x] Highlight the printing prime-power pane and its new counting tooth together,
   including a temporary birth arc when persistent power panes are hidden.
-- [x] Draw each zero as two conjugate vectors. Every pair returns to the real
-  axis; retain truncation error instead of translating the endpoint to the count.
+- [-] Draw each zero as two conjugate vectors. Correct, but it flattens the
+  chain onto the axis and the epicycles stop being visible, which is the whole
+  teaching object. Replaced below. Truncation error is still retained: the
+  endpoint is never translated onto the count.
+- [x] Draw each zero pair as one turning arm of 2√x·x^ρ/ρ, so the chain wanders
+  in the plane as a genuine epicyclic chain, rooted at the trend on the axis and
+  lifted just clear of it. Only the shadow on that axis is ψ, so the drop and
+  its foot are drawn every frame and the tip never pretends to be the answer.
+  The transverse excursion is the part the conjugate cancels: drawn, not claimed.
+  `psiArm` survives as the paired reference the tests check against.
+- [x] Colour the arms along the chain, teal through gold to orange, so a newly
+  passed height arrives as a new colour rather than one more identical leg.
+- [x] Trace the path the tip sweeps across a window of x. Its shadow is the
+  reconstruction, so the steps arrive from the zeros instead of being counted
+  out by hand, and the ringing either side of a birth is visible as motion.
 - [x] Add a magnifier with a local ruler and a Cartesian staircase comparison,
   all-searched-zero reference, and reconstruction using the actual heights
   γ ≤ |τ|. Hold x lets the same interval gain resolution as τ advances.
@@ -675,10 +690,12 @@ instead of clamping in silence.
   being called from every `tune` is the confession. Trails may be declared
   ornamental and path-dependent and excluded, rather than pretended about. Best
   done last, as a net under the rest.
-- [x] Make the pane-to-riser link perceptible: highlight the printing pane and
-  its log(p) credit on the same beat, with a connector on the birth ray.
+- [x] Make the pane-to-riser link perceptible: highlight the printing pane on
+  the same beat, with a connector from the birth ray to the step it credits.
   Prime-power birth arcs remain visible during the event even when persistent
-  prime-power panes are switched off.
+  prime-power panes are switched off. The log(p) credit teeth that originally
+  carried this went with the counted ruler; the lit pane and its connector
+  carry it now.
 
 **Specific defects, filed under the strategy each belongs to**
 

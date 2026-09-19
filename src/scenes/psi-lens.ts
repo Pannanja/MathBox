@@ -1,4 +1,5 @@
-import { countedPsi, passedZeros, psiArm, psiIndexAt, psiTrend } from '../math/psi';
+import { countedPsi, passedZeros, psiEpicycles, psiIndexAt, psiTrace, psiTrend } from '../math/psi';
+import type { Complex } from '../core/contracts';
 import type { PsiBirth } from '../math/psi';
 
 export interface PsiSceneFrame {
@@ -8,38 +9,86 @@ export interface PsiSceneFrame {
 }
 export function psiScene(frame:PsiSceneFrame){
  const x=frame.time,count=passedZeros(frame.heights,frame.tau),index=psiIndexAt(frame.events,x),event=frame.events[index];
- return {x,count,index,exact:countedPsi(frame.events,x),full:psiArm(x,frame.heights,frame.heights.length),
-  partial:psiArm(x,frame.heights,count),current:event&&x<event.q+1?event:null,
+ const full=psiEpicycles(x,frame.heights,frame.heights.length),partial=psiEpicycles(x,frame.heights,count);
+ // The chain rides just clear of the meeting axis: high enough that no leg
+ // crosses it, low enough that it still reads as hanging off that axis.
+ let spread=0;for(const q of partial.points)if(Number.isFinite(q[1]))spread=Math.max(spread,Math.abs(q[1]));
+ const lift=x>=2?spread+.14*Math.sqrt(x):0;
+ return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,
+  current:event&&x<event.q+1?event:null,
   unit:frame.radius/Math.max(1,x),centre:x>=2?psiTrend(x):0};
 }
-/** One vector scene for both the clock and microscope: no independent graph coordinates. */
+/** One vector scene for both the clock and microscope: no independent graph coordinates.
+ * The chain is a true epicyclic chain, lifted clear of the meeting axis so it can
+ * be read while it whips through a birth. Only its shadow on that axis is psi,
+ * so the drop and its foot are drawn every frame and the tip never pretends. */
+const TRACE_SPAN=.7, TRACE_STEPS=140;
+function legInk(i:number,n:number,alpha:number){
+ const h=168-138*(n<2?1:i/(n-1));
+ return 'hsl('+h.toFixed(0)+' 62% 66% / '+alpha.toFixed(3)+')';
+}
 export function drawPsiMechanism(c:CanvasRenderingContext2D,frame:PsiSceneFrame,pixelScale=1){
- const s=psiScene(frame),C=frame.origin,u=s.unit,at=(re:number,im=0)=>[C+u*im,C-u*re],pen=1/pixelScale;
- const tooth=.1*Math.sqrt(s.x),offset=u*tooth;
+ const s=psiScene(frame),C=frame.origin,u=s.unit,pen=1/pixelScale;
+ if(!(s.x>=2)){return s;}
+ const lift=s.lift;
+ const at=(re:number,im=0)=>[C+u*im,C-u*re];
  c.save();c.lineCap='round';c.lineJoin='round';
- // The same counted teeth live beside the meeting ray in both views.
- for(let i=Math.max(0,s.index-24);i<=s.index;i++){
-  const e=frame.events[i],a=at(e.lo),b=at(e.hi);c.strokeStyle=frame.colour(e.p);c.globalAlpha=e===s.current?1:.65;
-  c.lineWidth=(e===s.current?2.2:1.3)*pen;c.beginPath();c.moveTo(a[0]+offset,a[1]);c.lineTo(b[0]+offset,b[1]);c.stroke();
-  c.lineWidth=pen;c.beginPath();c.moveTo(b[0]+offset*.65,b[1]);c.lineTo(b[0]+offset*1.35,b[1]);c.stroke();
+
+ // The high-precision path: where the tip has been and is going, from every
+ // searched zero. Its shadow on the axis is the reconstruction, so the steps
+ // arrive from the zeros rather than from a counted ledger.
+ const trace=psiTrace(frame.heights,s.count,Math.max(2,s.x-TRACE_SPAN),s.x,TRACE_STEPS);
+ if(trace.length>1){
+  c.globalAlpha=.62;c.strokeStyle='#7fd3c0';c.lineWidth=1.4*pen;c.beginPath();
+  trace.forEach((q:Complex,i:number)=>{const p=at(q[0],q[1]+lift);i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]);});
+  c.stroke();
  }
- const arm=(chain:ReturnType<typeof psiArm>,ink:string,alpha:number)=>{
-  c.strokeStyle=ink;c.fillStyle=ink;
-  for(let i=1;i<chain.points.length;i++){
-   const a=chain.points[i-1],b=chain.points[i],p=at(a[0],a[1]),q=at(b[0],b[1]),r=u*Math.hypot(b[0]-a[0],b[1]-a[1]);
-   // Actual circular orbit of this rotating vector, not decorative gear teeth.
-   if(r*pixelScale>=2){c.globalAlpha=alpha*.38;c.lineWidth=.8*pen;c.beginPath();c.arc(p[0],p[1],r,0,2*Math.PI);c.stroke();}
-   c.globalAlpha=alpha;c.lineWidth=1.2*pen;c.beginPath();c.moveTo(p[0],p[1]);c.lineTo(q[0],q[1]);c.stroke();
-   if(r*pixelScale>=5){c.beginPath();c.arc(p[0],p[1],1.6*pen,0,2*Math.PI);c.fill();}
+
+ // The meeting axis under the lifted chain, so the drop has something to land on.
+ const axisFrom=at(Math.max(2,s.x-TRACE_SPAN)),axisTo=at(s.x+.6);
+ c.globalAlpha=.30;c.strokeStyle='#9fb4a6';c.lineWidth=pen;c.beginPath();
+ c.moveTo(axisFrom[0],axisFrom[1]);c.lineTo(axisTo[0],axisTo[1]);c.stroke();
+
+ // The chain is rooted at the trend on the axis; the stem says so, otherwise
+ // the lift looks like the mechanism has floated free of what it measures.
+ const root=at(s.partial.start),rootUp=at(s.partial.start,lift);
+ c.globalAlpha=.34;c.strokeStyle='#9fb4a6';c.lineWidth=pen;c.setLineDash([2*pen,3*pen]);
+ c.beginPath();c.moveTo(root[0],root[1]);c.lineTo(rootUp[0],rootUp[1]);c.stroke();c.setLineDash([]);
+
+ const chain=(ch:ReturnType<typeof psiEpicycles>,coloured:boolean,alpha:number)=>{
+  const pts=ch.points;if(pts.length<2)return;
+  for(let i=1;i<pts.length;i++){
+   const a=pts[i-1],b=pts[i],p=at(a[0],a[1]+lift),q=at(b[0],b[1]+lift);
+   const r=u*Math.hypot(b[0]-a[0],b[1]-a[1]);
+   // The actual circular orbit this rotating vector sweeps, not a decorative gear.
+   if(r*pixelScale>=2.5){c.globalAlpha=alpha*.22;c.strokeStyle=coloured?legInk(i-1,pts.length-1,1):'#6f8f84';
+    c.lineWidth=.7*pen;c.beginPath();c.arc(p[0],p[1],r,0,2*Math.PI);c.stroke();}
+   c.globalAlpha=alpha;c.strokeStyle=coloured?legInk(i-1,pts.length-1,1):'#6f8f84';
+   c.lineWidth=(coloured?1.5:.9)*pen;c.beginPath();c.moveTo(p[0],p[1]);c.lineTo(q[0],q[1]);c.stroke();
+   if(coloured&&r*pixelScale>=5){c.fillStyle=legInk(i-1,pts.length-1,1);c.globalAlpha=alpha;
+    c.beginPath();c.arc(p[0],p[1],1.5*pen,0,2*Math.PI);c.fill();}
   }
  };
- arm(s.full,'#86c7b4',.42);arm(s.partial,'#f3aa77',.95);
+ chain(s.full,false,.40);
+ chain(s.partial,true,.95);
+
+ // Only the shadow is psi. Drop it and mark the foot.
+ const tip=s.partial.tip;
+ if(Number.isFinite(tip[0])){
+  const tp=at(tip[0],tip[1]+lift),foot=at(tip[0]);
+  c.globalAlpha=.55;c.strokeStyle='#f2dfab';c.lineWidth=pen;c.setLineDash([2.5*pen,3*pen]);
+  c.beginPath();c.moveTo(tp[0],tp[1]);c.lineTo(foot[0],foot[1]);c.stroke();c.setLineDash([]);
+  c.globalAlpha=1;c.fillStyle='#f3aa77';c.beginPath();c.arc(tp[0],tp[1],2.6*pen,0,2*Math.PI);c.fill();
+ }
  const mark=(v:number,ink:string,r:number)=>{if(!Number.isFinite(v))return;const p=at(v);c.globalAlpha=1;c.fillStyle=ink;c.beginPath();c.arc(p[0],p[1],r*pen,0,2*Math.PI);c.fill();};
- mark(s.exact,'#f2dfab',3);mark(s.full.endpoint,'#86c7b4',2.2);mark(s.partial.endpoint,'#f3aa77',2.6);
+ mark(s.full.endpoint,'#86c7b4',2.2);mark(s.partial.endpoint,'#f3aa77',2.8);mark(s.exact,'#f2dfab',2.2);
+
+ // The pane is the count. Light the one that is printing and tie it to the axis.
  if(s.current&&frame.activePane){
-  const a=frame.activePane;c.globalAlpha=.6+.4*(1-(s.x-s.current.q));c.strokeStyle=frame.colour(s.current.p);c.lineWidth=2*pen;
+  const a=frame.activePane;c.globalAlpha=.6+.4*(1-(s.x-s.current.q));c.strokeStyle=frame.colour(s.current.p);c.lineWidth=2.2*pen;
   c.beginPath();c.arc(C,C,a.radius,a.angle-a.span/2,a.angle+a.span/2);c.stroke();
-  const end=at(s.current.hi);c.globalAlpha=.4;c.lineWidth=pen;c.setLineDash([2*pen,3*pen]);c.beginPath();c.moveTo(C,C-a.radius);c.lineTo(end[0]+offset,end[1]);c.stroke();
+  const step=at(s.current.hi);c.globalAlpha=.45;c.lineWidth=pen;c.setLineDash([2*pen,3*pen]);
+  c.beginPath();c.moveTo(C,C-a.radius);c.lineTo(step[0],step[1]);c.stroke();c.setLineDash([]);
  }
  c.restore();return s;
 }
@@ -51,7 +100,7 @@ export class PsiLens {
   if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
   const c=canvas.getContext('2d')!,s=psiScene(frame);
   const extent=Math.max(1.5,1.25*Math.log(Math.max(s.x,2)),Math.sqrt(s.x)*.35)/zoom;
-  const focus=matrix.transformPoint(new DOMPoint(frame.origin,frame.origin-s.unit*s.centre)),sourceRadius=extent*s.unit,scale=r/sourceRadius;
+  const focus=matrix.transformPoint(new DOMPoint(frame.origin+s.unit*s.lift*.5,frame.origin-s.unit*s.centre)),sourceRadius=extent*s.unit,scale=r/sourceRadius;
   c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);c.save();c.beginPath();c.arc(w/2,h/2,r,0,2*Math.PI);c.clip();
   c.fillStyle='#0b1511';c.fillRect(0,0,w,h);
   c.translate(w/2,h/2);c.scale(scale,scale);c.translate(-focus.x,-focus.y);

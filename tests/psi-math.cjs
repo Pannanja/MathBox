@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const context={};vm.createContext(context);vm.runInContext(fs.readFileSync('.build/clock-math.js','utf8'),context);
-const {psiBirths,countedPsi,passedZeros,psiArm,psiApproximation}=context.ClockMath;
+const {psiBirths,countedPsi,passedZeros,psiArm,psiApproximation,psiEpicycles,psiTip,psiTrace}=context.ClockMath;
 const near=(a,b,tol=1e-11)=>assert.ok(Math.abs(a-b)<tol,`${a} != ${b}`);
 const births=psiBirths(128),plain=x=>JSON.parse(JSON.stringify(x));
 assert.deepEqual(plain(births.slice(0,8).map(e=>[e.q,e.p,e.k])),[[2,2,1],[3,3,1],[4,2,2],[5,5,1],[7,7,1],[8,2,3],[9,3,2],[11,11,1]]);
@@ -19,4 +19,29 @@ for(const x of [2,4,8.5,60.5,500,2000])for(let count=0;count<=heights.length;cou
 }
 assert.ok(Number.isNaN(psiArm(1,heights,4).endpoint));assert.ok(Number.isNaN(psiApproximation(1,heights)));
 assert.ok(Math.abs(psiArm(60.5,heights,4).endpoint-countedPsi(births,60.5))>.1,'retain truncation error');
-console.log('Psi: independent LCM identity, log-prime jumps, conjugate pairs and cutoff crossings passed.');
+
+// The epicyclic chain is what the page draws. It wanders in the plane, so its
+// tip is NOT the answer -- only the shadow on the real axis is. These pin the
+// invariant that makes drawing the drop honest.
+for(const x of [2,4,8.5,60.5,500,2000])for(let count=0;count<=heights.length;count++){
+ const chain=psiEpicycles(x,heights,count);
+ near(chain.endpoint,psiApproximation(x,heights,count));
+ near(chain.tip[0],psiApproximation(x,heights,count));
+ assert.equal(chain.points.length,count+1,'one anchor plus one leg per zero pair');
+ near(chain.points[0][0],x-Math.log(2*Math.PI)-.5*Math.log(1-x**-2));
+ assert.equal(chain.points[0][1],0,'the chain is rooted on the axis');
+ const tip=psiTip(x,heights,count);near(tip[0],chain.tip[0]);near(tip[1],chain.tip[1]);
+}
+// It must genuinely leave the axis, otherwise it is the collapsed chain again.
+// The tip can drift back near the axis by cancellation, so the invariant is
+// about the path, not its end: some leg must stand off the axis.
+const spread=c=>Math.max(...psiEpicycles(60.5,heights,c).points.map(q=>Math.abs(q[1])));
+assert.ok(spread(4)>.25,'the chain leaves the counting axis');
+assert.equal(spread(0),0,'with no zeros there is nothing to lift');
+assert.ok(Math.abs(psiArm(60.5,heights,4).points.at(-1)[1])<1e-12,'the paired form still closes, and is not what is drawn');
+const span=psiTrace(heights,4,59.8,60.5,40);
+assert.equal(span.length,41);
+near(span.at(-1)[0],psiTip(60.5,heights,4)[0]);near(span.at(-1)[1],psiTip(60.5,heights,4)[1]);
+assert.equal(psiTrace(heights,4,60.5,59.8,40).length,0,'a backwards window draws nothing');
+for(const bad of [1,1.99,NaN,Infinity]){assert.ok(Number.isNaN(psiEpicycles(bad,heights,4).endpoint));assert.ok(Number.isNaN(psiTip(bad,heights,4)[0]));}
+console.log('Psi: LCM identity, log-prime jumps, paired closure, epicyclic shadow and trace endpoints passed.');

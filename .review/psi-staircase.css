@@ -1,7 +1,7 @@
 #clockApp.redesigned #psiMagnifier{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:var(--psi-width,350px);display:flex;flex-direction:column;gap:7px;z-index:7;color:#dfe7dc;font:12px/1.4 system-ui,sans-serif}
 #clockApp.redesigned #psiMagnifier[hidden]{display:none}
 #clockApp.redesigned #psiDetailCanvas{display:block;width:100%;height:auto;aspect-ratio:1;min-height:0;border-radius:50%;filter:drop-shadow(0 8px 16px #0005);touch-action:none}
-#clockApp.redesigned .psi-tools{display:flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0}
+#clockApp.redesigned .psi-tools{display:flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;flex-wrap:wrap}
 #clockApp.redesigned .psi-tools label{display:flex;align-items:center;gap:7px}
 #clockApp.redesigned .psi-tools input{width:90px;min-width:0}
 #clockApp.redesigned #psiMagnifier button{font-size:13px;min-height:28px;padding:3px 8px}
@@ -13,3 +13,4 @@
 #clockApp.redesigned #clockSurface.psi-stacked #psiMagnifier{top:auto;bottom:0;right:50%;transform:translateX(50%)}
 #clockApp.redesigned #clockSurface.psi-stacked #clockStage{bottom:var(--psi-height,270px)}
 @media(max-height:520px){#clockApp.redesigned #psiLegend{display:none}#clockApp.redesigned #psiMagnifier{gap:3px}#clockApp.redesigned .psi-tools{gap:3px}#clockApp.redesigned .psi-tools input{width:60px}#clockApp.redesigned .psi-tools label{font-size:11px}}
+#clockApp.redesigned #psiHold.on{border-color:#e0bd76;background:#e0bd761a;color:#f2dfab}

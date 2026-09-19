@@ -28,6 +28,13 @@ const assert=require('node:assert/strict'),path=require('node:path');
  (await page.evaluate(()=>[t,SIGMA,TAUV])).forEach((v,i)=>assert.ok(Math.abs(v-before[i])<1e-10,'workspace changes preserve mathematical state'));
  await page.evaluate(()=>jumpClock(2000.5));await page.waitForFunction(()=>psiLensReadout.x===2000.5&&Number.isFinite(psiLensReadout.full)&&psiLensReadout.count===649);
  await page.locator('#psiZoom').fill('6');await page.locator('#psiZoom').dispatchEvent('input');await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>psiZoom),6);
+ // The glass starts in its configured corner and can be dragged off it.
+ const lens=page.locator('#psiMagnifier'),box=await lens.boundingBox();
+ await page.mouse.move(box.x+box.width/2,box.y+box.height*.25);
+ await page.mouse.down();await page.mouse.move(box.x+240,box.y+180,{steps:8});await page.mouse.up();
+ const moved=await lens.boundingBox();
+ assert.ok(Math.abs(moved.x-box.x)>40||Math.abs(moved.y-box.y)>40,'the glass can be dragged');
+ assert.ok(moved.x>=0&&moved.y>=0,'and stays on the surface');
  await page.locator('#psiClose').click();assert.equal(await page.evaluate(()=>psiStairAim),0);assert.ok(await page.locator('#psiMagnifier').isHidden());
  // The ratchet's gaps must be real retreats. With all 649 searched heights the
  // sum rings every 2*pi*x/T, narrower than the window, so a birth window both
@@ -37,17 +44,19 @@ const assert=require('node:assert/strict'),path=require('node:path');
   let up=0,down=0;for(let i=1;i<w.length;i++)(w[i][0]>w[i-1][0]?up++:down++);return {up,down,zeros:zeroHeights.length};});
  console.log('PAWL',pawl);
  assert.equal(pawl.zeros,649);assert.ok(pawl.up>0&&pawl.down>0,'the full sum both advances and slips across a birth');
- // The groove on the dial: an empty record draws nothing, and a walked one
- // draws arcs. It replaced the band on the real axis.
+ // The trail on the dial: an empty one draws nothing, a walked one draws both
+ // pens, and the history persists rather than scrolling away.
  assert.equal(await page.evaluate(()=>{const c=document.createElement('canvas');c.width=c.height=64;
-  return ClockMath.drawPsiGroove(c.getContext('2d'),{record:null,origin:32,radius:30,top:-Math.PI/2,scale:10});}),0,
-  'no record, no groove');
- const walked=await page.evaluate(async()=>{
-  const paper=new ClockMath.PsiRecord();paper.advance(20,zeroHeights);
-  for(let x=20.2;x<=40;x+=.2)paper.advance(x,zeroHeights);
+  return ClockMath.drawPsiTrail(c.getContext('2d'),{trail:null,origin:32,radius:30,top:-Math.PI/2,scale:10});}),0,
+  'no trail, nothing drawn');
+ const pens=await page.evaluate(()=>{
+  const tr=new ClockMath.PsiTrail(4096);tr.advance(20,zeroHeights,8);
+  for(let x=20.2;x<=40;x+=.2)tr.advance(x,zeroHeights,8);
   const c=document.createElement('canvas');c.width=c.height=920;
-  return {arcs:ClockMath.drawPsiGroove(c.getContext('2d'),{record:paper,origin:460,radius:408,top:-Math.PI/2,scale:40}),peak:paper.peak};});
- console.log('GROOVE',walked);
- assert.ok(walked.peak>0&&walked.arcs>50,'a walked record writes a groove');
+  return {segs:ClockMath.drawPsiTrail(c.getContext('2d'),{trail:tr,origin:460,radius:408,top:-Math.PI/2,scale:40}),
+   held:tr.length,from:tr.from,upto:tr.upto};});
+ console.log('PENS',pens);
+ assert.ok(pens.held>100&&pens.segs>50,'a walked trail writes both pens');
+ assert.ok(pens.from===20&&pens.upto>39,'and spans what it watched');
  assert.deepEqual(errors,[]);console.log('Psi magnifier: axis closure, independent endpoint, birth weights, hold, zero crossings, rewind and responsive layouts passed.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

@@ -81,48 +81,59 @@ export function psiTrace(heights:readonly number[],count:number,from:number,to:n
  return out;
 }
 
-/** The pawl's paper. The ratchet marks the axis only while psi rises, and this
- * keeps those marks instead of letting them scroll out of the window.
+/** The path the epicycle tips have actually drawn.
  *
- * Deliberately historical: unlike the rest of the psi drawing, this is not a
- * pure function of x, because a written record is exactly a record of the route
- * taken. Rewinding past what it holds lifts the pen and starts a fresh sheet,
- * which is why `from` is reported -- the record never claims to cover ground it
- * did not watch. Phase 10's scrub-identity audit should treat it like trails.
+ * Two pens, sampled together at every step: one at the tip of the chain built
+ * from every searched zero, one at the tip of the chain built from the heights
+ * tau had passed AT THAT MOMENT. The second is therefore a record of the
+ * approximation improving, not a re-computation of it -- replaying it with
+ * today's count would erase the very thing it is meant to show.
  *
- * Bins are indexed by psi, not by x, so a band grows bright where the pawl
- * worked the same stretch over and over: the treads of the staircase, which is
- * where psi lingers between one prime power and the next. */
-export class PsiRecord {
- readonly binWidth:number; readonly bins:Float32Array;
- from=NaN; upto=NaN; peak=0;
- constructor(maxPsi=5400,binWidth=.02){this.binWidth=binWidth;this.bins=new Float32Array(Math.ceil(maxPsi/binWidth)+2);}
- reset(at=NaN){this.bins.fill(0);this.peak=0;this.from=at;this.upto=at;}
- private mark(a:number,b:number){
-  const w=this.binWidth,lo=Math.max(0,Math.floor(Math.min(a,b)/w)),hi=Math.min(this.bins.length-1,Math.ceil(Math.max(a,b)/w));
-  for(let i=lo;i<=hi;i++){const v=this.bins[i]+1;this.bins[i]=v;if(v>this.peak)this.peak=v;}
+ * Deliberately historical, like trails: rewinding past what it holds lifts both
+ * pens and starts a fresh sheet, and `from` reports the ground it actually
+ * watched. Phase 10's scrub-identity audit should treat it accordingly.
+ *
+ * Stored in mechanism coordinates (psi along one axis, the transverse
+ * excursion across it) rather than in pixels, so the whole history re-maps
+ * through the clock's current contraction every frame and creeps inward with
+ * the count, as the prime annuli do. */
+export class PsiTrail {
+ static readonly STRIDE=5;
+ private data:Float64Array; private n=0;
+ readonly cap:number; from=NaN; upto=NaN; thinned=0;
+ constructor(cap=8000){this.cap=Math.max(16,cap);this.data=new Float64Array(this.cap*PsiTrail.STRIDE);}
+ get length(){return this.n;}
+ /** x, then the full-precision tip, then the tip as it stood at that moment. */
+ read(i:number){const k=i*PsiTrail.STRIDE,d=this.data;
+  return {x:d[k],full:[d[k+1],d[k+2]] as Complex,passed:[d[k+3],d[k+4]] as Complex};}
+ reset(at=NaN){this.n=0;this.from=at;this.upto=at;this.thinned=0;}
+ /** When the sheet fills, keep every other sample. The trail then still spans
+  * the whole history, at coarser resolution, instead of losing its beginning. */
+ private thin(){const d=this.data,S=PsiTrail.STRIDE;let w=0;
+  for(let r=0;r<this.n;r+=2){d.copyWithin(w*S,r*S,r*S+S);w++;}
+  this.n=w;this.thinned++;}
+ private push(x:number,f:Complex,p:Complex){
+  if(this.n>=this.cap)this.thin();
+  const k=this.n*PsiTrail.STRIDE,d=this.data;
+  d[k]=x;d[k+1]=f[0];d[k+2]=f[1];d[k+3]=p[0];d[k+4]=p[1];this.n++;
  }
- /** Walk the record up to x. Returns how many samples it took, so a caller can
-  * see when a jump outran the budget and the sheet was restarted. */
- advance(x:number,heights:readonly number[],budget=3000):number{
+ /** Step size: fine enough to resolve the ringing, and never coarser than a
+  * fraction of a turn, or the spiral the tips draw would come out polygonal. */
+ private step(at:number,top:number){
+  return Math.min(1/48,Math.max(1e-4,2*Math.PI*Math.max(at,2)/Math.max(1,top)/8));
+ }
+ advance(x:number,heights:readonly number[],count:number,budget=2000):number{
   if(!(x>=2)||!heights.length)return 0;
   const top=Math.max(1,heights[heights.length-1]);
-  // The ring widens with x, so the step has to be taken where the pen is, not
-  // where it is going. Sizing it from the target would let a jump to 4000 cross
-  // the crowded low ground in strides forty units wide and write fiction.
-  const stepAt=(at:number)=>Math.max(1e-4,2*Math.PI*Math.max(at,2)/top/8);
-  if(!Number.isFinite(this.upto)||x<this.upto)  {this.reset(x);return 0;}
-  if((x-this.upto)/stepAt(this.upto)>budget){this.reset(x);return 0;}
-  let walked=0,prev=psiTip(this.upto,heights,heights.length)[0],at=this.upto;
+  if(!Number.isFinite(this.upto)||x<this.upto){this.reset(x);return 0;}
+  if((x-this.upto)/this.step(this.upto,top)>budget){this.reset(x);return 0;}
+  let walked=0,at=this.upto;
+  if(this.n===0){this.push(at,psiTip(at,heights,heights.length),psiTip(at,heights,count));}
   while(at<x&&walked<budget){
-   at=Math.min(x,at+stepAt(at));
-   const now=psiTip(at,heights,heights.length)[0];
-   if(now>prev)this.mark(prev,now);
-   prev=now;this.upto=at;walked++;
+   at=Math.min(x,at+this.step(at,top));
+   this.push(at,psiTip(at,heights,heights.length),psiTip(at,heights,count));
+   this.upto=at;walked++;
   }
   return walked;
  }
- /** Brightness of the written band at a psi value, 0..1. */
- at(psi:number){const i=Math.floor(psi/this.binWidth);
-  return i<0||i>=this.bins.length||this.peak<=0?0:this.bins[i]/this.peak;}
 }

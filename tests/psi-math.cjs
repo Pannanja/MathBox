@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const context={};vm.createContext(context);vm.runInContext(fs.readFileSync('.build/clock-math.js','utf8'),context);
-const {psiBirths,countedPsi,passedZeros,psiArm,psiApproximation,psiEpicycles,psiTip,psiTrace,PsiRecord}=context.ClockMath;
+const {psiBirths,countedPsi,passedZeros,psiArm,psiApproximation,psiEpicycles,psiTip,psiTrace,PsiTrail}=context.ClockMath;
 const near=(a,b,tol=1e-11)=>assert.ok(Math.abs(a-b)<tol,`${a} != ${b}`);
 const births=psiBirths(128),plain=x=>JSON.parse(JSON.stringify(x));
 assert.deepEqual(plain(births.slice(0,8).map(e=>[e.q,e.p,e.k])),[[2,2,1],[3,3,1],[4,2,2],[5,5,1],[7,7,1],[8,2,3],[9,3,2],[11,11,1]]);
@@ -63,26 +63,31 @@ assert.equal(rise(known,known.length,58.6,59.4).down,0,'twenty zeros still canno
 assert.ok(rise(known,known.length,58.6,59.4).up>0,'but they do advance');
 near(psiEpicycles(59.2,known,known.length).endpoint,psiApproximation(59.2,known,known.length));
 for(const bad of [1,1.99,NaN,Infinity]){assert.ok(Number.isNaN(psiEpicycles(bad,heights,4).endpoint));assert.ok(Number.isNaN(psiTip(bad,heights,4)[0]));}
-// The pawl's paper. Deliberately historical, so what is pinned is that it only
-// ever grows forward, that it restarts rather than inventing ground it did not
-// watch, and that it reports the range it actually covers.
+// The two pens. Deliberately historical, so what is pinned is that the trail
+// only grows forward, restarts rather than inventing ground it did not watch,
+// and keeps its beginning when it fills instead of losing it.
 {
- const paper=new PsiRecord(200,.02);
- assert.equal(paper.peak,0);assert.ok(Number.isNaN(paper.from));
- paper.advance(20,known);assert.equal(paper.from,20,'the first advance opens the sheet at x');
- let walked=0;for(let x=20.2;x<=34;x+=.2)walked+=paper.advance(x,known);
- assert.ok(walked>0&&paper.upto>33&&paper.peak>0,'walking forward writes');
- assert.equal(paper.from,20,'and never moves the start');
- const before=paper.peak;
- paper.advance(33.5,known);assert.equal(paper.from,33.5,'a rewind lifts the pen and starts a fresh sheet');
- assert.equal(paper.peak,0,'the fresh sheet is blank');assert.ok(before>0);
- paper.reset(20);for(let x=20.2;x<=34;x+=.2)paper.advance(x,known);
- const lit=[...paper.bins].filter(v=>v>0).length;
- assert.ok(lit>50,'the record covers a span of psi, not a point');
- assert.equal(paper.at(-1),0);assert.equal(paper.at(1e6),0);
- assert.ok(paper.at(psiApproximation(30,known,known.length))>0,'psi at a walked x is lit');
- // A jump too big to walk inside the budget restarts rather than crawling.
- const jumped=new PsiRecord(6000,.02);jumped.advance(20,known);
- assert.equal(jumped.advance(4000,known),0);assert.equal(jumped.from,4000);
+ const trail=new PsiTrail(64);
+ assert.equal(trail.length,0);assert.ok(Number.isNaN(trail.from));
+ trail.advance(20,known,4);assert.equal(trail.from,20,'the first advance opens the sheet at x');
+ for(let x=20.2;x<=26;x+=.2)trail.advance(x,known,4);
+ assert.ok(trail.length>1&&trail.upto>25,'walking forward writes');
+ assert.equal(trail.from,20,'and never moves the start');
+ const first=trail.read(0);
+ near(first.full[0],psiTip(20,known,known.length)[0]);
+ near(first.passed[0],psiTip(20,known,4)[0]);
+ assert.ok(trail.length<=64,'the sheet never overruns its cap');
+ assert.ok(trail.thinned>0,'it thinned instead of truncating');
+ assert.ok(trail.read(0).x<21,'and kept its beginning');
+ // The second pen records the count of the moment, not today's count.
+ const moving=new PsiTrail(4096);moving.advance(20,known,1);
+ for(let x=20.2;x<=24;x+=.2)moving.advance(x,known,x>22?8:1);
+ const early=moving.read(0),late=moving.read(moving.length-1);
+ assert.ok(Math.abs(early.passed[0]-psiTip(early.x,known,1)[0])<1e-9,'early stretch holds one zero');
+ assert.ok(Math.abs(late.passed[0]-psiTip(late.x,known,8)[0])<1e-9,'late stretch holds eight');
+ // A rewind lifts both pens; a jump too big to walk restarts rather than crawling.
+ moving.advance(21,known,8);assert.equal(moving.from,21);assert.equal(moving.length,0);
+ const jumped=new PsiTrail(4096);jumped.advance(20,known,4);
+ assert.equal(jumped.advance(9000,known,4),0);assert.equal(jumped.from,9000);
 }
-console.log('Psi: LCM identity, log-prime jumps, paired closure, epicyclic shadow, trace endpoints and the written record passed.');
+console.log('Psi: LCM identity, log-prime jumps, paired closure, epicyclic shadow, trace endpoints and the two-pen trail passed.');

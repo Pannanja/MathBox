@@ -15,8 +15,10 @@ var CLOCK_CONFIG = {
   zoom: 1,
 
   // Which quadrant of the clock surface the glass sits in:
-  // 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'right'
-  corner: 'top-right',
+  // 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'right'
+  // Only the starting place: the glass can be dragged anywhere on the surface,
+  // and a drag overrides this until the page is reloaded.
+  corner: 'top-left',
 
   // Float the glass over the dial instead of reserving a column for it. False
   // restores the old behaviour, where the clock shrank to make room.
@@ -44,17 +46,28 @@ var CLOCK_CONFIG = {
   traceSteps: 140
  },
 
+ // The two pens: the path the epicycle tips have drawn across the dial.
  psiRecord: {
-  // Width of one bin of the pawl's paper, in psi units. Smaller resolves the
-  // treads more finely and costs memory: the array spans psi up to `maxPsi`.
-  binWidth: .02,
-  maxPsi: 5400,
+  // How many samples of the path are kept. When it fills, every other sample
+  // is dropped, so the trail still spans the whole history at half the
+  // resolution rather than losing its beginning. Costs 5 floats each.
+  cap: 8000,
 
-  // Most samples one frame may walk before the record gives up and starts a
+  // Most samples one frame may walk before the trail gives up and starts a
   // fresh sheet. A jump larger than this cannot be written honestly.
-  budget: 3000,
+  budget: 2000,
 
-  // Ink of the groove written on the dial.
-  ink: '#c9a55c'
+  // Teal: every searched zero. Orange: the zeros tau had passed at the moment
+  // that stretch was drawn. The gap between them is what climbing the critical
+  // strip has yet to buy.
+  inkFull: '#7fd3c0',
+  inkPassed: '#f3aa77',
+
+  // One turn per unit of psi means successive turns are only radius/count
+  // apart, a few pixels once the clock is past fifty. Thin and faint, or the
+  // record closes over the dial it is written on.
+  width: .6,
+  alphaFull: .17,
+  alphaPassed: .42
  }
 };

@@ -1,5 +1,5 @@
 import { countedPsi, passedZeros, psiEpicycles, psiIndexAt, psiTrace, psiTrend } from '../math/psi';
-import type { PsiRecord } from '../math/psi';
+import type { PsiTrail } from '../math/psi';
 import type { Complex } from '../core/contracts';
 import type { PsiBirth } from '../math/psi';
 
@@ -7,7 +7,8 @@ export interface PsiSceneFrame {
  time:number; tau:number; heights:readonly number[]; events:readonly PsiBirth[];
  colour:(p:number)=>string; origin:number; radius:number;
  activePane:{radius:number;angle:number;span:number}|null;
- record?:PsiRecord|null;
+ trail?:PsiTrail|null;
+ top:number;
  options?:PsiOptions;
 }
 /** Tunable defaults, supplied by the page from CLOCK_CONFIG. */
@@ -38,7 +39,11 @@ export function psiScene(frame:PsiSceneFrame){
   reach=Math.max(reach,Math.abs(q[0]-centre),Math.abs(q[1]+lift-mid));}
  if(Number.isFinite(exactOf(frame,x)))reach=Math.max(reach,Math.abs(exactOf(frame,x)-centre));
  const band=(lift+spread)/2;
- return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,spread,band,reach,
+ // The mechanism sits on the beat hand: one turn of the dial per unit of x,
+ // radius carrying psi. That is what makes the tip a write head -- its path
+ // across the face IS the history, rather than something drawn to resemble it.
+ const angle=frame.top+2*Math.PI*(x-Math.floor(x)),ux=Math.cos(angle),uy=Math.sin(angle);
+ return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,spread,band,reach,angle,ux,uy,
   current:event&&x<event.q+1?event:null,
   unit:frame.radius/Math.max(1,x),centre};
 }
@@ -55,7 +60,7 @@ export function drawPsiMechanism(c:CanvasRenderingContext2D,frame:PsiSceneFrame,
  const s=psiScene(frame),C=frame.origin,u=s.unit,pen=1/pixelScale;
  if(!(s.x>=2)){return s;}
  const lift=s.lift;
- const at=(re:number,im=0)=>[C+u*im,C-u*re];
+ const at=(re:number,im=0)=>[C+u*(re*s.ux-im*s.uy),C+u*(re*s.uy+im*s.ux)];
  c.save();c.lineCap='round';c.lineJoin='round';
 
  // The high-precision path: where the tip has been and is going, from every
@@ -159,7 +164,9 @@ export class PsiLens {
   // hanging outside the glass exactly when tau had bought enough zeros to make
   // it worth looking at.
   const extent=Math.max(1.5,1.25*Math.log(Math.max(s.x,2)),Math.sqrt(s.x)*.35,s.reach*1.18)/zoom;
-  const focus=matrix.transformPoint(new DOMPoint(frame.origin+s.unit*s.band,frame.origin-s.unit*s.centre)),sourceRadius=extent*s.unit,scale=r/sourceRadius;
+  const focus=matrix.transformPoint(new DOMPoint(
+   frame.origin+s.unit*(s.centre*s.ux-s.band*s.uy),
+   frame.origin+s.unit*(s.centre*s.uy+s.band*s.ux))),sourceRadius=extent*s.unit,scale=r/sourceRadius;
   c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);c.save();c.beginPath();c.arc(w/2,h/2,r,0,2*Math.PI);c.clip();
   c.fillStyle='#0b1511';c.fillRect(0,0,w,h);
   c.translate(w/2,h/2);c.scale(scale,scale);c.translate(-focus.x,-focus.y);
@@ -180,49 +187,44 @@ export class PsiLens {
  }
 }
 
-/** The pawl's paper, wrapped onto the dial as one continuous groove.
+/** The two pens' paths, laid back onto the dial.
  *
- * A psi value v is placed at angle frac(v) of a turn and radius R*v/scale, so
- * the groove makes one turn per unit of psi and rides the clock's own
- * contraction law: what was written at the rim creeps inward as the count
- * grows, exactly as the prime annuli do. Treads -- where psi lingers between
- * one prime power and the next -- come out as bright arcs, so the staircase
- * appears as banding on the disk rather than as anything counted.
+ * Every stored sample is re-placed through the clock's CURRENT contraction, so
+ * the whole history creeps inward as the count grows, exactly as the prime
+ * annuli do, and the spiral is drawn by the same tips that are drawing it now.
+ * Nothing here is a separate rendering of psi: it is where the mechanism has
+ * been.
  *
- * Bins are gathered into a few brightness buckets and stroked once per bucket,
- * so a record of any length costs a handful of draw calls. */
-export interface PsiGrooveFrame {
- record?:PsiRecord|null; origin:number; radius:number; top:number; scale:number; ink?:string;
+ * Teal is every searched zero, the precision the instrument can reach. Orange
+ * is the precision tau actually had at each moment, so the gap between the two
+ * lines is what the climb up the critical strip has yet to buy. */
+export interface PsiTrailFrame {
+ trail?:PsiTrail|null; origin:number; radius:number; top:number; scale:number;
+ inkFull?:string; inkPassed?:string; width?:number; alphaFull?:number; alphaPassed?:number;
 }
-const GROOVE_BUCKETS=5;
-export function drawPsiGroove(c:CanvasRenderingContext2D,f:PsiGrooveFrame){
- const rec=f.record;if(!rec||rec.peak<=0)return 0;
- const C=f.origin,R=f.radius,denom=Math.max(1e-6,f.scale),w=rec.binWidth;
- const last=Math.min(rec.bins.length-1,Math.ceil(denom/w));
- const peak=Math.log1p(rec.peak);if(!(peak>0))return 0;
- const paths:Path2D[]=[];for(let i=0;i<GROOVE_BUCKETS;i++)paths.push(new Path2D());
- const sweep=2*Math.PI*w;let drawn=0;
- for(let i=0;i<=last;i++){
-  const n=rec.bins[i];if(n<=0)continue;
-  const v=i*w,r=R*v/denom;
-  // Below a couple of pixels the turns are closer than the ink is wide and the
-  // centre would just fill in; leave that to the count rather than fake it.
-  if(r<3)continue;
-  const a=f.top+2*Math.PI*(v-Math.floor(v));
-  const b=Math.min(GROOVE_BUCKETS-1,Math.floor(GROOVE_BUCKETS*Math.log1p(n)/peak));
-  paths[b].moveTo(C+r*Math.cos(a),C+r*Math.sin(a));
-  paths[b].arc(C,C,r,a,a+sweep);drawn++;
+export function drawPsiTrail(c:CanvasRenderingContext2D,f:PsiTrailFrame){
+ const tr=f.trail;if(!tr||tr.length<2)return 0;
+ const C=f.origin,u=f.radius/Math.max(1e-6,f.scale);
+ const full=new Path2D(),passed=new Path2D();
+ let drawn=0;
+ for(let i=0;i<tr.length;i++){
+  const p=tr.read(i),a=f.top+2*Math.PI*(p.x-Math.floor(p.x)),ax=Math.cos(a),ay=Math.sin(a);
+  const fx=C+u*(p.full[0]*ax-p.full[1]*ay),fy=C+u*(p.full[0]*ay+p.full[1]*ax);
+  const px=C+u*(p.passed[0]*ax-p.passed[1]*ay),py=C+u*(p.passed[0]*ay+p.passed[1]*ax);
+  // A turn of the dial is a jump of a full revolution in the stored angle, so
+  // the pen is lifted there rather than dragged back across the face.
+  const lift=i>0&&p.x-tr.read(i-1).x>.5;
+  if(i===0||lift){full.moveTo(fx,fy);passed.moveTo(px,py);}
+  else {full.lineTo(fx,fy);passed.lineTo(px,py);drawn++;}
  }
- // Almost every bin gets swept at least once, so a flat ramp paints the whole
- // disk and says nothing. The ink is weighted hard towards the bins the pawl
- // returned to -- the treads, where psi holds still between prime powers --
- // and the once-over sweep is left as the faintest hatching it can be.
- c.save();c.lineCap='butt';c.strokeStyle=f.ink||'#c9a55c';
- for(let b=0;b<GROOVE_BUCKETS;b++){
-  const k=(b+1)/GROOVE_BUCKETS;
-  c.globalAlpha=.03+.72*k**3.2;
-  c.lineWidth=.8+1.9*k**2;
-  c.stroke(paths[b]);
- }
+ // Successive turns are only radius/scale apart -- four or five pixels by the
+ // time the count reaches ninety -- so the ink has to be thin and faint or the
+ // record closes over the dial it is written on.
+ const w=f.width===undefined?.6:f.width;
+ c.save();c.lineCap='butt';c.lineJoin='round';
+ c.globalAlpha=f.alphaFull===undefined?.17:f.alphaFull;
+ c.strokeStyle=f.inkFull||'#7fd3c0';c.lineWidth=w;c.stroke(full);
+ c.globalAlpha=f.alphaPassed===undefined?.42:f.alphaPassed;
+ c.strokeStyle=f.inkPassed||'#f3aa77';c.lineWidth=w;c.stroke(passed);
  c.restore();return drawn;
 }

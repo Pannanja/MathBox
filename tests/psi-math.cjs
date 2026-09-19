@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const context={};vm.createContext(context);vm.runInContext(fs.readFileSync('.build/clock-math.js','utf8'),context);
-const {psiBirths,countedPsi,passedZeros,psiArm,psiApproximation,psiEpicycles,psiTip,psiTrace}=context.ClockMath;
+const {psiBirths,countedPsi,passedZeros,psiArm,psiApproximation,psiEpicycles,psiTip,psiTrace,PsiRecord}=context.ClockMath;
 const near=(a,b,tol=1e-11)=>assert.ok(Math.abs(a-b)<tol,`${a} != ${b}`);
 const births=psiBirths(128),plain=x=>JSON.parse(JSON.stringify(x));
 assert.deepEqual(plain(births.slice(0,8).map(e=>[e.q,e.p,e.k])),[[2,2,1],[3,3,1],[4,2,2],[5,5,1],[7,7,1],[8,2,3],[9,3,2],[11,11,1]]);
@@ -63,4 +63,26 @@ assert.equal(rise(known,known.length,58.6,59.4).down,0,'twenty zeros still canno
 assert.ok(rise(known,known.length,58.6,59.4).up>0,'but they do advance');
 near(psiEpicycles(59.2,known,known.length).endpoint,psiApproximation(59.2,known,known.length));
 for(const bad of [1,1.99,NaN,Infinity]){assert.ok(Number.isNaN(psiEpicycles(bad,heights,4).endpoint));assert.ok(Number.isNaN(psiTip(bad,heights,4)[0]));}
-console.log('Psi: LCM identity, log-prime jumps, paired closure, epicyclic shadow and trace endpoints passed.');
+// The pawl's paper. Deliberately historical, so what is pinned is that it only
+// ever grows forward, that it restarts rather than inventing ground it did not
+// watch, and that it reports the range it actually covers.
+{
+ const paper=new PsiRecord(200,.02);
+ assert.equal(paper.peak,0);assert.ok(Number.isNaN(paper.from));
+ paper.advance(20,known);assert.equal(paper.from,20,'the first advance opens the sheet at x');
+ let walked=0;for(let x=20.2;x<=34;x+=.2)walked+=paper.advance(x,known);
+ assert.ok(walked>0&&paper.upto>33&&paper.peak>0,'walking forward writes');
+ assert.equal(paper.from,20,'and never moves the start');
+ const before=paper.peak;
+ paper.advance(33.5,known);assert.equal(paper.from,33.5,'a rewind lifts the pen and starts a fresh sheet');
+ assert.equal(paper.peak,0,'the fresh sheet is blank');assert.ok(before>0);
+ paper.reset(20);for(let x=20.2;x<=34;x+=.2)paper.advance(x,known);
+ const lit=[...paper.bins].filter(v=>v>0).length;
+ assert.ok(lit>50,'the record covers a span of psi, not a point');
+ assert.equal(paper.at(-1),0);assert.equal(paper.at(1e6),0);
+ assert.ok(paper.at(psiApproximation(30,known,known.length))>0,'psi at a walked x is lit');
+ // A jump too big to walk inside the budget restarts rather than crawling.
+ const jumped=new PsiRecord(6000,.02);jumped.advance(20,known);
+ assert.equal(jumped.advance(4000,known),0);assert.equal(jumped.from,4000);
+}
+console.log('Psi: LCM identity, log-prime jumps, paired closure, epicyclic shadow, trace endpoints and the written record passed.');

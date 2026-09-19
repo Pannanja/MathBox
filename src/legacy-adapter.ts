@@ -12,6 +12,6 @@ export { drawComplexPlane } from './render/complex-plane';
 export { viewDomain } from './core/view-domains';
 export { mountWorkspace } from './ui/workspace';
 export { resizePlot, plotBounds, plotBand, clipPlot, plotFont } from './render/viewport';
-export { psiBirths, psiIndexAt, countedPsi, psiTrend, psiZeroVector, passedZeros, psiApproximation, psiArm, psiEpicycles, psiTip, psiTrace } from './math/psi';
+export { psiBirths, psiIndexAt, countedPsi, psiTrend, psiZeroVector, passedZeros, psiApproximation, psiArm, psiEpicycles, psiTip, psiTrace, PsiRecord } from './math/psi';
 export { PsiLens, psiScene, drawPsiMechanism } from './scenes/psi-lens';
 export function createIntegralWorker(): Worker { return new IntegralWorker(); }

@@ -1,4 +1,5 @@
 import { countedPsi, passedZeros, psiEpicycles, psiIndexAt, psiTrace, psiTrend } from '../math/psi';
+import type { PsiRecord } from '../math/psi';
 import type { Complex } from '../core/contracts';
 import type { PsiBirth } from '../math/psi';
 
@@ -6,7 +7,9 @@ export interface PsiSceneFrame {
  time:number; tau:number; heights:readonly number[]; events:readonly PsiBirth[];
  colour:(p:number)=>string; origin:number; radius:number;
  activePane:{radius:number;angle:number;span:number}|null;
+ record?:PsiRecord|null;
 }
+const exactOf=(frame:PsiSceneFrame,x:number)=>countedPsi(frame.events,x);
 export function psiScene(frame:PsiSceneFrame){
  const x=frame.time,count=passedZeros(frame.heights,frame.tau),index=psiIndexAt(frame.events,x),event=frame.events[index];
  const full=psiEpicycles(x,frame.heights,frame.heights.length),partial=psiEpicycles(x,frame.heights,count);
@@ -14,9 +17,18 @@ export function psiScene(frame:PsiSceneFrame){
  // crosses it, low enough that it still reads as hanging off that axis.
  let spread=0;for(const q of partial.points)if(Number.isFinite(q[1]))spread=Math.max(spread,Math.abs(q[1]));
  const lift=x>=2?spread+.14*Math.sqrt(x):0;
- return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,
+ // How far the drawn mechanism actually gets from the trend, so the lens can
+ // frame what is there instead of a guess that leaves the chain outside.
+ const centre=x>=2?psiTrend(x):0;
+ const mid=(lift+spread)/2;
+ let reach=Math.abs(mid);
+ for(const q of partial.points)if(Number.isFinite(q[0])){
+  reach=Math.max(reach,Math.abs(q[0]-centre),Math.abs(q[1]+lift-mid));}
+ if(Number.isFinite(exactOf(frame,x)))reach=Math.max(reach,Math.abs(exactOf(frame,x)-centre));
+ const band=(lift+spread)/2;
+ return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,spread,band,reach,
   current:event&&x<event.q+1?event:null,
-  unit:frame.radius/Math.max(1,x),centre:x>=2?psiTrend(x):0};
+  unit:frame.radius/Math.max(1,x),centre};
 }
 /** One vector scene for both the clock and microscope: no independent graph coordinates.
  * The chain is a true epicyclic chain, lifted clear of the meeting axis so it can
@@ -53,6 +65,24 @@ export function drawPsiMechanism(c:CanvasRenderingContext2D,frame:PsiSceneFrame,
   c.globalAlpha=.62;c.strokeStyle='#7fd3c0';c.lineWidth=1.4*pen;c.beginPath();
   trace.forEach((q:Complex,i:number)=>{const p=at(q[0],q[1]+lift);i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]);});
   c.stroke();
+ }
+
+ // The written record: every rise the pawl has already marked, still on the
+ // paper. Bins are aggregated to at least a pixel so a long record costs the
+ // same to draw as a short one.
+ const rec=frame.record;
+ if(rec&&rec.peak>0&&Number.isFinite(rec.from)){
+  const pxPerBin=u*rec.binWidth*pixelScale,stride=Math.max(1,Math.ceil(1/Math.max(1e-6,pxPerBin)));
+  const lastBin=Math.min(rec.bins.length-1,Math.ceil(s.x/rec.binWidth));
+  c.lineCap='butt';c.strokeStyle='#c9a55c';
+  for(let i=0;i<=lastBin;i+=stride){
+   let best=0;for(let k=i;k<i+stride&&k<=lastBin;k++)if(rec.bins[k]>best)best=rec.bins[k];
+   if(best<=0)continue;
+   const a=at(i*rec.binWidth),b=at(Math.min(s.x,(i+stride)*rec.binWidth));
+   c.globalAlpha=.07+.62*Math.min(1,Math.log1p(best)/Math.log1p(rec.peak))**1.6;
+   c.lineWidth=2.4*pen;c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke();
+  }
+  c.lineCap='round';
  }
 
  // The ratchet: the foot only marks the axis while the reconstruction is
@@ -128,13 +158,18 @@ export class PsiLens {
   const dpr=Math.min(3,devicePixelRatio||1),w=rect.width,h=rect.height,r=Math.min(w,h)/2-3;
   if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
   const c=canvas.getContext('2d')!,s=psiScene(frame);
-  const extent=Math.max(1.5,1.25*Math.log(Math.max(s.x,2)),Math.sqrt(s.x)*.35)/zoom;
-  const focus=matrix.transformPoint(new DOMPoint(frame.origin+s.unit*s.lift*.5,frame.origin-s.unit*s.centre)),sourceRadius=extent*s.unit,scale=r/sourceRadius;
+  // Frame what the mechanism actually occupies. A fixed guess left the chain
+  // hanging outside the glass exactly when tau had bought enough zeros to make
+  // it worth looking at.
+  const extent=Math.max(1.5,1.25*Math.log(Math.max(s.x,2)),Math.sqrt(s.x)*.35,s.reach*1.18)/zoom;
+  const focus=matrix.transformPoint(new DOMPoint(frame.origin+s.unit*s.band,frame.origin-s.unit*s.centre)),sourceRadius=extent*s.unit,scale=r/sourceRadius;
   c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);c.save();c.beginPath();c.arc(w/2,h/2,r,0,2*Math.PI);c.clip();
   c.fillStyle='#0b1511';c.fillRect(0,0,w,h);
   c.translate(w/2,h/2);c.scale(scale,scale);c.translate(-focus.x,-focus.y);
-  // The actual clock backdrop, captured immediately before drawing this mechanism.
-  c.globalAlpha=.6;c.drawImage(source,0,0);c.globalAlpha=1;
+  // No clock bitmap here. Magnifying the clock canvas twenty times is magnifying
+  // its pixels, and the backdrop turned into coloured fog that buried the very
+  // mechanism this lens exists to show. Everything inside the glass is redrawn
+  // as geometry at the lens's own scale, so it is sharp at any magnification.
   c.transform(matrix.a,matrix.b,matrix.c,matrix.d,matrix.e,matrix.f);
   drawPsiMechanism(c,frame,scale);
   c.restore();c.strokeStyle='#a9c1ad77';c.lineWidth=1;c.beginPath();c.arc(w/2,h/2,r,0,2*Math.PI);c.stroke();

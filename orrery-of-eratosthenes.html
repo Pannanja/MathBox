@@ -2411,7 +2411,12 @@ applyZeros(zeroHeights);
 
 // One clock scene, inspected through a circular camera with a uniform scale.
 let psiStairAim=0,psiStairMix=0,psiPredicted=NaN,psiPassedPredicted=NaN;
-let psiZoom=2,psiLens=null,psiLensReadout=null,psiSceneFrame=null,psiSceneMatrix=null,psiHeld=null;
+let psiZoom=1,psiLens=null,psiLensReadout=null,psiSceneFrame=null,psiSceneMatrix=null,psiHeld=null;
+// The pawl's paper. It follows the clock's own x, not the lens's held x, so
+// holding x to study one interval does not stop the record being written.
+// Built on first draw, never at load: ClockMath is assigned further down the
+// same concatenated script, so touching it at top level is a TDZ fault.
+let psiPaper=null,psiPaperZeros=0;
 const psiContext=document.createElement('canvas'),psiContext2=psiContext.getContext('2d');
 const psiEvents=[];
 for(let p=2;p<=limit;p++){if(!isPrime(p))continue;for(let q=p,k=1;q<=limit;q*=p,k++)psiEvents.push({q,p,k,rise:Math.log(p)});}
@@ -2425,6 +2430,10 @@ function drawPsiStair(){
  const event=psiEvents[psiIndex(x)],active=event&&x<event.q+1?event:null,span=active?panelSpan(active.q,x):null;
  psiSceneFrame={time:x,tau:TAUV,heights:zeroHeights,events:psiEvents,colour:primeInk,origin:C,radius:R,
   activePane:active?{radius:clockRadius(active.q),angle:span.c0,span:span.w}:null};
+ if(!psiPaper)psiPaper=new ClockMath.PsiRecord();
+ if(zeroHeights.length!==psiPaperZeros){psiPaper.reset(t);psiPaperZeros=zeroHeights.length;}
+ psiPaper.advance(t,zeroHeights);
+ psiSceneFrame.record=psiPaper;
  psiSceneMatrix=g2.getTransform();
  if(psiStairAim){
   if(psiContext.width!==g2.canvas.width||psiContext.height!==g2.canvas.height){psiContext.width=g2.canvas.width;psiContext.height=g2.canvas.height;}
@@ -2438,7 +2447,7 @@ function ensurePsiLens(){
  const lens=document.createElement('section');lens.id='psiMagnifier';lens.setAttribute('aria-label','Psi microscope');
  lens.innerHTML=`<canvas id="psiDetailCanvas" role="img" aria-label="Circular magnification of the clock’s psi epicycles and the path they trace"></canvas>
  <div id="psiLegend"><span class="counted">● Counted</span><span class="reference">● Reference</span><span class="developing">● Passed</span></div>
- <div class="psi-tools"><button id="psiHold" aria-pressed="false" title="Hold x still while the clock plays on">Hold x</button><label>Zoom <input id="psiZoom" aria-label="Microscope magnification" type="range" min="0.5" max="8" step="0.05" value="2"></label><button id="psiExplain" aria-expanded="false" aria-label="About the psi microscope" title="About this mechanism">?</button><button id="psiClose" aria-label="Close psi microscope">×</button></div>
+ <div class="psi-tools"><button id="psiHold" aria-pressed="false" title="Hold x still while the clock plays on">Hold x</button><label>Zoom <input id="psiZoom" aria-label="Microscope magnification" type="range" min="0.5" max="8" step="0.05" value="1"></label><button id="psiExplain" aria-expanded="false" aria-label="About the psi microscope" title="About this mechanism">?</button><button id="psiClose" aria-label="Close psi microscope">×</button></div>
  <p id="psiExplanation" hidden><span id="psiReadout"></span>This lens enlarges the marked circle on the clock. The same rotating arms and pane arcs keep their positions and proportions. Scroll over the lens to zoom.<br><br>Each zero pair is one turning arm, and the arms hang just clear of the meeting axis so they can be read while they whip through a birth. Only the <em>shadow</em> on that axis is ψ: the dashed drop and its foot are the value, never the tip. Coloured arms are the heights up to |τ|, and their colour walks from teal to orange as more are found; the dim chain behind them is every searched zero. The teal path is where the tip has just been. The count itself is not drawn — the panes are the count, and the lit pane is the one printing now. Prediction and count may differ: at a step, the infinite formula targets its midpoint. Hold x to keep one interval still while τ climbs and the arms multiply.</p>`;
  $('clockSurface').append(lens);psiLens=new ClockMath.PsiLens();
  const tether=document.createElementNS('http://www.w3.org/2000/svg','svg');tether.id='psiTether';tether.setAttribute('aria-hidden','true');tether.innerHTML='<path fill="none" stroke="#a9c1ad55" stroke-width="1"/><circle fill="#a9c1ad08" stroke="#a9c1ad88" stroke-width="1"/>';$('clockSurface').append(tether);
@@ -3693,12 +3702,76 @@ var ClockMath = (function(exports) {
     }
     return out;
   }
+  class PsiRecord {
+    binWidth;
+    bins;
+    from = NaN;
+    upto = NaN;
+    peak = 0;
+    constructor(maxPsi = 5400, binWidth = 0.02) {
+      this.binWidth = binWidth;
+      this.bins = new Float32Array(Math.ceil(maxPsi / binWidth) + 2);
+    }
+    reset(at = NaN) {
+      this.bins.fill(0);
+      this.peak = 0;
+      this.from = at;
+      this.upto = at;
+    }
+    mark(a, b) {
+      const w = this.binWidth, lo = Math.max(0, Math.floor(Math.min(a, b) / w)), hi = Math.min(this.bins.length - 1, Math.ceil(Math.max(a, b) / w));
+      for (let i = lo; i <= hi; i++) {
+        const v = this.bins[i] + 1;
+        this.bins[i] = v;
+        if (v > this.peak) this.peak = v;
+      }
+    }
+    /** Walk the record up to x. Returns how many samples it took, so a caller can
+     * see when a jump outran the budget and the sheet was restarted. */
+    advance(x, heights, budget = 3e3) {
+      if (!(x >= 2) || !heights.length) return 0;
+      const top = Math.max(1, heights[heights.length - 1]);
+      const stepAt = (at2) => Math.max(1e-4, 2 * Math.PI * Math.max(at2, 2) / top / 8);
+      if (!Number.isFinite(this.upto) || x < this.upto) {
+        this.reset(x);
+        return 0;
+      }
+      if ((x - this.upto) / stepAt(this.upto) > budget) {
+        this.reset(x);
+        return 0;
+      }
+      let walked = 0, prev = psiTip(this.upto, heights, heights.length)[0], at = this.upto;
+      while (at < x && walked < budget) {
+        at = Math.min(x, at + stepAt(at));
+        const now = psiTip(at, heights, heights.length)[0];
+        if (now > prev) this.mark(prev, now);
+        prev = now;
+        this.upto = at;
+        walked++;
+      }
+      return walked;
+    }
+    /** Brightness of the written band at a psi value, 0..1. */
+    at(psi) {
+      const i = Math.floor(psi / this.binWidth);
+      return i < 0 || i >= this.bins.length || this.peak <= 0 ? 0 : this.bins[i] / this.peak;
+    }
+  }
+  const exactOf = (frame, x) => countedPsi(frame.events, x);
   function psiScene(frame) {
     const x = frame.time, count = passedZeros(frame.heights, frame.tau), index = psiIndexAt(frame.events, x), event = frame.events[index];
     const full = psiEpicycles(x, frame.heights, frame.heights.length), partial = psiEpicycles(x, frame.heights, count);
     let spread = 0;
     for (const q of partial.points) if (Number.isFinite(q[1])) spread = Math.max(spread, Math.abs(q[1]));
     const lift = x >= 2 ? spread + 0.14 * Math.sqrt(x) : 0;
+    const centre = x >= 2 ? psiTrend(x) : 0;
+    const mid = (lift + spread) / 2;
+    let reach = Math.abs(mid);
+    for (const q of partial.points) if (Number.isFinite(q[0])) {
+      reach = Math.max(reach, Math.abs(q[0] - centre), Math.abs(q[1] + lift - mid));
+    }
+    if (Number.isFinite(exactOf(frame, x))) reach = Math.max(reach, Math.abs(exactOf(frame, x) - centre));
+    const band = (lift + spread) / 2;
     return {
       x,
       count,
@@ -3707,9 +3780,12 @@ var ClockMath = (function(exports) {
       full,
       partial,
       lift,
+      spread,
+      band,
+      reach,
       current: event && x < event.q + 1 ? event : null,
       unit: frame.radius / Math.max(1, x),
-      centre: x >= 2 ? psiTrend(x) : 0
+      centre
     };
   }
   const TRACE_SPAN = 0.7, TRACE_STEPS = 140;
@@ -3743,6 +3819,26 @@ var ClockMath = (function(exports) {
         i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]);
       });
       c.stroke();
+    }
+    const rec = frame.record;
+    if (rec && rec.peak > 0 && Number.isFinite(rec.from)) {
+      const pxPerBin = u * rec.binWidth * pixelScale, stride = Math.max(1, Math.ceil(1 / Math.max(1e-6, pxPerBin)));
+      const lastBin = Math.min(rec.bins.length - 1, Math.ceil(s.x / rec.binWidth));
+      c.lineCap = "butt";
+      c.strokeStyle = "#c9a55c";
+      for (let i = 0; i <= lastBin; i += stride) {
+        let best = 0;
+        for (let k = i; k < i + stride && k <= lastBin; k++) if (rec.bins[k] > best) best = rec.bins[k];
+        if (best <= 0) continue;
+        const a = at(i * rec.binWidth), b = at(Math.min(s.x, (i + stride) * rec.binWidth));
+        c.globalAlpha = 0.07 + 0.62 * Math.min(1, Math.log1p(best) / Math.log1p(rec.peak)) ** 1.6;
+        c.lineWidth = 2.4 * pen;
+        c.beginPath();
+        c.moveTo(a[0], a[1]);
+        c.lineTo(b[0], b[1]);
+        c.stroke();
+      }
+      c.lineCap = "round";
     }
     if (track.length > 1) {
       c.lineCap = "butt";
@@ -3871,8 +3967,8 @@ var ClockMath = (function(exports) {
         canvas.height = Math.round(h * dpr);
       }
       const c = canvas.getContext("2d"), s = psiScene(frame);
-      const extent = Math.max(1.5, 1.25 * Math.log(Math.max(s.x, 2)), Math.sqrt(s.x) * 0.35) / zoom;
-      const focus = matrix.transformPoint(new DOMPoint(frame.origin + s.unit * s.lift * 0.5, frame.origin - s.unit * s.centre)), sourceRadius = extent * s.unit, scale = r / sourceRadius;
+      const extent = Math.max(1.5, 1.25 * Math.log(Math.max(s.x, 2)), Math.sqrt(s.x) * 0.35, s.reach * 1.18) / zoom;
+      const focus = matrix.transformPoint(new DOMPoint(frame.origin + s.unit * s.band, frame.origin - s.unit * s.centre)), sourceRadius = extent * s.unit, scale = r / sourceRadius;
       c.setTransform(dpr, 0, 0, dpr, 0, 0);
       c.clearRect(0, 0, w, h);
       c.save();
@@ -3884,9 +3980,6 @@ var ClockMath = (function(exports) {
       c.translate(w / 2, h / 2);
       c.scale(scale, scale);
       c.translate(-focus.x, -focus.y);
-      c.globalAlpha = 0.6;
-      c.drawImage(source, 0, 0);
-      c.globalAlpha = 1;
       c.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
       drawPsiMechanism(c, frame, scale);
       c.restore();
@@ -3924,6 +4017,7 @@ var ClockMath = (function(exports) {
   }
   exports.LogArmScene = LogArmScene;
   exports.PsiLens = PsiLens;
+  exports.PsiRecord = PsiRecord;
   exports.XiArmScene = XiArmScene;
   exports.clipPlot = clipPlot;
   exports.countedPsi = countedPsi;

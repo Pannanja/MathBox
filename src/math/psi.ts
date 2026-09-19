@@ -80,3 +80,49 @@ export function psiTrace(heights:readonly number[],count:number,from:number,to:n
  }
  return out;
 }
+
+/** The pawl's paper. The ratchet marks the axis only while psi rises, and this
+ * keeps those marks instead of letting them scroll out of the window.
+ *
+ * Deliberately historical: unlike the rest of the psi drawing, this is not a
+ * pure function of x, because a written record is exactly a record of the route
+ * taken. Rewinding past what it holds lifts the pen and starts a fresh sheet,
+ * which is why `from` is reported -- the record never claims to cover ground it
+ * did not watch. Phase 10's scrub-identity audit should treat it like trails.
+ *
+ * Bins are indexed by psi, not by x, so a band grows bright where the pawl
+ * worked the same stretch over and over: the treads of the staircase, which is
+ * where psi lingers between one prime power and the next. */
+export class PsiRecord {
+ readonly binWidth:number; readonly bins:Float32Array;
+ from=NaN; upto=NaN; peak=0;
+ constructor(maxPsi=5400,binWidth=.02){this.binWidth=binWidth;this.bins=new Float32Array(Math.ceil(maxPsi/binWidth)+2);}
+ reset(at=NaN){this.bins.fill(0);this.peak=0;this.from=at;this.upto=at;}
+ private mark(a:number,b:number){
+  const w=this.binWidth,lo=Math.max(0,Math.floor(Math.min(a,b)/w)),hi=Math.min(this.bins.length-1,Math.ceil(Math.max(a,b)/w));
+  for(let i=lo;i<=hi;i++){const v=this.bins[i]+1;this.bins[i]=v;if(v>this.peak)this.peak=v;}
+ }
+ /** Walk the record up to x. Returns how many samples it took, so a caller can
+  * see when a jump outran the budget and the sheet was restarted. */
+ advance(x:number,heights:readonly number[],budget=3000):number{
+  if(!(x>=2)||!heights.length)return 0;
+  const top=Math.max(1,heights[heights.length-1]);
+  // The ring widens with x, so the step has to be taken where the pen is, not
+  // where it is going. Sizing it from the target would let a jump to 4000 cross
+  // the crowded low ground in strides forty units wide and write fiction.
+  const stepAt=(at:number)=>Math.max(1e-4,2*Math.PI*Math.max(at,2)/top/8);
+  if(!Number.isFinite(this.upto)||x<this.upto)  {this.reset(x);return 0;}
+  if((x-this.upto)/stepAt(this.upto)>budget){this.reset(x);return 0;}
+  let walked=0,prev=psiTip(this.upto,heights,heights.length)[0],at=this.upto;
+  while(at<x&&walked<budget){
+   at=Math.min(x,at+stepAt(at));
+   const now=psiTip(at,heights,heights.length)[0];
+   if(now>prev)this.mark(prev,now);
+   prev=now;this.upto=at;walked++;
+  }
+  return walked;
+ }
+ /** Brightness of the written band at a psi value, 0..1. */
+ at(psi:number){const i=Math.floor(psi/this.binWidth);
+  return i<0||i>=this.bins.length||this.peak<=0?0:this.bins[i]/this.peak;}
+}

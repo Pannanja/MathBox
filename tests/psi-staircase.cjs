@@ -1,92 +1,27 @@
-// The zero search, and psi(x) drawn as a radial staircase against it.
-const {chromium}=require('C:/Users/ZackO/AppData/Local/npm-cache/_npx/27c922a03b377bcf/node_modules/playwright');const assert=require('node:assert/strict'),path=require('node:path');
-const page_url='file://'+path.resolve(__dirname,'..','orrery-of-eratosthenes.html');
-(async()=>{
- const b=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});const page=await b.newPage({viewport:{width:1400,height:900}});
- const errs=[];page.on('pageerror',e=>errs.push(String(e)));
- await page.goto(page_url);await page.waitForTimeout(400);
- // This suite holds s still while the clock moves, through the drive's control.
- await page.evaluate(()=>{const c=document.getElementById('tauDriveOn');c.checked=false;c.dispatchEvent(new Event('input',{bubbles:true}));});
-
- // The tabulated thirty are there before the search returns.
- assert.ok(await page.evaluate(()=>zeroHeights.length)>=30,'seeded from the table');
- await page.waitForFunction(()=>zeroSearchNote.includes('found to'),{timeout:60000});
- const found=await page.evaluate(()=>zeroHeights.length);
- assert.strictEqual(found,649,'every zero below the evaluator\u2019s trusted height');
- // theta(T)/pi + 1 counts the zeros below T. Agreement is the search's own proof
- // that it stepped over none of them.
- const expected=await page.evaluate(()=>{const h=ZERO_LIMIT/2,w=1/ZERO_LIMIT;
-  return (h*Math.log(h/Math.PI)-h-Math.PI/8+w/48+7*w**3/5760)/Math.PI+1;});
- assert.ok(Math.abs(found-expected)<1,'count agrees with \u03b8(T)/\u03c0 + 1, got '+found+' against '+expected.toFixed(2));
- // Located, not looked up: the found heights match the known ones exactly.
+// Search regression and the real-axis replacement for the old radial spiral.
+const {chromium}=require('C:/Users/ZackO/AppData/Local/npm-cache/_npx/27c922a03b377bcf/node_modules/playwright');
+const assert=require('node:assert/strict'),path=require('node:path');
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});try{
+ const page=await browser.newPage({viewport:{width:1400,height:900}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file:///'+path.resolve('orrery-of-eratosthenes.html').replaceAll('\\','/'));
+ assert.ok(await page.evaluate(()=>zeroHeights.length)>=30);
+ await page.waitForFunction(()=>zeroSearchNote.includes('found to'),{timeout:30000});
+ assert.equal(await page.evaluate(()=>zeroHeights.length),649,'regression count to height 1000; not a completeness proof');
  const known=[14.134725141734695,21.022039638771555,25.01085758014569,30.424876125859513];
- const top=await page.evaluate(()=>zeroHeights.slice(0,4));
- top.forEach((g,i)=>assert.ok(Math.abs(g-known[i])<1e-9,'zero '+i+' is '+g+', wanted '+known[i]));
- assert.ok(await page.evaluate(()=>zeroHeights.every((g,i)=>i===0||g>zeroHeights[i-1])),'heights increase');
- // One table, so reconstruction() and the epicycles cannot drift apart.
- assert.deepStrictEqual(await page.evaluate(()=>[heights.length,heights[0],heights[648]]),
-                        await page.evaluate(()=>[zeroHeights.length,zeroHeights[0],zeroHeights[648]]),'heights is the same list');
- assert.strictEqual(await page.evaluate(()=>+document.getElementById('zeroDial').max),649,'the dial reaches every zero');
- assert.strictEqual(await page.evaluate(()=>+document.getElementById('zeroDial').value),649,'and opens on all of them');
-
- // The ledger the staircase draws: a jump of log p at each prime power.
- assert.strictEqual(await page.evaluate(()=>psiAt(1.5)),0,'nothing counted below two');
- for(const [x,want] of [[2,Math.log(2)],[3.5,Math.log(2)+Math.log(3)],[4,Math.log(2)*2+Math.log(3)]])
-  assert.ok(Math.abs(await page.evaluate(v=>psiAt(v),x)-want)<1e-12,'\u03c8('+x+')');
- assert.strictEqual(await page.evaluate(()=>psiAt(6)-psiAt(5.5)),0,'six is not a prime power');
-
- // The staircase is a lens of its own, off until it is asked for.
- assert.strictEqual(await page.evaluate(()=>psiStairAim),0,'off at the start');
- await page.evaluate(()=>{sumAim=0;syncLenses();document.getElementById('psiStair').click();jumpClock(60.5);});
- await page.waitForTimeout(1200);
- assert.strictEqual(await page.getAttribute('#psiStair','aria-pressed'),'true','the button reports itself lit');
- assert.ok(await page.evaluate(()=>psiStairMix)>.9,'the lens has faded in');
-
- // The stair grows from the first beat rather than arriving whole, and psi = 0
- // is the origin rather than a ring some way out.
- assert.strictEqual(await page.evaluate(()=>STAIR_IN),0,'zero sits at the centre');
- for(const [at,want] of [[1.6,0],[2.4,Math.log(2)],[3.5,Math.log(6)]]){
-  await page.evaluate(x=>jumpClock(x),at);await page.waitForTimeout(700);
-  assert.ok(Math.abs(await page.evaluate(()=>psiAt(t))-want)<1e-9,'psi counted at '+at);
-  // The sweep spans the whole history at every count, so nothing pops into view.
-  const span=await page.evaluate(()=>{const f=x=>2*Math.PI*STAIR_TURN*(x-1)/Math.max(1e-9,t-1);return [f(1),f(t)];});
-  assert.deepStrictEqual(span.map(v=>+v.toFixed(6)),[0,+(2*Math.PI*0.92).toFixed(6)],'the stair spans its whole history at t='+at);
+ (await page.evaluate(()=>zeroHeights.slice(0,4))).forEach((g,i)=>assert.ok(Math.abs(g-known[i])<1e-9));
+ assert.ok(await page.evaluate(()=>zeroHeights.every((g,i)=>!i||g>zeroHeights[i-1])));
+ assert.equal(await page.evaluate(()=>psiStairAim),0);
+ await page.locator('#appearanceButton').click();await page.locator('#psiStair').click();
+ for(const x of [1,1.6,2.4,3.5,60.5,120.5]){
+  await page.evaluate(x=>jumpClock(x),x);await page.waitForTimeout(250);
+  const r=await page.evaluate(()=>({time:t,exact:psiAt(t),predicted:psiPredicted,lens:psiLensReadout}));
+  assert.ok(Math.abs(r.time-x)<1e-10);assert.equal(r.exact,r.lens.exact);
+  if(x<2){assert.ok(Number.isNaN(r.predicted));assert.ok((await page.textContent('#psiReadout')).includes('starts at x = 2'));}
+  else assert.ok(Math.abs(r.predicted-r.lens.full)<1e-10);
+  if(x>60)assert.ok(Math.abs(r.exact-r.predicted)<.35,'local reference accuracy at '+x);
  }
- // Before two, smooth(x) is still running away, so the trend and the chain stay
- // off and the reading falls back on what was counted.
- await page.evaluate(()=>jumpClock(1.6));await page.waitForTimeout(700);
- assert.strictEqual(await page.evaluate(()=>Number.isFinite(psiPredicted)),false,'no formula below two');
- assert.ok((await page.textContent('#reading')).includes('the formula waits'),'and the reading says so');
- await page.evaluate(()=>jumpClock(60.5));await page.waitForTimeout(900);
-
- // The formula, summed over every zero found, against what the clock counted.
- const [counted,predicted]=await page.evaluate(()=>[psiAt(t),psiPredicted]);
- assert.ok(Math.abs(counted-predicted)<.35,'649 zeros reproduce \u03c8(60.5): counted '+counted+', predicted '+predicted);
- // Thirty cannot: the truncation blurs features of order 2*pi*x/T.
- await page.evaluate(()=>{const d=document.getElementById('zeroDial');d.value='30';d.dispatchEvent(new Event('input',{bubbles:true}));});
- await page.waitForTimeout(900);
- const coarse=await page.evaluate(()=>psiPredicted);
- assert.ok(Math.abs(counted-coarse)>Math.abs(counted-predicted),'thirty zeros land further off than 649');
- assert.strictEqual(await page.evaluate(()=>zeroAuto),false,'touching the dial ends the automatic count');
-
- // The staircase is drawn true. Magnifying the mechanism is its own view, so
- // the dial that blended the two rulers is gone and the seam sits at zero.
- assert.strictEqual(await page.evaluate(()=>document.getElementById('stairScale')),null,'no departure control');
- assert.strictEqual(await page.evaluate(()=>stairScale),0,'the departure is drawn true');
-
- // The trend climbs: a value at the head of the stair sits far outside the same
- // value at its foot, whatever the lift.
- for(const scale of [0,1]){
-  await page.evaluate(v=>{stairScale=v;},scale);
-  const [inner,outer]=await page.evaluate(()=>{const R0=408,f=v=>R0*(STAIR_IN+(STAIR_OUT-STAIR_IN)*v/t);return [f(smooth(3)),f(smooth(t))];});
-  assert.ok(outer>inner*4,'the stair climbs at lift '+scale+': '+inner.toFixed(1)+' to '+outer.toFixed(1));
-  assert.ok(outer<408,'and stays inside the rim');
- }
- await page.evaluate(()=>{stairScale=0;});
- // The lifted departure is bounded by the radius it rides, so it never reaches
- // back through the origin however small the count.
- assert.ok(await page.evaluate(()=>{for(let x=2.01;x<t;x+=.01){const d=psiResidual(psiAt(x),x);if(1+STAIR_GAIN*d<=.15)return false;}return true;}),'the departure never folds through the centre');
- assert.deepStrictEqual(errs,[],'no page errors');
- console.log('psi staircase: '+found+' zeros, \u03c8(60.5) counted '+counted.toFixed(3)+' against '+predicted.toFixed(3)+' predicted');
- await b.close();
-})();
+ const independent=await page.evaluate(()=>psiPredicted);
+ await page.evaluate(()=>tune(2.5,tauAim));await page.waitForTimeout(400);
+ assert.equal(await page.evaluate(()=>psiPredicted),independent,'psi is independent of explorer sigma');
+ assert.deepEqual(errors,[]);console.log('Psi search and real-axis reference regressions passed.');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

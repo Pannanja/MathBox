@@ -11,5 +11,5 @@ const workspaceGuide=updateGuide;
 updateGuide=function(){workspaceGuide();
  if(!selectedPrime){mechanics.textContent='Hover a prime arc or product point to measure its complementary sector. Click to pin.';return;}
  const p=selectedPrime,span=panelSpan(p,t),fraction=1-span.w/(2*Math.PI),z=sub([1,0],power(p,SIGMA,TAUV));
- mechanics.textContent='p = '+p+(pinnedPrime===p?' · pinned':' · preview')+' · sector remainder '+(fraction*100).toFixed(2)+'%'+(t<p?' (not born)':t<p+1?' (growing)':' = 1 − 1/'+p)+'. Weighted 1 − '+p+'⁻ˢ = '+complexText(z)+'. '+(t>=p+1&&Math.abs(SIGMA-1)<1e-5&&Math.abs(TAUV)<1e-5?'Equal at s = 1.':'Area and weight differ.');
+ mechanics.textContent='p = '+p+(pinnedPrime===p?' · pinned':' · preview')+' · sector remainder '+(fraction*100).toFixed(2)+'%'+(t<p?' (not reached)':t<p+1?' (growing)':' = 1 − 1/'+p)+'. Weighted 1 − '+p+'⁻ˢ = '+complexText(z)+'. '+(t>=p+1&&Math.abs(SIGMA-1)<1e-5&&Math.abs(TAUV)<1e-5?'Equal at s = 1.':'Area and weight differ.');
 };

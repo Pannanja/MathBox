@@ -9,7 +9,7 @@ bridge.innerHTML=`<div class="bubble-head"><b>From the product to J</b><button p
  <div class="bridge-primes button-row"><span>A prime’s ladder</span><button data-bridge-prime="2" aria-pressed="true">2</button><button data-bridge-prime="3" aria-pressed="false">3</button><button data-bridge-prime="5" aria-pressed="false">5</button></div>
  <div class="bridge-coefficients"><label for="bridgeExpansion">Take the logarithm <output id="bridgeExpansionRead">ζ</output></label><input id="bridgeExpansion" type="range" min="0" max="1" step=".01" value="0"><div id="bridgeTerms"></div><p id="bridgeExpansionNote" class="muted"></p></div>
  <div class="bridge-areas"><svg id="bridgeAreas" viewBox="0 0 300 94" role="img" aria-label="Unit areas giving the coefficients one, one half, and one third"></svg><label for="bridgeSweep">Trace the areas <output id="bridgeSweepRead">u = 0</output></label><input id="bridgeSweep" type="range" min="0" max="1" step=".01" value="0"></div>
- <p class="muted bridge-meaning">log[1/(1−z)] = ∫₀ᶻ (1+v+v²+…)dv, with z=p⁻ˢ. The unit areas multiply z, z², z³. J counts those areas at birth.</p>
+ <p class="muted bridge-meaning">log[1/(1−z)] = ∫₀ᶻ (1+v+v²+…)dv, with z=p⁻ˢ. The unit areas multiply z, z², z³. J counts those areas as each pane begins.</p>
  <div class="button-row bridge-actions"><button id="bridgeVisit">Visit 10</button><button id="bridgeCompare">Coefficients</button><button id="bridgeTrace">Trace areas</button><button id="bridgeLadder" aria-pressed="false">Log ladder</button><button id="bridgeLedger">See J</button></div>`;
 stage.appendChild(bridge);
 whyJ.onclick=()=>{jBubble.hidePopover();bridge.showPopover();};

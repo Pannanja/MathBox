@@ -20,11 +20,11 @@ function jFraction(units){
 }
 const jButton=document.createElement('button');jButton.textContent='J ledger';jButton.setAttribute('popovertarget','jBubble');document.querySelector('.north-west').appendChild(jButton);
 const jBubble=document.createElement('section');jBubble.id='jBubble';jBubble.className='bubble j-bubble';jBubble.setAttribute('popover','manual');jBubble.setAttribute('aria-label','Riemann weighted prime-power ledger');
-jBubble.innerHTML=`<div class="bubble-head"><b>J · a ledger of births</b><button popovertarget="jBubble" popovertargetaction="hide" aria-label="Close J ledger">×</button></div>
+jBubble.innerHTML=`<div class="bubble-head"><b>J · prime-power ledger</b><button popovertarget="jBubble" popovertargetaction="hide" aria-label="Close J ledger">×</button></div>
  <p id="jIntro" class="muted">Prime: <b>1</b> credit. Prime square: <b>½</b>. Prime cube: <b>⅓</b>. Only new arcs contribute.</p>
- <div id="jReceipts" aria-label="Contributions from recent births"></div>
+ <div id="jReceipts" aria-label="Contributions from recent prime powers"></div>
  <div class="j-total"><span id="jAt">At beat 1</span><output id="jTotal">0</output></div>
- <p id="jEvent">No prime-power births yet.</p>
+ <p id="jEvent">No prime powers counted yet.</p>
  <p id="jEarlier" class="muted">Bar height shows the contribution; a full bar is 1.</p>
  <div class="button-row"><button data-j-beat="3">Watch 4 next</button><button data-j-beat="7">Watch 8 next</button><button data-j-beat="9">Total at 10</button></div>`;
 stage.appendChild(jBubble);
@@ -36,14 +36,14 @@ function updateJLedger(){
   jStamp=n;
   for(const [q,node] of jCards)if(!shown.some(e=>e.q===q)){node.remove();jCards.delete(q);}
   for(const e of shown){
-   if(!jCards.has(e.q)){const node=document.createElement('div');node.className='j-receipt';node.dataset.q=e.q;node.style.color=factorColour(e.p);node.innerHTML='<span class="j-credit">'+jFraction(e.units)+'</span><span class="j-bar-slot"><i style="height:'+(100/e.k)+'%"></i></span><span>'+e.q+'</span>';node.setAttribute('aria-label','Birth '+e.q+' contributes '+(e.k===1?'1':'1/'+e.k));jCards.set(e.q,node);}
+   if(!jCards.has(e.q)){const node=document.createElement('div');node.className='j-receipt';node.dataset.q=e.q;node.style.color=factorColour(e.p);node.innerHTML='<span class="j-credit">'+jFraction(e.units)+'</span><span class="j-bar-slot"><i style="height:'+(100/e.k)+'%"></i></span><span>'+e.q+'</span>';node.setAttribute('aria-label','Prime power '+e.q+' contributes '+(e.k===1?'1':'1/'+e.k));jCards.set(e.q,node);}
    $('jReceipts').appendChild(jCards.get(e.q));
   }
   $('jAt').textContent='J at beat '+n;$('jTotal').textContent=jFraction(end?jBirths[end-1].total:0);
   $('jEvent').textContent=n===1?'Start with an empty ledger. Use forward one.':current?(current.k===1?n+' is prime: one whole credit.':n+' is a prime '+(current.k===2?'square':current.k===3?'cube':'power')+': '+jFraction(current.units)+' of a credit.') :n+' has no new prime-power arc. The total stays still.';
   const earlier=end>7?jBirths[end-8].total:0;
-  $('jIntro').textContent=earlier?'Earlier births: '+jFraction(earlier)+'. New credits: 1 for a prime, ½ for a square, ⅓ for a cube.':'Prime: 1 credit. Prime square: ½. Prime cube: ⅓. Only new arcs contribute.';
-  $('jEarlier').textContent=earlier?'Earlier births: '+jFraction(earlier)+'. A full bar is 1.':'Bar height shows the contribution; a full bar is 1.';
+  $('jIntro').textContent=earlier?'Earlier contributions: '+jFraction(earlier)+'. New credits: 1 for a prime, ½ for a square, ⅓ for a cube.':'Prime: 1 credit. Prime square: ½. Prime cube: ⅓. Only new arcs contribute.';
+  $('jEarlier').textContent=earlier?'Earlier contributions: '+jFraction(earlier)+'. A full bar is 1.':'Bar height shows the contribution; a full bar is 1.';
  }
  for(const [q,node] of jCards){node.classList.toggle('j-current',q===n);node.style.setProperty('--pulse',String(q===n?1-(t-n):0));}
  if(!jBubble.matches(':popover-open')||!current)return;

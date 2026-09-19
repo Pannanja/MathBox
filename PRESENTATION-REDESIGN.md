@@ -387,15 +387,43 @@ Added after the first review rounds. Phase 6 is deferred until these land.
   shifted-clock.js, which already paints a zeta locus in clock coordinates.
   This is the first piece of the phase 9 overlay.
 
-**psi as a radial staircase**
+**ψ birth magnifier — updated 19 September 2026**
+
+The radial spiral described below is superseded by a counting ruler on the
+pane-birth ray and a separate magnifier. Explorer retirement is deferred until
+the clock view is solid, per the latest direction.
+
+- [x] Put exact log(p) credits and the zero reconstruction on the real meeting
+  axis. Keep q/t pane radii distinct from ψ(t)/t counting distances.
+- [x] Highlight the printing prime-power pane and its new counting tooth together,
+  including a temporary birth arc when persistent power panes are hidden.
+- [x] Draw each zero as two conjugate vectors. Every pair returns to the real
+  axis; retain truncation error instead of translating the endpoint to the count.
+- [x] Add a magnifier with a local ruler and a Cartesian staircase comparison,
+  all-searched-zero reference, and reconstruction using the actual heights
+  γ ≤ |τ|. Hold x lets the same interval gain resolution as τ advances.
+- [x] Handle reverse travel, early beats, small screens and independent σ changes.
+- [ ] Add a restrained visual arrival cue when another zero pair enters.
+- [ ] Review the pane/credit relationship in motion with the user before changing
+  the growth law. Prime-coloured credits are not yet variable-height panes.
+
+The previous proposals to force the chain's endpoint onto the exact step and
+to use θ(T)/π + 1 as the exact zero count are rejected. The latter is a smooth
+counting approximation, not a completeness proof. ψ does not depend on the
+explorer's chosen σ; the zero contributions use the searched ρ = 1/2 + iγ.
+Finite zero sums target the midpoint at a jump, and pointwise error need not
+decrease monotonically. “Full reference” means all available zeros, not an
+exact or uniformly certified reconstruction.
+
+**Historical radial-staircase implementation (superseded)**
 
 - [x] The zero heights are searched for rather than tabulated. On the critical
   line Z(t) = e^(i*theta(t))*zeta(1/2+it) is real, so its sign changes bracket
   the zeros and bisection against locusZeta, the same evaluator the zeta curve
   uses, places each to about 1e-14. The search runs to tau = 1000, the height
   that evaluator is trusted to, and finds 649 zeros in about two seconds in a
-  worker, streaming them in. theta(T)/pi + 1 predicts 648.62, and printing both
-  is the search's own proof that it stepped over none. The tabulated thirty
+  worker, streaming them in. theta(T)/pi + 1 predicts 648.62; this comparison
+  is a plausibility check, not proof that none were skipped. The tabulated thirty
   remain as the seed so the ledger draws before the search returns; heights and
   PSI.vec are replaced in place, so reconstruction() and the epicycles cannot
   drift apart.
@@ -489,7 +517,7 @@ periods sharing a centre.
   scattered through the frame. primeInk and the light recipe are the first
   two pieces of that.
 
-### 9. Retire the explorer, move zeta onto the dial — medium effort
+### 9. Retire the explorer, move zeta onto the dial — deferred
 
 The explorer was scaffolding. Almost everything in it existed to assemble the
 pieces the psi staircase now uses, and with the staircase built those pieces
@@ -588,12 +616,13 @@ Four quantities drive everything. `t`, the beat, is simultaneously how far the
 count has walked, how many terms of the sum are drawn, and the x in psi(x).
 `SIGMA` and `TAUV` are the real and imaginary parts of s, each chasing an aim
 (`sigmaAim`, `tauAim`) by easing; commands write the aim, drawing reads the
-actual. `zeroCount` is how many zeros the psi chain uses, easing toward
-`zeroDial`.
+  actual. The legacy `zeroCount` still eases toward `zeroDial`; the new ψ lens
+uses all searched heights for its reference and counts actual heights ≤ |τ|
+for its developing reconstruction. The lens can hold x independently of t.
 
-The gap this phase exists to close: psi reads `zeroCount`, and nothing connects
-`zeroCount` to `TAUV`. The heights sit in `PSI` and the height of s sits on a
-dial, and the two never meet.
+The ψ lens now connects the height of s to the number of included zero pairs.
+Remaining work concerns a shared vocabulary for held/driven states and the
+older controls, which still have their own zero-count setting.
 
 **The doctrine, generalised from driveTau**
 
@@ -620,15 +649,10 @@ instead of clamping in silence.
   tau at 35, while `zeta-locus.js` widened the dial to +/-1000 and `driveTau`
   runs the full range. Two of the three ways to move tau agree and the third
   stops early without a word. Concrete instance of the failure mode above.
-- [ ] Couple `zeroCount` to the height: default it to N(tau) = theta(tau)/pi +
-  1, the count of zeros below the current height. `theta` is already in the zero
-  worker and the search already self-checks against it, 649 found against 648.62
-  predicted. This is the missing visible link, and it pays for itself twice:
-  playing the clock then *builds* psi, and "animate the zero hits" stops being a
-  separate feature, since a hit is N(tau) crossing an integer. Three wirings
-  considered: hard couple and delete the dial; display-only, drawing zeros above
-  tau as ghosts; or a clutch, N(tau) by default with a touch of the dial holding
-  it. Take the clutch. `zeroAuto` in psi-zeros.js is already that flag.
+- [x] Couple the developing ψ reconstruction to the actual number of searched
+  heights γ ≤ |τ|, including reverse travel. Keep a separate full reference.
+  Do not round θ(T)/π + 1 into a zero count. Hold x is the lens's clutch;
+  the clock and τ continue to move while the inspected interval stays fixed.
 - [ ] Give the three links one vocabulary: *driven*, *held*, *out of range*,
   rendered in one place. Today the state is scattered across `zeroAuto`,
   `tauDriveOn`, `spinning`, `snapMode` and `lockSigma`, and none of it is on
@@ -639,13 +663,10 @@ instead of clamping in silence.
   them again. `anchorTau` is already half of this. Better than a reset, which
   throws away where the viewer got to; relink keeps the position and restores
   the coupling.
-- [ ] Say what sigma off the critical line means for psi. The explicit formula
-  is only true at sigma = 1/2, and today moving sigma changes the sum and the
-  panes and leaves the staircase untouched: not wrong, unhooked, and silent
-  about it. Grey the staircase with a note that psi is read on the line, plus
-  one click back. Rejected: driving a false psi from off-line zeros, which is
-  dramatic but invents a failure, since there are no such zeros to use; and
-  locking sigma whenever the staircase is on, which is safe and patronising.
+- [x] Preserve ψ's independence from the explorer σ. The formula uses zero
+  locations ρ, not the user's current s. Do not grey out a valid ψ reconstruction
+  merely because the explorer moves off the critical line. The current searched
+  heights supply ρ = 1/2 + iγ; the general formula includes all nontrivial zeros.
 - [ ] Audit for integrated state, then test it. Every system's frame should be a
   pure function of (t, sigma, tau, zeroCount), which buys one cheap strong test:
   scrub to any t by any route and the frame is identical. Forward to 40 and back
@@ -654,12 +675,10 @@ instead of clamping in silence.
   being called from every `tune` is the confession. Trails may be declared
   ornamental and path-dependent and excluded, rather than pretended about. Best
   done last, as a net under the rest.
-- [ ] Make the pane-to-riser link perceptible. It already exists through `t` and
-  the shared `primeInk(p)`, but the viewer must notice the colour match
-  unprompted. Flash the pane when its riser lands and the riser when its pane is
-  born. No new state, no new coupling. Prime powers complicate it, since p^2
-  rises but births no pane, and that is the feature: psi counts p, p^2, p^3
-  where the panes count p.
+- [x] Make the pane-to-riser link perceptible: highlight the printing pane and
+  its log(p) credit on the same beat, with a connector on the birth ray.
+  Prime-power birth arcs remain visible during the event even when persistent
+  prime-power panes are switched off.
 
 **Specific defects, filed under the strategy each belongs to**
 
@@ -669,9 +688,8 @@ instead of clamping in silence.
 - [ ] Beat 1 opens empty, a consequence of the arrival rule. Instrument at
   rest, special-case term 1, or open at beat 2. A domain question at the low
   edge of t. Moved from phase 7.
-- [ ] The staircase's first turn is cramped, x from 2 to about 15 sharing the
-  innermost radius. The radial law's behaviour near its own lower bound. Moved
-  from phase 7.
+- [x] Replace the cramped first spiral turn with a magnified counting ruler
+  and Cartesian steps, keeping the main clock on its original radius law.
 - [ ] Settle the zero count: 649 to tau = 1000 is the evaluator's limit, not a
   chosen number. Going further means Riemann-Siegel, twelve terms in place of
   1250. Decide whether heights above 1000 are ever wanted before writing it.
@@ -707,7 +725,9 @@ Keep mathematical state separate from layout, preferences, and camera state.
 Numerical modules should not depend on hidden inputs. Add the shell bridge
 incrementally rather than rewriting all math and presentation in one change.
 
-Implementation order: 1 → 2 → 3 → 4 → 5 → 7 → 9 → 10 → 6 → 8. Phases 9 and 10 are the live work: retire the explorer, then harden what is left. Phase 6 is deferred and shrinks once the explorer is gone; phase 8 waits on everything else. The inspector's container belongs
+Implementation order now prioritizes the clock and phase 10's ψ relationships;
+phase 9 explorer retirement is deferred. Phase 6 is deferred; phase 8 waits on
+the remaining implementation. The inspector's container belongs
 in phase 1; its explanatory content migration comes in phase 6. Inventory
 legacy control ownership before removing anything in phase 2. No delegation is
 required for this plan.

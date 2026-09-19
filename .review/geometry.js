@@ -38,7 +38,7 @@ function updateGeometry(dt){
  separateMix+=((sumMix>.001?separateAim*sumMix:0)-separateMix)*ease;
  const height=Math.round(W+900*separateMix);
  if($('cv').height!==height)$('cv').height=height;
- $('radialRead').textContent=radialMix<.01?'Births at the rim':radialMix>.99?'Births at the axle':'Changing ruler';
+ $('radialRead').textContent=radialMix<.01?'New panes at the rim':radialMix>.99?'New panes at the axle':'Changing ruler';
  $('sumScaleNote').dataset.layer=layerName();
  $('separateRead').textContent=separateAim<.01?'Together':separateAim>.99?'Separate sum':'Separating';
  $('sumScaleNote').hidden=sumMix<.01;
@@ -46,7 +46,7 @@ function updateGeometry(dt){
 }
 const geometry=document.createElement('details');geometry.className='geometry';
 geometry.innerHTML=`<summary>Geometry <span>Ruler · separate sum</span></summary>
- <label for="radialDial">Clock ruler <output id="radialRead">Births at the rim</output></label>
+ <label for="radialDial">Clock ruler <output id="radialRead">New panes at the rim</output></label>
  <input id="radialDial" type="range" min="0" max="1" step=".01" value="0">
  <p>Slide from the original clock to a log ruler: new arcs begin at the axle and drift outward. Equal steps along a prime-power ladder become equal radial gaps. The periods stay the same.</p>
  <label for="separateDial" hidden>Separate the sum <output id="separateRead">Together</output></label>

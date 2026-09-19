@@ -42,5 +42,5 @@ updateGuide=function(){unlinkedGuide();
  for(const el of $('strip').querySelectorAll('.tt'))el.classList.toggle('linked-term',!!selectedPrime&&+el.dataset.n%selectedPrime===0);
  for(const el of $('pf').querySelectorAll('.fx')){el.classList.toggle('linked-factor',+el.dataset.p===selectedPrime);el.style.setProperty('--highlight',primeHighlight(+el.dataset.p));el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label','Link prime '+el.dataset.p+' across clock and sum');el.setAttribute('aria-pressed',String(+el.dataset.p===pinnedPrime));}
  linkedReadout.hidden=!selectedPrime;clearLink.disabled=!selectedPrime;
- if(selectedPrime){const powers=linkedRings().map(r=>r.p).sort((a,b)=>a-b);const message='p = '+selectedPrime+' · panes '+(powers.join(', ')||'not born yet')+' · sum: multiples of '+selectedPrime+' · Esc clears';if(linkedReadout.textContent!==message)linkedReadout.textContent=message;}
+ if(selectedPrime){const powers=linkedRings().map(r=>r.p).sort((a,b)=>a-b);const message='p = '+selectedPrime+' · panes '+(powers.join(', ')||'not reached yet')+' · sum: multiples of '+selectedPrime+' · Esc clears';if(linkedReadout.textContent!==message)linkedReadout.textContent=message;}
 };

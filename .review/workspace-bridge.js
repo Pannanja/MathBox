@@ -67,10 +67,15 @@ function resizeWorkspace(){
  const surface=$('clockSurface');if(!surface)return;const b=surface.getBoundingClientRect();
  // Reserve a gutter for the docked tape's upright ink and slide the clock off
  // centre by half of it, so the dial and the equation share the surface.
- const gutter=Math.min(132,b.width*.24),diameter=Math.max(30,Math.min(b.width-gutter,b.height)*.94);
+ const inspecting=surface.classList.contains('psi-inspecting'),stacked=inspecting&&b.width<900&&b.height>450;
+ surface.classList.toggle('psi-stacked',stacked);
+ const lensSize=inspecting?Math.max(110,Math.min(350,stacked?b.width-24:b.width*.34,stacked?b.height*.53-60:b.height-48)):0;
+ const lensWidth=inspecting&&!stacked?lensSize+16:0,lensHeight=stacked?lensSize+60:0;
+ surface.style.setProperty('--psi-width',lensSize+'px');surface.style.setProperty('--psi-height',lensHeight+'px');
+ const gutter=Math.min(132,b.width*.24),availableHeight=b.height-lensHeight,diameter=Math.max(30,Math.min(b.width-gutter-lensWidth,availableHeight)*.94);
  surface.style.setProperty('--clock-size',diameter+'px');
- surface.style.setProperty('--clock-shift',(-gutter/2)+'px');
- surface.style.setProperty('--tape-span',Math.max(220,Math.min(560,b.height-48))+'px');
+ surface.style.setProperty('--clock-shift',(-(lensWidth+gutter)/2)+'px');
+ surface.style.setProperty('--tape-span',Math.max(120,Math.min(560,availableHeight-48))+'px');
  surface.style.setProperty('--tape-thick',(innerWidth<=650?56:80)+'px');
  dockTape();
  ClockMath.resizePlot(plane,[locusRaster,locusBackdrop]);Object.assign(graphBounds,ClockMath.plotBounds(plane));

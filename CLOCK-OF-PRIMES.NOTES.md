@@ -666,3 +666,40 @@ uniform error bound. The theta computation took under 9 ms per tested job on
 this workstation. Numerical regressions passed; browser checks exercise all
 explanations, domain colouring, rejection/recovery and state-preserving range
 changes. Reference generation: python reference/theta-range.py.
+
+## ψ at the pane births — 19 September 2026
+
+Open Appearance → **ψ · birth detail**. The former off-axis spiral has become
+a real-axis counting ruler: each birth at q = p^k adds a coloured log(p) credit.
+The printing pane and the credit highlight together, with a temporary power arc
+even when persistent power panes are hidden. Pane radius remains Rq/t; the
+count uses Rψ(t)/t. These are connected rulers, not a claim that the existing
+pane radius or arc length already measures log(p).
+
+The magnifier has a local counting ruler, conjugate vector chain, and nearby
+x-versus-ψ staircase. Gold is the exact count, teal uses all available searched
+zeros (currently 649 below height 1000), and orange uses those with γ ≤ |τ|.
+**Hold x** keeps the inspected interval fixed while clock-driven τ passes more
+zeros; **Magnify** enlarges the ruler and arms. The staircase includes nearby
+future births as comparison context. Explorer functionality remains available.
+
+Each zero now draws two vectors, -x^ρ/ρ and its conjugate, so each pair returns
+to the real axis. The chain starts at x − log(2π) − ½log(1 − x⁻²). Its endpoint
+is computed independently of the exact count: no translation conceals truncation
+error. The view waits until x ≥ 2; at jumps the infinite formula targets the
+midpoint, and finite sums can overshoot. More zeros do not guarantee monotonic
+pointwise improvement. ψ is independent of the explorer σ.
+
+Typed implementation: `src/math/psi.ts` and `src/scenes/psi-lens.ts`; the existing
+ψ fragment provides clock/pane integration. Plot samples resolve the fastest
+γ log(x) oscillation with eight samples per cycle and reuse the full reference
+when only the included-zero count changes. The magnifier renders at device
+pixel ratio, capped at 3, and updates at most about 22 times per second.
+
+Numerical checks compare the exact count to log lcm(1,…,n), check log(p) jumps,
+conjugate cancellation, actual zero crossings, and the independent real form
+of the explicit formula. Browser checks cover early beats, 2²/2³ births, hold,
+rewind, independence from σ, and desktop/phone/short landscape layouts. The
+zero search's smooth counting approximation is a plausibility check, not a
+proof that every zero was found. A dedicated arrival animation for zero pairs
+and variable-height pane geometry remain future design work.

@@ -7,7 +7,7 @@
     "dev": "node scripts/dev.mjs",
     "typecheck": "tsc --noEmit",
     "build": "npm run typecheck && node scripts/build.mjs",
-    "test": "npm run build && node tests/core.cjs && node .review/verify-riemann-math.cjs && node tests/xi-arm.cjs && node tests/theta-range.cjs"
+    "test": "npm run build && node tests/core.cjs && node .review/verify-riemann-math.cjs && node tests/xi-arm.cjs && node tests/theta-range.cjs && node tests/psi-math.cjs"
   },
   "engines": { "node": ">=20.18" },
   "devDependencies": { "typescript": "5.9.3", "vite": "6.4.3" }

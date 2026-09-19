@@ -217,6 +217,14 @@ export class PsiLens {
  * Teal is every searched zero, the precision the instrument can reach. Orange
  * is the precision tau actually had at each moment, so the gap between the two
  * lines is what the climb up the critical strip has yet to buy. */
+/** Where a mark laid at psi value v, `age` beats ago, has been carried to.
+ *
+ * Exported so the rate can be checked against the page's own panelSpan rather
+ * than taken on trust: prime p's pane advances 2*pi/p per beat, and a mark on
+ * that annulus must advance with it. */
+export function carriedAngle(top:number,v:number,age:number,turns=1){
+ return top+2*Math.PI*turns*age/Math.max(.5,v);
+}
 export interface PsiTrailFrame {
  trail?:PsiTrail|null; origin:number; radius:number; top:number; scale:number;
  inkFull?:string; inkPassed?:string; width?:number; alphaFull?:number; alphaPassed?:number;
@@ -227,17 +235,27 @@ export function drawPsiTrail(c:CanvasRenderingContext2D,f:PsiTrailFrame){
  const C=f.origin,u=f.radius/Math.max(1e-6,f.scale);
  const full=new Path2D(),passed=new Path2D();
  let drawn=0;
- // A phonograph, not a plotter: the stylus is fixed on the meeting ray and the
- // disk turns beneath it. A mark laid at x has since been carried round by the
- // turning of the face, so it sits at an angle behind the stylus proportional
- // to its age. The newest sample is therefore always under the tips that drew
- // it, and the whole record rotates as the count advances.
+ // The panes are the disk, and the disk is not rigid. Prime p's pane sits at
+ // TOP + (2*pi/p)*(t mod p), so its annulus turns once every p beats: the
+ // orrery shears, inner rings racing round while outer ones barely move.
+ //
+ // A mark at psi value v sits at radius R*v/scale, which is the annulus of p =
+ // v, so it is carried at that annulus's rate and not at some single disk
+ // speed. Laid under the stylus on the meeting ray, it has since been taken
+ // 2*pi*(now - x)/v round. The newest sample is still under the tips that drew
+ // it; everything older winds away faster the further in it has sunk.
+ //
+ // Each pen keeps its own angle, because each sits at its own radius and so on
+ // its own annulus. That is the whole difference from a record player: nothing
+ // here turns as one piece.
  const now=f.now===undefined?f.scale:f.now,turns=f.turnsPerUnit===undefined?1:f.turnsPerUnit;
+ const carried=(v:number,x:number)=>carriedAngle(f.top,v,now-x,turns);
  for(let i=0;i<tr.length;i++){
   const p=tr.read(i);
-  const a=f.top+2*Math.PI*turns*(p.x-now),ax=Math.cos(a),ay=Math.sin(a);
-  const fx=C+u*(p.full[0]*ax-p.full[1]*ay),fy=C+u*(p.full[0]*ay+p.full[1]*ax);
-  const px=C+u*(p.passed[0]*ax-p.passed[1]*ay),py=C+u*(p.passed[0]*ay+p.passed[1]*ax);
+  const af=carried(p.full[0],p.x),cf=Math.cos(af),sf=Math.sin(af);
+  const ap=carried(p.passed[0],p.x),cp=Math.cos(ap),sp=Math.sin(ap);
+  const fx=C+u*(p.full[0]*cf-p.full[1]*sf),fy=C+u*(p.full[0]*sf+p.full[1]*cf);
+  const px=C+u*(p.passed[0]*cp-p.passed[1]*sp),py=C+u*(p.passed[0]*sp+p.passed[1]*cp);
   if(i===0){full.moveTo(fx,fy);passed.moveTo(px,py);}
   else {full.lineTo(fx,fy);passed.lineTo(px,py);drawn++;}
  }

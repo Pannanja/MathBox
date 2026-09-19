@@ -13,5 +13,5 @@ export { viewDomain } from './core/view-domains';
 export { mountWorkspace } from './ui/workspace';
 export { resizePlot, plotBounds, plotBand, clipPlot, plotFont } from './render/viewport';
 export { psiBirths, psiIndexAt, countedPsi, psiTrend, psiZeroVector, passedZeros, psiApproximation, psiArm, psiEpicycles, psiTip, psiTrace, PsiTrail } from './math/psi';
-export { PsiLens, psiScene, drawPsiMechanism, drawPsiTrail } from './scenes/psi-lens';
+export { PsiLens, psiScene, drawPsiMechanism, drawPsiTrail, carriedAngle } from './scenes/psi-lens';
 export function createIntegralWorker(): Worker { return new IntegralWorker(); }

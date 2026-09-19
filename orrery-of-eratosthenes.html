@@ -1871,7 +1871,7 @@ var CLOCK_CONFIG = {
   //             as zeros arrive, which is what a fixed metric is meant to fix
   // `lift` multiplies the chosen metric: 1 grazes the axis, less than 1 lets
   // the arm cross it, more than 1 keeps it clear.
-  liftMode: 'arm',
+  liftMode: 'reach',
   lift: 1,
 
   // How far back along x the tip's path is traced, and at how many samples.
@@ -1903,9 +1903,11 @@ var CLOCK_CONFIG = {
   alphaFull: .17,
   alphaPassed: .42,
 
-  // Turns of the disk per unit of psi. The stylus stays on the meeting ray and
-  // the face rotates beneath it, so this sets how tightly the record coils.
-  // Successive turns end up radius/count apart, so higher values crowd fast.
+  // Multiplies the rate the panes carry the record at. The stylus stays on the
+  // meeting ray and the panes turn beneath it, each annulus at its own 2*pi/p
+  // per beat, so the record shears: inner marks wind many turns while outer
+  // ones barely move. 0 pins it flat along the ray; above 1 the inner history
+  // winds too fast to follow.
   turnsPerUnit: 1
  }
 };
@@ -4177,6 +4179,9 @@ var ClockMath = (function(exports) {
       };
     }
   }
+  function carriedAngle(top, v, age, turns = 1) {
+    return top + 2 * Math.PI * turns * age / Math.max(0.5, v);
+  }
   function drawPsiTrail(c, f) {
     const tr = f.trail;
     if (!tr || tr.length < 2) return 0;
@@ -4184,11 +4189,13 @@ var ClockMath = (function(exports) {
     const full = new Path2D(), passed = new Path2D();
     let drawn = 0;
     const now = f.now === void 0 ? f.scale : f.now, turns = f.turnsPerUnit === void 0 ? 1 : f.turnsPerUnit;
+    const carried = (v, x) => carriedAngle(f.top, v, now - x, turns);
     for (let i = 0; i < tr.length; i++) {
       const p = tr.read(i);
-      const a = f.top + 2 * Math.PI * turns * (p.x - now), ax = Math.cos(a), ay = Math.sin(a);
-      const fx = C + u * (p.full[0] * ax - p.full[1] * ay), fy = C + u * (p.full[0] * ay + p.full[1] * ax);
-      const px = C + u * (p.passed[0] * ax - p.passed[1] * ay), py = C + u * (p.passed[0] * ay + p.passed[1] * ax);
+      const af = carried(p.full[0], p.x), cf = Math.cos(af), sf = Math.sin(af);
+      const ap = carried(p.passed[0], p.x), cp = Math.cos(ap), sp = Math.sin(ap);
+      const fx = C + u * (p.full[0] * cf - p.full[1] * sf), fy = C + u * (p.full[0] * sf + p.full[1] * cf);
+      const px = C + u * (p.passed[0] * cp - p.passed[1] * sp), py = C + u * (p.passed[0] * sp + p.passed[1] * cp);
       if (i === 0) {
         full.moveTo(fx, fy);
         passed.moveTo(px, py);
@@ -4220,6 +4227,7 @@ var ClockMath = (function(exports) {
   exports.PsiLens = PsiLens;
   exports.PsiTrail = PsiTrail;
   exports.XiArmScene = XiArmScene;
+  exports.carriedAngle = carriedAngle;
   exports.clipPlot = clipPlot;
   exports.countedPsi = countedPsi;
   exports.createIntegralWorker = createIntegralWorker;

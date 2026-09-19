@@ -46,7 +46,7 @@ var CLOCK_CONFIG = {
   //             as zeros arrive, which is what a fixed metric is meant to fix
   // `lift` multiplies the chosen metric: 1 grazes the axis, less than 1 lets
   // the arm cross it, more than 1 keeps it clear.
-  liftMode: 'arm',
+  liftMode: 'reach',
   lift: 1,
 
   // How far back along x the tip's path is traced, and at how many samples.
@@ -78,9 +78,11 @@ var CLOCK_CONFIG = {
   alphaFull: .17,
   alphaPassed: .42,
 
-  // Turns of the disk per unit of psi. The stylus stays on the meeting ray and
-  // the face rotates beneath it, so this sets how tightly the record coils.
-  // Successive turns end up radius/count apart, so higher values crowd fast.
+  // Multiplies the rate the panes carry the record at. The stylus stays on the
+  // meeting ray and the panes turn beneath it, each annulus at its own 2*pi/p
+  // per beat, so the record shears: inner marks wind many turns while outer
+  // ones barely move. 0 pins it flat along the ray; above 1 the inner history
+  // winds too fast to follow.
   turnsPerUnit: 1
  }
 };

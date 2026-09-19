@@ -47,17 +47,29 @@ const assert=require('node:assert/strict'),path=require('node:path');
  assert.ok(axle.spread>axle.arm,'the chain crosses the axis, as passing through requires');
  assert.ok(axle.reach>axle.spread,'stretched straight it would clear everything');
 
- // The record is on a turning disk under a fixed stylus: the newest sample sits
- // on the meeting ray, and older ones lie behind it by their age.
- const disk=await page.evaluate(()=>{
-  const tr=new ClockMath.PsiTrail(4096);tr.advance(20,zeroHeights,8);
-  for(let x=20.2;x<=24;x+=.2)tr.advance(x,zeroHeights,8);
-  const c=document.createElement('canvas');c.width=c.height=920;
-  const g=c.getContext('2d');const seen=[];
-  const real=g.lineTo.bind(g);
-  return {segs:ClockMath.drawPsiTrail(g,{trail:tr,origin:460,radius:408,top:TOP,scale:24,now:24,turnsPerUnit:1}),
-   spun:ClockMath.drawPsiTrail(g,{trail:tr,origin:460,radius:408,top:TOP,scale:24,now:24,turnsPerUnit:0})};});
- assert.ok(disk.segs>0&&disk.spun>0,'the record draws turning or flat');
+ // The panes are the disk. A mark sitting on prime p's annulus must be carried
+ // at that annulus's own rate, so its angular speed has to match what the
+ // page's panelSpan actually does to pane p -- 2*pi/p per beat -- and not some
+ // single disk speed shared by the whole face.
+ const shear=await page.evaluate(()=>{
+  const out=[];
+  for(const p of [7,19,59]){
+   // Pane rate, measured off the page's own geometry across one beat.
+   const a=panelSpan(p,300).c0,b=panelSpan(p,301).c0;
+   let pane=b-a;while(pane<-Math.PI)pane+=2*Math.PI;while(pane>Math.PI)pane-=2*Math.PI;
+   // Mark rate, for a mark sitting at psi = p.
+   const m=ClockMath.carriedAngle(0,p,1,1)-ClockMath.carriedAngle(0,p,0,1);
+   let mark=m;while(mark<-Math.PI)mark+=2*Math.PI;while(mark>Math.PI)mark-=2*Math.PI;
+   out.push({p,pane,mark});
+  }
+  return out;});
+ console.log('SHEAR',shear);
+ for(const r of shear)assert.ok(Math.abs(r.pane-r.mark)<1e-9,
+  'a mark on prime '+r.p+' annulus turns with that pane: '+r.pane+' vs '+r.mark);
+ assert.ok(shear[0].mark>shear[2].mark,'inner annuli race, outer ones crawl');
+ // A fresh mark is still under the stylus, whatever its radius.
+ assert.equal(await page.evaluate(()=>[3,40,900].every(v=>ClockMath.carriedAngle(TOP,v,0,1)===TOP)),true,
+  'the newest mark sits under the tips that drew it');
 
  // The glass starts in its configured corner and can be dragged off it.
  const lens=page.locator('#psiMagnifier'),box=await lens.boundingBox();

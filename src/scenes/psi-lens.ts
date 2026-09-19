@@ -82,24 +82,6 @@ export function drawPsiMechanism(c:CanvasRenderingContext2D,frame:PsiSceneFrame,
   c.stroke();
  }
 
- // The written record: every rise the pawl has already marked, still on the
- // paper. Bins are aggregated to at least a pixel so a long record costs the
- // same to draw as a short one.
- const rec=frame.record;
- if(rec&&rec.peak>0&&Number.isFinite(rec.from)){
-  const pxPerBin=u*rec.binWidth*pixelScale,stride=Math.max(1,Math.ceil(1/Math.max(1e-6,pxPerBin)));
-  const lastBin=Math.min(rec.bins.length-1,Math.ceil(s.x/rec.binWidth));
-  c.lineCap='butt';c.strokeStyle='#c9a55c';
-  for(let i=0;i<=lastBin;i+=stride){
-   let best=0;for(let k=i;k<i+stride&&k<=lastBin;k++)if(rec.bins[k]>best)best=rec.bins[k];
-   if(best<=0)continue;
-   const a=at(i*rec.binWidth),b=at(Math.min(s.x,(i+stride)*rec.binWidth));
-   c.globalAlpha=.07+.62*Math.min(1,Math.log1p(best)/Math.log1p(rec.peak))**1.6;
-   c.lineWidth=2.4*pen;c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke();
-  }
-  c.lineCap='round';
- }
-
  // The ratchet: the foot only marks the axis while the reconstruction is
  // rising. Between prime powers psi is flat and the pawl sits idle; at a birth
  // it advances hard. The ringing either side makes it slip backwards, and the
@@ -196,4 +178,51 @@ export class PsiLens {
   return {x:s.x,count:s.count,exact:s.exact,full:s.full.endpoint,partial:s.partial.endpoint,magnification,
    focus:{x:focus.x,y:focus.y},sourceRadius,scale,active:s.current};
  }
+}
+
+/** The pawl's paper, wrapped onto the dial as one continuous groove.
+ *
+ * A psi value v is placed at angle frac(v) of a turn and radius R*v/scale, so
+ * the groove makes one turn per unit of psi and rides the clock's own
+ * contraction law: what was written at the rim creeps inward as the count
+ * grows, exactly as the prime annuli do. Treads -- where psi lingers between
+ * one prime power and the next -- come out as bright arcs, so the staircase
+ * appears as banding on the disk rather than as anything counted.
+ *
+ * Bins are gathered into a few brightness buckets and stroked once per bucket,
+ * so a record of any length costs a handful of draw calls. */
+export interface PsiGrooveFrame {
+ record?:PsiRecord|null; origin:number; radius:number; top:number; scale:number; ink?:string;
+}
+const GROOVE_BUCKETS=5;
+export function drawPsiGroove(c:CanvasRenderingContext2D,f:PsiGrooveFrame){
+ const rec=f.record;if(!rec||rec.peak<=0)return 0;
+ const C=f.origin,R=f.radius,denom=Math.max(1e-6,f.scale),w=rec.binWidth;
+ const last=Math.min(rec.bins.length-1,Math.ceil(denom/w));
+ const peak=Math.log1p(rec.peak);if(!(peak>0))return 0;
+ const paths:Path2D[]=[];for(let i=0;i<GROOVE_BUCKETS;i++)paths.push(new Path2D());
+ const sweep=2*Math.PI*w;let drawn=0;
+ for(let i=0;i<=last;i++){
+  const n=rec.bins[i];if(n<=0)continue;
+  const v=i*w,r=R*v/denom;
+  // Below a couple of pixels the turns are closer than the ink is wide and the
+  // centre would just fill in; leave that to the count rather than fake it.
+  if(r<3)continue;
+  const a=f.top+2*Math.PI*(v-Math.floor(v));
+  const b=Math.min(GROOVE_BUCKETS-1,Math.floor(GROOVE_BUCKETS*Math.log1p(n)/peak));
+  paths[b].moveTo(C+r*Math.cos(a),C+r*Math.sin(a));
+  paths[b].arc(C,C,r,a,a+sweep);drawn++;
+ }
+ // Almost every bin gets swept at least once, so a flat ramp paints the whole
+ // disk and says nothing. The ink is weighted hard towards the bins the pawl
+ // returned to -- the treads, where psi holds still between prime powers --
+ // and the once-over sweep is left as the faintest hatching it can be.
+ c.save();c.lineCap='butt';c.strokeStyle=f.ink||'#c9a55c';
+ for(let b=0;b<GROOVE_BUCKETS;b++){
+  const k=(b+1)/GROOVE_BUCKETS;
+  c.globalAlpha=.03+.72*k**3.2;
+  c.lineWidth=.8+1.9*k**2;
+  c.stroke(paths[b]);
+ }
+ c.restore();return drawn;
 }

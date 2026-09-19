@@ -52,6 +52,9 @@ var CLOCK_CONFIG = {
 
   // Most samples one frame may walk before the record gives up and starts a
   // fresh sheet. A jump larger than this cannot be written honestly.
-  budget: 3000
+  budget: 3000,
+
+  // Ink of the groove written on the dial.
+  ink: '#c9a55c'
  }
 };

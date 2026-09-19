@@ -7,7 +7,7 @@ let psiZoom=PSI_LENS_CFG.zoom===undefined?1:PSI_LENS_CFG.zoom,psiLens=null,psiLe
 // holding x to study one interval does not stop the record being written.
 // Built on first draw, never at load: ClockMath is assigned further down the
 // same concatenated script, so touching it at top level is a TDZ fault.
-let psiPaper=null,psiPaperZeros=0;
+let psiPaper=null,psiPaperZeros=0,psiGrooveArcs=0;
 const psiContext=document.createElement('canvas'),psiContext2=psiContext.getContext('2d');
 const psiEvents=[];
 for(let p=2;p<=limit;p++){if(!isPrime(p))continue;for(let q=p,k=1;q<=limit;q*=p,k++)psiEvents.push({q,p,k,rise:Math.log(p)});}
@@ -30,6 +30,11 @@ function drawPsiStair(){
   if(psiContext.width!==g2.canvas.width||psiContext.height!==g2.canvas.height){psiContext.width=g2.canvas.width;psiContext.height=g2.canvas.height;}
   psiContext2.clearRect(0,0,psiContext.width,psiContext.height);psiContext2.drawImage(g2.canvas,0,0);
  }
+ // The record is written on the dial itself, one turn per unit of psi, riding
+ // the same contraction as the prime annuli. Drawn under the mechanism.
+ g2.save();g2.globalAlpha=psiStairMix;
+ psiGrooveArcs=ClockMath.drawPsiGroove(g2,{record:psiPaper,origin:C,radius:R,top:TOP,scale:Math.max(1,t),ink:PSI_REC_CFG.ink});
+ g2.restore();
  g2.save();const scene=ClockMath.drawPsiMechanism(g2,psiSceneFrame);g2.restore();
  psiPredicted=scene.full.endpoint;psiPassedPredicted=scene.partial.endpoint;
 }

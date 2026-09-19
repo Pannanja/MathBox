@@ -37,5 +37,17 @@ const assert=require('node:assert/strict'),path=require('node:path');
   let up=0,down=0;for(let i=1;i<w.length;i++)(w[i][0]>w[i-1][0]?up++:down++);return {up,down,zeros:zeroHeights.length};});
  console.log('PAWL',pawl);
  assert.equal(pawl.zeros,649);assert.ok(pawl.up>0&&pawl.down>0,'the full sum both advances and slips across a birth');
+ // The groove on the dial: an empty record draws nothing, and a walked one
+ // draws arcs. It replaced the band on the real axis.
+ assert.equal(await page.evaluate(()=>{const c=document.createElement('canvas');c.width=c.height=64;
+  return ClockMath.drawPsiGroove(c.getContext('2d'),{record:null,origin:32,radius:30,top:-Math.PI/2,scale:10});}),0,
+  'no record, no groove');
+ const walked=await page.evaluate(async()=>{
+  const paper=new ClockMath.PsiRecord();paper.advance(20,zeroHeights);
+  for(let x=20.2;x<=40;x+=.2)paper.advance(x,zeroHeights);
+  const c=document.createElement('canvas');c.width=c.height=920;
+  return {arcs:ClockMath.drawPsiGroove(c.getContext('2d'),{record:paper,origin:460,radius:408,top:-Math.PI/2,scale:40}),peak:paper.peak};});
+ console.log('GROOVE',walked);
+ assert.ok(walked.peak>0&&walked.arcs>50,'a walked record writes a groove');
  assert.deepEqual(errors,[]);console.log('Psi magnifier: axis closure, independent endpoint, birth weights, hold, zero crossings, rewind and responsive layouts passed.');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

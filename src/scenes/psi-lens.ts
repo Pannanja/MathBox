@@ -25,11 +25,30 @@ export function psiScene(frame:PsiSceneFrame){
  // The chain rides just clear of the meeting axis: high enough that no leg
  // crosses it, low enough that it still reads as hanging off that axis.
  let spread=0;for(const q of partial.points)if(Number.isFinite(q[1]))spread=Math.max(spread,Math.abs(q[1]));
+ // How far the chain could stretch if every arm lined up: the sum of the leg
+ // lengths. Hang the axle at exactly that height and the fully extended arm
+ // just reaches the meeting axis, which is the reading 'reach' gives.
+ // Two readings of "the fully extended arm". `armReach` is the whole chain
+ // stretched straight, the sum of every leg; `longestArm` is the single
+ // dominant leg, the first zero's. They are far apart -- at x = 90 with every
+ // searched height the sum is 38 psi units against a longest leg of 1.3 and an
+ // excursion the chain ever actually makes of 0.95 -- because the arms nearly
+ // always cancel and full extension of all of them never happens.
+ let armReach=0,longestArm=0;
+ for(let i=1;i<partial.points.length;i++){
+  const a=partial.points[i-1],b=partial.points[i],leg=Math.hypot(b[0]-a[0],b[1]-a[1]);
+  armReach+=leg;if(leg>longestArm)longestArm=leg;
+ }
  // How high the chain rides. 'auto' clears its own spread, which is honest but
  // jumps about as zeros arrive; a fixed metric holds still so the eye can use
  // the height as a reference instead of re-reading it every frame.
- const opt=frame.options||{},base=opt.lift===undefined?1.15:opt.lift;
- const lift=x<2?0:opt.liftMode==='fixed'?base:opt.liftMode==='sqrt'?base*Math.sqrt(x):spread+.14*Math.sqrt(x);
+ const opt=frame.options||{},base=opt.lift===undefined?1:opt.lift;
+ const lift=x<2?0
+  :opt.liftMode==='fixed'?base
+  :opt.liftMode==='sqrt'?base*Math.sqrt(x)
+  :opt.liftMode==='auto'?spread+.14*Math.sqrt(x)
+  :opt.liftMode==='reach'?base*armReach
+  :base*longestArm;
  // How far the drawn mechanism actually gets from the trend, so the lens can
  // frame what is there instead of a guess that leaves the chain outside.
  const centre=x>=2?psiTrend(x):0;
@@ -43,7 +62,7 @@ export function psiScene(frame:PsiSceneFrame){
  // history the tips draw runs out from the centre along that ray rather than
  // being smeared around the face.
  const angle=frame.top,ux=Math.cos(angle),uy=Math.sin(angle);
- return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,spread,band,reach,angle,ux,uy,
+ return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,spread,armReach,longestArm,band,reach,angle,ux,uy,
   current:event&&x<event.q+1?event:null,
   unit:frame.radius/Math.max(1,x),centre};
 }
@@ -201,17 +220,22 @@ export class PsiLens {
 export interface PsiTrailFrame {
  trail?:PsiTrail|null; origin:number; radius:number; top:number; scale:number;
  inkFull?:string; inkPassed?:string; width?:number; alphaFull?:number; alphaPassed?:number;
+ now?:number; turnsPerUnit?:number;
 }
 export function drawPsiTrail(c:CanvasRenderingContext2D,f:PsiTrailFrame){
  const tr=f.trail;if(!tr||tr.length<2)return 0;
  const C=f.origin,u=f.radius/Math.max(1e-6,f.scale);
  const full=new Path2D(),passed=new Path2D();
  let drawn=0;
- // Same placement as the mechanism itself, so the lines begin at the tips that
- // are drawing them: the meeting ray, with radius carrying psi.
- const ax=Math.cos(f.top),ay=Math.sin(f.top);
+ // A phonograph, not a plotter: the stylus is fixed on the meeting ray and the
+ // disk turns beneath it. A mark laid at x has since been carried round by the
+ // turning of the face, so it sits at an angle behind the stylus proportional
+ // to its age. The newest sample is therefore always under the tips that drew
+ // it, and the whole record rotates as the count advances.
+ const now=f.now===undefined?f.scale:f.now,turns=f.turnsPerUnit===undefined?1:f.turnsPerUnit;
  for(let i=0;i<tr.length;i++){
   const p=tr.read(i);
+  const a=f.top+2*Math.PI*turns*(p.x-now),ax=Math.cos(a),ay=Math.sin(a);
   const fx=C+u*(p.full[0]*ax-p.full[1]*ay),fy=C+u*(p.full[0]*ay+p.full[1]*ax);
   const px=C+u*(p.passed[0]*ax-p.passed[1]*ay),py=C+u*(p.passed[0]*ay+p.passed[1]*ax);
   if(i===0){full.moveTo(fx,fy);passed.moveTo(px,py);}

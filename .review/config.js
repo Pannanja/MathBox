@@ -29,17 +29,25 @@ var CLOCK_CONFIG = {
  },
 
  psiMechanism: {
-  // Height of the epicycle chain above the meeting axis.
-  //   'fixed' - height is `lift`, in psi units, whatever x does
-  //   'sqrt'  - height is `lift` * sqrt(x), so it keeps pace with the chain,
-  //             whose own size is order sqrt(x)
+  // Where the epicycle axle hangs above the meeting axis.
+  //   'arm'   - at the length of the longest single arm, the first zero's, so
+  //             THAT arm at full extension just passes through the real axis.
+  //             Measured at x = 90: the longest arm is 1.3 psi units while the
+  //             chain swings 2.8, so the chain does cross the axis -- which is
+  //             what passing through means. Raise `lift`, or use 'auto', if
+  //             you want it to clear instead.
+  //   'reach' - at the whole chain stretched straight, every leg summed. The
+  //             literal full extension, but the arms nearly always cancel and
+  //             never all line up, so the axle floats far above anything that
+  //             happens: 38 psi units at x = 90 with every searched height.
+  //   'fixed' - a constant psi height, whatever x does
+  //   'sqrt'  - `lift` * sqrt(x), keeping pace with a chain of that order
   //   'auto'  - just clear the chain's own spread; the height then jumps about
   //             as zeros arrive, which is what a fixed metric is meant to fix
-  // 0.5 puts the chain a little above its own spread at the counts tau reaches
-  // in normal play; larger values push it clear but shrink the mechanism, since
-  // the glass frames whatever the chain occupies.
-  liftMode: 'sqrt',
-  lift: .5,
+  // `lift` multiplies the chosen metric: 1 grazes the axis, less than 1 lets
+  // the arm cross it, more than 1 keeps it clear.
+  liftMode: 'arm',
+  lift: 1,
 
   // How far back along x the tip's path is traced, and at how many samples.
   traceSpan: .7,
@@ -68,6 +76,11 @@ var CLOCK_CONFIG = {
   // record closes over the dial it is written on.
   width: .6,
   alphaFull: .17,
-  alphaPassed: .42
+  alphaPassed: .42,
+
+  // Turns of the disk per unit of psi. The stylus stays on the meeting ray and
+  // the face rotates beneath it, so this sets how tightly the record coils.
+  // Successive turns end up radius/count apart, so higher values crowd fast.
+  turnsPerUnit: 1
  }
 };

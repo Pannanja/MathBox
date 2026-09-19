@@ -1854,17 +1854,25 @@ var CLOCK_CONFIG = {
  },
 
  psiMechanism: {
-  // Height of the epicycle chain above the meeting axis.
-  //   'fixed' - height is `lift`, in psi units, whatever x does
-  //   'sqrt'  - height is `lift` * sqrt(x), so it keeps pace with the chain,
-  //             whose own size is order sqrt(x)
+  // Where the epicycle axle hangs above the meeting axis.
+  //   'arm'   - at the length of the longest single arm, the first zero's, so
+  //             THAT arm at full extension just passes through the real axis.
+  //             Measured at x = 90: the longest arm is 1.3 psi units while the
+  //             chain swings 2.8, so the chain does cross the axis -- which is
+  //             what passing through means. Raise `lift`, or use 'auto', if
+  //             you want it to clear instead.
+  //   'reach' - at the whole chain stretched straight, every leg summed. The
+  //             literal full extension, but the arms nearly always cancel and
+  //             never all line up, so the axle floats far above anything that
+  //             happens: 38 psi units at x = 90 with every searched height.
+  //   'fixed' - a constant psi height, whatever x does
+  //   'sqrt'  - `lift` * sqrt(x), keeping pace with a chain of that order
   //   'auto'  - just clear the chain's own spread; the height then jumps about
   //             as zeros arrive, which is what a fixed metric is meant to fix
-  // 0.5 puts the chain a little above its own spread at the counts tau reaches
-  // in normal play; larger values push it clear but shrink the mechanism, since
-  // the glass frames whatever the chain occupies.
-  liftMode: 'sqrt',
-  lift: .5,
+  // `lift` multiplies the chosen metric: 1 grazes the axis, less than 1 lets
+  // the arm cross it, more than 1 keeps it clear.
+  liftMode: 'arm',
+  lift: 1,
 
   // How far back along x the tip's path is traced, and at how many samples.
   traceSpan: .7,
@@ -1893,7 +1901,12 @@ var CLOCK_CONFIG = {
   // record closes over the dial it is written on.
   width: .6,
   alphaFull: .17,
-  alphaPassed: .42
+  alphaPassed: .42,
+
+  // Turns of the disk per unit of psi. The stylus stays on the meeting ray and
+  // the face rotates beneath it, so this sets how tightly the record coils.
+  // Successive turns end up radius/count apart, so higher values crowd fast.
+  turnsPerUnit: 1
  }
 };
 
@@ -2533,7 +2546,8 @@ function drawPsiStair(){
  g2.save();g2.globalAlpha=psiStairMix;
  psiTrailSegments=ClockMath.drawPsiTrail(g2,{trail:psiPaper,origin:C,radius:R,top:TOP,scale:Math.max(1,t),
   inkFull:PSI_REC_CFG.inkFull,inkPassed:PSI_REC_CFG.inkPassed,width:PSI_REC_CFG.width,
-  alphaFull:PSI_REC_CFG.alphaFull,alphaPassed:PSI_REC_CFG.alphaPassed});
+  alphaFull:PSI_REC_CFG.alphaFull,alphaPassed:PSI_REC_CFG.alphaPassed,
+  now:t,turnsPerUnit:PSI_REC_CFG.turnsPerUnit});
  g2.restore();
  g2.save();const scene=ClockMath.drawPsiMechanism(g2,psiSceneFrame);g2.restore();
  psiPredicted=scene.full.endpoint;psiPassedPredicted=scene.partial.endpoint;
@@ -3915,8 +3929,14 @@ var ClockMath = (function(exports) {
     const full = psiEpicycles(x, frame.heights, frame.heights.length), partial = psiEpicycles(x, frame.heights, count);
     let spread = 0;
     for (const q of partial.points) if (Number.isFinite(q[1])) spread = Math.max(spread, Math.abs(q[1]));
-    const opt = frame.options || {}, base = opt.lift === void 0 ? 1.15 : opt.lift;
-    const lift = x < 2 ? 0 : opt.liftMode === "fixed" ? base : opt.liftMode === "sqrt" ? base * Math.sqrt(x) : spread + 0.14 * Math.sqrt(x);
+    let armReach = 0, longestArm = 0;
+    for (let i = 1; i < partial.points.length; i++) {
+      const a = partial.points[i - 1], b = partial.points[i], leg = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      armReach += leg;
+      if (leg > longestArm) longestArm = leg;
+    }
+    const opt = frame.options || {}, base = opt.lift === void 0 ? 1 : opt.lift;
+    const lift = x < 2 ? 0 : opt.liftMode === "fixed" ? base : opt.liftMode === "sqrt" ? base * Math.sqrt(x) : opt.liftMode === "auto" ? spread + 0.14 * Math.sqrt(x) : opt.liftMode === "reach" ? base * armReach : base * longestArm;
     const centre = x >= 2 ? psiTrend(x) : 0;
     const mid = (lift + spread) / 2;
     let reach = Math.abs(mid);
@@ -3935,6 +3955,8 @@ var ClockMath = (function(exports) {
       partial,
       lift,
       spread,
+      armReach,
+      longestArm,
       band,
       reach,
       angle,
@@ -4161,9 +4183,10 @@ var ClockMath = (function(exports) {
     const C = f.origin, u = f.radius / Math.max(1e-6, f.scale);
     const full = new Path2D(), passed = new Path2D();
     let drawn = 0;
-    const ax = Math.cos(f.top), ay = Math.sin(f.top);
+    const now = f.now === void 0 ? f.scale : f.now, turns = f.turnsPerUnit === void 0 ? 1 : f.turnsPerUnit;
     for (let i = 0; i < tr.length; i++) {
       const p = tr.read(i);
+      const a = f.top + 2 * Math.PI * turns * (p.x - now), ax = Math.cos(a), ay = Math.sin(a);
       const fx = C + u * (p.full[0] * ax - p.full[1] * ay), fy = C + u * (p.full[0] * ay + p.full[1] * ax);
       const px = C + u * (p.passed[0] * ax - p.passed[1] * ay), py = C + u * (p.passed[0] * ay + p.passed[1] * ax);
       if (i === 0) {

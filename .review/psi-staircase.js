@@ -35,7 +35,8 @@ function drawPsiStair(){
  g2.save();g2.globalAlpha=psiStairMix;
  psiTrailSegments=ClockMath.drawPsiTrail(g2,{trail:psiPaper,origin:C,radius:R,top:TOP,scale:Math.max(1,t),
   inkFull:PSI_REC_CFG.inkFull,inkPassed:PSI_REC_CFG.inkPassed,width:PSI_REC_CFG.width,
-  alphaFull:PSI_REC_CFG.alphaFull,alphaPassed:PSI_REC_CFG.alphaPassed});
+  alphaFull:PSI_REC_CFG.alphaFull,alphaPassed:PSI_REC_CFG.alphaPassed,
+  now:t,turnsPerUnit:PSI_REC_CFG.turnsPerUnit});
  g2.restore();
  g2.save();const scene=ClockMath.drawPsiMechanism(g2,psiSceneFrame);g2.restore();
  psiPredicted=scene.full.endpoint;psiPassedPredicted=scene.partial.endpoint;

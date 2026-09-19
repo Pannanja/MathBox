@@ -28,6 +28,37 @@ const assert=require('node:assert/strict'),path=require('node:path');
  (await page.evaluate(()=>[t,SIGMA,TAUV])).forEach((v,i)=>assert.ok(Math.abs(v-before[i])<1e-10,'workspace changes preserve mathematical state'));
  await page.evaluate(()=>jumpClock(2000.5));await page.waitForFunction(()=>psiLensReadout.x===2000.5&&Number.isFinite(psiLensReadout.full)&&psiLensReadout.count===649);
  await page.locator('#psiZoom').fill('6');await page.locator('#psiZoom').dispatchEvent('input');await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>psiZoom),6);
+ // The axle metrics. 'arm' hangs it at the longest single leg, so that arm at
+ // full extension just reaches the axis; 'reach' hangs it at every leg summed,
+ // which is far higher because the arms never all line up at once.
+ const axle=await page.evaluate(()=>{
+  const base={time:90.13,tau:TAUV,heights:zeroHeights,events:psiEvents,colour:primeInk,origin:C,radius:R,top:TOP,activePane:null};
+  const of=o=>ClockMath.psiScene(Object.assign({},base,{options:o}));
+  const arm=of({liftMode:'arm',lift:1}),reach=of({liftMode:'reach',lift:1}),fixed=of({liftMode:'fixed',lift:3});
+  return {arm:arm.lift,longest:arm.longestArm,reach:reach.lift,sum:reach.armReach,fixed:fixed.lift,spread:arm.spread};});
+ console.log('AXLE',axle);
+ assert.ok(Math.abs(axle.arm-axle.longest)<1e-9,'arm hangs the axle at the longest leg');
+ assert.ok(Math.abs(axle.reach-axle.sum)<1e-9,'reach hangs it at every leg summed');
+ assert.equal(axle.fixed,3,'fixed means what it says');
+ assert.ok(axle.reach>axle.arm*4,'the two readings are far apart');
+ // The point of 'arm' is that the arm PASSES THROUGH the axis, so the chain is
+ // expected to cross it: the swing exceeds the axle height here, 2.8 against
+ // 1.3. Clearance is what 'auto' is for.
+ assert.ok(axle.spread>axle.arm,'the chain crosses the axis, as passing through requires');
+ assert.ok(axle.reach>axle.spread,'stretched straight it would clear everything');
+
+ // The record is on a turning disk under a fixed stylus: the newest sample sits
+ // on the meeting ray, and older ones lie behind it by their age.
+ const disk=await page.evaluate(()=>{
+  const tr=new ClockMath.PsiTrail(4096);tr.advance(20,zeroHeights,8);
+  for(let x=20.2;x<=24;x+=.2)tr.advance(x,zeroHeights,8);
+  const c=document.createElement('canvas');c.width=c.height=920;
+  const g=c.getContext('2d');const seen=[];
+  const real=g.lineTo.bind(g);
+  return {segs:ClockMath.drawPsiTrail(g,{trail:tr,origin:460,radius:408,top:TOP,scale:24,now:24,turnsPerUnit:1}),
+   spun:ClockMath.drawPsiTrail(g,{trail:tr,origin:460,radius:408,top:TOP,scale:24,now:24,turnsPerUnit:0})};});
+ assert.ok(disk.segs>0&&disk.spun>0,'the record draws turning or flat');
+
  // The glass starts in its configured corner and can be dragged off it.
  const lens=page.locator('#psiMagnifier'),box=await lens.boundingBox();
  await page.mouse.move(box.x+box.width/2,box.y+box.height*.25);

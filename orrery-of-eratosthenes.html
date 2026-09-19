@@ -3925,7 +3925,7 @@ var ClockMath = (function(exports) {
     }
     if (Number.isFinite(exactOf(frame, x))) reach = Math.max(reach, Math.abs(exactOf(frame, x) - centre));
     const band = (lift + spread) / 2;
-    const angle = frame.top + 2 * Math.PI * (x - Math.floor(x)), ux = Math.cos(angle), uy = Math.sin(angle);
+    const angle = frame.top, ux = Math.cos(angle), uy = Math.sin(angle);
     return {
       x,
       count,
@@ -4161,12 +4161,12 @@ var ClockMath = (function(exports) {
     const C = f.origin, u = f.radius / Math.max(1e-6, f.scale);
     const full = new Path2D(), passed = new Path2D();
     let drawn = 0;
+    const ax = Math.cos(f.top), ay = Math.sin(f.top);
     for (let i = 0; i < tr.length; i++) {
-      const p = tr.read(i), a = f.top + 2 * Math.PI * (p.x - Math.floor(p.x)), ax = Math.cos(a), ay = Math.sin(a);
+      const p = tr.read(i);
       const fx = C + u * (p.full[0] * ax - p.full[1] * ay), fy = C + u * (p.full[0] * ay + p.full[1] * ax);
       const px = C + u * (p.passed[0] * ax - p.passed[1] * ay), py = C + u * (p.passed[0] * ay + p.passed[1] * ax);
-      const lift = i > 0 && p.x - tr.read(i - 1).x > 0.5;
-      if (i === 0 || lift) {
+      if (i === 0) {
         full.moveTo(fx, fy);
         passed.moveTo(px, py);
       } else {

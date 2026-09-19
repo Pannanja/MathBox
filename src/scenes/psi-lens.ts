@@ -39,10 +39,10 @@ export function psiScene(frame:PsiSceneFrame){
   reach=Math.max(reach,Math.abs(q[0]-centre),Math.abs(q[1]+lift-mid));}
  if(Number.isFinite(exactOf(frame,x)))reach=Math.max(reach,Math.abs(exactOf(frame,x)-centre));
  const band=(lift+spread)/2;
- // The mechanism sits on the beat hand: one turn of the dial per unit of x,
- // radius carrying psi. That is what makes the tip a write head -- its path
- // across the face IS the history, rather than something drawn to resemble it.
- const angle=frame.top+2*Math.PI*(x-Math.floor(x)),ux=Math.cos(angle),uy=Math.sin(angle);
+ // The mechanism stays on the meeting ray. Radius alone carries psi, so the
+ // history the tips draw runs out from the centre along that ray rather than
+ // being smeared around the face.
+ const angle=frame.top,ux=Math.cos(angle),uy=Math.sin(angle);
  return {x,count,index,exact:countedPsi(frame.events,x),full,partial,lift,spread,band,reach,angle,ux,uy,
   current:event&&x<event.q+1?event:null,
   unit:frame.radius/Math.max(1,x),centre};
@@ -191,9 +191,9 @@ export class PsiLens {
  *
  * Every stored sample is re-placed through the clock's CURRENT contraction, so
  * the whole history creeps inward as the count grows, exactly as the prime
- * annuli do, and the spiral is drawn by the same tips that are drawing it now.
- * Nothing here is a separate rendering of psi: it is where the mechanism has
- * been.
+ * annuli do, and the lines are drawn by the same tips that are drawing them
+ * now. Nothing here is a separate rendering of psi: it is where the mechanism
+ * has been.
  *
  * Teal is every searched zero, the precision the instrument can reach. Orange
  * is the precision tau actually had at each moment, so the gap between the two
@@ -207,14 +207,14 @@ export function drawPsiTrail(c:CanvasRenderingContext2D,f:PsiTrailFrame){
  const C=f.origin,u=f.radius/Math.max(1e-6,f.scale);
  const full=new Path2D(),passed=new Path2D();
  let drawn=0;
+ // Same placement as the mechanism itself, so the lines begin at the tips that
+ // are drawing them: the meeting ray, with radius carrying psi.
+ const ax=Math.cos(f.top),ay=Math.sin(f.top);
  for(let i=0;i<tr.length;i++){
-  const p=tr.read(i),a=f.top+2*Math.PI*(p.x-Math.floor(p.x)),ax=Math.cos(a),ay=Math.sin(a);
+  const p=tr.read(i);
   const fx=C+u*(p.full[0]*ax-p.full[1]*ay),fy=C+u*(p.full[0]*ay+p.full[1]*ax);
   const px=C+u*(p.passed[0]*ax-p.passed[1]*ay),py=C+u*(p.passed[0]*ay+p.passed[1]*ax);
-  // A turn of the dial is a jump of a full revolution in the stored angle, so
-  // the pen is lifted there rather than dragged back across the face.
-  const lift=i>0&&p.x-tr.read(i-1).x>.5;
-  if(i===0||lift){full.moveTo(fx,fy);passed.moveTo(px,py);}
+  if(i===0){full.moveTo(fx,fy);passed.moveTo(px,py);}
   else {full.lineTo(fx,fy);passed.lineTo(px,py);drawn++;}
  }
  // Successive turns are only radius/scale apart -- four or five pixels by the

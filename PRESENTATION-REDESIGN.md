@@ -573,20 +573,122 @@ mechanism for attention costs more than it adds.
 ### 10. Harden the clockwork — medium effort
 
 With the explorer gone the piece is one instrument, and what is left is making
-that instrument correct before making it handsome. Gathered here from where
-they were scattered.
+that instrument correct before making it handsome.
+
+There are three gear systems: the prime pane births, the partial zeta(s) in the
+complex plane, and the psi staircase. All three are turned by one engine, and
+hardening means two things that are easily confused. Protecting each system at
+its own limits is one. Making the couplings between them visible, nameable and
+restorable is the other, and it is the larger job, because a link that has
+quietly come undone looks exactly like a link that was never there.
+
+**The engine**
+
+Four quantities drive everything. `t`, the beat, is simultaneously how far the
+count has walked, how many terms of the sum are drawn, and the x in psi(x).
+`SIGMA` and `TAUV` are the real and imaginary parts of s, each chasing an aim
+(`sigmaAim`, `tauAim`) by easing; commands write the aim, drawing reads the
+actual. `zeroCount` is how many zeros the psi chain uses, easing toward
+`zeroDial`.
+
+The gap this phase exists to close: psi reads `zeroCount`, and nothing connects
+`zeroCount` to `TAUV`. The heights sit in `PSI` and the height of s sits on a
+dial, and the two never meet.
+
+**The doctrine, generalised from driveTau**
+
+`driveTau` in workspace-bridge.js is the best-behaved mechanism on the page and
+the pattern the rest should follow. It does three things, and each becomes a
+rule below: tau is computed from `t` rather than accumulated, so stepping back
+winds it back exactly; it declares the evaluator's bound rather than a slider's;
+and at that bound it disengages and says what stopped, where, and how to resume,
+instead of clamping in silence.
+
+**Strategy, in the order worth doing it**
+
+- [ ] Declare a domain of validity per system, and make *out of range* look
+  different from *held*. Each system says where it is honest and what it does
+  outside: withdraw and say why, freeze at the edge and mark it stale, draw dim
+  and mark it untrusted, or clamp silently, which is what most of the code does
+  now and is the whole complaint. This item is the actual "things break" fix and
+  it depends on nothing else, so it goes first. Known bounds to declare: |tau|
+  <= 1000 from Euler-Maclaurin truncation, t <= 5000 from `limit`, x > 2 for
+  psi's formula since `smooth` runs away at 1, the pole at sigma -> 1 with tau
+  -> 0 where locusZeta returns infinities, and `zeroCount` <= `PSI.nz` while the
+  search is still streaming.
+- [ ] Fix the silent clamp already on the page: the `spin` handler hard-stops
+  tau at 35, while `zeta-locus.js` widened the dial to +/-1000 and `driveTau`
+  runs the full range. Two of the three ways to move tau agree and the third
+  stops early without a word. Concrete instance of the failure mode above.
+- [ ] Couple `zeroCount` to the height: default it to N(tau) = theta(tau)/pi +
+  1, the count of zeros below the current height. `theta` is already in the zero
+  worker and the search already self-checks against it, 649 found against 648.62
+  predicted. This is the missing visible link, and it pays for itself twice:
+  playing the clock then *builds* psi, and "animate the zero hits" stops being a
+  separate feature, since a hit is N(tau) crossing an integer. Three wirings
+  considered: hard couple and delete the dial; display-only, drawing zeros above
+  tau as ghosts; or a clutch, N(tau) by default with a touch of the dial holding
+  it. Take the clutch. `zeroAuto` in psi-zeros.js is already that flag.
+- [ ] Give the three links one vocabulary: *driven*, *held*, *out of range*,
+  rendered in one place. Today the state is scattered across `zeroAuto`,
+  `tauDriveOn`, `spinning`, `snapMode` and `lockSigma`, and none of it is on
+  screen. One status line reading "tau held, zeros driven, psi off the line" is
+  worth more than any number of guards.
+- [ ] Relink, one gesture: re-anchor every *held* link to the engine's present
+  state and leave *out of range* ones alone, since relinking those only breaks
+  them again. `anchorTau` is already half of this. Better than a reset, which
+  throws away where the viewer got to; relink keeps the position and restores
+  the coupling.
+- [ ] Say what sigma off the critical line means for psi. The explicit formula
+  is only true at sigma = 1/2, and today moving sigma changes the sum and the
+  panes and leaves the staircase untouched: not wrong, unhooked, and silent
+  about it. Grey the staircase with a note that psi is read on the line, plus
+  one click back. Rejected: driving a false psi from off-line zeros, which is
+  dramatic but invents a failure, since there are no such zeros to use; and
+  locking sigma whenever the staircase is on, which is safe and patronising.
+- [ ] Audit for integrated state, then test it. Every system's frame should be a
+  pure function of (t, sigma, tau, zeroCount), which buys one cheap strong test:
+  scrub to any t by any route and the frame is identical. Forward to 40 and back
+  to 12 must equal a jump straight to 12. Current violations: the tape holds
+  `lastN` and rebuilds incrementally, trails accumulate, and `clearTrails()`
+  being called from every `tune` is the confession. Trails may be declared
+  ornamental and path-dependent and excluded, rather than pretended about. Best
+  done last, as a net under the rest.
+- [ ] Make the pane-to-riser link perceptible. It already exists through `t` and
+  the shared `primeInk(p)`, but the viewer must notice the colour match
+  unprompted. Flash the pane when its riser lands and the riser when its pane is
+  born. No new state, no new coupling. Prime powers complicate it, since p^2
+  rises but births no pane, and that is the feature: psi counts p, p^2, p^3
+  where the panes count p.
+
+**Specific defects, filed under the strategy each belongs to**
 
 - [ ] The tail spiral is drawn in one frame and then rotated as the term
-  evolves. It should develop as the term evolves. Moved from phase 7.
+  evolves. It should develop as the term evolves. An integrated-state instance:
+  the shape is cached and only its rotation is live. Moved from phase 7.
 - [ ] Beat 1 opens empty, a consequence of the arrival rule. Instrument at
-  rest, special-case term 1, or open at beat 2. Moved from phase 7.
+  rest, special-case term 1, or open at beat 2. A domain question at the low
+  edge of t. Moved from phase 7.
 - [ ] The staircase's first turn is cramped, x from 2 to about 15 sharing the
-  innermost radius. Moved from phase 7.
+  innermost radius. The radial law's behaviour near its own lower bound. Moved
+  from phase 7.
 - [ ] Settle the zero count: 649 to tau = 1000 is the evaluator's limit, not a
   chosen number. Going further means Riemann-Siegel, twelve terms in place of
   1250. Decide whether heights above 1000 are ever wanted before writing it.
+  Note that tau's drive and the zero search stop at the same place, which is
+  tidy under the coupling above.
+- [ ] Carry tau's extended range out of the explorer with `locusZeta`. The
+  +/-1000 range on the dial and the exact field is set in `zeta-locus.js`; if
+  phase 9 retires that fragment without moving this, tau silently loses most of
+  its travel and psi loses 640 of its 649 zeros.
 - [ ] One pass over the drawing code for frame cost once the overlay lands.
   649 epicycles, 720 stair samples, the panes and the sum will share a frame.
+  The coupling above raises the stakes: zeroCount = N(tau) makes the full chain
+  reachable by playing, rather than by dragging a dial to its end.
+- [ ] `PSI.syncR`, exp(-2*pi/g1), is computed in psi-zeros.js and read by
+  nothing. It is the ratio by which x shrinks per full rotation of the first
+  zero's epicycle, which is the natural scale for one turn of psi. Either spend
+  it in the magnified view or delete it.
 
 ## Technical approach and checkpoints
 

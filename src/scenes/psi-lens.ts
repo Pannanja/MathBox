@@ -9,7 +9,13 @@ export interface PsiSceneFrame {
  activePane:{radius:number;angle:number;span:number}|null;
  trail?:PsiTrail|null;
  top:number;
+ /** Redraws the clockwork itself into whatever context the lens hands it, at
+  * the lens's scale. Supplied by the page, which owns the rings and the pane
+  * law; without it the glass shows the psi mechanism floating in nothing. */
+ backdrop?:(c:CanvasRenderingContext2D,scale:number)=>void;
  options?:PsiOptions;
+ scale?:number; now?:number; turnsPerUnit?:number;
+ inkFull?:string; inkPassed?:string; width?:number; alphaFull?:number; alphaPassed?:number;
 }
 /** Tunable defaults, supplied by the page from CLOCK_CONFIG. */
 export interface PsiOptions {
@@ -194,6 +200,13 @@ export class PsiLens {
   // mechanism this lens exists to show. Everything inside the glass is redrawn
   // as geometry at the lens's own scale, so it is sharp at any magnification.
   c.transform(matrix.a,matrix.b,matrix.c,matrix.d,matrix.e,matrix.f);
+  // The clockwork is redrawn here as geometry, not blitted: same rings, same
+  // pane law, same radii, evaluated at the lens's scale so it stays sharp.
+  if(frame.backdrop)frame.backdrop(c,scale);
+  if(frame.trail)drawPsiTrail(c,{trail:frame.trail,origin:frame.origin,radius:frame.radius,
+   top:frame.top,scale:frame.scale===undefined?s.x:frame.scale,now:frame.now,turnsPerUnit:frame.turnsPerUnit,
+   inkFull:frame.inkFull,inkPassed:frame.inkPassed,width:frame.width,
+   alphaFull:frame.alphaFull,alphaPassed:frame.alphaPassed});
   drawPsiMechanism(c,frame,scale);
   c.restore();c.strokeStyle='#a9c1ad77';c.lineWidth=1;c.beginPath();c.arc(w/2,h/2,r,0,2*Math.PI);c.stroke();
   c.strokeStyle='#a9c1ad22';c.beginPath();c.arc(w/2,h/2,r-4,0,2*Math.PI);c.stroke();

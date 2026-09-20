@@ -20,7 +20,10 @@ function drawPsiStair(){
  const x=psiHeld===null?t:psiHeld;
  const event=psiEvents[psiIndex(x)],active=event&&x<event.q+1?event:null,span=active?panelSpan(active.q,x):null;
  psiSceneFrame={time:x,tau:TAUV,heights:zeroHeights,events:psiEvents,colour:primeInk,origin:C,radius:R,top:TOP,
-  activePane:active?{radius:clockRadius(active.q),angle:span.c0,span:span.w}:null,options:PSI_MECH_CFG};
+  activePane:active?{radius:clockRadius(active.q),angle:span.c0,span:span.w}:null,options:PSI_MECH_CFG,
+  backdrop:psiClockBackdrop,trail:psiPaper,scale:Math.max(1,t),now:t,
+  turnsPerUnit:PSI_REC_CFG.turnsPerUnit,inkFull:PSI_REC_CFG.inkFull,inkPassed:PSI_REC_CFG.inkPassed,
+  width:PSI_REC_CFG.width,alphaFull:PSI_REC_CFG.alphaFull,alphaPassed:PSI_REC_CFG.alphaPassed};
  if(!psiPaper)psiPaper=new ClockMath.PsiTrail(PSI_REC_CFG.cap);
  if(zeroHeights.length!==psiPaperZeros){psiPaper.reset(t);psiPaperZeros=zeroHeights.length;}
  psiPaper.advance(t,zeroHeights,ClockMath.passedZeros(zeroHeights,TAUV),PSI_REC_CFG.budget);
@@ -40,6 +43,37 @@ function drawPsiStair(){
  g2.restore();
  g2.save();const scene=ClockMath.drawPsiMechanism(g2,psiSceneFrame);g2.restore();
  psiPredicted=scene.full.endpoint;psiPassedPredicted=scene.partial.endpoint;
+}
+// The clockwork, redrawn into the lens at its own scale. Same rings, same pane
+// law, same radii as the dial: this is the construction itself evaluated
+// larger, not a picture of it enlarged. Hairlines are kept at one device pixel
+// so they stay hairlines; the panes carry their world thickness and so magnify.
+function psiClockBackdrop(ctx,scale){
+ const pen=1/scale,reach=R*beamReveal();
+ ctx.save();ctx.lineCap='butt';
+ ctx.strokeStyle='rgba(80,90,102,.30)';ctx.lineWidth=pen;
+ ctx.beginPath();ctx.arc(C,C,R,0,7);ctx.stroke();
+ for(const ring of rings){
+  if(ring.echo&&powerPaneMix<.005)continue;
+  const p=ring.p,r=Math.max(.4,clockRadius(p)),sp=panelSpan(p,t);
+  ctx.strokeStyle='rgba(70,80,92,.30)';ctx.lineWidth=pen;
+  ctx.beginPath();ctx.arc(C,C,r,0,7);ctx.stroke();
+  if(sp.w<=1e-9)continue;
+  const w=Math.max(.65,Math.min(1.7,r*Math.PI/p*.28));
+  ctx.globalAlpha=ring.echo?powerPaneMix*.75:1;
+  ctx.strokeStyle=primeInk(ring.base||p);ctx.lineWidth=2*w;
+  ctx.beginPath();ctx.arc(C,C,r,sp.c0-sp.w/2,sp.c0+sp.w/2);ctx.stroke();
+  // The slot the pane has yet to fill, as the dial draws it.
+  if(sp.full>sp.w+.004){
+   ctx.globalAlpha=.35;ctx.lineWidth=pen;ctx.setLineDash([2*pen,4*pen]);
+   ctx.beginPath();ctx.arc(C,C,r,sp.c0-sp.full/2,sp.c0+sp.full/2);ctx.stroke();ctx.setLineDash([]);
+  }
+  ctx.globalAlpha=1;
+ }
+ // The beam on the meeting ray, which is the axis the mechanism reads against.
+ ctx.strokeStyle='rgba(224,69,60,.5)';ctx.lineWidth=1.6*pen;
+ ctx.beginPath();ctx.moveTo(C,C);ctx.lineTo(C,C-Math.min(reach,R));ctx.stroke();
+ ctx.restore();
 }
 function ensurePsiLens(){
  if($('psiMagnifier'))return;
@@ -97,8 +131,13 @@ function setPsiVisible(on){
 }
 $('layerButtons').insertAdjacentHTML('beforeend','<button id="psiStair" aria-pressed="false" title="Look into the clock’s counting teeth and zero epicycles">ψ · microscope</button>');
 $('psiStair').onclick=()=>setPsiVisible(!psiStairAim);
+// Opened from config on the first frame, never at load: the lens needs
+// ClockMath, which is concatenated after this fragment, so building it here
+// would throw and take the rest of the script with it.
+let psiOpenPending=!!PSI_LENS_CFG.openAtStart;
 const psiStairGuide=updateGuide;
 updateGuide=function(){psiStairGuide();
+ if(psiOpenPending){psiOpenPending=false;setPsiVisible(true);}
  if(!psiStairAim||!psiLens||!psiSceneFrame||workspaceLayout==='explorer')return;
  const clockBox=$('cv').getBoundingClientRect(),pixelScale=clockBox.width/$('cv').width;
  psiLensReadout=psiLens.draw($('psiDetailCanvas'),psiSceneFrame,psiContext,psiSceneMatrix,psiZoom,pixelScale);

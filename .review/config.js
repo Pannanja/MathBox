@@ -10,6 +10,10 @@
 var CLOCK_CONFIG = {
 
  psiLens: {
+  // Open the psi microscope as soon as the page loads, rather than waiting for
+  // the button. The mechanism and its record are then on from the first beat.
+  openAtStart: false,
+
   // Starting magnification. The glass now frames the mechanism's own reach, so
   // 1 means "fit what is there" rather than "no magnification".
   zoom: 1,
@@ -46,7 +50,7 @@ var CLOCK_CONFIG = {
   //             as zeros arrive, which is what a fixed metric is meant to fix
   // `lift` multiplies the chosen metric: 1 grazes the axis, less than 1 lets
   // the arm cross it, more than 1 keeps it clear.
-  liftMode: 'reach',
+  liftMode: 'fixed',
   lift: 1,
 
   // How far back along x the tip's path is traced, and at how many samples.
@@ -68,8 +72,8 @@ var CLOCK_CONFIG = {
   // Teal: every searched zero. Orange: the zeros tau had passed at the moment
   // that stretch was drawn. The gap between them is what climbing the critical
   // strip has yet to buy.
-  inkFull: '#7fd3c0',
-  inkPassed: '#f3aa77',
+  inkFull: '#ffae00',
+  inkPassed: '#0089fa',
 
   // One turn per unit of psi means successive turns are only radius/count
   // apart, a few pixels once the clock is past fifty. Thin and faint, or the

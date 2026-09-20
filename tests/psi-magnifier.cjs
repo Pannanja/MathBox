@@ -71,6 +71,17 @@ const assert=require('node:assert/strict'),path=require('node:path');
  assert.equal(await page.evaluate(()=>[3,40,900].every(v=>ClockMath.carriedAngle(TOP,v,0,1)===TOP)),true,
   'the newest mark sits under the tips that drew it');
 
+ // The glass is a magnifier, not a separate diagram: the clockwork is redrawn
+ // into it at the lens's scale. Without the backdrop the mechanism floats in
+ // nothing, which is what a blitted bitmap was hiding.
+ const drew=await page.evaluate(()=>{
+  const c=document.createElement('canvas');c.width=c.height=920;const g=c.getContext('2d');
+  let arcs=0;const realArc=g.arc.bind(g);g.arc=(...a)=>{arcs++;return realArc(...a);};
+  psiClockBackdrop(g,7);
+  return {arcs,rings:rings.length};});
+ console.log('BACKDROP',drew);
+ assert.ok(drew.rings>0&&drew.arcs>drew.rings,'every ring is redrawn, plus the rim');
+
  // The glass starts in its configured corner and can be dragged off it.
  const lens=page.locator('#psiMagnifier'),box=await lens.boundingBox();
  await page.mouse.move(box.x+box.width/2,box.y+box.height*.25);

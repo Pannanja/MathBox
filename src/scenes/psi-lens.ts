@@ -30,7 +30,12 @@ export function psiScene(frame:PsiSceneFrame){
  const full=psiEpicycles(x,frame.heights,frame.heights.length),partial=psiEpicycles(x,frame.heights,count);
  // The chain rides just clear of the meeting axis: high enough that no leg
  // crosses it, low enough that it still reads as hanging off that axis.
- let spread=0;for(const q of partial.points)if(Number.isFinite(q[1]))spread=Math.max(spread,Math.abs(q[1]));
+ // Every height metric is read off the FULL chain, never the one tau has
+ // reached so far. The axle is a reference the eye measures against, so it
+ // must not move as zeros arrive: taken from the developing chain it collapses
+ // to the axis before tau passes its first height, and the arm's full
+ // extension triples between 25 heights and 649.
+ let spread=0;for(const q of full.points)if(Number.isFinite(q[1]))spread=Math.max(spread,Math.abs(q[1]));
  // How far the chain could stretch if every arm lined up: the sum of the leg
  // lengths. Hang the axle at exactly that height and the fully extended arm
  // just reaches the meeting axis, which is the reading 'reach' gives.
@@ -41,8 +46,8 @@ export function psiScene(frame:PsiSceneFrame){
  // excursion the chain ever actually makes of 0.95 -- because the arms nearly
  // always cancel and full extension of all of them never happens.
  let armReach=0,longestArm=0;
- for(let i=1;i<partial.points.length;i++){
-  const a=partial.points[i-1],b=partial.points[i],leg=Math.hypot(b[0]-a[0],b[1]-a[1]);
+ for(let i=1;i<full.points.length;i++){
+  const a=full.points[i-1],b=full.points[i],leg=Math.hypot(b[0]-a[0],b[1]-a[1]);
   armReach+=leg;if(leg>longestArm)longestArm=leg;
  }
  // How high the chain rides. 'auto' clears its own spread, which is honest but
@@ -60,7 +65,7 @@ export function psiScene(frame:PsiSceneFrame){
  const centre=x>=2?psiTrend(x):0;
  const mid=(lift+spread)/2;
  let reach=Math.abs(mid);
- for(const q of partial.points)if(Number.isFinite(q[0])){
+ for(const chain of [partial.points,full.points])for(const q of chain)if(Number.isFinite(q[0])){
   reach=Math.max(reach,Math.abs(q[0]-centre),Math.abs(q[1]+lift-mid));}
  if(Number.isFinite(exactOf(frame,x)))reach=Math.max(reach,Math.abs(exactOf(frame,x)-centre));
  const band=(lift+spread)/2;

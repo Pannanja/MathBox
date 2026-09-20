@@ -4,7 +4,11 @@ const assert=require('node:assert/strict'),path=require('node:path');
  const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:2}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('file:///'+path.resolve('orrery-of-eratosthenes.html').replaceAll('\\','/'));
  await page.waitForFunction(()=>zeroSearchNote.includes('found to'),{timeout:30000});
- await page.locator('#appearanceButton').click();await page.locator('#psiStair').click();
+ await page.locator('#appearanceButton').click();
+ // Drive the lens to a known state instead of blind-toggling it: with
+ // psiLens.openAtStart set, the glass is already open and a bare click closes
+ // it, so the whole suite becomes a coin flip on a config value.
+ await page.evaluate(()=>{if(!psiStairAim)document.getElementById('psiStair').click();});
  await page.evaluate(()=>jumpClock(60.5));await page.waitForTimeout(1200);
  assert.ok(await page.locator('#psiMagnifier').isVisible());
  console.log('DETAIL',await page.evaluate(()=>({r:psiLensReadout,reference:psiPredicted,passed:psiPassedPredicted})));await page.screenshot({path:'.review/psi-magnifier-desktop.png'});
@@ -45,6 +49,23 @@ const assert=require('node:assert/strict'),path=require('node:path');
  // expected to cross it: the swing exceeds the axle height here, 2.8 against
  // 1.3. Clearance is what 'auto' is for.
  assert.ok(axle.spread>axle.arm,'the chain crosses the axis, as passing through requires');
+ // The axle is a reference, so it must not move as tau buys zeros. Every
+ // metric comes off the full chain and is the same at any passed count --
+ // including none at all, where reading the developing chain gave zero.
+ const steady=await page.evaluate(()=>{
+  const base={time:90.13,heights:zeroHeights,events:psiEvents,colour:primeInk,origin:C,radius:R,top:TOP,activePane:null};
+  const at=tau=>{const sc=ClockMath.psiScene(Object.assign({},base,{tau,options:{liftMode:'arm',lift:1}}));
+   const re=ClockMath.psiScene(Object.assign({},base,{tau,options:{liftMode:'reach',lift:1}}));
+   const au=ClockMath.psiScene(Object.assign({},base,{tau,options:{liftMode:'auto'}}));
+   return {count:sc.count,arm:sc.lift,reach:re.lift,auto:au.lift};};
+  return [0,20,60,1000].map(at);});
+ console.log('STEADY',steady);
+ assert.equal(steady[0].count,0,'below the first height nothing has been passed');
+ for(const r of steady){
+  assert.ok(r.arm>0&&Math.abs(r.arm-steady[0].arm)<1e-9,'arm height holds at every count');
+  assert.ok(Math.abs(r.reach-steady[0].reach)<1e-9,'reach height holds too');
+  assert.ok(Math.abs(r.auto-steady[0].auto)<1e-9,'and auto');
+ }
  assert.ok(axle.reach>axle.spread,'stretched straight it would clear everything');
 
  // The panes are the disk. A mark sitting on prime p's annulus must be carried

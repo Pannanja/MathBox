@@ -10,8 +10,13 @@ const assert=require('node:assert/strict'),path=require('node:path');
  const known=[14.134725141734695,21.022039638771555,25.01085758014569,30.424876125859513];
  (await page.evaluate(()=>zeroHeights.slice(0,4))).forEach((g,i)=>assert.ok(Math.abs(g-known[i])<1e-9));
  assert.ok(await page.evaluate(()=>zeroHeights.every((g,i)=>!i||g>zeroHeights[i-1])));
- assert.equal(await page.evaluate(()=>psiStairAim),0);
- await page.locator('#appearanceButton').click();await page.locator('#psiStair').click();
+ // Whether the glass starts open is a config choice, so check it agrees with
+ // the config rather than assuming shut, then drive it open either way.
+ assert.equal(await page.evaluate(()=>psiStairAim===1),
+  await page.evaluate(()=>!!(CLOCK_CONFIG.psiLens&&CLOCK_CONFIG.psiLens.openAtStart)),
+  'the lens opens itself exactly when psiLens.openAtStart says so');
+ await page.locator('#appearanceButton').click();
+ await page.evaluate(()=>{if(!psiStairAim)document.getElementById('psiStair').click();});
  for(const x of [1,1.6,2.4,3.5,60.5,120.5]){
   await page.evaluate(x=>jumpClock(x),x);await page.waitForTimeout(250);
   const r=await page.evaluate(()=>({time:t,exact:psiAt(t),predicted:psiPredicted,lens:psiLensReadout}));

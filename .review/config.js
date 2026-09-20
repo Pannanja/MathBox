@@ -12,7 +12,7 @@ var CLOCK_CONFIG = {
  psiLens: {
   // Open the psi microscope as soon as the page loads, rather than waiting for
   // the button. The mechanism and its record are then on from the first beat.
-  openAtStart: false,
+  openAtStart: true,
 
   // Starting magnification. The glass now frames the mechanism's own reach, so
   // 1 means "fit what is there" rather than "no magnification".
@@ -33,7 +33,10 @@ var CLOCK_CONFIG = {
  },
 
  psiMechanism: {
-  // Where the epicycle axle hangs above the meeting axis.
+  // Where the epicycle axle hangs above the meeting axis. Every metric below is
+  // read off the chain built from ALL searched zeros, never from the heights
+  // tau has passed so far, so the axle holds still as precision arrives rather
+  // than rising under the mechanism it is meant to be a reference for.
   //   'arm'   - at the length of the longest single arm, the first zero's, so
   //             THAT arm at full extension just passes through the real axis.
   //             Measured at x = 90: the longest arm is 1.3 psi units while the
@@ -50,11 +53,11 @@ var CLOCK_CONFIG = {
   //             as zeros arrive, which is what a fixed metric is meant to fix
   // `lift` multiplies the chosen metric: 1 grazes the axis, less than 1 lets
   // the arm cross it, more than 1 keeps it clear.
-  liftMode: 'fixed',
+  liftMode: 'sqrt',
   lift: 1,
 
   // How far back along x the tip's path is traced, and at how many samples.
-  traceSpan: .7,
+  traceSpan: 0,
   traceSteps: 140
  },
 

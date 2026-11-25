@@ -115,14 +115,14 @@ test('positions restore every parameter and reject corrupt or unsupported input'
   };
   assert.deepEqual(decodePosition(encodePosition(state)), state);
   assert.equal(decodePosition('').theme, 'analytic');
-  assert.equal(decodePosition('#v=2&x=24').theme, 'clockwork');
+  assert.equal(decodePosition('#v=2&x=24').theme, 'analytic');
+  assert.equal(decodePosition('#v=2&x=24&theme=clockwork').theme, 'clockwork');
   assert.deepEqual(decodePosition(encodePosition(initialState)), initialState);
   const bad = decodePosition('#v=1&x=NaN&tau=Infinity&sigma=100&zeros=2.4&zoom=-5&theme=unknown');
   assert.equal(bad.x, initialState.x);
   assert.equal(bad.tau, initialState.tau);
   assert.equal(bad.sigma, 0.5);
   assert.equal(bad.zeros, 2);
-  assert.equal(bad.zoom, 0.65);
   assert.deepEqual(decodePosition('#v=999&sigma=3'), initialState);
 });
 
@@ -429,12 +429,9 @@ test('live lens guard contains reference and developing tips regardless of the s
 });
 test('theme presets preserve winding and main camera state', () => {
   for (const preset of themePresets) {
-    const start = { ...initialState, x: 37.2, tau: -81.3, zoom: 1.2, ratio: -2 * Math.PI };
+    const start = { ...initialState, x: 37.2, tau: -81.3, ratio: -2 * Math.PI };
     const next = applyThemePreset(start, preset);
-    assert.deepEqual(
-      [next.x, next.tau, next.ratio, next.zoom],
-      [start.x, start.tau, start.ratio, start.zoom],
-    );
+    assert.deepEqual([next.x, next.tau, next.ratio], [start.x, start.tau, start.ratio]);
     assert.deepEqual(decodePosition(encodePosition(next)), next);
   }
 });

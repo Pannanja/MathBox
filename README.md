@@ -38,15 +38,17 @@ open for its parts:
 | Zeta   | Sum, Trail, Scale (with Fit)                       |
 | Psi    | Sum (the zero chain and its parallelogram), Record |
 
-The ? buttons open short explanations with live values. Hover, focus or click a
-pane, term or zero pair to inspect it; Escape clears the selection. The bell holds
-sound; the prism holds the Analytic, Clockwork and Expanse appearances, colour,
-motion and overall zoom.
+Collapsed, each group shows only its symbol, name and switch; open it for its
+parts and a ? button with a short explanation and live values. Hover, focus or
+click a pane, term or zero pair to inspect it; Escape clears the selection. The
+bell holds sound; the prism holds the Analytic, Clockwork and Expanse appearances
+and colour. Shared links open in Analytic unless they name another appearance.
 
 The magnifier rests at the lower right and appears just before ψ does. Faint
 tangents join it to the patch it magnifies. Drag its rim to move it, the round
 handle to resize it; arrow keys work on both. Its toolbar zooms, hides it, and
-toggles Auto, which keeps the whole ψ construction and both tips in view.
+toggles Auto, which keeps the whole ψ construction and both tips in view. A hidden
+magnifier comes back from the lens button at the lower right.
 
 ## The mathematics on the dial
 

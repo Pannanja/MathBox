@@ -86,7 +86,8 @@ shell, main-scene drag, sigma controls, or saved pan offsets. Lens, study contro
   trace. History follows the continuous recording coordinate, not a step value.
 - `src/core/experience.ts` owns bounded playback trails and crossing events;
   `src/core/sound.ts` consumes those events only after explicit sound enablement.
-  Respect reduced motion. Visual trail/event age continues during pause; seeking
+  Respect reduced motion for event pulses; the ζ trail is a fading history and
+  follows only its own switch, even under reduced motion. Visual trail/event age continues during pause; seeking
   and reversal clear it. The optional sampled reference curve is distinct from
   the fading trail and starts hidden.
 - The magnifier must copy the source scene, including background, housing and

@@ -32,7 +32,7 @@
     soundMessage = $state('');
   const sound = new ExhibitSound();
   let soundRequest = 0;
-  const reduced = $derived(systemReduced || exhibit.effects !== 'full');
+  const reduced = $derived(systemReduced);
   function clearExperience() {
     experience = freshExperience();
     sound.silence();
@@ -129,7 +129,7 @@
       patch.ratio !== undefined
     )
       clearExperience();
-    if (patch.trail === false || patch.effects !== undefined) experience = freshExperience();
+    if (patch.trail === false) experience = freshExperience();
     if (patch.volume !== undefined) sound.volume(patch.volume);
     exhibit = criticalState({ ...exhibit, ...patch });
   }
@@ -171,12 +171,6 @@
     shareMessage = '';
     history.replaceState(null, '', encodePosition(exhibit));
   }
-  function home() {
-    change({ zoom: 1 });
-  }
-  function zoom(by: number) {
-    change({ zoom: clamp(exhibit.zoom * by, 0.65, 2.5) });
-  }
   function fit(focus: Focus) {
     if (focus === 'zeta') {
       if (exhibit.mode === 'xi' && Math.abs(exhibit.tau) <= 15)
@@ -203,7 +197,7 @@
         95 / (unit * Math.max(0.1, Math.abs(full.tip[0]))),
       );
       change({ psiScale: clamp(scale, 2, 30), psiLens: true });
-    } else home();
+    }
   }
   async function share() {
     history.replaceState(null, '', encodePosition(exhibit));
@@ -284,7 +278,8 @@
         exhibit,
         (now - previous) / 1000,
         TRAIL_SECONDS,
-        exhibit.trail && !reduced && exhibit.mode === 'zeta',
+        // The trail is a fading history, not motion: only its own switch hides it.
+        exhibit.trail && exhibit.mode === 'zeta',
       );
       if (soundEnabled && wasPlaying) sound.play(experience.moments.filter((m) => m.age === 0));
       lensScale = exhibit.stabilize
@@ -355,32 +350,6 @@
         oninput={(e) => change({ [setting.key]: +e.currentTarget.value })}
       /></label
     >{/each}
-  <div class="setting-row">
-    <span>Motion</span>
-    <div class="segments" role="group" aria-label="Visual effects">
-      {#each ['full', 'reduced', 'off'] as effects}<button
-          aria-pressed={exhibit.effects === effects}
-          onclick={() => change({ effects: effects as ExhibitState['effects'] })}
-          >{effects === 'full' ? 'Full' : effects === 'reduced' ? 'Less' : 'Off'}</button
-        >{/each}
-    </div>
-  </div>
-  <div class="setting-row">
-    <span>Zoom</span>
-    <div class="segments">
-      <button
-        class="quiet-icon"
-        aria-label="Zoom out"
-        title="Zoom out"
-        onclick={() => zoom(1 / 1.2)}><UiIcon name="collapse" size={16} /></button
-      ><button aria-label="Home view" title="Reset magnification" onclick={home}
-        ><output aria-label="Exhibit magnification">{Math.round(exhibit.zoom * 100)}%</output
-        ></button
-      ><button class="quiet-icon" aria-label="Zoom in" title="Zoom in" onclick={() => zoom(1.2)}
-        ><UiIcon name="expand" size={16} /></button
-      >
-    </div>
-  </div>
 {/snippet}
 {#snippet clockSettings()}
   <div class="exact-position">
@@ -574,17 +543,17 @@
         symbol={symbols[system.id]}
         bind:open={mechanismOpen[system.id]}
       >
-        {#snippet heading()}<button
-            class="quiet-icon about-button"
-            aria-label={`About ${mechanismTitles[system.id]}`}
-            title={`About ${mechanismTitles[system.id]}`}
-            aria-expanded={about === system.id}
-            aria-controls={`about-${system.id}`}
-            onclick={() => {
-              if (about === system.id) closeAbout();
-              else about = system.id;
-            }}><UiIcon name="help" size={16} /></button
-          ><label class="system-visibility" title={`Show ${mechanismTitles[system.id]}`}
+        {#snippet heading(open: boolean)}{#if open}<button
+              class="quiet-icon about-button"
+              aria-label={`About ${mechanismTitles[system.id]}`}
+              title={`About ${mechanismTitles[system.id]}`}
+              aria-expanded={about === system.id}
+              aria-controls={`about-${system.id}`}
+              onclick={() => {
+                if (about === system.id) closeAbout();
+                else about = system.id;
+              }}><UiIcon name="help" size={16} /></button
+            >{/if}<label class="system-visibility" title={`Show ${mechanismTitles[system.id]}`}
             ><input
               type="checkbox"
               aria-label={`Show ${mechanismTitles[system.id]}`}

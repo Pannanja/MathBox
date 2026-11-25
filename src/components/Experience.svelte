@@ -45,35 +45,33 @@
 </script>
 
 <g pointer-events="none" aria-hidden="true" data-testid="experience">
-  {#if exhibit.trail && !reduced && exhibit.mode === 'zeta' && exhibit.layers & 8}
+  {#if exhibit.trail && exhibit.mode === 'zeta' && exhibit.layers & 8}
     <g class="playback-trail" clip-path="url(#dial-window)" data-testid="zeta-trail">
       {#each trailPaths as path}
         <path d={path.d} opacity={path.opacity} fill="none" class="trail-segment hairline" />
       {/each}
     </g>
   {/if}
-  {#if exhibit.effects !== 'off'}
-    {#each experience.moments as event}
-      {@const age = event.age / 1.1}
-      {#if event.kind === 'zero' && exhibit.mode === 'zeta' && exhibit.layers & 8}
-        <circle
-          r={reduced ? 10 : 7 + age * 22}
-          opacity={(1 - age) * (event.reverse ? 0.4 : 0.8)}
-          class="zero-moment hairline"
-          data-testid="zero-moment"
-        />
-      {:else if event.kind !== 'zero' && exhibit.layers & 1 && (event.kind === 'prime' || exhibit.layers & 64)}
-        {@const radius = countScale(exhibit.x) * event.value}
-        <circle
-          cx={radius * Math.cos(paneAngle(event.value, exhibit.x))}
-          cy={-radius * Math.sin(paneAngle(event.value, exhibit.x))}
-          r={reduced ? 6 : 4 + age * (event.kind === 'prime' ? 18 : 8)}
-          opacity={(1 - age) * (event.reverse ? 0.25 : 0.8)}
-          class="prime-moment hairline"
-          class:power-moment={event.kind === 'power'}
-          data-testid="prime-moment"
-        />
-      {/if}
-    {/each}
-  {/if}
+  {#each experience.moments as event}
+    {@const age = event.age / 1.1}
+    {#if event.kind === 'zero' && exhibit.mode === 'zeta' && exhibit.layers & 8}
+      <circle
+        r={reduced ? 10 : 7 + age * 22}
+        opacity={(1 - age) * (event.reverse ? 0.4 : 0.8)}
+        class="zero-moment hairline"
+        data-testid="zero-moment"
+      />
+    {:else if event.kind !== 'zero' && exhibit.layers & 1 && (event.kind === 'prime' || exhibit.layers & 64)}
+      {@const radius = countScale(exhibit.x) * event.value}
+      <circle
+        cx={radius * Math.cos(paneAngle(event.value, exhibit.x))}
+        cy={-radius * Math.sin(paneAngle(event.value, exhibit.x))}
+        r={reduced ? 6 : 4 + age * (event.kind === 'prime' ? 18 : 8)}
+        opacity={(1 - age) * (event.reverse ? 0.25 : 0.8)}
+        class="prime-moment hairline"
+        class:power-moment={event.kind === 'power'}
+        data-testid="prime-moment"
+      />
+    {/if}
+  {/each}
 </g>

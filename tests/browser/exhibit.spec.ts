@@ -32,6 +32,9 @@ test('fresh winding starts at zero and reaches the first prime without singular 
   const x = page.getByLabel('Count x', { exact: true });
   await expect(x).toHaveValue('0');
   await expect(page.getByLabel('Height tau', { exact: true })).toHaveValue('0');
+  // Collapsed headings carry only the symbol, name and switch.
+  await expect(page.getByRole('button', { name: 'About Psi', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Expand Psi controls' }).click();
   await page.getByRole('button', { name: 'About Psi', exact: true }).click();
   const notes = page.getByRole('region', { name: 'About Psi', exact: true });
   for (const value of ['0', '0.5', '1', '1.01', '1.5', '2', '0']) {
@@ -226,15 +229,10 @@ test('mobile retains the overlapping scene and the microscope references that sc
   await expect(page.getByTestId('psi-axle')).toHaveAttribute('transform', axle!);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await controls(page, 'view');
-  await (
-    await reveal(
-      page,
-      page.getByRole('button', { name: 'Zoom in', exact: true, includeHidden: true }),
-    )
-  ).click();
-  await expect(page.getByLabel('Exhibit magnification')).toHaveText('120%');
-  await page.getByRole('button', { name: 'Home view' }).click();
-  await expect(page.getByLabel('Exhibit magnification')).toHaveText('100%');
+  // Overall zoom and the motion setting are retired; appearance keeps themes and colour.
+  await reveal(page, page.getByRole('button', { name: 'Analytic', exact: true }));
+  await expect(page.getByRole('button', { name: 'Zoom in', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('group', { name: 'Visual effects' })).toHaveCount(0);
 });
 
 const origin = (page: Page) =>
@@ -336,12 +334,6 @@ for (const viewport of [
     await expect(page.getByLabel('Zeta scale')).toBeVisible();
     await page.getByRole('button', { name: 'Expand Psi controls' }).click();
     await expect(page.getByLabel('Psi record', { exact: true })).toBeVisible();
-    await controls(page, 'view');
-    await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
-    await centered(page);
-    await page.getByRole('button', { name: 'Home view', exact: true }).click();
-    await centered(page);
-    await page.keyboard.press('Escape');
     await page.getByRole('button', { name: 'Fit sum', exact: true }).click();
     await centered(page);
     await page.getByRole('button', { name: 'Step forward' }).click();
@@ -569,7 +561,7 @@ test('prime-axis contact, continuous history and direct panel switching', async 
   await centered(page);
 });
 
-test('playback trails fade while paused, clear on seek, and respect reduced motion', async ({
+test('playback trails fade while paused, clear on seek, and survive reduced motion', async ({
   page,
 }) => {
   await page.goto('/#v=2&x=6.95&tau=-14.08&speed=4');
@@ -589,8 +581,9 @@ test('playback trails fade while paused, clear on seek, and respect reduced moti
   await expect(page.getByTestId('prime-moment')).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.getByRole('button', { name: 'Play', exact: true }).click();
-  await page.waitForTimeout(150);
-  await expect(page.locator('.trail-segment')).toHaveCount(0);
+  // Reduced motion (for example Windows with animation effects off) quiets the
+  // event pulses, but the trail is a record, governed only by its own switch.
+  await expect.poll(() => page.locator('.trail-segment').count()).toBeGreaterThan(2);
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
   await centered(page);
 });
@@ -741,7 +734,7 @@ test('theme buttons preserve geometry and saved filters', async ({ page }) => {
 test('clockwork shows the full psi budget with reached gold and unreached silver gears', async ({
   page,
 }) => {
-  await page.goto('/#v=2&x=37&tau=-37');
+  await page.goto('/#v=2&x=37&tau=-37&theme=clockwork');
   const gears = page.getByTestId('psi-gears');
   await expect(gears).toHaveAttribute('data-count', '649');
   await expect(gears).toHaveAttribute('data-reached', '5');

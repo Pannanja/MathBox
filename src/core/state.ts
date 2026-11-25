@@ -7,7 +7,6 @@ export interface ExhibitState {
   hue: number;
   saturation: number;
   brightness: number;
-  effects: 'full' | 'reduced' | 'off';
   trail: boolean;
   referenceCurve: boolean;
   volume: number;
@@ -33,7 +32,6 @@ export interface ExhibitState {
   lensDy: number;
   lensAngle: number;
   stabilize: boolean;
-  zoom: number;
   psiScale: number;
   xiScale: number;
   zetaScale: number;
@@ -44,7 +42,6 @@ export const initialState: ExhibitState = {
   hue: 0,
   saturation: 1,
   brightness: 1,
-  effects: 'full',
   trail: true,
   referenceCurve: false,
   volume: 0.25,
@@ -70,7 +67,6 @@ export const initialState: ExhibitState = {
   lensDy: 0,
   lensAngle: 0,
   stabilize: true,
-  zoom: 1,
   psiScale: 7,
   xiScale: 2,
   zetaScale: 0.6,
@@ -87,7 +83,6 @@ const numeric = {
   x: [0, MAX_X],
   tau: [-MAX_TAU, MAX_TAU],
   zeros: [1, zeroHeights.length],
-  zoom: [0.65, 2.5],
   psiScale: [2, 30],
   xiScale: [0.3, 4],
   zetaScale: [0.15, 2],
@@ -125,11 +120,9 @@ export function decodePosition(hash: string): ExhibitState {
   if (focus === 'axle' || focus === 'tip') result.lensFocus = focus;
   result.stabilize = params.get('stabilize') !== 'false';
   result.zeros = Math.round(result.zeros);
-  // Earlier versioned links without a theme opened in Clockwork.
-  result.theme = params.get('theme') === 'analytic' ? 'analytic' : 'clockwork';
+  // Links without a theme open in Analytic, like a fresh visit.
+  if (params.get('theme') === 'clockwork') result.theme = 'clockwork';
   if (['celestial', 'expanse'].includes(params.get('theme') ?? '')) result.theme = 'expanse';
-  if (['reduced', 'off'].includes(params.get('effects') ?? ''))
-    result.effects = params.get('effects') as ExhibitState['effects'];
   if (params.get('trail') === 'false') result.trail = false;
   result.referenceCurve = params.get('referenceCurve') === 'true';
   if (['sieve', 'psi'].includes(params.get('focus') ?? ''))

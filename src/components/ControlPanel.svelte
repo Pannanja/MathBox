@@ -14,7 +14,7 @@
     symbol: string;
     open?: boolean;
     children: Snippet;
-    heading?: Snippet;
+    heading?: Snippet<[boolean]>;
   } = $props();
 </script>
 
@@ -27,11 +27,9 @@
       aria-controls={`${id}-body`}
       title={`${open ? 'Collapse' : 'Expand'} ${title} controls`}
       onclick={() => (open = !open)}
-      ><span class="mechanism-symbol" aria-hidden="true">{symbol}</span><span>{title}</span><UiIcon
-        name={open ? 'collapse' : 'expand'}
-        size={12}
-      /></button
-    >{#if heading}{@render heading()}{/if}
+      ><span class="mechanism-symbol" aria-hidden="true">{symbol}</span><span>{title}</span
+      >{#if open}<UiIcon name="collapse" size={12} />{/if}</button
+    >{#if heading}{@render heading(open)}{/if}
   </div>
   {#if open}<div class="panel-body" id={`${id}-body`}>{@render children()}</div>{/if}
 </section>

@@ -94,8 +94,8 @@
   });
   const suspension = $derived.by(() => {
     const base = {
-      x: WORLD.centre[0] + (R + 12) * exhibit.zoom,
-      y: WORLD.centre[1] + 38 * exhibit.zoom,
+      x: WORLD.centre[0] + R + 12,
+      y: WORLD.centre[1] + 38,
     };
     const dx = base.x - lens.x,
       dy = base.y - lens.y,
@@ -117,9 +117,9 @@
   // Outer common tangents from the sampled patch to the magnified view.
   const tangents = $derived.by(() => {
     const a = {
-        x: focus.x * exhibit.zoom + WORLD.centre[0] * (1 - exhibit.zoom),
-        y: focus.y * exhibit.zoom + WORLD.centre[1] * (1 - exhibit.zoom),
-        r: (lens.r / glass.scale) * exhibit.zoom,
+        x: focus.x,
+        y: focus.y,
+        r: lens.r / glass.scale,
       },
       b = lens;
     const d = Math.hypot(b.x - a.x, b.y - a.y);
@@ -320,10 +320,7 @@
       <clipPath id="dial-window"><circle r={R + 7} /></clipPath>
       <clipPath id="lens-window"><circle cx={lens.x} cy={lens.y} r={lens.r} /></clipPath>
     </defs>
-    <g
-      transform={`translate(${WORLD.centre[0]},${WORLD.centre[1]}) scale(${exhibit.zoom}) translate(${-WORLD.centre[0]},${-WORLD.centre[1]})`}
-      data-testid="camera"
-    >
+    <g data-testid="camera">
       <g
         id="clock-scene"
         data-theme={exhibit.theme}
@@ -387,7 +384,7 @@
         <Psi
           full={psi}
           {exhibit}
-          detailScale={Math.max(exhibit.zoom, exhibit.psiLens ? glass.scale : 1) * unit}
+          detailScale={Math.max(1, exhibit.psiLens ? glass.scale : 1) * unit}
           {selection}
           onhover={(p) => (hover = p)}
           onpick={pick}
@@ -429,12 +426,7 @@
             {/each}
           </g>
         {/if}
-        <circle
-          cx={focus.x * exhibit.zoom + WORLD.centre[0] * (1 - exhibit.zoom)}
-          cy={focus.y * exhibit.zoom + WORLD.centre[1] * (1 - exhibit.zoom)}
-          r={(lens.r / glass.scale) * exhibit.zoom}
-          class="lens-source"
-        />
+        <circle cx={focus.x} cy={focus.y} r={lens.r / glass.scale} class="lens-source" />
         <path d={tangents} class="lens-tangent" data-testid="lens-tangents" />
         <circle cx={lens.x} cy={lens.y} r={lens.r + 5} class="lens-housing" />
         <g clip-path="url(#lens-window)">

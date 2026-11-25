@@ -724,7 +724,7 @@ button[aria-pressed='true'] {
   z-index: 3;
   top: 60px;
   left: 16px;
-  width: 172px;
+  width: max-content;
   display: grid;
   gap: 2px;
 }
@@ -786,6 +786,11 @@ button[aria-pressed='true'] {
 }
 .panel-body {
   padding: 0 6px 3px 8px;
+}
+/* A content-sized panel would otherwise collapse a flexible slider to nothing. */
+.panel-body .inline-range input[type='range'] {
+  flex: none;
+  width: 84px;
 }
 .layer-grid {
   display: grid;
@@ -1060,8 +1065,9 @@ button[aria-pressed='true'] {
 .lens-recall {
   position: absolute;
   z-index: 4;
-  left: 20px;
-  top: 110px;
+  /* The magnifier's own resting corner, clear of the mechanism panels. */
+  right: 16px;
+  bottom: 16px;
   background: var(--panel);
 }
 .lens-recall[hidden] {
@@ -1107,7 +1113,7 @@ button[aria-pressed='true'] {
   .mechanism-controls {
     top: 58px;
     left: 10px;
-    width: 188px;
+    width: max-content;
     gap: 6px;
   }
   .utility-tools {
@@ -1148,9 +1154,10 @@ button[aria-pressed='true'] {
   .mechanism-controls {
     top: 8px;
     left: 58px;
-    width: min(566px, calc(100vw - 66px));
+    width: max-content;
+    max-width: calc(100vw - 66px);
     display: grid;
-    grid-template-columns: 0.8fr 1.2fr 1.15fr;
+    grid-template-columns: repeat(3, max-content);
     gap: 6px;
     align-items: start;
   }

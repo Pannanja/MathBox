@@ -1,11 +1,11 @@
 {
   "name": "The Riemann Mechanism",
   "source_branch": "codex/svelte-mechanism",
-  "source_commit": "2bda0ebc0eba5b44862e6aabe8215469f129ed91",
+  "source_commit": "ec9503e10db1c64fcdcff1ec009b07784b4de352",
   "sha256": {
     "assets/geometry.worker-BiUklWky.js": "f9333b053840cad6a320e0dd48b47df5b9e21f71b5239be01863d5c8b7f1a120",
-    "assets/index-BYItClZe.css": "e987e54cf16cf36112b95503e5d3e7fbf69e5749ee9f91200bb29fdfad62562d",
-    "assets/index-C5XS_mSZ.js": "06b65ea1450578b9639899881538065109d12a5a30011dd8ce16ef2142e02a58",
-    "index.html": "6a5e68010fa131f67fe10fce9821d983b7d73c461cb20d005ef04c4f36f5dcfa"
+    "assets/index-DFU_RQWi.js": "d334b6150f1148efed9163e96039eadb39c16a48675f5221e222a9aa2e5c6d2b",
+    "assets/index-L7ai-yZe.css": "e5f26dd7ed17d2398a987309f19fe239996a9959c35cff75c7a1c93aac182b23",
+    "index.html": "51d29f1799e7d682c2c635a9f8ea90713dc62c133897c81675b008fc3c272f08"
   }
 }

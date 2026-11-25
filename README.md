@@ -1,117 +1,106 @@
-# Clock of Primes
+# The Riemann Mechanism
 
-An interactive prime clock and complex-function explorer. Open
-`orrery-of-eratosthenes.html` directly, including offline.
+An interactive exhibit of Riemann's 1859 paper _On the Number of Primes Less Than
+a Given Magnitude_. Three constructions share one complex plane and turn together
+as you wind a single clock:
 
-**Development**
+- **π · Primes**, the sieve: every prime power q = pᵏ is a pane at radius q/x of
+  the dial, turning once every q units of x.
+- **ζ · Zeta**, Euler's sum: the first 128 Dirichlet terms n⁻ˢ on the critical
+  line s = ½ + iτ, laid tip to tail, beside the true value of ζ(s) and its trail.
+- **ψ · Psi**, Riemann's explicit formula: the prime-power count ψ(x) rebuilt
+  from 649 nontrivial zeros, drawing its own record onto the dial.
 
-Requires Node 20.18+ compatible with Vite 6, npm, and Python 3. Vite 6.4.3 is
-pinned for the workstation's Node 20.18 runtime; TypeScript is pinned to 5.9.3.
+Everything starts from x = 0. Before x = 1 one dot runs out along the radius while
+another runs round the rim, 2π times as fast; they meet where ψ appears. At x = 1
+every zero vector −1/ρ points the same way, so the ψ chain arrives fully extended
+and curls from its finest terms. The range runs to x = 5000, as in the earlier
+Clock of Primes.
 
-```sh
-npm ci
-npm run dev
-```
+The exhibit illustrates the Riemann hypothesis. It does not prove it, and the
+zero table records detected critical-line zeros, not a proof that none lie off it.
 
-Open the printed localhost address. Editing TypeScript under `src/` or authoring
-files under `.review/` rebuilds and reloads the page. Reloading resets the current
-exploration. Development transformation does not check types; use
-`npm run typecheck` separately. Changes to the build scripts require a restart.
+## Using it
 
-```sh
-npm run build
-npm test
-```
+Press Play, or Space. Winding links x and τ at 1 : −1, so the prime clock and the
+zeta height advance together. Linked play stops at x = 1000, where τ reaches the
+height of the verified zero table; release the link (the chain button) to wind x
+alone to 5000. The adjustments button beside the transport (the sliders icon) holds exact x and τ, speed,
+direction, gearing (1 : −1, 1 : −2π or a custom slope), winding to a destination
+or the next/previous prime, Share position and Reset.
 
-`build` checks types, bundles the math and integral worker, runs the legacy page
-assembly, and publishes `orrery-of-eratosthenes.html` plus `dist/index.html`.
-Both are self-contained. Intermediate files live in `.build/`; the published
-page is replaced only after assembly succeeds. Set `PYTHON` to a Python
-executable path if it is not available as `python`.
+The three groups at the upper left switch each construction on or off and fold
+open for its parts:
 
-`test` builds first, then checks clock snapshots, prime-power identities and
-346 independent numerical reference cases, 70 additional theta-window cases,
-and the ξ arm against 34 of the
-theta references. Python/mpmath is needed only to
-regenerate the committed reference fixtures:
+| Group  | Parts                                              |
+| ------ | -------------------------------------------------- |
+| Primes | Labels, Powers (prime powers beyond the primes)    |
+| Zeta   | Sum, Trail, Scale (with Fit)                       |
+| Psi    | Sum (the zero chain and its parallelogram), Record |
 
-```sh
-python reference/log-euler.py
-python .review/riemann-reference.py
-```
+The ? buttons open short explanations with live values. Hover, focus or click a
+pane, term or zero pair to inspect it; Escape clears the selection. The bell holds
+sound; the prism holds the Analytic, Clockwork and Expanse appearances, colour,
+motion and overall zoom.
 
-**Current module boundary**
+The magnifier rests at the lower right and appears just before ψ does. Faint
+tangents join it to the patch it magnifies. Drag its rim to move it, the round
+handle to resize it; arrow keys work on both. Its toolbar zooms, hides it, and
+toggles Auto, which keeps the whole ψ construction and both tips in view.
 
-- `src/core`: typed complex values, prime-power sources, integral results and
-  stateless pane snapshots. A sum term completes at q; pane growth completes at
-  q+1. These events are intentionally distinct.
-- `src/math/riemann.ts`: the existing gamma and integral calculations, extracted
-  into TypeScript. The current integral domain is 0<σ≤3, |τ|≤15 (|τ|≤35 for ξ symmetry); its infinite
-  kernel additionally requires σ>1.
-- `src/math/log-euler.ts`: finite prime-power contributions q^(−s)/k, with source
-  identities and ledger weights. Its finite cutoff differs from a finite Euler
-  product. `log-arm.ts` applies the pane's continuous birth/growth schedule.
-- `src/render/complex-plane.ts`: the shared zero axes, labelled input critical
-  strip, critical line and offscreen orientation used by all seven views.
-- `src/render/arm.ts`: generic tip-to-tail layout, exact folding of consecutive
-  contributors, hit geometry and prefix replay.
-- `src/scenes/log-arm.ts`: the **Build → Prime powers** view. Select it above
-  the graph, use Fit curve, and step through a pane birth. Hover a vector to link
-  its prime family; click to pin its pane. Click a dashed group to expand terms.
-  All arrows are visible by default. Options can fold unselected terms while
-  retaining the full chain as context.
-- `src/math/xi-arm.ts` and `src/scenes/xi-arm.ts`: **Build → ξ rotations**.
-  At σ=½, vary τ and watch equal-radius, opposite-angle pairs cancel vertically.
-  Change σ to unbalance the radii. Fit curve shows the full chain; hover/click
-  inspects/pins a pair. Supported window: 0.2≤σ≤3, |τ|≤15. Quadrature nodes are
-  independent of clock time; these are integral samples, not prime powers.
-- `src/workers/integral.worker.ts`: a real module worker bundled inline for
-  offline use. It imports the same math module as the main-thread evaluator.
-- `src/legacy-adapter.ts`: the single `ClockMath` bridge consumed by the existing
-  page. Most UI/clock code is still JavaScript; this is an incremental migration.
-- `.review`: historical visual sources and assembly stages. See its README.
+## The mathematics on the dial
 
-Use `npm run build` rather than invoking an intermediate Python stage. The
-Python assembly still supports direct execution after a bundle exists, but it
-does not compile changed TypeScript. No duplicate JavaScript source of the
-Riemann mathematics is maintained.
+One dial radius is x count units, so the ψ axle stands at the leading term x: it
+travels from the origin to the rim over 0 ≤ x ≤ 1 and then stays on the rim,
+level with the newest prime pane. From the axle:
 
-**Browser verification**
+- each zero ρ = ½ + iγ contributes −x^ρ/ρ, tip to tail, above the axis;
+- its conjugate partner is the reflection below the axis;
+- a pair sums to twice its real part. The dashed parallelogram O, B, B + B̄, B̄
+  closes at the tip, and its other diagonal crosses the axis halfway there;
+- the short link along the axis is the constant part, −log 2π plus the sum
+  over the trivial zeros −2n, which is −½ log(1 − x⁻²) in closed form. The
+  exhibit includes 649 trivial zeros, as many as nontrivial ones, so the
+  construction stays finite at x = 1.
 
-The existing browser harnesses use this workstation's Playwright and Chrome
-paths; adjust their imports/executable paths on another machine.
+The tip lands on the real axis at the reconstructed count and writes the record.
+The record starts at the origin at x = 1. A mark written at a turns by
+2π(x − a)/a and contracts with the dial, so each prime-power step stays on its
+own pane. The record is a finite-zero approximation: it rings near every step
+and blurs features narrower than 2πx/γ for the highest zero used.
+
+The zeta sum is a finite Dirichlet sum, not a convergent evaluation of ζ on the
+critical line; the gold marker and trail are the true ζ(½ + iτ), from an
+Euler–Maclaurin evaluator.
+
+## Development
+
+Requires Node 20.18 or later and npm.
 
 ```sh
-node tests/standalone.cjs
-node .review/verify-riemann.cjs
-node .review/verify-friendly.cjs
-node tests/log-arm.cjs
-node tests/xi-scene.cjs
-node tests/explorer-orientation.cjs
-node tests/view-domains.cjs
+npm install
+npm run dev            # http://127.0.0.1:5173
+npm run build          # type-check, then a static build in dist/
+npm test               # numerical tests
+npm run test:browser   # Playwright, using installed Google Chrome
+npm run format:check
 ```
 
-With the development server running, `node tests/dev.cjs` checks its root route,
-automatic TypeScript rebuild/reload and worker execution. It updates a source
-file's modification time without changing its contents.
+`npm test` includes the 66 ζ values computed with mpmath for the earlier exhibit
+(`tests/fixtures/zeta-reference.json`, regenerated by `zeta-reference.py`), an
+independent check of the prime-power ledger through 5000, and the explicit
+formula against a direct sum. The zero heights in `src/math/zero-heights.json`
+come from `npm run precompute:zeros`, a sign-change search of Hardy's Z(t) up
+to height 1000.
 
-The mathematical and visual roadmap is in
-[RIEMANN-VISUALIZATION-PLAN.md](RIEMANN-VISUALIZATION-PLAN.md). Changes and
-validation history are in [CLOCK-OF-PRIMES.NOTES.md](CLOCK-OF-PRIMES.NOTES.md).
-The current interface audit, visual guidelines, and implementation checklist are
-in [PRESENTATION-REDESIGN.md](PRESENTATION-REDESIGN.md).
+Source layout: `src/math` holds pure calculations, `src/core` the mechanism,
+state, layout and lens optics, `src/components` the Svelte scene, and
+`src/workers` the record sampler. [AGENTS.md](AGENTS.md) sets out the design
+rules contributors follow; [ROADMAP.md](ROADMAP.md) lists known limitations.
 
+## Publishing
 
-**Published site**
-
-[Clock of Primes](https://pannanja.github.io/MathBox/) is served by GitHub Pages
-from `gh-pages` at its root. `main` contains the source and standalone HTML.
-To release, run `npm ci` and `npm test` on main, then copy `dist/index.html` into
-`index.html` in a separate gh-pages worktree. Commit that build and push gh-pages.
-The deployment branch contains `.nojekyll` and `build.json` recording its source
-commit. Keep development sources and historical experiments on source branches.
-
-The first main release incorporates the visual worktree's continuous clock,
-TypeScript numerical modules, prime-power and xi arms, shared coordinates,
-view explanations and domain-aware sliders. The earlier `orrery-story` branch
-and its separate local edits are preserved.
+`npm run build` writes a self-contained static site to `dist/` with relative
+asset paths, so it can be served from any directory, for example a GitHub Pages
+project path. It must be served over HTTP(S): the record sampler runs in a module
+worker, which browsers do not load from `file://`.

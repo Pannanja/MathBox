@@ -1,0 +1,7 @@
+{
+  "name": "Clock of Primes",
+  "source_branch": "presentation-shell",
+  "source_commit": "e68fd86",
+  "source_note": "Built from the main-release worktree including uncommitted changes (prime-pane spectrograph).",
+  "sha256": { "index.html": "342c4131c91d15c461b5df4358c6450576150b440dec91dd14701fa14be589e8" }
+}
